@@ -89,6 +89,30 @@ fn start_local_server(roots: Arc<RwLock<WebRoots>>) -> Result<WebServerState> {
         }
         response = response
           .with_header(
+            tiny_http::Header::from_bytes(
+              &b"Access-Control-Allow-Origin"[..],
+              &b"*"[..],
+            )
+            .expect("cors origin header"),
+          )
+          .boxed()
+          .with_header(
+            tiny_http::Header::from_bytes(
+              &b"Access-Control-Allow-Methods"[..],
+              &b"GET, HEAD, OPTIONS"[..],
+            )
+            .expect("cors methods header"),
+          )
+          .boxed()
+          .with_header(
+            tiny_http::Header::from_bytes(
+              &b"Access-Control-Allow-Headers"[..],
+              &b"*"[..],
+            )
+            .expect("cors headers header"),
+          )
+          .boxed()
+          .with_header(
             tiny_http::Header::from_bytes(&b"Cache-Control"[..], &b"no-store"[..])
               .expect("cache header"),
           )
@@ -134,6 +158,11 @@ fn start_local_server(roots: Arc<RwLock<WebRoots>>) -> Result<WebServerState> {
         send_response(request, 404, Some("text/plain".into()), Some(b"Not found".to_vec()));
         continue;
       };
+
+      if method == "OPTIONS" {
+        send_response(request, 204, None, None);
+        continue;
+      }
 
       let resolved = match safe_join(&root, path) {
         Ok(p) => p,
