@@ -110,6 +110,13 @@ class Scheduler:
             if issue.status not in ("open", "ready"):
                 continue
 
+            # Escalations are for humans only; never auto-schedule them.
+            if any(
+                t in {"escalation", "needs-human", "@human-escalated", "human-escalated"}
+                for t in (issue.tags or [])
+            ):
+                continue
+
             # Check if already running
             if issue.id in self.running_tasks:
                 continue

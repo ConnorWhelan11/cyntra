@@ -17,8 +17,13 @@ from pathlib import Path
 import structlog
 
 from dev_kernel.adapters.base import CostEstimate, PatchProof, ToolchainAdapter
+from dev_kernel.adapters.telemetry import TelemetryWriter
 
 logger = structlog.get_logger()
+
+CLAUDE_SONNET_4_5 = "claude-sonnet-4-5-20250929"
+CLAUDE_OPUS_4_5 = "claude-opus-4-5-20251101"
+CLAUDE_HAIKU_4_5 = "claude-haiku-4-5-20251001"
 
 
 def _utc_now() -> datetime:
@@ -44,7 +49,12 @@ class ClaudeAdapter(ToolchainAdapter):
         self.config = config or {}
         self.executable = str(self.config.get("path") or "claude")
         self.env = dict(self.config.get("env") or {})
-        self.default_model = self.config.get("model", "claude-sonnet-4-20250514")
+        # Keep a stable default ("opus") and allow pinning via config.
+        self.default_model = self.config.get("model", "opus")
+        ultrathink = self.config.get("ultrathink")
+        if ultrathink is None:
+            ultrathink = self.config.get("extended_thinking")
+        self.ultrathink = True if ultrathink is None else bool(ultrathink)
         self.skip_permissions = self.config.get("skip_permissions", True)
         self._available: bool | None = None
 
@@ -159,10 +169,15 @@ class ClaudeAdapter(ToolchainAdapter):
         """Execute task asynchronously using Claude CLI."""
         started_at = _utc_now()
         workcell_id = manifest.get("workcell_id", "unknown")
+        issue_id = manifest.get("issue", {}).get("id", "unknown")
 
         # Ensure logs directory exists
         logs_dir = workcell_path / "logs"
         logs_dir.mkdir(parents=True, exist_ok=True)
+
+        # Initialize telemetry
+        telemetry_path = workcell_path / "telemetry.jsonl"
+        telemetry = TelemetryWriter(telemetry_path)
 
         # Build and write prompt
         prompt = self._build_prompt(manifest)
@@ -181,6 +196,15 @@ class ClaudeAdapter(ToolchainAdapter):
             model=model,
         )
 
+        # Emit start event
+        telemetry.started(
+            toolchain=self.name,
+            model=model,
+            issue_id=issue_id,
+            workcell_id=workcell_id,
+        )
+        telemetry.prompt_sent(prompt=prompt)
+
         try:
             process = await asyncio.create_subprocess_exec(
                 *cmd,
@@ -190,20 +214,22 @@ class ClaudeAdapter(ToolchainAdapter):
                 env={**os.environ, **self.env} if self.env else None,
             )
 
-            stdout, stderr = await asyncio.wait_for(
-                process.communicate(),
-                timeout=timeout.total_seconds(),
+            # Stream output with telemetry
+            stdout, stderr = await self._stream_output_with_telemetry(
+                process,
+                telemetry,
+                timeout.total_seconds(),
             )
 
             completed_at = _utc_now()
             duration_ms = int((completed_at - started_at).total_seconds() * 1000)
 
             # Save logs
-            self._save_logs(logs_dir, stdout.decode(), stderr.decode())
+            self._save_logs(logs_dir, stdout, stderr)
 
             proof = self._parse_output(
-                stdout=stdout.decode(),
-                stderr=stderr.decode(),
+                stdout=stdout,
+                stderr=stderr,
                 exit_code=process.returncode or 0,
                 manifest=manifest,
                 workcell_path=workcell_path,
@@ -212,20 +238,32 @@ class ClaudeAdapter(ToolchainAdapter):
                 duration_ms=duration_ms,
             )
 
+            # Emit completion event
+            telemetry.completed(
+                status=proof.status,
+                exit_code=process.returncode or 0,
+                duration_ms=duration_ms,
+            )
+
             # Write proof to file
             proof_path = workcell_path / "proof.json"
             proof_path.write_text(json.dumps(proof.to_dict(), indent=2))
 
+            telemetry.close()
             return proof
 
         except asyncio.TimeoutError:
             logger.error("Claude execution timed out", workcell_id=workcell_id)
+            telemetry.error("Execution timed out")
+            telemetry.close()
             return self._create_timeout_proof(manifest, started_at)
 
         except Exception as e:
             logger.error(
                 "Claude execution failed", workcell_id=workcell_id, error=str(e)
             )
+            telemetry.error(str(e))
+            telemetry.close()
             return self._create_error_proof(manifest, started_at, str(e))
 
     async def health_check(self) -> bool:
@@ -267,8 +305,22 @@ class ClaudeAdapter(ToolchainAdapter):
 
         # Cost per 1M tokens (input + output combined estimate)
         cost_per_1m = {
+            # Model aliases (Claude Code CLI)
+            "sonnet": 9.0,
+            "opus": 45.0,
+            "haiku": 0.75,
+            # Claude 4.5 (latest)
+            CLAUDE_SONNET_4_5: 9.0,
+            CLAUDE_OPUS_4_5: 45.0,
+            CLAUDE_HAIKU_4_5: 0.75,
+            # Claude 4.5 aliases (if supported by the CLI)
+            "claude-sonnet-4-5": 9.0,
+            "claude-opus-4-5": 45.0,
+            "claude-haiku-4-5": 0.75,
+            # Claude 4.0
             "claude-sonnet-4-20250514": 9.0,
             "claude-opus-4-20250514": 45.0,
+            # Claude 3.x
             "claude-3-5-sonnet-20241022": 9.0,
             "claude-3-opus-20240229": 45.0,
             "claude-3-sonnet-20240229": 9.0,
@@ -312,6 +364,58 @@ class ClaudeAdapter(ToolchainAdapter):
             cmd.extend([str(a) for a in extra_args])
 
         return cmd
+
+    def _build_prompt(self, manifest: dict) -> str:
+        prompt = super()._build_prompt(manifest)
+        if self.ultrathink and "ultrathink" not in prompt:
+            return f"ultrathink\n\n{prompt}"
+        return prompt
+
+    async def _stream_output_with_telemetry(
+        self,
+        process: asyncio.subprocess.Process,
+        telemetry: TelemetryWriter,
+        timeout_seconds: float,
+    ) -> tuple[str, str]:
+        """
+        Stream process output while emitting telemetry events.
+
+        Returns accumulated stdout and stderr.
+        """
+        stdout_lines: list[str] = []
+        stderr_lines: list[str] = []
+
+        async def read_stdout() -> None:
+            """Read stdout line by line."""
+            if not process.stdout:
+                return
+            async for line in process.stdout:
+                decoded = line.decode("utf-8", errors="replace")
+                stdout_lines.append(decoded)
+                # Emit as response chunk (Claude CLI output is mostly LLM responses)
+                telemetry.response_chunk(content=decoded.rstrip())
+
+        async def read_stderr() -> None:
+            """Read stderr line by line."""
+            if not process.stderr:
+                return
+            async for line in process.stderr:
+                decoded = line.decode("utf-8", errors="replace")
+                stderr_lines.append(decoded)
+
+        # Run both readers in parallel with timeout
+        try:
+            await asyncio.wait_for(
+                asyncio.gather(read_stdout(), read_stderr(), process.wait()),
+                timeout=timeout_seconds,
+            )
+        except asyncio.TimeoutError:
+            # Kill the process
+            process.kill()
+            await process.wait()
+            raise
+
+        return "".join(stdout_lines), "".join(stderr_lines)
 
     def _save_logs(self, logs_dir: Path, stdout: str, stderr: str) -> None:
         """Save stdout and stderr to log files."""

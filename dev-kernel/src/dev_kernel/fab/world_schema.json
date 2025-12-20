@@ -1,0 +1,290 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Fab World Configuration",
+  "description": "Schema for world.yaml configuration files in the Fab World system",
+  "type": "object",
+  "required": ["schema_version", "world_id", "world_type", "version", "build", "stages"],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "description": "Schema version for this world configuration",
+      "pattern": "^\\d+\\.\\d+$"
+    },
+    "world_id": {
+      "type": "string",
+      "description": "Unique identifier for this world (snake_case)",
+      "pattern": "^[a-z][a-z0-9_]*$"
+    },
+    "world_config_id": {
+      "type": "string",
+      "description": "Specific configuration variant ID (e.g., world_id_variant_v001)"
+    },
+    "world_type": {
+      "type": "string",
+      "description": "World category",
+      "enum": ["interior_architecture", "exterior_environment", "character", "vehicle", "props"]
+    },
+    "version": {
+      "type": "string",
+      "description": "World version (semantic versioning)",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "generator": {
+      "type": "object",
+      "description": "Generator metadata",
+      "required": ["name", "author"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Human-readable generator name"
+        },
+        "description": {
+          "type": "string",
+          "description": "Detailed description of what this world generates"
+        },
+        "author": {
+          "type": "string",
+          "description": "Author or team name"
+        },
+        "required_addons": {
+          "type": "array",
+          "description": "Required Blender addons",
+          "items": {
+            "type": "object",
+            "required": ["id", "required"],
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Addon identifier"
+              },
+              "required": {
+                "type": "boolean",
+                "description": "Whether this addon is required"
+              },
+              "version": {
+                "type": "string",
+                "description": "Required version (optional)"
+              }
+            }
+          }
+        }
+      }
+    },
+    "build": {
+      "type": "object",
+      "description": "Build configuration",
+      "required": ["template_blend"],
+      "properties": {
+        "template_blend": {
+          "type": "string",
+          "description": "Path to template .blend file (relative to world directory)"
+        },
+        "blender_version_min": {
+          "type": "string",
+          "description": "Minimum Blender version required",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$"
+        },
+        "determinism": {
+          "type": "object",
+          "description": "Determinism settings",
+          "properties": {
+            "seed": {
+              "type": "integer",
+              "description": "Default random seed"
+            },
+            "pythonhashseed": {
+              "type": "integer",
+              "description": "Python hash seed for determinism"
+            },
+            "cycles_seed": {
+              "type": "integer",
+              "description": "Blender Cycles render seed"
+            }
+          }
+        },
+        "blender": {
+          "type": "object",
+          "description": "Blender invocation settings",
+          "properties": {
+            "args": {
+              "type": "array",
+              "description": "Command-line arguments for Blender",
+              "items": {
+                "type": "string"
+              }
+            },
+            "env": {
+              "type": "object",
+              "description": "Environment variables",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "parameters": {
+      "type": "object",
+      "description": "Configurable parameters for this world",
+      "properties": {
+        "defaults": {
+          "type": "object",
+          "description": "Default parameter values",
+          "additionalProperties": true
+        },
+        "schema": {
+          "type": "object",
+          "description": "Parameter validation schema",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["string", "number", "integer", "boolean", "enum", "object", "array"]
+              },
+              "values": {
+                "type": "array",
+                "description": "Valid values for enum type"
+              },
+              "default": {
+                "description": "Default value if not specified"
+              },
+              "min": {
+                "type": "number",
+                "description": "Minimum value for numbers"
+              },
+              "max": {
+                "type": "number",
+                "description": "Maximum value for numbers"
+              }
+            }
+          }
+        }
+      }
+    },
+    "stages": {
+      "type": "array",
+      "description": "Build pipeline stages (executed in order)",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "type"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Stage identifier (snake_case)",
+            "pattern": "^[a-z][a-z0-9_]*$"
+          },
+          "type": {
+            "type": "string",
+            "description": "Stage type",
+            "enum": ["blender", "gate", "godot", "custom"]
+          },
+          "script": {
+            "type": "string",
+            "description": "Path to stage script (relative to world directory)"
+          },
+          "requires": {
+            "type": "array",
+            "description": "Stage IDs that must complete before this stage",
+            "items": {
+              "type": "string"
+            }
+          },
+          "params": {
+            "type": "array",
+            "description": "Parameter keys used by this stage (dot-path notation)",
+            "items": {
+              "type": "string"
+            }
+          },
+          "outputs": {
+            "type": "array",
+            "description": "Expected output paths (supports glob patterns)",
+            "items": {
+              "type": "string"
+            }
+          },
+          "settings": {
+            "type": "object",
+            "description": "Stage-specific settings",
+            "additionalProperties": true
+          },
+          "optional": {
+            "type": "boolean",
+            "description": "Whether this stage can be skipped"
+          },
+          "gates": {
+            "type": "array",
+            "description": "Gate configuration files for validation stages",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "budgets": {
+      "type": "object",
+      "description": "Resource budgets and limits",
+      "properties": {
+        "blender": {
+          "type": "object",
+          "properties": {
+            "max_objects": {
+              "type": "integer"
+            },
+            "max_vertices": {
+              "type": "integer"
+            },
+            "max_materials": {
+              "type": "integer"
+            }
+          }
+        },
+        "godot": {
+          "type": "object",
+          "properties": {
+            "max_glb_size_mb": {
+              "type": "number"
+            },
+            "max_materials": {
+              "type": "integer"
+            },
+            "max_draw_calls_est": {
+              "type": "integer"
+            }
+          }
+        }
+      }
+    },
+    "publish": {
+      "type": "object",
+      "description": "Publishing configuration",
+      "properties": {
+        "viewer": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "paths": {
+              "type": "object",
+              "properties": {
+                "glb": {
+                  "type": "string",
+                  "description": "Path where GLB should be published"
+                },
+                "game": {
+                  "type": "string",
+                  "description": "Path where Godot game build should be published"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

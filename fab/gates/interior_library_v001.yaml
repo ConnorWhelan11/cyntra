@@ -146,6 +146,52 @@ repair_playbook:
       - Furniture (desks, chairs, shelves)
       - Lighting fixtures
       - Floor and ceiling visible
+  FURNITURE_TOO_FEW:
+    priority: 1
+    instructions: |
+      Add more furniture instances:
+      - Ensure desks/tables are present for study
+      - Add chairs near desks (avoid floating)
+      - Add shelves/bookcases along walls
+      - Target at least 5 distinct furniture objects
+  FURNITURE_TYPE_MISSING:
+    priority: 2
+    instructions: |
+      Include missing furniture types:
+      - At minimum include: desks, chairs, shelves
+      - Add objects with clear naming (e.g. Desk_*, Chair_*, Shelf_*)
+  FURNITURE_CLUSTERED:
+    priority: 3
+    instructions: |
+      Improve furniture distribution:
+      - Spread desks/chairs across bays and tiers
+      - Avoid placing all furniture in a single cluster
+      - Maintain walkable aisles between furniture groups
+  RHYTHM_NO_COLUMNS:
+    priority: 3
+    instructions: |
+      Add structural vertical elements:
+      - Include columns/piers that read as supports
+      - Use consistent naming (e.g. Column_*, Pier_*)
+      - Ensure elements span floor-to-ceiling for readability
+  RHYTHM_BAY_SIZE_OFF:
+    priority: 3
+    instructions: |
+      Adjust bay spacing toward Gothic rhythm:
+      - Target ~6m bay spacing (±30%)
+      - Ensure repeating structural modules align to the bay grid
+  RHYTHM_INCONSISTENT:
+    priority: 3
+    instructions: |
+      Regularize structural spacing:
+      - Reduce variance in adjacent bay widths
+      - Align columns/piers to a consistent grid
+  RHYTHM_ASYMMETRIC:
+    priority: 4
+    instructions: |
+      Improve symmetry:
+      - Mirror major wings and bay structure when appropriate
+      - Align columns, arches, and shelves across the centerline
 
 # Library-specific validation (custom checks)
 library_checks:

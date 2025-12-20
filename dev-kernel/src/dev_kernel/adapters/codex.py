@@ -17,6 +17,7 @@ from pathlib import Path
 import structlog
 
 from dev_kernel.adapters.base import CostEstimate, PatchProof, ToolchainAdapter
+from dev_kernel.adapters.telemetry import TelemetryWriter
 
 logger = structlog.get_logger()
 
@@ -44,7 +45,10 @@ class CodexAdapter(ToolchainAdapter):
         self.config = config or {}
         self.executable = str(self.config.get("path") or "codex")
         self.env = dict(self.config.get("env") or {})
-        self.default_model = self.config.get("model", "o3")
+        self.default_model = self.config.get("model", "gpt-5.2")
+        self.model_reasoning_effort = self.config.get(
+            "model_reasoning_effort", self.config.get("reasoning_effort")
+        )
         # Codex CLI uses `--ask-for-approval` and `--sandbox`. Keep `approval_mode` as a
         # backward-compatible alias.
         self.approval_mode = self.config.get("approval_mode", "full-auto")
@@ -175,10 +179,15 @@ class CodexAdapter(ToolchainAdapter):
         """Execute task asynchronously using Codex CLI."""
         started_at = _utc_now()
         workcell_id = manifest.get("workcell_id", "unknown")
+        issue_id = manifest.get("issue", {}).get("id", "unknown")
 
         # Ensure logs directory exists
         logs_dir = workcell_path / "logs"
         logs_dir.mkdir(parents=True, exist_ok=True)
+
+        # Initialize telemetry
+        telemetry_path = workcell_path / "telemetry.jsonl"
+        telemetry = TelemetryWriter(telemetry_path)
 
         # Build and write prompt
         prompt = self._build_prompt(manifest)
@@ -197,6 +206,15 @@ class CodexAdapter(ToolchainAdapter):
             model=model,
         )
 
+        # Emit start event
+        telemetry.started(
+            toolchain=self.name,
+            model=model,
+            issue_id=issue_id,
+            workcell_id=workcell_id,
+        )
+        telemetry.prompt_sent(prompt=prompt)
+
         try:
             process = await asyncio.create_subprocess_exec(
                 *cmd,
@@ -207,20 +225,23 @@ class CodexAdapter(ToolchainAdapter):
                 env={**os.environ, **self.env} if self.env else None,
             )
 
-            stdout, stderr = await asyncio.wait_for(
-                process.communicate(input=prompt.encode()),
-                timeout=timeout.total_seconds(),
+            # Stream output with telemetry
+            stdout, stderr = await self._stream_output_with_telemetry(
+                process,
+                telemetry,
+                prompt.encode(),
+                timeout.total_seconds(),
             )
 
             completed_at = _utc_now()
             duration_ms = int((completed_at - started_at).total_seconds() * 1000)
 
             # Save logs
-            self._save_logs(logs_dir, stdout.decode(), stderr.decode())
+            self._save_logs(logs_dir, stdout, stderr)
 
             proof = self._parse_output(
-                stdout=stdout.decode(),
-                stderr=stderr.decode(),
+                stdout=stdout,
+                stderr=stderr,
                 exit_code=process.returncode or 0,
                 manifest=manifest,
                 workcell_path=workcell_path,
@@ -229,20 +250,32 @@ class CodexAdapter(ToolchainAdapter):
                 duration_ms=duration_ms,
             )
 
+            # Emit completion event
+            telemetry.completed(
+                status=proof.status,
+                exit_code=process.returncode or 0,
+                duration_ms=duration_ms,
+            )
+
             # Write proof to file
             proof_path = workcell_path / "proof.json"
             proof_path.write_text(json.dumps(proof.to_dict(), indent=2))
 
+            telemetry.close()
             return proof
 
         except asyncio.TimeoutError:
             logger.error("Codex execution timed out", workcell_id=workcell_id)
+            telemetry.error("Execution timed out")
+            telemetry.close()
             return self._create_timeout_proof(manifest, started_at)
 
         except Exception as e:
             logger.error(
                 "Codex execution failed", workcell_id=workcell_id, error=str(e)
             )
+            telemetry.error(str(e))
+            telemetry.close()
             return self._create_error_proof(manifest, started_at, str(e))
 
     async def health_check(self) -> bool:
@@ -312,6 +345,17 @@ class CodexAdapter(ToolchainAdapter):
             str(self.ask_for_approval),
         ]
 
+        reasoning_effort = self.model_reasoning_effort
+        if reasoning_effort is None and isinstance(model, str) and model.startswith("gpt-5"):
+            reasoning_effort = "xhigh"
+        if reasoning_effort:
+            cmd.extend(
+                [
+                    "--config",
+                    f"model_reasoning_effort={json.dumps(str(reasoning_effort))}",
+                ]
+            )
+
         if model:
             cmd.extend(["--model", model])
 
@@ -320,6 +364,60 @@ class CodexAdapter(ToolchainAdapter):
             cmd.extend([str(a) for a in extra_args])
 
         return cmd
+
+    async def _stream_output_with_telemetry(
+        self,
+        process: asyncio.subprocess.Process,
+        telemetry: TelemetryWriter,
+        stdin_data: bytes,
+        timeout_seconds: float,
+    ) -> tuple[str, str]:
+        """
+        Stream process output while emitting telemetry events.
+
+        Returns accumulated stdout and stderr.
+        """
+        stdout_lines: list[str] = []
+        stderr_lines: list[str] = []
+
+        async def write_stdin() -> None:
+            """Write prompt to stdin and close."""
+            if process.stdin:
+                process.stdin.write(stdin_data)
+                await process.stdin.drain()
+                process.stdin.close()
+
+        async def read_stdout() -> None:
+            """Read stdout line by line."""
+            if not process.stdout:
+                return
+            async for line in process.stdout:
+                decoded = line.decode("utf-8", errors="replace")
+                stdout_lines.append(decoded)
+                # Emit as response chunk
+                telemetry.response_chunk(content=decoded.rstrip())
+
+        async def read_stderr() -> None:
+            """Read stderr line by line."""
+            if not process.stderr:
+                return
+            async for line in process.stderr:
+                decoded = line.decode("utf-8", errors="replace")
+                stderr_lines.append(decoded)
+
+        # Run all in parallel with timeout
+        try:
+            await asyncio.wait_for(
+                asyncio.gather(write_stdin(), read_stdout(), read_stderr(), process.wait()),
+                timeout=timeout_seconds,
+            )
+        except asyncio.TimeoutError:
+            # Kill the process
+            process.kill()
+            await process.wait()
+            raise
+
+        return "".join(stdout_lines), "".join(stderr_lines)
 
     def _save_logs(self, logs_dir: Path, stdout: str, stderr: str) -> None:
         """Save stdout and stderr to log files."""

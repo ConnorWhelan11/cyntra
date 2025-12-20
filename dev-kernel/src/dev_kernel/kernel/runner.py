@@ -33,10 +33,12 @@ from dev_kernel.state.manager import StateManager
 from dev_kernel.workcell.manager import WorkcellManager
 
 if TYPE_CHECKING:
-    from dev_kernel.state.models import Issue
+    from dev_kernel.state.models import BeadsGraph, Issue
 
 logger = structlog.get_logger()
 console = Console()
+
+ESCALATION_TAGS = {"escalation", "needs-human", "@human-escalated", "human-escalated"}
 
 
 def _utc_now() -> datetime:
@@ -174,6 +176,18 @@ class KernelRunner:
         schedule = self.scheduler.schedule(graph)
 
         if not schedule.scheduled_lanes:
+            if self.target_issue and self.single_cycle:
+                issue = next(
+                    (i for i in graph.issues if i.id == self.target_issue),
+                    None,
+                )
+                if issue:
+                    reason = self._explain_not_ready(issue, graph)
+                    console.print(
+                        f"[yellow]Target issue not ready ({reason}); forcing one-shot run[/yellow]"
+                    )
+                    await self._dispatch_single_async(issue)
+                    return True
             console.print("[dim]Nothing ready to schedule[/dim]")
             return False
 
@@ -188,6 +202,23 @@ class KernelRunner:
         await self._dispatch_parallel(schedule)
 
         return True
+
+    def _explain_not_ready(self, issue: Issue, graph: BeadsGraph) -> str:
+        reasons: list[str] = []
+        if issue.status not in ("open", "ready"):
+            reasons.append(f"status={issue.status}")
+        if issue.dk_attempts >= issue.dk_max_attempts:
+            reasons.append(f"attempts={issue.dk_attempts}/{issue.dk_max_attempts}")
+        if any(tag in ESCALATION_TAGS for tag in (issue.tags or [])):
+            reasons.append("escalated")
+        blockers = [
+            b.id
+            for b in graph.get_blocking_deps(issue.id)
+            if b.status != "done"
+        ]
+        if blockers:
+            reasons.append(f"blocked_by={','.join(blockers[:3])}")
+        return "; ".join(reasons) if reasons else "unspecified"
 
     async def _dispatch_parallel(self, schedule: ScheduleResult) -> None:
         """Dispatch all scheduled work in parallel."""
@@ -533,6 +564,15 @@ class KernelRunner:
         error_summary: str | None = None,
     ) -> None:
         """Create a new issue for human review after escalation."""
+        if any(
+            t in {"escalation", "needs-human", "@human-escalated", "human-escalated"}
+            for t in (original_issue.tags or [])
+        ) or original_issue.title.startswith("[ESCALATION]"):
+            console.print(
+                f"  [dim]Escalation suppressed for #{original_issue.id} (already escalated)[/dim]"
+            )
+            return
+
         error = error_summary or (result.error if result else None) or "Unknown error after max attempts"
 
         title = f"[ESCALATION] {original_issue.title}"
@@ -557,6 +597,7 @@ class KernelRunner:
                 self.state_manager.update_issue(
                     new_issue_id,
                     dk_parent=original_issue.id,
+                    status="escalated",
                 )
                 console.print(f"  [dim]Created escalation issue #{new_issue_id}[/dim]")
         except Exception as e:

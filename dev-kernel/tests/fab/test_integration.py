@@ -126,8 +126,32 @@ class TestFabIntegration:
         gates = dispatcher._build_quality_gates(tags)
 
         assert "fab-realism" in gates
+        assert gates["fab-realism"]["gate_config_id"] == "interior_library_v001"
         assert "fab-godot" in gates
         assert gates["fab-godot"]["gate_config_id"] == "godot_integration_v001"
+
+    def test_manifest_maps_interior_category_to_existing_gate_config(self):
+        """Test that interior asset tags map to the interior_library_v001 gate config."""
+        from dev_kernel.kernel.dispatcher import Dispatcher
+
+        mock_config = MagicMock()
+        mock_config.gates.test_command = "pytest"
+        mock_config.gates.typecheck_command = "mypy ."
+        mock_config.gates.lint_command = "ruff check ."
+        mock_config.toolchain_priority = []
+        mock_config.toolchains = {}
+
+        dispatcher = Dispatcher(mock_config)
+
+        tags = ["asset:interior", "gate:realism", "gate:asset-only", "gate:godot"]
+        gates = dispatcher._build_quality_gates(tags)
+
+        assert "fab-realism" in gates
+        assert gates["fab-realism"]["gate_config_id"] == "interior_library_v001"
+        assert "fab-godot" in gates
+        assert "test" not in gates
+        assert "typecheck" not in gates
+        assert "lint" not in gates
 
     def test_geometry_critic_evaluates_asset(self, test_asset, temp_dir):
         """Test geometry critic produces valid output."""

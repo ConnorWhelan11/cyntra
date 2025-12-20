@@ -161,6 +161,9 @@ def run_blender_render(
     """
     start_time = datetime.now(timezone.utc)
 
+    # Resolve early so macOS app-bundle cwd overrides don't break relative paths.
+    output_dir = output_dir.resolve()
+
     # Ensure output directories exist
     output_dir.mkdir(parents=True, exist_ok=True)
     (output_dir / "beauty").mkdir(exist_ok=True)

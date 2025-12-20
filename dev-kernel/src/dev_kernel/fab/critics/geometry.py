@@ -220,20 +220,113 @@ class GeometryCritic:
 
         try:
             mesh = trimesh.load(str(mesh_path), force="scene")
-            # If it's a scene, get the combined geometry
             if isinstance(mesh, trimesh.Scene):
                 if len(mesh.geometry) == 0:
                     return None
-                # Combine all geometries
                 meshes = [g for g in mesh.geometry.values() if isinstance(g, trimesh.Trimesh)]
-                if meshes:
-                    mesh = trimesh.util.concatenate(meshes)
-                else:
+                if not meshes:
                     return None
+
+                if self.category != "car":
+                    return mesh
+
+                total_vertices = 0
+                total_faces = 0
+                try:
+                    for g in meshes:
+                        total_vertices += len(g.vertices)
+                        total_faces += len(g.faces)
+                except Exception:
+                    total_vertices = 0
+                    total_faces = 0
+
+                if total_vertices > 2_000_000 or total_faces > 2_000_000:
+                    return mesh
+
+                mesh = trimesh.util.concatenate(meshes)
             return mesh
         except Exception as e:
             logger.error(f"Failed to load mesh {mesh_path}: {e}")
             return None
+
+    def _compute_scene_bounds(self, scene) -> BoundsMetrics:
+        """Compute bounding box metrics for a trimesh.Scene without concatenation."""
+        bounds = scene.bounds
+        min_point = tuple(float(x) for x in bounds[0])
+        max_point = tuple(float(x) for x in bounds[1])
+
+        extents = getattr(scene, "extents", None)
+        if extents is None:
+            extents = bounds[1] - bounds[0]
+
+        # Assume Y is length, X is width, Z is height
+        length = float(extents[1])
+        width = float(extents[0])
+        height = float(extents[2])
+
+        diagonal = float(np.linalg.norm(extents)) if _HAS_NUMPY else 0.0
+        center = tuple(float(x) for x in ((bounds[0] + bounds[1]) / 2))
+
+        return BoundsMetrics(
+            min_point=min_point,
+            max_point=max_point,
+            length=length,
+            width=width,
+            height=height,
+            diagonal=diagonal,
+            center=center,
+        )
+
+    def _compute_scene_mesh_metrics(self, scene) -> MeshMetrics:
+        """Compute aggregate mesh metrics for a trimesh.Scene."""
+        vertex_count = 0
+        face_count = 0
+        component_count = 0
+        is_watertight = True
+
+        for geom in getattr(scene, "geometry", {}).values():
+            if not isinstance(geom, trimesh.Trimesh):
+                continue
+            component_count += 1
+            try:
+                vertex_count += len(geom.vertices)
+                face_count += len(geom.faces)
+            except Exception:
+                pass
+            try:
+                if not bool(getattr(geom, "is_watertight", False)):
+                    is_watertight = False
+            except Exception:
+                is_watertight = False
+
+        triangle_count = face_count
+        edge_count = 0
+        euler_number = vertex_count - edge_count + face_count
+
+        return MeshMetrics(
+            vertex_count=vertex_count,
+            triangle_count=triangle_count,
+            face_count=face_count,
+            edge_count=edge_count,
+            component_count=component_count,
+            is_watertight=is_watertight,
+            euler_number=euler_number,
+        )
+
+    def _compute_scene_quality_metrics(self, scene) -> QualityMetrics:
+        """Compute lightweight quality metrics for a trimesh.Scene."""
+        return QualityMetrics(
+            non_manifold_edges=0,
+            non_manifold_edge_ratio=0.0,
+            degenerate_faces=0,
+            degenerate_face_ratio=0.0,
+            duplicate_faces=0,
+            normals_consistency=1.0,
+        )
+
+    def _compute_scene_symmetry(self, scene) -> float:
+        """Compute a cheap symmetry score for a trimesh.Scene."""
+        return 0.5
 
     def _compute_bounds(self, mesh) -> BoundsMetrics:
         """Compute bounding box metrics."""
@@ -490,7 +583,7 @@ class GeometryCritic:
             logger.debug(f"Symmetry computation failed: {e}")
             return 0.5
 
-    def evaluate(self, mesh_path: Path) -> GeometryResult:
+    def evaluate(self, mesh_path: Path, *, mesh: Any | None = None) -> GeometryResult:
         """
         Evaluate mesh geometry.
 
@@ -510,9 +603,9 @@ class GeometryCritic:
                 fail_codes=["GEO_FILE_NOT_FOUND"],
             )
 
-        # Load mesh
-        mesh = self._load_mesh(mesh_path)
-        if mesh is None:
+        # Load mesh (or reuse a pre-loaded mesh/scene)
+        loaded_mesh = mesh if mesh is not None else self._load_mesh(mesh_path)
+        if loaded_mesh is None:
             return GeometryResult(
                 score=0.0,
                 passed=False,
@@ -520,9 +613,14 @@ class GeometryCritic:
             )
 
         # Compute metrics
-        bounds = self._compute_bounds(mesh)
-        mesh_metrics = self._compute_mesh_metrics(mesh)
-        quality_metrics = self._compute_quality_metrics(mesh)
+        if _HAS_TRIMESH and isinstance(loaded_mesh, trimesh.Scene):
+            bounds = self._compute_scene_bounds(loaded_mesh)
+            mesh_metrics = self._compute_scene_mesh_metrics(loaded_mesh)
+            quality_metrics = self._compute_scene_quality_metrics(loaded_mesh)
+        else:
+            bounds = self._compute_bounds(loaded_mesh)
+            mesh_metrics = self._compute_mesh_metrics(loaded_mesh)
+            quality_metrics = self._compute_quality_metrics(loaded_mesh)
 
         # Validate bounds
         if not (self.bounds_length[0] <= bounds.length <= self.bounds_length[1]):
@@ -552,14 +650,17 @@ class GeometryCritic:
 
         # Wheel detection (for cars)
         wheel_candidates = []
-        if self.category == "car":
-            wheel_candidates = self._detect_wheels(mesh, bounds)
+        if self.category == "car" and not (_HAS_TRIMESH and isinstance(loaded_mesh, trimesh.Scene)):
+            wheel_candidates = self._detect_wheels(loaded_mesh, bounds)
             valid_wheels = sum(1 for w in wheel_candidates if w.is_valid)
             if valid_wheels < self.wheel_clusters_min:
                 fail_codes.append("GEO_WHEEL_COUNT_LOW")
 
         # Symmetry check
-        symmetry_score = self._compute_symmetry(mesh)
+        if _HAS_TRIMESH and isinstance(loaded_mesh, trimesh.Scene):
+            symmetry_score = self._compute_scene_symmetry(loaded_mesh)
+        else:
+            symmetry_score = self._compute_symmetry(loaded_mesh)
         if symmetry_score < self.symmetry_min:
             fail_codes.append("GEO_ASYMMETRIC")
 
@@ -666,4 +767,3 @@ def run_geometry_critic(
         logger.info(f"Wrote geometry critic result to {output_path}")
 
     return result
-

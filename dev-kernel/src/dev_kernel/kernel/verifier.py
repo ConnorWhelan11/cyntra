@@ -70,6 +70,25 @@ class Verifier:
             )
             return False
 
+        # If the toolchain execution itself failed, do not allow downstream gates to
+        # "green" the run (a failed execution cannot be considered verified).
+        if proof.status not in ("success", "partial"):
+            verification = proof.verification if isinstance(proof.verification, dict) else {}
+            verification["all_passed"] = False
+
+            blocking = verification.get("blocking_failures")
+            if not isinstance(blocking, list):
+                blocking = []
+            status_marker = f"status:{proof.status}"
+            if status_marker not in blocking:
+                blocking.append(status_marker)
+            verification["blocking_failures"] = blocking
+
+            verification.setdefault("gates", {})
+            proof.verification = verification
+            self._persist_proof(proof, workcell_path)
+            return False
+
         # Check if proof already has passing verification
         verification = proof.verification
         if isinstance(verification, dict) and verification.get("all_passed"):
@@ -355,6 +374,15 @@ class Verifier:
                 gate_results={},
                 blocking_failures=["forbidden-paths"],
                 forbidden_path_violations=violations,
+            )
+
+        if proof.status not in ("success", "partial"):
+            return VerificationResult(
+                workcell_id=workcell_id,
+                all_passed=False,
+                gate_results={},
+                blocking_failures=[f"status:{proof.status}"],
+                forbidden_path_violations=[],
             )
 
         # Run gates asynchronously

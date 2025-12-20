@@ -32,6 +32,21 @@ from .config import GateConfig, load_gate_config, find_gate_config
 logger = logging.getLogger(__name__)
 
 
+def _json_default(obj: Any) -> Any:
+    try:
+        import numpy as np
+
+        if isinstance(obj, np.generic):
+            return obj.item()
+    except Exception:
+        pass
+
+    if isinstance(obj, Path):
+        return str(obj)
+
+    raise TypeError(f"Object of type {type(obj).__name__} is not JSON serializable")
+
+
 @dataclass
 class GateResult:
     """Result from gate evaluation."""
@@ -96,6 +111,8 @@ def create_skeleton_verdict(
                 "alignment": 0.0,
                 "realism": 0.0,
                 "geometry": 0.0,
+                "furniture_presence": 0.0,
+                "structural_rhythm": 0.0,
             },
             "threshold": gate_config.decision.overall_pass_min,
             "margin": -gate_config.decision.overall_pass_min,
@@ -150,6 +167,8 @@ def create_skeleton_critic_report(
             "alignment": 0.0,
             "realism": 0.0,
             "geometry": 0.0,
+            "furniture_presence": 0.0,
+            "structural_rhythm": 0.0,
             "overall": 0.0,
         },
         "failures": {"hard": [], "soft": []},
@@ -196,6 +215,8 @@ class CriticResults:
     alignment: Optional[Dict[str, Any]] = None
     realism: Optional[Dict[str, Any]] = None
     geometry: Optional[Dict[str, Any]] = None
+    furniture_presence: Optional[Dict[str, Any]] = None
+    structural_rhythm: Optional[Dict[str, Any]] = None
 
 
 def run_critics(
@@ -222,6 +243,21 @@ def run_critics(
 
     beauty_dir = render_dir / "beauty"
     clay_dir = render_dir / "clay"
+
+    library_checks = getattr(config, "library_checks", {}) or {}
+    geometry_enabled = bool(config.critics.get("geometry") and config.critics["geometry"].enabled)
+    needs_mesh = bool(isinstance(library_checks, dict) and library_checks)
+    if geometry_enabled and config.category != "car":
+        needs_mesh = True
+    shared_mesh: Any | None = None
+    if needs_mesh:
+        try:
+            import trimesh
+
+            shared_mesh = trimesh.load(str(asset_path), force="scene")
+        except Exception as e:
+            logger.warning(f"Failed to pre-load mesh for geometry checks: {e}")
+            shared_mesh = None
 
     # Category Critic
     if config.critics.get("category", None) and config.critics["category"].enabled:
@@ -384,7 +420,7 @@ def run_critics(
                 ),
             )
 
-            geo_result = critic.evaluate(asset_path)
+            geo_result = critic.evaluate(asset_path, mesh=shared_mesh)
             results.geometry = geo_result.to_dict()
             scores["geometry"] = geo_result.score
 
@@ -401,6 +437,68 @@ def run_critics(
             logger.error(f"Geometry critic failed: {e}")
             scores["geometry"] = 0.0
             soft_fails.append("CRITIC_GEOMETRY_ERROR")
+
+    # Library-specific checks (optional, used by interior/library configs).
+    if isinstance(library_checks, dict) and library_checks:
+
+        def _apply_library_failures(failures: Any) -> None:
+            if not isinstance(failures, list):
+                return
+            for failure in failures:
+                if not isinstance(failure, dict):
+                    continue
+                code = failure.get("code")
+                if not isinstance(code, str) or not code.strip():
+                    continue
+                severity = str(failure.get("severity", "warning")).lower()
+                if severity == "error" or code in config.hard_fail_codes:
+                    hard_fails.append(code)
+                else:
+                    soft_fails.append(code)
+
+        furniture_cfg = library_checks.get("furniture_presence")
+        if isinstance(furniture_cfg, dict) and furniture_cfg.get("enabled", True):
+            try:
+                from .critics.furniture import FurnitureCritic
+
+                critic = FurnitureCritic(furniture_cfg)
+                furniture_result = critic.evaluate(asset_path, scene=shared_mesh)
+                if isinstance(furniture_result, dict):
+                    results.furniture_presence = furniture_result
+                    scores["furniture_presence"] = float(
+                        furniture_result.get("score", 0.0) or 0.0
+                    )
+                    _apply_library_failures(furniture_result.get("failures"))
+            except ModuleNotFoundError as e:
+                logger.warning(f"Furniture critic deps missing: {e}")
+                scores["furniture_presence"] = 0.0
+                hard_fails.append("CRITIC_FURNITURE_DEPS_MISSING")
+            except Exception as e:
+                logger.error(f"Furniture critic failed: {e}")
+                scores["furniture_presence"] = 0.0
+                soft_fails.append("CRITIC_FURNITURE_ERROR")
+
+        rhythm_cfg = library_checks.get("structural_rhythm")
+        if isinstance(rhythm_cfg, dict) and rhythm_cfg.get("enabled", True):
+            try:
+                from .critics.structural_rhythm import StructuralRhythmCritic
+
+                critic = StructuralRhythmCritic(rhythm_cfg)
+                rhythm_result = critic.evaluate(asset_path, scene=shared_mesh)
+                if isinstance(rhythm_result, dict):
+                    results.structural_rhythm = rhythm_result
+                    scores["structural_rhythm"] = float(
+                        rhythm_result.get("score", 0.0) or 0.0
+                    )
+                    _apply_library_failures(rhythm_result.get("failures"))
+            except ModuleNotFoundError as e:
+                logger.warning(f"Structural rhythm critic deps missing: {e}")
+                scores["structural_rhythm"] = 0.0
+                hard_fails.append("CRITIC_STRUCTURAL_RHYTHM_DEPS_MISSING")
+            except Exception as e:
+                logger.error(f"Structural rhythm critic failed: {e}")
+                scores["structural_rhythm"] = 0.0
+                soft_fails.append("CRITIC_STRUCTURAL_RHYTHM_ERROR")
 
     return results, scores, hard_fails, soft_fails
 
@@ -575,15 +673,15 @@ def run_gate(
         # Write outputs
         verdict_path = verdict_dir / "gate_verdict.json"
         with open(verdict_path, "w") as f:
-            json.dump(verdict_data, f, indent=2)
+            json.dump(verdict_data, f, indent=2, default=_json_default)
 
         report_path = critics_dir / "report.json"
         with open(report_path, "w") as f:
-            json.dump(critic_report, f, indent=2)
+            json.dump(critic_report, f, indent=2, default=_json_default)
 
         manifest_path = output_dir / "manifest.json"
         with open(manifest_path, "w") as f:
-            json.dump(manifest, f, indent=2)
+            json.dump(manifest, f, indent=2, default=_json_default)
 
         end_time = datetime.now(timezone.utc)
         duration_ms = int((end_time - start_time).total_seconds() * 1000)
@@ -746,6 +844,8 @@ def run_gate(
             "alignment": critic_results.alignment,
             "realism": critic_results.realism,
             "geometry": critic_results.geometry,
+            "furniture_presence": critic_results.furniture_presence,
+            "structural_rhythm": critic_results.structural_rhythm,
         },
         "scores": scores,
         "failures": {"hard": hard_fails, "soft": soft_fails},
@@ -765,17 +865,17 @@ def run_gate(
     # Write outputs
     verdict_path = verdict_dir / "gate_verdict.json"
     with open(verdict_path, "w") as f:
-        json.dump(verdict_data, f, indent=2)
+        json.dump(verdict_data, f, indent=2, default=_json_default)
     logger.info(f"Wrote verdict: {verdict_path}")
 
     report_path = critics_dir / "report.json"
     with open(report_path, "w") as f:
-        json.dump(critic_report, f, indent=2)
+        json.dump(critic_report, f, indent=2, default=_json_default)
     logger.info(f"Wrote critic report: {report_path}")
 
     manifest_path = output_dir / "manifest.json"
     with open(manifest_path, "w") as f:
-        json.dump(manifest, f, indent=2)
+        json.dump(manifest, f, indent=2, default=_json_default)
     logger.info(f"Wrote manifest: {manifest_path}")
 
     return GateResult(
@@ -932,7 +1032,7 @@ def main(args: List[str] = None) -> int:
 
     # Output result
     if parsed.json:
-        print(json.dumps(asdict(result), indent=2))
+        print(json.dumps(asdict(result), indent=2, default=_json_default))
     else:
         print(f"\n{'='*60}")
         print(f"Fab Gate Result")

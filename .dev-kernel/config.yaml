@@ -24,6 +24,7 @@ toolchain_priority:
   - claude
   - opencode
   - crush
+  - fab-world
 
 toolchains:
   # High-complexity / deep-reasoning specialist
@@ -35,21 +36,20 @@ toolchains:
     config:
       sandbox: workspace-write
       ask_for_approval: never
-      # Extra Codex CLI args (optional). Example:
-      # extra_args:
-      #   - "-c"
-      #   - "reasoning.effort=\"high\""
+      # Extra-high reasoning by default for GPT-5.x.
+      model_reasoning_effort: xhigh
 
   # General-purpose workhorse
   claude:
     enabled: true
     path: claude
-    default_model: opus
+    default_model: claude-opus-4-5-20251101
     timeout_minutes: 60
     config:
       skip_permissions: true
       output_format: json
       allowed_tools: ["Edit", "Write", "Bash", "Read"]
+      ultrathink: true
 
   # Cheap / medium-low complexity (OpenAI via OpenCode)
   opencode:
@@ -66,6 +66,11 @@ toolchains:
     config:
       auto_approve: true
 
+  # Deterministic Fab World builds (non-LLM)
+  fab-world:
+    enabled: true
+    timeout_minutes: 120
+
 # ============================================
 # ROUTING
 # ============================================
@@ -81,6 +86,10 @@ routing:
     - match: { dk_tool_hint: "crush" }
       use: [crush]
 
+    # Deterministic world builds run via fab-world toolchain
+    - match: { tags_any: ["asset:world"] }
+      use: [fab-world]
+
     # High-risk work: speculate across best+workhorse (and optionally a cheap 3rd)
     - match: { dk_risk: ["critical"] }
       speculate: true
@@ -95,7 +104,8 @@ routing:
     # Deep reasoning / large context → Codex
     - match: { dk_size: ["XL"] }
       use: [codex]
-    - match: { tags_any: ["architecture", "complex", "kernel", "deep-reasoning"] }
+    - match:
+        { tags_any: ["architecture", "complex", "kernel", "deep-reasoning"] }
       use: [codex]
 
     # Low-risk / small tasks → cheap model
@@ -133,4 +143,3 @@ gates:
   build_command: null
   timeout_seconds: 900
   retry_flaky: 1
-

@@ -3,44 +3,83 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { FitAddon } from "xterm-addon-fit";
 import { Terminal } from "xterm";
 import "xterm/css/xterm.css";
-import { invoke } from "@tauri-apps/api/tauri";
 
-type Nav = "projects" | "runs" | "terminals" | "viewer";
+import type {
+  ActiveJobInfo,
+  ArtifactInfo,
+  BeadsIssue,
+  BeadsIssuePatch,
+  ChatMessage,
+  JobInfo,
+  KernelSnapshot,
+  Nav,
+  ProjectInfo,
+  PtySessionInfo,
+  RunInfo,
+  ServerInfo,
+} from "@/types";
+import { parseTagsInput, STORAGE_KEYS, stripAnsi, stripEscalationTags } from "@/utils";
+import {
+  beadsInit as beadsInitService,
+  clearGlobalEnv as clearGlobalEnvService,
+  createIssue as createIssueService,
+  createPty as createPtyService,
+  detectProject as detectProjectService,
+  getArtifacts as getArtifactsService,
+  getGlobalEnv as getGlobalEnvService,
+  getServerInfo as getServerInfoService,
+  kernelSnapshot as kernelSnapshotService,
+  killJob as killJobService,
+  killPty as killPtyService,
+  listActiveJobs as listActiveJobsService,
+  listPty as listPtyService,
+  listRuns as listRunsService,
+  resizePty as resizePtyService,
+  setGlobalEnv as setGlobalEnvService,
+  setServerRoots as setServerRootsService,
+  startJob as startJobService,
+  updateIssue as updateIssueService,
+  writePty as writePtyService,
+} from "@/services";
+import { useInterval } from "@/hooks";
 
-type ServerInfo = {
-  base_url: string;
-};
+import { WorkcellDetail } from "./WorkcellDetail";
+import { ViewerView } from "./features/viewer";
+import { ProjectsView } from "./features/projects";
+import { TerminalsView } from "./features/terminals";
+import { RunsView } from "./features/runs";
+import { KernelView } from "./features/kernel";
+import { AddProjectModal, NewRunModal, CreateIssueModal } from "./components/modals";
+import { Sidebar } from "./components/layout";
+import { ErrorBanner } from "./components/ui";
 
-type ProjectInfo = {
-  root: string;
-  viewer_dir: string | null;
-  dev_kernel_dir: string | null;
-};
+function readStoredProjectRoots(): string[] {
+  if (typeof localStorage === "undefined") return [];
+  try {
+    const raw = localStorage.getItem(STORAGE_KEYS.PROJECTS);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed
+      .map((item) => {
+        if (typeof item === "string") return item;
+        if (item && typeof item === "object" && "root" in item) {
+          const root = (item as { root?: unknown }).root;
+          if (typeof root === "string") return root;
+        }
+        return null;
+      })
+      .filter((item): item is string => typeof item === "string" && item.trim().length > 0);
+  } catch {
+    return [];
+  }
+}
 
-type PtySessionInfo = {
-  id: string;
-  cwd: string | null;
-  command: string | null;
-};
-
-type RunInfo = {
-  id: string;
-  dir: string;
-  modifiedMs: number | null;
-};
-
-type ArtifactInfo = {
-  relPath: string;
-  kind: string;
-  sizeBytes: number;
-  url: string;
-};
-
-type JobInfo = {
-  jobId: string;
-  runId: string;
-  runDir: string;
-};
+function readStoredActiveProjectRoot(): string | null {
+  if (typeof localStorage === "undefined") return null;
+  const root = localStorage.getItem(STORAGE_KEYS.ACTIVE_PROJECT);
+  return root && root.trim().length > 0 ? root : null;
+}
 
 export default function App() {
   const [nav, setNav] = useState<Nav>("projects");
@@ -48,9 +87,13 @@ export default function App() {
   const [error, setError] = useState<string | null>(null);
 
   const [projects, setProjects] = useState<ProjectInfo[]>([]);
+  const [projectsHydrated, setProjectsHydrated] = useState(false);
   const [activeProjectRoot, setActiveProjectRoot] = useState<string | null>(
     null
   );
+  const [globalEnvText, setGlobalEnvText] = useState("");
+  const [globalEnvLoaded, setGlobalEnvLoaded] = useState(false);
+  const [globalEnvSaving, setGlobalEnvSaving] = useState(false);
 
   const [sessions, setSessions] = useState<PtySessionInfo[]>([]);
   const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
@@ -73,6 +116,35 @@ export default function App() {
   const [isNewRunOpen, setIsNewRunOpen] = useState(false);
   const [newRunCommand, setNewRunCommand] = useState("ls -la");
   const [newRunLabel, setNewRunLabel] = useState("");
+
+  const [kernelSnapshot, setKernelSnapshot] = useState<KernelSnapshot | null>(
+    null
+  );
+  const [kernelSelectedIssueId, setKernelSelectedIssueId] = useState<string | null>(
+    null
+  );
+  const [kernelFilter, setKernelFilter] = useState("");
+  const [kernelOnlyReady, setKernelOnlyReady] = useState(false);
+  const [kernelOnlyActiveIssues, setKernelOnlyActiveIssues] = useState(false);
+  const [kernelEventsForSelectedIssue, setKernelEventsForSelectedIssue] =
+    useState(false);
+
+  const [activeJobs, setActiveJobs] = useState<ActiveJobInfo[]>([]);
+  const [kernelJobId, setKernelJobId] = useState<string | null>(null);
+  const [kernelRunId, setKernelRunId] = useState<string | null>(null);
+  const [selectedWorkcellId, setSelectedWorkcellId] = useState<string | null>(null);
+
+  const [isCreateIssueOpen, setIsCreateIssueOpen] = useState(false);
+  const [newIssueTitle, setNewIssueTitle] = useState("");
+  const [newIssueDescription, setNewIssueDescription] = useState("");
+  const [newIssueTags, setNewIssueTags] = useState("");
+  const [newIssuePriority, setNewIssuePriority] = useState("P2");
+  const [newIssueToolHint, setNewIssueToolHint] = useState<string>("");
+  const [newIssueRisk, setNewIssueRisk] = useState("medium");
+  const [newIssueSize, setNewIssueSize] = useState("M");
+
+  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
+  const [chatInput, setChatInput] = useState("");
 
   const terminalRef = useRef<HTMLDivElement | null>(null);
   const xtermRef = useRef<Terminal | null>(null);
@@ -103,10 +175,20 @@ export default function App() {
     [artifacts, activeArtifactRelPath]
   );
 
+  const newIssueTagSet = useMemo(
+    () => new Set(parseTagsInput(newIssueTags)),
+    [newIssueTags]
+  );
+
+  const selectedKernelIssue = useMemo(() => {
+    if (!kernelSnapshot || !kernelSelectedIssueId) return null;
+    return kernelSnapshot.issues.find((i) => i.id === kernelSelectedIssueId) ?? null;
+  }, [kernelSnapshot, kernelSelectedIssueId]);
+
   useEffect(() => {
     (async () => {
       try {
-        const info = await invoke<ServerInfo>("get_server_info");
+        const info = await getServerInfoService();
         setServerInfo(info);
       } catch (e) {
         setError(String(e));
@@ -114,9 +196,76 @@ export default function App() {
     })();
   }, []);
 
+  useEffect(() => {
+    (async () => {
+      try {
+        const text = await getGlobalEnvService();
+        setGlobalEnvText(text ?? "");
+        setGlobalEnvLoaded(true);
+      } catch (e) {
+        setError(String(e));
+      }
+    })();
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const savedRoots = readStoredProjectRoots();
+      const savedActive = readStoredActiveProjectRoot();
+      if (savedRoots.length === 0) {
+        if (!cancelled) setProjectsHydrated(true);
+        return;
+      }
+      try {
+        const infos = await Promise.all(
+          savedRoots.map(async (root) => {
+            try {
+              return await detectProjectService(root);
+            } catch {
+              return null;
+            }
+          })
+        );
+        if (cancelled) return;
+        const validInfos = infos.filter((info): info is ProjectInfo => Boolean(info));
+        if (validInfos.length > 0) {
+          setProjects(validInfos);
+          const nextActive =
+            validInfos.find((p) => p.root === savedActive)?.root ?? validInfos[0].root;
+          const nextInfo = validInfos.find((p) => p.root === nextActive) ?? null;
+          await setActiveProjectWithInfo(nextActive, nextInfo);
+        }
+      } finally {
+        if (!cancelled) setProjectsHydrated(true);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!projectsHydrated) return;
+    if (typeof localStorage === "undefined") return;
+    const roots = Array.from(new Set(projects.map((p) => p.root)));
+    localStorage.setItem(STORAGE_KEYS.PROJECTS, JSON.stringify(roots));
+  }, [projects, projectsHydrated]);
+
+  useEffect(() => {
+    if (!projectsHydrated) return;
+    if (typeof localStorage === "undefined") return;
+    if (activeProjectRoot) {
+      localStorage.setItem(STORAGE_KEYS.ACTIVE_PROJECT, activeProjectRoot);
+    } else {
+      localStorage.removeItem(STORAGE_KEYS.ACTIVE_PROJECT);
+    }
+  }, [activeProjectRoot, projectsHydrated]);
+
   async function refreshRuns(projectRoot: string) {
     try {
-      const list = await invoke<RunInfo[]>("runs_list", { params: { projectRoot } });
+      const list = await listRunsService({ projectRoot });
       setRuns(list);
     } catch (e) {
       setError(String(e));
@@ -125,9 +274,7 @@ export default function App() {
 
   async function loadArtifacts(projectRoot: string, runId: string) {
     try {
-      const list = await invoke<ArtifactInfo[]>("run_artifacts", {
-        params: { projectRoot, runId },
-      });
+      const list = await getArtifactsService({ projectRoot, runId });
       setArtifacts(list);
       setActiveArtifactRelPath(null);
       setArtifactText(null);
@@ -136,10 +283,347 @@ export default function App() {
     }
   }
 
+  async function refreshActiveJobs() {
+    try {
+      const list = await listActiveJobsService();
+      setActiveJobs(list);
+    } catch (e) {
+      setError(String(e));
+    }
+  }
+
+  async function refreshKernel(projectRoot: string) {
+    try {
+      const snap = await kernelSnapshotService({ projectRoot, limitEvents: 200 });
+      setKernelSnapshot(snap);
+      if (snap.issues.length > 0) {
+        setKernelSelectedIssueId((prev) => {
+          if (prev && snap.issues.some((i) => i.id === prev)) return prev;
+          return snap.issues[0].id;
+        });
+      }
+    } catch (e) {
+      setError(String(e));
+    }
+  }
+
+  async function initBeads() {
+    if (!activeProject) {
+      setError("Select a project first.");
+      return;
+    }
+    try {
+      await beadsInitService(activeProject.root);
+      await refreshKernel(activeProject.root);
+    } catch (e) {
+      setError(String(e));
+    }
+  }
+
+  async function createIssue() {
+    if (!activeProject) {
+      setError("Select a project first.");
+      return;
+    }
+    const title = newIssueTitle.trim();
+    if (!title) {
+      setError("Title is required.");
+      return;
+    }
+    try {
+      const tags = parseTagsInput(newIssueTags);
+      const created = await createIssueService({
+        projectRoot: activeProject.root,
+        title,
+        description: newIssueDescription.trim() ? newIssueDescription.trim() : null,
+        tags: tags.length ? tags : null,
+        dkPriority: newIssuePriority || null,
+        dkRisk: newIssueRisk || null,
+        dkSize: newIssueSize || null,
+        dkToolHint: newIssueToolHint.trim() ? newIssueToolHint.trim() : null,
+      });
+      setIsCreateIssueOpen(false);
+      setNewIssueTitle("");
+      setNewIssueDescription("");
+      setNewIssueTags("");
+      setKernelSelectedIssueId(created.id);
+      await refreshKernel(activeProject.root);
+    } catch (e) {
+      setError(String(e));
+    }
+  }
+
+  async function updateIssue(issueId: string, patch: BeadsIssuePatch) {
+    if (!activeProject) return;
+    try {
+      await updateIssueService({ projectRoot: activeProject.root, issueId, ...patch });
+      await refreshKernel(activeProject.root);
+    } catch (e) {
+      setError(String(e));
+    }
+  }
+
+  async function toggleIssueTag(issue: BeadsIssue, tag: string) {
+    const tags = new Set(issue.tags ?? []);
+    if (tags.has(tag)) tags.delete(tag);
+    else tags.add(tag);
+    await updateIssue(issue.id, { tags: Array.from(tags).sort() });
+  }
+
+  async function setIssueStatus(issueId: string, status: string) {
+    await updateIssue(issueId, { status });
+  }
+
+  async function setIssueToolHint(issueId: string, tool: string | null) {
+    await updateIssue(issueId, { dkToolHint: tool });
+  }
+
+  async function restartIssue(issue: BeadsIssue) {
+    const nextTags = stripEscalationTags(issue.tags);
+    await updateIssue(issue.id, {
+      status: "ready",
+      dkAttempts: 0,
+      tags: nextTags,
+    });
+  }
+
+  function addChat(role: ChatMessage["role"], text: string) {
+    const id =
+      typeof crypto !== "undefined" && "randomUUID" in crypto
+        ? crypto.randomUUID()
+        : String(Date.now()) + Math.random().toString(16).slice(2);
+    setChatMessages((prev) => [...prev, { id, role, text, ts: Date.now() }]);
+  }
+
+  function parseChatMeta(tokens: string[]) {
+    const tags: string[] = [];
+    let dkPriority: string | null = null;
+    let dkRisk: string | null = null;
+    let dkSize: string | null = null;
+    let dkToolHint: string | null = null;
+
+    const titleTokens: string[] = [];
+    for (const token of tokens) {
+      if (token.startsWith("#") && token.length > 1) {
+        tags.push(token.slice(1));
+        continue;
+      }
+      if (/^p[0-3]$/i.test(token)) {
+        dkPriority = token.toUpperCase();
+        continue;
+      }
+      const toolMatch = token.match(/^tool:(.+)$/i);
+      if (toolMatch) {
+        dkToolHint = toolMatch[1].trim();
+        continue;
+      }
+      const riskMatch = token.match(/^risk:(.+)$/i);
+      if (riskMatch) {
+        dkRisk = riskMatch[1].trim();
+        continue;
+      }
+      const sizeMatch = token.match(/^size:(xs|s|m|l|xl)$/i);
+      if (sizeMatch) {
+        dkSize = sizeMatch[1].toUpperCase();
+        continue;
+      }
+      titleTokens.push(token);
+    }
+
+    return { tags, dkPriority, dkRisk, dkSize, dkToolHint, title: titleTokens.join(" ") };
+  }
+
+  async function sendChat() {
+    const text = chatInput.trim();
+    if (!text) return;
+    setChatInput("");
+    addChat("user", text);
+
+    if (!activeProject) {
+      addChat("system", "Select a project first.");
+      return;
+    }
+
+    const lower = text.toLowerCase();
+
+    // kernel watch/once/stop
+    const kernelMatch = lower.match(/^kernel\\s+(once|watch|stop)\\b/);
+    if (kernelMatch) {
+      const mode = kernelMatch[1];
+      if (mode === "once") {
+        await kernelRunOnce();
+        addChat("system", "Started: dev-kernel run --once");
+        return;
+      }
+      if (mode === "watch") {
+        await kernelRunWatch();
+        addChat("system", "Started: dev-kernel run --watch");
+        return;
+      }
+      if (mode === "stop") {
+        await kernelStop();
+        addChat("system", "Sent kill to active job (if any).");
+        return;
+      }
+    }
+
+    // run issue <id>
+    const runIssueMatch = lower.match(/^run\\s+issue\\s+(\\d+)\\b/);
+    if (runIssueMatch) {
+      await kernelRunIssueOnce(runIssueMatch[1]);
+      addChat("system", `Started: dev-kernel run --once --issue ${runIssueMatch[1]}`);
+      return;
+    }
+
+    // issue <id> <status>
+    const issueStatusMatch = lower.match(/^issue\\s+(\\d+)\\s+(open|ready|blocked|done|running)\\b/);
+    if (issueStatusMatch) {
+      const [, id, status] = issueStatusMatch;
+      await setIssueStatus(id, status);
+      addChat("system", `Updated issue ${id}: status=${status}`);
+      return;
+    }
+
+    // tool <id> <toolchain>
+    const toolMatch = lower.match(/^tool\\s+(\\d+)\\s+(codex|claude|opencode|crush|none)\\b/);
+    if (toolMatch) {
+      const [, id, tool] = toolMatch;
+      await setIssueToolHint(id, tool === "none" ? null : tool);
+      addChat("system", `Updated issue ${id}: dk_tool_hint=${tool}`);
+      return;
+    }
+
+    // create <title...> (supports #tags p1 risk:high size:L tool:codex)
+    const createMatch = text.match(/^(create|new)\\s+(.+)$/i);
+    if (createMatch) {
+      const rest = createMatch[2].trim();
+      const tokens = rest.split(/\\s+/g);
+      const meta = parseChatMeta(tokens);
+      const title = meta.title.trim();
+      if (!title) {
+        addChat("system", "Create failed: missing title.");
+        return;
+      }
+      try {
+        const created = await createIssueService({
+          projectRoot: activeProject.root,
+          title,
+          description: null,
+          tags: meta.tags.length ? meta.tags : null,
+          dkPriority: meta.dkPriority,
+          dkRisk: meta.dkRisk,
+          dkSize: meta.dkSize,
+          dkToolHint: meta.dkToolHint,
+        });
+        setKernelSelectedIssueId(created.id);
+        await refreshKernel(activeProject.root);
+        addChat("system", `Created issue ${created.id}: ${created.title}`);
+      } catch (e) {
+        addChat("system", `Create failed: ${String(e)}`);
+      }
+      return;
+    }
+
+    addChat(
+      "system",
+      "Try: `create <title> #tag ...`, `issue <id> done`, `tool <id> codex`, `kernel watch`, `run issue <id>`."
+    );
+  }
+
+  async function kernelInit() {
+    if (!activeProject) {
+      setError("Select a project first.");
+      return;
+    }
+    setNewRunLabel("dev_kernel_init");
+    setNewRunCommand("dev-kernel init");
+    setIsNewRunOpen(true);
+  }
+
+  async function kernelRunOnce() {
+    if (!activeProject) {
+      setError("Select a project first.");
+      return;
+    }
+    try {
+      const job = await startJobService({
+        projectRoot: activeProject.root,
+        command: "dev-kernel run --once",
+        label: "dev_kernel_once",
+      });
+      setKernelJobId(job.jobId);
+      setKernelRunId(job.runId);
+      setJobOutputs((prev) => ({ ...prev, [job.runId]: "" }));
+      setJobExitCodes((prev) => ({ ...prev, [job.runId]: null }));
+      await refreshActiveJobs();
+      await refreshKernel(activeProject.root);
+    } catch (e) {
+      setError(String(e));
+    }
+  }
+
+  async function kernelRunWatch() {
+    if (!activeProject) {
+      setError("Select a project first.");
+      return;
+    }
+    try {
+      const job = await startJobService({
+        projectRoot: activeProject.root,
+        command: "dev-kernel run --watch",
+        label: "dev_kernel_watch",
+      });
+      setKernelJobId(job.jobId);
+      setKernelRunId(job.runId);
+      setJobOutputs((prev) => ({ ...prev, [job.runId]: "" }));
+      setJobExitCodes((prev) => ({ ...prev, [job.runId]: null }));
+      await refreshActiveJobs();
+      await refreshKernel(activeProject.root);
+    } catch (e) {
+      setError(String(e));
+    }
+  }
+
+  async function kernelStop() {
+    if (!kernelJobId) return;
+    try {
+      await killJobService(kernelJobId);
+      await refreshActiveJobs();
+    } catch (e) {
+      setError(String(e));
+    }
+  }
+
+  async function kernelRunIssueOnce(issueId: string) {
+    if (!activeProject) {
+      setError("Select a project first.");
+      return;
+    }
+    try {
+      const job = await startJobService({
+        projectRoot: activeProject.root,
+        command: `dev-kernel run --once --issue ${issueId}`,
+        label: `dev_kernel_issue_${issueId}`,
+      });
+      setKernelJobId(job.jobId);
+      setKernelRunId(job.runId);
+      setJobOutputs((prev) => ({ ...prev, [job.runId]: "" }));
+      setJobExitCodes((prev) => ({ ...prev, [job.runId]: null }));
+      await refreshActiveJobs();
+      await refreshKernel(activeProject.root);
+      setNav("runs");
+      setActiveRunId(job.runId);
+      await refreshRuns(activeProject.root);
+      await loadArtifacts(activeProject.root, job.runId);
+    } catch (e) {
+      setError(String(e));
+    }
+  }
+
   useEffect(() => {
     (async () => {
       try {
-        const list = await invoke<PtySessionInfo[]>("pty_list");
+        const list = await listPtyService();
         setSessions(list);
       } catch (e) {
         setError(String(e));
@@ -183,7 +667,8 @@ export default function App() {
         "job_output",
         (event) => {
           const { run_id, data } = event.payload;
-          setJobOutputs((prev) => ({ ...prev, [run_id]: (prev[run_id] ?? "") + data }));
+          const cleaned = stripAnsi(data);
+          setJobOutputs((prev) => ({ ...prev, [run_id]: (prev[run_id] ?? "") + cleaned }));
         }
       );
       unsubs.push(unlistenOutput);
@@ -226,7 +711,7 @@ export default function App() {
           background: "#0b0d10",
           foreground: "rgba(255,255,255,0.9)",
           cursor: "rgba(212,165,116,0.95)",
-          selection: "rgba(212,165,116,0.25)",
+          selectionBackground: "rgba(212,165,116,0.25)",
         },
       });
       const fit = new FitAddon();
@@ -236,7 +721,7 @@ export default function App() {
       term.onData((data) => {
         const sessionId = activeSessionIdRef.current;
         if (!sessionId) return;
-        invoke("pty_write", { params: { sessionId, data } }).catch((e) =>
+        writePtyService({ sessionId, data }).catch((e) =>
           setError(String(e))
         );
       });
@@ -257,9 +742,7 @@ export default function App() {
         const cols = term.cols;
         const rows = term.rows;
         if (activeSessionId) {
-          invoke("pty_resize", { params: { sessionId: activeSessionId, cols, rows } }).catch(
-            () => {}
-          );
+          resizePtyService({ sessionId: activeSessionId, cols, rows }).catch(() => {});
         }
       };
     window.addEventListener("resize", onResize);
@@ -279,6 +762,40 @@ export default function App() {
     xtermRef.current.focus();
   }, [nav, activeSessionId]);
 
+  async function setActiveProjectWithInfo(root: string, info: ProjectInfo | null) {
+    setActiveProjectRoot(root);
+    try {
+      await setServerRootsService({ viewerDir: info?.viewer_dir ?? null, projectRoot: root });
+      await refreshRuns(root);
+    } catch (e) {
+      setError(String(e));
+    }
+  }
+
+  async function saveGlobalEnv() {
+    setGlobalEnvSaving(true);
+    try {
+      await setGlobalEnvService(globalEnvText);
+      setGlobalEnvLoaded(true);
+    } catch (e) {
+      setError(String(e));
+    } finally {
+      setGlobalEnvSaving(false);
+    }
+  }
+
+  async function clearGlobalEnv() {
+    setGlobalEnvSaving(true);
+    try {
+      await clearGlobalEnvService();
+      setGlobalEnvText("");
+    } catch (e) {
+      setError(String(e));
+    } finally {
+      setGlobalEnvSaving(false);
+    }
+  }
+
   async function confirmAddProject() {
     const root = newProjectPath.trim();
     if (!root) {
@@ -287,16 +804,12 @@ export default function App() {
     }
 
     try {
-      const info = await invoke<ProjectInfo>("detect_project", { root });
+      const info = await detectProjectService(root);
       setProjects((prev) => {
         const exists = prev.some((p) => p.root === info.root);
         return exists ? prev : [...prev, info];
       });
-      setActiveProjectRoot(info.root);
-      await invoke("set_server_roots", {
-        params: { viewerDir: info.viewer_dir ?? null, projectRoot: info.root },
-      });
-      await refreshRuns(info.root);
+      await setActiveProjectWithInfo(info.root, info);
       setIsAddProjectOpen(false);
       setNewProjectPath("");
     } catch (e) {
@@ -305,16 +818,8 @@ export default function App() {
   }
 
   async function setActiveProject(root: string) {
-    setActiveProjectRoot(root);
     const info = projects.find((p) => p.root === root) ?? null;
-    try {
-      await invoke("set_server_roots", {
-        params: { viewerDir: info?.viewer_dir ?? null, projectRoot: root },
-      });
-      await refreshRuns(root);
-    } catch (e) {
-      setError(String(e));
-    }
+    await setActiveProjectWithInfo(root, info);
   }
 
   async function bootstrapDevKernel() {
@@ -340,13 +845,12 @@ export default function App() {
     setIsNewRunOpen(true);
   }
 
-  async function createTerminal() {
-    const cwd = activeProject?.root ?? null;
+  async function createTerminalAt(cwd: string | null) {
     const cols = xtermRef.current?.cols ?? 120;
     const rows = xtermRef.current?.rows ?? 34;
     try {
-      const id = await invoke<string>("pty_create", { params: { cwd, cols, rows } });
-      const list = await invoke<PtySessionInfo[]>("pty_list");
+      const id = await createPtyService({ cwd, cols, rows });
+      const list = await listPtyService();
       setSessions(list);
       setActiveSessionId(id);
       setNav("terminals");
@@ -355,19 +859,18 @@ export default function App() {
     }
   }
 
+  async function createTerminal() {
+    await createTerminalAt(activeProject?.root ?? null);
+  }
+
   async function killTerminal(sessionId: string) {
     try {
-      await invoke("pty_kill", { params: { sessionId } });
+      await killPtyService(sessionId);
     } catch (e) {
       setError(String(e));
     }
   }
 
-  const viewerUrl = useMemo(() => {
-    if (!serverInfo) return null;
-    if (!activeProject?.viewer_dir) return null;
-    return `${serverInfo.base_url}/viewer/index.html`;
-  }, [serverInfo, activeProject]);
 
   const activeArtifactUrl = useMemo(() => {
     if (!serverInfo) return null;
@@ -387,12 +890,10 @@ export default function App() {
     }
 
     try {
-      const job = await invoke<JobInfo>("job_start", {
-        params: {
-          projectRoot: activeProject.root,
-          command,
-          label: newRunLabel.trim() ? newRunLabel.trim() : null,
-        },
+      const job = await startJobService({
+        projectRoot: activeProject.root,
+        command,
+        label: newRunLabel.trim() ? newRunLabel.trim() : null,
       });
       setJobOutputs((prev) => ({ ...prev, [job.runId]: "" }));
       setJobExitCodes((prev) => ({ ...prev, [job.runId]: null }));
@@ -426,6 +927,7 @@ export default function App() {
       const url = `${serverInfo.base_url}${artifact.url}`;
       const res = await fetch(url, { cache: "no-store" });
       const text = await res.text();
+      const cleanedText = stripAnsi(text);
       if (artifact.kind === "json") {
         try {
           setArtifactText(JSON.stringify(JSON.parse(text), null, 2));
@@ -434,510 +936,238 @@ export default function App() {
           // fall through
         }
       }
-      setArtifactText(text);
+      setArtifactText(cleanedText);
     } catch (e) {
       setError(String(e));
     }
   }
 
+  const kernelIssues = useMemo(() => kernelSnapshot?.issues ?? [], [kernelSnapshot]);
+  const kernelWorkcells = useMemo(() => kernelSnapshot?.workcells ?? [], [kernelSnapshot]);
+  const kernelEvents = useMemo(() => kernelSnapshot?.events ?? [], [kernelSnapshot]);
+  const visibleKernelEvents = useMemo(() => {
+    if (!kernelEventsForSelectedIssue) return kernelEvents;
+    if (!kernelSelectedIssueId) return kernelEvents;
+    return kernelEvents.filter((e) => e.issueId === kernelSelectedIssueId);
+  }, [kernelEvents, kernelEventsForSelectedIssue, kernelSelectedIssueId]);
+
+  const kernelCounts = useMemo(() => {
+    const byStatus: Record<string, number> = {};
+    let ready = 0;
+    for (const issue of kernelIssues) {
+      byStatus[issue.status] = (byStatus[issue.status] ?? 0) + 1;
+      if (issue.ready) ready += 1;
+    }
+    return { byStatus, total: kernelIssues.length, ready };
+  }, [kernelIssues]);
+
+  const selectedIssueWorkcells = useMemo(() => {
+    if (!kernelSelectedIssueId) return [];
+    return kernelWorkcells.filter((w) => w.issueId === kernelSelectedIssueId);
+  }, [kernelWorkcells, kernelSelectedIssueId]);
+
+  const filteredKernelIssues = useMemo(() => {
+    const q = kernelFilter.trim().toLowerCase();
+    return kernelIssues
+      .filter((i) => {
+        if (!q) return true;
+        return (
+          i.id.toLowerCase().includes(q) ||
+          i.title.toLowerCase().includes(q) ||
+          (i.tags ?? []).some((t) => t.toLowerCase().includes(q))
+        );
+      })
+      .filter((i) => (kernelOnlyReady ? i.ready : true))
+      .filter((i) => {
+        if (!kernelOnlyActiveIssues) return true;
+        return kernelWorkcells.some((w) => w.issueId === i.id);
+      });
+  }, [kernelIssues, kernelWorkcells, kernelFilter, kernelOnlyReady, kernelOnlyActiveIssues]);
+
+  useEffect(() => {
+    if (nav !== "kernel") return;
+    if (!activeProject) return;
+    refreshKernel(activeProject.root);
+    refreshActiveJobs();
+  }, [nav, activeProjectRoot]);
+
+  useInterval(
+    () => {
+      if (nav !== "kernel") return;
+      if (!activeProject) return;
+      refreshKernel(activeProject.root);
+      refreshActiveJobs();
+    },
+    nav === "kernel" && activeProject ? 2500 : null
+  );
+
   return (
     <div className="app">
-      <div className="sidebar">
-        <div className="brand">
-          <div className="brand-badge">GF</div>
-          <div>
-            <div className="brand-title">Glia Fab Desktop</div>
-            <div className="brand-subtitle">Mission Control</div>
-          </div>
-        </div>
-
-        <div className="nav">
-          <button
-            className={nav === "projects" ? "active" : ""}
-            onClick={() => setNav("projects")}
-          >
-            Projects
-          </button>
-          <button
-            className={nav === "runs" ? "active" : ""}
-            onClick={() => setNav("runs")}
-          >
-            Runs
-          </button>
-          <button
-            className={nav === "terminals" ? "active" : ""}
-            onClick={() => setNav("terminals")}
-          >
-            Terminals
-          </button>
-          <button
-            className={nav === "viewer" ? "active" : ""}
-            onClick={() => setNav("viewer")}
-          >
-            Viewer
-          </button>
-        </div>
-
-        <div style={{ marginTop: 14 }} className="muted">
-          <div>Server: {serverInfo ? serverInfo.base_url : "…"}</div>
-          <div>
-            Active:{" "}
-            {activeProject ? activeProject.root.split("/").slice(-1)[0] : "—"}
-          </div>
-        </div>
-      </div>
+      <Sidebar
+        nav={nav}
+        setNav={setNav}
+        serverInfo={serverInfo}
+        activeProject={activeProject}
+      />
 
       <div className="main">
-        {error && (
-          <div className="panel" style={{ marginBottom: 12 }}>
-            <div className="panel-header">
-              <div className="panel-title">Error</div>
-              <button className="btn" onClick={() => setError(null)}>
-                Dismiss
-              </button>
-            </div>
-            <div style={{ padding: 14 }} className="muted">
-              {error}
-            </div>
-          </div>
-        )}
+        <ErrorBanner error={error} onDismiss={() => setError(null)} />
 
         {nav === "projects" && (
-          <div className="panel" style={{ height: "100%" }}>
-            <div className="panel-header">
-              <div className="panel-title">Projects</div>
-              <div className="row">
-                <button
-                  className="btn primary"
-                  onClick={() => {
-                    setNewProjectPath("");
-                    setIsAddProjectOpen(true);
-                  }}
-                >
-                  Add Project
-                </button>
-              </div>
-            </div>
-
-            <div className="split" style={{ gridTemplateColumns: "380px 1fr" }}>
-              <div className="list">
-                {projects.length === 0 && (
-                  <div className="list-item muted">
-                    Add a repo root (e.g. this folder).
-                  </div>
-                )}
-                {projects.map((p) => (
-                  <div
-                    key={p.root}
-                    className={
-                      "list-item " + (p.root === activeProjectRoot ? "active" : "")
-                    }
-                    onClick={() => setActiveProject(p.root)}
-                  >
-                    <div style={{ fontWeight: 650 }}>
-                      {p.root.split("/").slice(-1)[0]}
-                    </div>
-                    <div className="muted" style={{ fontSize: 12, marginTop: 2 }}>
-                      {p.root}
-                    </div>
-                    <div className="muted" style={{ fontSize: 12, marginTop: 6 }}>
-                      Viewer: {p.viewer_dir ? "yes" : "no"} · Dev Kernel:{" "}
-                      {p.dev_kernel_dir ? "yes" : "no"}
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <div className="detail">
-                <div className="panel-header">
-                  <div className="panel-title">Project</div>
-                  <div className="row">
-                    <button className="btn" onClick={createTerminal} disabled={!activeProject}>
-                      New Terminal
-                    </button>
-                    <button
-                      className="btn primary"
-                      onClick={bootstrapDevKernel}
-                      disabled={!activeProject || !activeProject.dev_kernel_dir}
-                      title="Creates .glia-fab/venv and installs dev-kernel deps"
-                    >
-                      Bootstrap Dev Kernel
-                    </button>
-                  </div>
-                </div>
-                <div style={{ padding: 14, overflow: "auto" }}>
-                  {!activeProject && (
-                    <div className="muted">Select a project to view details.</div>
-                  )}
-                  {activeProject && (
-                    <>
-                      <div style={{ fontWeight: 650, marginBottom: 6 }}>
-                        {activeProject.root}
-                      </div>
-                      <div className="muted" style={{ marginBottom: 10 }}>
-                        Viewer dir: {activeProject.viewer_dir ?? "—"}
-                      </div>
-                      <div className="muted">
-                        Dev kernel dir: {activeProject.dev_kernel_dir ?? "—"}
-                      </div>
-                      <div style={{ height: 18 }} />
-                      <div className="muted">
-                        Tip: run `fab-gate`, `fab-render`, `fab-godot`, or `dev-kernel`
-                        commands in a terminal session.
-                      </div>
-                    </>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
+          <ProjectsView
+            projects={projects}
+            activeProjectRoot={activeProjectRoot}
+            activeProject={activeProject}
+            globalEnvText={globalEnvText}
+            globalEnvLoaded={globalEnvLoaded}
+            globalEnvSaving={globalEnvSaving}
+            setNewProjectPath={setNewProjectPath}
+            setIsAddProjectOpen={setIsAddProjectOpen}
+            setActiveProject={setActiveProject}
+            setGlobalEnvText={setGlobalEnvText}
+            saveGlobalEnv={saveGlobalEnv}
+            clearGlobalEnv={clearGlobalEnv}
+            createTerminal={createTerminal}
+            bootstrapDevKernel={bootstrapDevKernel}
+          />
         )}
 
         {nav === "runs" && (
-          <div className="panel" style={{ height: "100%" }}>
-            <div className="panel-header">
-              <div className="panel-title">Runs</div>
-              <div className="row">
-                <button
-                  className="btn primary"
-                  onClick={() => {
-                    setNewRunCommand("ls -la");
-                    setNewRunLabel("");
-                    setIsNewRunOpen(true);
-                  }}
-                  disabled={!activeProject}
-                >
-                  New Run
-                </button>
-                <button
-                  className="btn"
-                  onClick={() => activeProject && refreshRuns(activeProject.root)}
-                  disabled={!activeProject}
-                >
-                  Refresh
-                </button>
-              </div>
-            </div>
-
-            <div className="split">
-              <div className="list">
-                {!activeProject && (
-                  <div className="list-item muted">Select a project first.</div>
-                )}
-                {activeProject && runs.length === 0 && (
-                  <div className="list-item muted">
-                    No runs yet. Output is expected under <code>.glia-fab/runs/</code>.
-                  </div>
-                )}
-                {runs.map((r) => (
-                  <div
-                    key={r.id}
-                    className={"list-item " + (r.id === activeRunId ? "active" : "")}
-                    onClick={() => selectRun(r.id)}
-                  >
-                    <div style={{ fontWeight: 650 }}>{r.id}</div>
-                    <div className="muted" style={{ fontSize: 12, marginTop: 4 }}>
-                      {jobExitCodes[r.id] === undefined
-                        ? ""
-                        : jobExitCodes[r.id] === null
-                          ? "running"
-                          : `exit ${jobExitCodes[r.id]}`}
-                    </div>
-                    <div className="muted" style={{ fontSize: 12, marginTop: 4 }}>
-                      {r.modifiedMs ? new Date(r.modifiedMs).toLocaleString() : ""}
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <div className="detail">
-                <div className="panel-header">
-                  <div className="panel-title">Details</div>
-                  <div className="muted">{activeRun ? activeRun.id : "—"}</div>
-                </div>
-
-                <div className="split" style={{ gridTemplateColumns: "360px 1fr" }}>
-                  <div className="list">
-                    {activeRun && artifacts.length === 0 && (
-                      <div className="list-item muted">No artifacts found.</div>
-                    )}
-                    {activeRun &&
-                      artifacts.map((a) => (
-                        <div
-                          key={a.relPath}
-                          className={
-                            "list-item " +
-                            (a.relPath === activeArtifactRelPath ? "active" : "")
-                          }
-                          onClick={() => selectArtifact(a.relPath)}
-                        >
-                          <div style={{ fontWeight: 650 }}>{a.relPath}</div>
-                          <div className="muted" style={{ fontSize: 12, marginTop: 4 }}>
-                            {a.kind} · {a.sizeBytes.toLocaleString()} bytes
-                          </div>
-                        </div>
-                      ))}
-                  </div>
-
-                  <div style={{ overflow: "auto" }}>
-                    {!activeRun && (
-                      <div style={{ padding: 14 }} className="muted">
-                        Select a run to view artifacts.
-                      </div>
-                    )}
-
-                    {activeRun && (
-                      <div style={{ padding: 14 }}>
-                        <div className="row" style={{ justifyContent: "space-between" }}>
-                          <div>
-                            <div style={{ fontWeight: 650 }}>{activeRun.id}</div>
-                            <div className="muted" style={{ marginTop: 4 }}>
-                              {activeRun.dir}
-                            </div>
-                          </div>
-                          <div className="row">
-                            {serverInfo && (
-                              <a
-                                className="btn"
-                                href={`${serverInfo.base_url}/artifacts/${activeRun.id}/terminal.log`}
-                                target="_blank"
-                                rel="noreferrer"
-                              >
-                                Open Log
-                              </a>
-                            )}
-                          </div>
-                        </div>
-
-                        {jobOutputs[activeRun.id] && (
-                          <>
-                            <div style={{ height: 12 }} />
-                            <div className="muted" style={{ marginBottom: 6 }}>
-                              Live output
-                            </div>
-                            <pre
-                              style={{
-                                whiteSpace: "pre-wrap",
-                                background: "rgba(0,0,0,0.28)",
-                                border: "1px solid rgba(255,255,255,0.08)",
-                                borderRadius: 12,
-                                padding: 12,
-                                margin: 0,
-                                maxHeight: 220,
-                                overflow: "auto",
-                              }}
-                            >
-                              {jobOutputs[activeRun.id]}
-                            </pre>
-                          </>
-                        )}
-
-                        {activeArtifact && (
-                          <>
-                            <div style={{ height: 16 }} />
-                            <div style={{ fontWeight: 650, marginBottom: 6 }}>
-                              {activeArtifact.relPath}
-                            </div>
-                            <div className="muted" style={{ marginBottom: 10 }}>
-                              {activeArtifact.kind}
-                            </div>
-
-                            {activeArtifact.kind === "image" && activeArtifactUrl && (
-                              <img
-                                src={activeArtifactUrl}
-                                style={{
-                                  maxWidth: "100%",
-                                  borderRadius: 12,
-                                  border: "1px solid rgba(255,255,255,0.08)",
-                                }}
-                              />
-                            )}
-
-                            {(activeArtifact.kind === "json" ||
-                              activeArtifact.kind === "text" ||
-                              activeArtifact.kind === "html") && (
-                              <pre
-                                style={{
-                                  whiteSpace: "pre-wrap",
-                                  background: "rgba(0,0,0,0.28)",
-                                  border: "1px solid rgba(255,255,255,0.08)",
-                                  borderRadius: 12,
-                                  padding: 12,
-                                  margin: 0,
-                                }}
-                              >
-                                {artifactText ?? "Loading…"}
-                              </pre>
-                            )}
-
-                            {activeArtifactUrl && (
-                              <div style={{ height: 10 }}>
-                                <a
-                                  className="btn"
-                                  href={activeArtifactUrl}
-                                  target="_blank"
-                                  rel="noreferrer"
-                                >
-                                  Open Artifact
-                                </a>
-                              </div>
-                            )}
-                          </>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <RunsView
+            activeProject={activeProject}
+            runs={runs}
+            activeRunId={activeRunId}
+            activeRun={activeRun}
+            artifacts={artifacts}
+            activeArtifactRelPath={activeArtifactRelPath}
+            activeArtifact={activeArtifact}
+            activeArtifactUrl={activeArtifactUrl}
+            artifactText={artifactText}
+            jobExitCodes={jobExitCodes}
+            jobOutputs={jobOutputs}
+            serverInfo={serverInfo}
+            setNewRunCommand={setNewRunCommand}
+            setNewRunLabel={setNewRunLabel}
+            setIsNewRunOpen={setIsNewRunOpen}
+            refreshRuns={refreshRuns}
+            selectRun={selectRun}
+            selectArtifact={selectArtifact}
+          />
+        )}
+        {nav === "kernel" && (
+          <KernelView
+            activeProject={activeProject}
+            kernelSnapshot={kernelSnapshot}
+            kernelCounts={kernelCounts}
+            kernelWorkcells={kernelWorkcells}
+            filteredKernelIssues={filteredKernelIssues}
+            kernelSelectedIssueId={kernelSelectedIssueId}
+            selectedKernelIssue={selectedKernelIssue}
+            selectedIssueWorkcells={selectedIssueWorkcells}
+            kernelFilter={kernelFilter}
+            setKernelFilter={setKernelFilter}
+            kernelOnlyReady={kernelOnlyReady}
+            setKernelOnlyReady={setKernelOnlyReady}
+            kernelOnlyActiveIssues={kernelOnlyActiveIssues}
+            setKernelOnlyActiveIssues={setKernelOnlyActiveIssues}
+            setKernelSelectedIssueId={setKernelSelectedIssueId}
+            visibleKernelEvents={visibleKernelEvents}
+            kernelEventsForSelectedIssue={kernelEventsForSelectedIssue}
+            setKernelEventsForSelectedIssue={setKernelEventsForSelectedIssue}
+            kernelRunId={kernelRunId}
+            kernelJobId={kernelJobId}
+            activeJobs={activeJobs}
+            jobOutputs={jobOutputs}
+            chatMessages={chatMessages}
+            chatInput={chatInput}
+            setChatInput={setChatInput}
+            setSelectedWorkcellId={setSelectedWorkcellId}
+            refreshKernel={refreshKernel}
+            initBeads={initBeads}
+            setNewIssueTitle={setNewIssueTitle}
+            setNewIssueDescription={setNewIssueDescription}
+            setNewIssueTags={setNewIssueTags}
+            setNewIssuePriority={setNewIssuePriority}
+            setNewIssueToolHint={setNewIssueToolHint}
+            setNewIssueRisk={setNewIssueRisk}
+            setNewIssueSize={setNewIssueSize}
+            setIsCreateIssueOpen={setIsCreateIssueOpen}
+            kernelInit={kernelInit}
+            kernelRunOnce={kernelRunOnce}
+            kernelRunWatch={kernelRunWatch}
+            kernelStop={kernelStop}
+            setIssueStatus={setIssueStatus}
+            kernelRunIssueOnce={kernelRunIssueOnce}
+            restartIssue={restartIssue}
+            createTerminalAt={createTerminalAt}
+            setIssueToolHint={setIssueToolHint}
+            toggleIssueTag={toggleIssueTag}
+            sendChat={sendChat}
+          />
         )}
 
         {nav === "terminals" && (
-          <div className="panel" style={{ height: "100%" }}>
-            <div className="panel-header">
-              <div className="panel-title">Terminals</div>
-              <div className="row">
-                <button className="btn primary" onClick={createTerminal}>
-                  New Terminal
-                </button>
-                {activeSession && (
-                  <button className="btn" onClick={() => killTerminal(activeSession.id)}>
-                    Kill
-                  </button>
-                )}
-              </div>
-            </div>
-
-            <div className="split">
-              <div className="list">
-                {sessions.length === 0 && (
-                  <div className="list-item muted">No sessions yet.</div>
-                )}
-                {sessions.map((s) => (
-                  <div
-                    key={s.id}
-                    className={"list-item " + (s.id === activeSessionId ? "active" : "")}
-                    onClick={() => setActiveSessionId(s.id)}
-                  >
-                    <div style={{ fontWeight: 650 }}>
-                      {s.command ?? "shell"}
-                    </div>
-                    <div className="muted" style={{ fontSize: 12, marginTop: 4 }}>
-                      {s.cwd ?? "—"}
-                    </div>
-                    <div className="muted" style={{ fontSize: 12, marginTop: 4 }}>
-                      {s.id}
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <div className="detail">
-                <div className="panel-header">
-                  <div className="panel-title">Session</div>
-                  <div className="muted">
-                    {activeSessionId ? activeSessionId : "—"}
-                  </div>
-                </div>
-                <div ref={terminalRef} className="terminal" />
-              </div>
-            </div>
-          </div>
+          <TerminalsView
+            sessions={sessions}
+            activeSessionId={activeSessionId}
+            activeSession={activeSession}
+            terminalRef={terminalRef}
+            setActiveSessionId={setActiveSessionId}
+            createTerminal={createTerminal}
+            killTerminal={killTerminal}
+          />
         )}
 
         {nav === "viewer" && (
-          <div className="panel" style={{ height: "100%" }}>
-            <div className="panel-header">
-              <div className="panel-title">Outora Viewer</div>
-              <div className="muted">
-                {activeProject?.viewer_dir ? "served locally" : "no viewer in project"}
-              </div>
-            </div>
-            <div style={{ height: "calc(100% - 49px)" }}>
-              {viewerUrl ? (
-                <iframe className="iframe" src={viewerUrl} />
-              ) : (
-                <div style={{ padding: 14 }} className="muted">
-                  Select a project that contains `fab/outora-library/viewer/`.
-                </div>
-              )}
-            </div>
-          </div>
+          <ViewerView serverInfo={serverInfo} activeProject={activeProject} />
         )}
       </div>
 
-      {isAddProjectOpen && (
-        <div className="modal-overlay" onClick={() => setIsAddProjectOpen(false)}>
-          <div className="panel modal" onClick={(e) => e.stopPropagation()}>
-            <div className="panel-header">
-              <div className="panel-title">Add Project</div>
-              <button className="btn" onClick={() => setIsAddProjectOpen(false)}>
-                Close
-              </button>
-            </div>
-            <div className="form">
-              <div className="muted">Paste the repo root path (absolute).</div>
-              <input
-                className="text-input"
-                autoFocus
-                value={newProjectPath}
-                onChange={(e) => setNewProjectPath(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") confirmAddProject();
-                }}
-                placeholder="/Users/…/glia-fab"
-              />
-              <div className="row" style={{ justifyContent: "flex-end" }}>
-                <button className="btn" onClick={() => setIsAddProjectOpen(false)}>
-                  Cancel
-                </button>
-                <button className="btn primary" onClick={confirmAddProject}>
-                  Add
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      <AddProjectModal
+        isOpen={isAddProjectOpen}
+        newProjectPath={newProjectPath}
+        setNewProjectPath={setNewProjectPath}
+        onClose={() => setIsAddProjectOpen(false)}
+        onConfirm={confirmAddProject}
+      />
 
-      {isNewRunOpen && (
-        <div className="modal-overlay" onClick={() => setIsNewRunOpen(false)}>
-          <div className="panel modal" onClick={(e) => e.stopPropagation()}>
-            <div className="panel-header">
-              <div className="panel-title">New Run</div>
-              <button className="btn" onClick={() => setIsNewRunOpen(false)}>
-                Close
-              </button>
-            </div>
-            <div className="form">
-              <div className="muted">Command runs in the project root and writes to `.glia-fab/runs/…`.</div>
-              <input
-                className="text-input"
-                autoFocus
-                value={newRunCommand}
-                onChange={(e) => setNewRunCommand(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") confirmStartRun();
-                }}
-                placeholder="fab-gate --config …"
-              />
-              <input
-                className="text-input"
-                value={newRunLabel}
-                onChange={(e) => setNewRunLabel(e.target.value)}
-                placeholder="Label (optional)"
-              />
-              <div className="row" style={{ justifyContent: "flex-end" }}>
-                <button className="btn" onClick={() => setIsNewRunOpen(false)}>
-                  Cancel
-                </button>
-                <button className="btn primary" onClick={confirmStartRun}>
-                  Start
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+      <NewRunModal
+        isOpen={isNewRunOpen}
+        newRunCommand={newRunCommand}
+        newRunLabel={newRunLabel}
+        setNewRunCommand={setNewRunCommand}
+        setNewRunLabel={setNewRunLabel}
+        onClose={() => setIsNewRunOpen(false)}
+        onConfirm={confirmStartRun}
+      />
+      <CreateIssueModal
+        isOpen={isCreateIssueOpen}
+        newIssueTitle={newIssueTitle}
+        newIssueDescription={newIssueDescription}
+        newIssueTags={newIssueTags}
+        newIssueTagSet={newIssueTagSet}
+        newIssuePriority={newIssuePriority}
+        newIssueToolHint={newIssueToolHint}
+        newIssueRisk={newIssueRisk}
+        newIssueSize={newIssueSize}
+        setNewIssueTitle={setNewIssueTitle}
+        setNewIssueDescription={setNewIssueDescription}
+        setNewIssueTags={setNewIssueTags}
+        setNewIssuePriority={setNewIssuePriority}
+        setNewIssueToolHint={setNewIssueToolHint}
+        setNewIssueRisk={setNewIssueRisk}
+        setNewIssueSize={setNewIssueSize}
+        parseTagsInput={parseTagsInput}
+        onClose={() => setIsCreateIssueOpen(false)}
+        onCreate={createIssue}
+      />
+
+      {selectedWorkcellId && activeProject && (
+        <WorkcellDetail
+          projectRoot={activeProject.root}
+          workcellId={selectedWorkcellId}
+          onClose={() => setSelectedWorkcellId(null)}
+        />
       )}
     </div>
   );

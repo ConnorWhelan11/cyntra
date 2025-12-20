@@ -1,0 +1,146 @@
+# fab/worlds/outora_library/world.yaml
+schema_version: "1.0"
+
+world_id: outora_library
+world_config_id: outora_library_gothic_v001
+world_type: interior_architecture
+version: "0.5.0"
+
+generator:
+  name: Outora Gothic Mega Library
+  description: |
+    Procedurally generated Gothic cathedral library with 3 tiers,
+    symmetrical wings, study pods, and furniture.
+  author: Outora Team
+  required_addons:
+    - id: sverchok
+      required: true
+
+build:
+  template_blend: blender/template.blend
+  blender_version_min: "4.0.0"
+  determinism:
+    seed: 42
+    pythonhashseed: 0
+    cycles_seed: 42
+  blender:
+    # Use factory startup to avoid user prefs; enable only required addons in prepare stage.
+    args: ["--background", "--factory-startup"]
+    env:
+      CYCLES_DEVICE: "CPU"
+      PYTHONHASHSEED: "0"
+
+parameters:
+  defaults:
+    layout:
+      bay_size_m: 6.0
+      tier_count: 3
+      wing_depth: 3
+      complexity: medium # low | medium | high
+    bake:
+      mode: all # all | layout_only | test
+    geometry:
+      ceiling_height_m:
+        tier_1: 12.0
+        tier_2: 8.0
+        tier_3: 6.0
+      column_style: gothic_clustered
+    furniture:
+      desk_count: 24
+      chair_count: 48
+      shelf_count: 16
+    materials:
+      stone_variant: limestone_weathered
+      wood_variant: oak_aged
+      color_palette: warm_academic
+    lighting:
+      preset: dramatic # dramatic | warm_reading | cosmic
+      window_emission: 2.5
+      chandelier_count: 8
+  schema:
+    lighting.preset:
+      type: enum
+      values: [dramatic, warm_reading, cosmic]
+    layout.complexity:
+      type: enum
+      values: [low, medium, high]
+    bake.mode:
+      type: enum
+      values: [all, layout_only, test]
+      default: all
+
+stages:
+  - id: prepare
+    type: blender
+    script: blender/stages/prepare.py
+    outputs: ["stages/prepare/"]
+
+  - id: generate
+    type: blender
+    script: blender/stages/generate.py
+    requires: [prepare]
+    outputs: ["stages/generate/"]
+
+  - id: bake
+    type: blender
+    script: blender/stages/bake.py
+    requires: [generate]
+    params: ["bake.mode", "layout.complexity"]
+    outputs: ["world/outora_library_baked.blend"]
+
+  - id: materials
+    type: blender
+    script: blender/stages/materials.py
+    requires: [bake]
+    outputs: ["stages/materials/"]
+
+  - id: lighting
+    type: blender
+    script: blender/stages/lighting.py
+    requires: [materials]
+    params: ["lighting.preset"]
+    outputs: ["stages/lighting/"]
+
+  - id: export
+    type: blender
+    script: blender/stages/export.py
+    requires: [lighting]
+    outputs: ["world/outora_library.glb", "world/sections/*.glb"]
+    settings:
+      draco_compression: true
+
+  - id: render
+    type: blender
+    script: blender/stages/render.py
+    requires: [lighting]
+    outputs: ["render/beauty/*.png", "render/clay/*.png"]
+
+  - id: validate
+    type: gate
+    requires: [export]
+    gates:
+      - fab/gates/interior_library_v001.yaml
+      - fab/gates/godot_integration_v001.yaml
+
+  - id: godot
+    type: godot
+    requires: [validate]
+    optional: true
+    outputs: ["godot/project/", "godot/index.html"]
+
+budgets:
+  blender:
+    max_objects: 50000
+    max_vertices: 10000000
+  godot:
+    max_glb_size_mb: 100
+    max_materials: 64
+    max_draw_calls_est: 4000
+
+publish:
+  viewer:
+    enabled: true
+    # During migration, publish into the existing viewer under fab/outora-library/.
+    paths:
+      glb: fab/outora-library/viewer/assets/exports/outora_library.glb
+      game: fab/outora-library/viewer/assets/games/outora_library/

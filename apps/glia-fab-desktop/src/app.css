@@ -196,6 +196,9 @@ body {
 
 .modal {
   width: min(720px, 92vw);
+  background: rgba(12, 14, 18, 0.96);
+  border-color: rgba(255, 255, 255, 0.14);
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.55);
 }
 
 .form {
@@ -216,4 +219,201 @@ body {
 
 .text-input:focus {
   border-color: rgba(212, 165, 116, 0.45);
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  align-items: start;
+}
+
+.badge {
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  text-transform: lowercase;
+}
+
+.badge.ready {
+  border-color: rgba(68, 179, 102, 0.35);
+  background: rgba(68, 179, 102, 0.12);
+}
+
+.badge.done,
+.badge.success {
+  border-color: rgba(68, 179, 102, 0.35);
+  background: rgba(68, 179, 102, 0.12);
+}
+
+.badge.failed,
+.badge.fail,
+.badge.blocked,
+.badge.escalated {
+  border-color: rgba(235, 87, 87, 0.35);
+  background: rgba(235, 87, 87, 0.12);
+}
+
+.badge.running {
+  border-color: rgba(212, 165, 116, 0.35);
+  background: rgba(212, 165, 116, 0.12);
+}
+
+.chip {
+  border: 1px solid var(--border);
+  background: rgba(0, 0, 0, 0.22);
+  color: var(--text);
+  padding: 6px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.chip:hover {
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+.chip.active {
+  border-color: rgba(212, 165, 116, 0.6);
+  background: rgba(212, 165, 116, 0.3);
+  color: #1a1209;
+}
+
+.chat {
+  padding: 14px;
+}
+
+.chat-log {
+  max-height: 240px;
+  overflow: auto;
+  display: grid;
+  gap: 10px;
+}
+
+.chat-msg {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.22);
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+
+.chat-msg.user {
+  border-color: rgba(212, 165, 116, 0.25);
+  background: rgba(212, 165, 116, 0.08);
+}
+
+.chat-meta {
+  font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 6px;
+  text-transform: lowercase;
+}
+
+.log {
+  white-space: pre-wrap;
+  background: rgba(0, 0, 0, 0.28);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  margin: 0;
+  padding: 12px;
+  max-height: 260px;
+  overflow: auto;
+}
+
+/* Modal styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+  overflow: hidden;
+}
+
+/* Telemetry timeline */
+.telemetry-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.telemetry-event {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel);
+  padding: 12px;
+  transition: border-color 0.2s;
+}
+
+.telemetry-event:hover {
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.telemetry-event.started {
+  border-left: 3px solid rgba(100, 200, 255, 0.6);
+}
+
+.telemetry-event.prompt {
+  border-left: 3px solid rgba(212, 165, 116, 0.6);
+}
+
+.telemetry-event.response-chunk {
+  background: rgba(0, 0, 0, 0.2);
+  border: none;
+  padding: 8px 12px;
+}
+
+.telemetry-event.response-complete {
+  border-left: 3px solid rgba(100, 255, 150, 0.6);
+}
+
+.telemetry-event.tool-call {
+  border-left: 3px solid rgba(255, 200, 100, 0.6);
+}
+
+.telemetry-event.tool-result {
+  border-left: 3px solid rgba(150, 150, 255, 0.6);
+}
+
+.telemetry-event.completed {
+  border-left: 3px solid rgba(100, 255, 150, 0.6);
+}
+
+.telemetry-event.error {
+  border-left: 3px solid rgba(255, 100, 100, 0.6);
+  background: rgba(255, 50, 50, 0.05);
+}
+
+.event-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.event-body {
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.bg-elevated {
+  --bg-elevated: rgba(255, 255, 255, 0.02);
 }

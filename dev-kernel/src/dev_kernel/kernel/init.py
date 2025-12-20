@@ -99,18 +99,20 @@ def _create_default_config() -> dict:
                 "config": {
                     "sandbox": "workspace-write",
                     "ask_for_approval": "never",
+                    "model_reasoning_effort": "xhigh",
                 },
             },
             "claude": {
                 "enabled": True,
                 "path": "claude",
-                "default_model": "opus",
+                "default_model": "claude-opus-4-5-20251101",
                 "timeout_minutes": 45,
                 "max_tokens": 100_000,
                 "config": {
                     "skip_permissions": True,
                     "output_format": "json",
                     "allowed_tools": ["Edit", "Write", "Bash", "Read"],
+                    "ultrathink": True,
                 },
             },
             "opencode": {

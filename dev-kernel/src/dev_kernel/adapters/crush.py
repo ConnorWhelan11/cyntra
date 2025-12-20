@@ -49,7 +49,7 @@ class CrushAdapter(ToolchainAdapter):
         self.config = config or {}
         self.executable = str(self.config.get("path") or "crush")
         self.env = dict(self.config.get("env") or {})
-        self.default_model = self.config.get("model", "claude-sonnet-4-20250514")
+        self.default_model = self.config.get("model", "claude-sonnet-4-5-20250929")
         self.provider = self.config.get("provider", "anthropic")
         self.auto_approve = self.config.get("auto_approve", True)
         self._available: bool | None = None
@@ -276,6 +276,12 @@ class CrushAdapter(ToolchainAdapter):
         # Based on Crush's catwalk provider database
         cost_per_1m = {
             # Anthropic
+            "sonnet": 9.0,
+            "opus": 45.0,
+            "haiku": 0.75,
+            "claude-sonnet-4-5-20250929": 9.0,
+            "claude-opus-4-5-20251101": 45.0,
+            "claude-haiku-4-5-20251001": 0.75,
             "claude-sonnet-4-20250514": 9.0,
             "claude-opus-4-20250514": 45.0,
             "claude-3-5-sonnet-20241022": 9.0,

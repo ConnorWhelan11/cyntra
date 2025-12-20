@@ -28,7 +28,7 @@ def sample_manifest() -> dict:
         },
         "toolchain": "codex",
         "toolchain_config": {
-            "model": "o3",
+            "model": "gpt-5.2",
         },
         "quality_gates": {
             "test": "pytest",
@@ -47,7 +47,7 @@ class TestCodexAdapter:
         adapter = CodexAdapter()
 
         assert adapter.name == "codex"
-        assert adapter.default_model == "o3"
+        assert adapter.default_model == "gpt-5.2"
         assert adapter.approval_mode == "full-auto"
 
     def test_init_custom_config(self) -> None:
@@ -78,7 +78,7 @@ class TestCodexAdapter:
         adapter = CodexAdapter()
         estimate = adapter.estimate_cost(sample_manifest)
 
-        assert estimate.model == "o3"
+        assert estimate.model == "gpt-5.2"
         assert estimate.estimated_tokens == 50000  # default
         assert estimate.estimated_cost_usd > 0
 
@@ -86,7 +86,7 @@ class TestCodexAdapter:
         """Should build correct command."""
         adapter = CodexAdapter()
 
-        cmd = adapter._build_command("o3")
+        cmd = adapter._build_command("gpt-5.2")
 
         assert cmd[0] == "codex"
         assert cmd[1] == "exec"
@@ -95,8 +95,10 @@ class TestCodexAdapter:
         assert "workspace-write" in cmd
         assert "--ask-for-approval" in cmd
         assert "never" in cmd
+        assert "--config" in cmd
+        assert any("model_reasoning_effort" in str(x) for x in cmd)
         assert "--model" in cmd
-        assert "o3" in cmd
+        assert "gpt-5.2" in cmd
 
     def test_parse_diff_stats(self) -> None:
         """Should parse git diff stats correctly."""
@@ -204,7 +206,8 @@ class TestClaudeAdapter:
         adapter = ClaudeAdapter()
 
         assert adapter.name == "claude"
-        assert "claude" in adapter.default_model.lower() or "sonnet" in adapter.default_model.lower()
+        assert adapter.default_model == "opus"
+        assert adapter.ultrathink is True
         assert adapter.skip_permissions is True
 
     def test_estimate_cost(self, sample_manifest: dict) -> None:

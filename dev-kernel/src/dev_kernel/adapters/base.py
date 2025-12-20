@@ -127,14 +127,53 @@ class ToolchainAdapter(ABC):
         Override in subclasses for toolchain-specific formatting.
         """
         issue = manifest.get("issue", {})
+        description = issue.get("description")
+        if not isinstance(description, str) or not description.strip():
+            description = "No description provided."
 
-        parts = [
-            f"# Task: {issue.get('title', 'Unknown')}",
-            "",
-            "## Description",
-            issue.get("description", "No description provided."),
-            "",
-        ]
+        workcell_id = manifest.get("workcell_id", "unknown")
+        issue_id = issue.get("id", "unknown")
+        branch_name = manifest.get("branch_name")
+        toolchain = manifest.get("toolchain")
+        model = (manifest.get("toolchain_config") or {}).get("model")
+
+        parts = [f"# Task: {issue.get('title', 'Unknown')}", ""]
+
+        # High-signal context for the agent
+        context_lines: list[str] = []
+        if issue_id:
+            context_lines.append(f"- Issue: {issue_id}")
+        if workcell_id:
+            context_lines.append(f"- Workcell: {workcell_id}")
+        if branch_name:
+            context_lines.append(f"- Branch: {branch_name}")
+        if toolchain:
+            context_lines.append(f"- Toolchain: {toolchain}")
+        if model:
+            context_lines.append(f"- Model: {model}")
+        tags = issue.get("tags", [])
+        if tags:
+            context_lines.append(f"- Tags: {', '.join(str(t) for t in tags)}")
+
+        if context_lines:
+            parts.extend(["## Context", *context_lines, ""])
+
+        parts.extend(
+            [
+                "## Execution Guidelines",
+                "- Start by stating a short plan (3–6 bullets) before making edits.",
+                "- Satisfy the acceptance criteria and keep changes minimal.",
+                "- Prefer root-cause fixes; avoid unrelated refactors and drive-by formatting.",
+                "- Respect forbidden paths exactly (do not modify them).",
+                "- Prefer ripgrep (`rg`) for search; keep commands deterministic and repo-local.",
+                "- Run the listed quality gates before finishing; if a gate can't be run, explain why and give the exact command(s) to run.",
+                "- Finish with a concise summary of changes, key files touched, and any follow-up steps.",
+                "",
+                "## Description",
+                description,
+                "",
+            ]
+        )
 
         # Acceptance criteria
         criteria = issue.get("acceptance_criteria", [])
@@ -164,9 +203,36 @@ class ToolchainAdapter(ABC):
         gates = manifest.get("quality_gates", {})
         if gates:
             parts.append("## Quality Gates (must all pass)")
-            for name, cmd in gates.items():
-                parts.append(f"- {name}: `{cmd}`")
+            for name, gate in gates.items():
+                if isinstance(gate, str):
+                    parts.append(f"- {name}: `{gate}`")
+                    continue
+                if isinstance(gate, dict):
+                    gate_type = gate.get("type")
+                    gate_config_id = gate.get("gate_config_id")
+                    gate_cmd = gate.get("command")
+                    details: list[str] = []
+                    if gate_type:
+                        details.append(f"type={gate_type}")
+                    if gate_config_id:
+                        details.append(f"config={gate_config_id}")
+                    if gate_cmd:
+                        details.append(f"cmd={gate_cmd}")
+                    rendered = " ".join(details) if details else str(gate)
+                    parts.append(f"- {name}: {rendered}")
+                    continue
+                parts.append(f"- {name}: {gate!r}")
             parts.append("")
 
-        return "\n".join(parts)
+        parts.extend(
+            [
+                "## Completion Checklist",
+                "- [ ] Acceptance criteria satisfied",
+                "- [ ] Forbidden paths respected",
+                "- [ ] Quality gates run (or commands provided)",
+                "- [ ] Clear summary + next steps",
+                "",
+            ]
+        )
 
+        return "\n".join(parts)

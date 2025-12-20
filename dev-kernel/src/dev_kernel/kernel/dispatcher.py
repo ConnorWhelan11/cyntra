@@ -434,7 +434,18 @@ class Dispatcher:
         # Build quality gates based on issue tags
         quality_gates = self._build_quality_gates(tags)
 
-        return {
+        # Detect world build jobs
+        job_type = "code"  # Default
+        world_config = None
+
+        if "asset:world" in tags:
+            job_type = "fab-world"
+            world_config = self._build_world_config(issue, tags)
+            # World builds run their own gates as part of the fab-world pipeline.
+            # Avoid accidentally running generic fab/code gates in the verifier.
+            quality_gates = {}
+
+        manifest = {
             "schema_version": "1.0.0",
             "workcell_id": workcell_id,
             "branch_name": f"wc/{issue.id}/{workcell_id}",
@@ -448,6 +459,7 @@ class Dispatcher:
                 "dk_estimated_tokens": issue.dk_estimated_tokens,
                 "tags": tags,  # Include tags for gate routing
             },
+            "job_type": job_type,
             "toolchain": toolchain,
             "toolchain_config": {
                 "model": self._get_model_for_toolchain(toolchain),
@@ -456,6 +468,11 @@ class Dispatcher:
             "speculate_mode": speculate_tag is not None,
             "speculate_tag": speculate_tag,
         }
+
+        if world_config:
+            manifest["world_config"] = world_config
+
+        return manifest
 
     def _build_quality_gates(self, tags: list[str]) -> dict[str, Any]:
         """
@@ -484,8 +501,32 @@ class Dispatcher:
                     category = parts[1]
                     break
 
+            # Normalize common aliases to supported fab gate categories/configs.
+            category_aliases = {
+                # Vehicles
+                "vehicle": "car",
+                # Furniture
+                "chair": "furniture",
+                "table": "furniture",
+                # Architecture
+                "building": "architecture",
+                "house": "architecture",
+                # Interiors (fab gate config is named "interior_library_v001")
+                "interior_architecture": "interior",
+                "library": "interior",
+            }
+            normalized_category = category_aliases.get(category, category)
+
             # Determine gate config from tags
-            gate_config_id = f"{category}_realism_v001"
+            default_gate_config_by_category = {
+                "car": "car_realism_v001",
+                "furniture": "furniture_realism_v001",
+                "architecture": "architecture_realism_v001",
+                "interior": "interior_library_v001",
+            }
+            gate_config_id = default_gate_config_by_category.get(
+                normalized_category, f"{normalized_category}_realism_v001"
+            )
             for tag in gate_tags:
                 if tag.startswith("gate:config:"):
                     gate_config_id = tag.replace("gate:config:", "")
@@ -522,6 +563,64 @@ class Dispatcher:
 
         return gates
 
+    def _build_world_config(self, issue: Issue, tags: list[str]) -> dict[str, Any]:
+        """
+        Build world-specific configuration for fab-world jobs.
+
+        Extracts world parameters from issue description or tags.
+        """
+        # Default world config
+        config = {
+            "world_path": "fab/worlds/outora_library",  # Default to outora
+            "seed": 42,
+            "param_overrides": {},
+        }
+
+        # Look for world: tag
+        for tag in tags:
+            if tag.startswith("world:"):
+                world_id = tag.split(":", 1)[1]
+                config["world_path"] = f"fab/worlds/{world_id}"
+                break
+
+        # Look for seed: tag
+        for tag in tags:
+            if tag.startswith("seed:"):
+                try:
+                    seed = int(tag.split(":", 1)[1])
+                    config["seed"] = seed
+                except ValueError:
+                    pass
+                break
+
+        # Look for param: tags (e.g., param:lighting.preset=cosmic)
+        for tag in tags:
+            if tag.startswith("param:"):
+                param_spec = tag.split(":", 1)[1]
+                if "=" in param_spec:
+                    key, value = param_spec.split("=", 1)
+                    config["param_overrides"][key] = value
+
+        # Determine gates for this world
+        gate_configs = []
+        for tag in tags:
+            if tag.startswith("gate:"):
+                gate_name = tag.split(":", 1)[1]
+                # Skip generic gate: tags like gate:realism
+                if gate_name not in ["realism", "quality", "godot", "engine"]:
+                    gate_configs.append(f"fab/gates/{gate_name}_v001.yaml")
+
+        # Default gates for world jobs
+        if not gate_configs:
+            gate_configs = [
+                "fab/gates/interior_library_v001.yaml",
+                "fab/gates/godot_integration_v001.yaml",
+            ]
+
+        config["quality_gates"] = gate_configs
+
+        return config
+
     def _get_model_for_toolchain(self, toolchain: str) -> str:
         """Get the model to use for a toolchain."""
         tc_config = self.config.toolchains.get(toolchain)
@@ -532,8 +631,8 @@ class Dispatcher:
 
         # Defaults
         defaults = {
-            "codex": "o3",
-            "claude": "claude-sonnet-4-20250514",
+            "codex": "gpt-5.2",
+            "claude": "claude-opus-4-5-20251101",
         }
         return defaults.get(toolchain, "")
 

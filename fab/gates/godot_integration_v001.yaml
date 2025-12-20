@@ -43,6 +43,8 @@ hard_fail_codes:
   - GODOT_MISSING
   - GODOT_IMPORT_FAILED
   - GODOT_EXPORT_FAILED
+  - GODOT_UNSUPPORTED_GLTF_EXTENSION
+  - GODOT_DRACO_DECODE_FAILED
   - ASSET_PARSE_FAILED
   - CONTRACT_NO_SPAWN
   - CONTRACT_TOO_MANY_SPAWNS
@@ -140,3 +142,25 @@ repair_playbook:
       - The template project has a valid `export_presets.cfg` with a `Web` preset.
       - Godot export templates are installed on the machine running the export.
       - The level GLB is present at `assets/level.glb` inside the project.
+      - For Web exports, the project renderer must be Compatibility (`renderer/rendering_method="gl_compatibility"`).
+
+  GODOT_UNSUPPORTED_GLTF_EXTENSION:
+    priority: 1
+    instructions: |
+      Godot reported an unsupported required glTF extension.
+
+      Common case:
+      - `KHR_draco_mesh_compression` (Draco) is not supported by Godot 4.x.
+
+      Fix options:
+      - Keep Draco for the Three.js viewer, but run `fab-godot` which can decode Draco via Blender before import.
+      - Or export a non-Draco `.glb` for engine integration builds.
+
+  GODOT_DRACO_DECODE_FAILED:
+    priority: 1
+    instructions: |
+      The GLB uses Draco mesh compression, but the harness failed to decode it (via Blender) for Godot import.
+
+      Fix options:
+      - Install Blender on the machine running `fab-godot` (required for Draco decode).
+      - Or re-export a non-Draco `.glb` for engine integration builds.

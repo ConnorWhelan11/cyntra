@@ -68,6 +68,7 @@ fab-godot = "dev_kernel.fab.godot:main"
 fab-critics = "dev_kernel.fab.critics.cli:main"
 fab-regression = "dev_kernel.fab.regression:main"
 fab-scaffold = "dev_kernel.fab.scaffolds.cli:main"
+fab-world = "dev_kernel.fab.world:main"
 
 [build-system]
 requires = ["hatchling"]

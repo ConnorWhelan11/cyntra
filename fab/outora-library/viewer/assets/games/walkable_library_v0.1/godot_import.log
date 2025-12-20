@@ -1,0 +1,1635 @@
+WorkerThreadPool: 10 threads, 7 max low-priority.
+Godot Engine v4.5.1.stable.official.f62fdbde1 - https://godotengine.org
+TextServer: Added interface "Dummy"
+TextServer: Added interface "ICU / HarfBuzz / Graphite (Built-in)"
+Unrecognized output string "misc2" in mapping:
+030000007e0500006920000001010000,Nintendo Switch 2 Pro Controller,a:b0,b:b1,back:b14,dpdown:b8,dpleft:b10,dpright:b9,dpup:b11,guide:b16,leftshoulder:b12,leftstick:b15,lefttrigger:b13,leftx:a0,lefty:a1~,misc1:b17,misc2:b20,paddle1:b18,paddle2:b19,rightshoulder:b4,rightstick:b7,righttrigger:b5,rightx:a2,righty:a3~,start:b6,x:b2,y:b3,platform:Mac OS X,
+SDL: Init OK!
+Using "default" pen tablet driver...
+
+TextServer: Primary interface set to: "ICU / HarfBuzz / Graphite (Built-in)".
+CORE API HASH: 937899573
+EDITOR API HASH: 1777164193
+SceneTreeFTI: traversal method DEFAULT
+Loading resource: /Users/connor/Library/Application Support/Godot/editor_settings-4.5.tres
+EditorSettings: Load OK!
+EditorTheme: Generating new theme for the config '66886095'.
+EditorTheme: Generating new icons.
+EditorTheme: Generating new fonts.
+EditorTheme: Generating new styles.
+Loading resource: /Users/connor/Library/Caches/Godot/editor_doc_cache-4.5.res
+Loaded system CA certificates
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Started Project initialization (5 steps)[39m[0m
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Scanning file structure...[39m[0m
+[  16% ] [90m[1mfirst_scan_filesystem[22m | Loading global class names...[39m[0m
+[  33% ] [90m[1mfirst_scan_filesystem[22m | Verifying GDExtensions...[39m[0m
+[  50% ] [90m[1mfirst_scan_filesystem[22m | Creating autoload scripts...[39m[0m
+[  66% ] [90m[1mfirst_scan_filesystem[22m | Initializing plugins...[39m[0m
+[  83% ] [90m[1mfirst_scan_filesystem[22m | Starting file scan...[39m[0m
+[92m[ DONE ][39m [1mfirst_scan_filesystem[22m
+[0m
+[   0% ] [90m[1mreimport[22m | Started (Re)Importing Assets (1 steps)[39m[0m
+[   0% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[   0% ] [90m[1mreimport[22m | Executing pre-reimport operations...[39m[0m
+[   0% ] [90m[1mreimport[22m | level.glb[39m[0m
+EditorFileSystem: Importing file: res://assets/level.glb
+[   0% ] [90m[1mimport[22m | Started Import Scene (104 steps)[39m[0m
+[   0% ] [90m[1mimport[22m | Importing Scene...[39m[0m
+glTF: Total buffers: 1
+glTF: Total buffer views: 396
+glTF: Total accessors: 396
+Total materials: 2
+glTF: Parsing mesh: 0
+glTF: accessor type VEC3 component type: Float stride: 12 amount 24
+glTF: accessor offset 0 view offset: 0 total buffer len: 16663568 view len 288
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 36
+glTF: accessor offset 0 view offset: 768 total buffer len: 16663568 view len 72
+glTF: accessor type VEC3 component type: Float stride: 12 amount 24
+glTF: accessor offset 0 view offset: 0 total buffer len: 16663568 view len 288
+glTF: accessor type VEC3 component type: Float stride: 12 amount 24
+glTF: accessor offset 0 view offset: 288 total buffer len: 16663568 view len 288
+glTF: accessor type VEC2 component type: Float stride: 8 amount 24
+glTF: accessor offset 0 view offset: 576 total buffer len: 16663568 view len 192
+glTF: Parsing mesh: 1
+glTF: accessor type VEC3 component type: Float stride: 12 amount 24
+glTF: accessor offset 0 view offset: 840 total buffer len: 16663568 view len 288
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 36
+glTF: accessor offset 0 view offset: 768 total buffer len: 16663568 view len 72
+glTF: accessor type VEC3 component type: Float stride: 12 amount 24
+glTF: accessor offset 0 view offset: 840 total buffer len: 16663568 view len 288
+glTF: accessor type VEC3 component type: Float stride: 12 amount 24
+glTF: accessor offset 0 view offset: 1128 total buffer len: 16663568 view len 288
+glTF: accessor type VEC2 component type: Float stride: 8 amount 24
+glTF: accessor offset 0 view offset: 1416 total buffer len: 16663568 view len 192
+glTF: Parsing mesh: 2
+glTF: accessor type VEC3 component type: Float stride: 12 amount 24
+glTF: accessor offset 0 view offset: 1608 total buffer len: 16663568 view len 288
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 36
+glTF: accessor offset 0 view offset: 768 total buffer len: 16663568 view len 72
+glTF: accessor type VEC3 component type: Float stride: 12 amount 24
+glTF: accessor offset 0 view offset: 1608 total buffer len: 16663568 view len 288
+glTF: accessor type VEC3 component type: Float stride: 12 amount 24
+glTF: accessor offset 0 view offset: 1896 total buffer len: 16663568 view len 288
+glTF: accessor type VEC2 component type: Float stride: 8 amount 24
+glTF: accessor offset 0 view offset: 2184 total buffer len: 16663568 view len 192
+glTF: Parsing mesh: 3
+glTF: accessor type VEC3 component type: Float stride: 12 amount 24
+glTF: accessor offset 0 view offset: 2376 total buffer len: 16663568 view len 288
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 36
+glTF: accessor offset 0 view offset: 768 total buffer len: 16663568 view len 72
+glTF: accessor type VEC3 component type: Float stride: 12 amount 24
+glTF: accessor offset 0 view offset: 2376 total buffer len: 16663568 view len 288
+glTF: accessor type VEC3 component type: Float stride: 12 amount 24
+glTF: accessor offset 0 view offset: 2664 total buffer len: 16663568 view len 288
+glTF: accessor type VEC2 component type: Float stride: 8 amount 24
+glTF: accessor offset 0 view offset: 2952 total buffer len: 16663568 view len 192
+glTF: Parsing mesh: 4
+glTF: accessor type VEC3 component type: Float stride: 12 amount 24
+glTF: accessor offset 0 view offset: 3144 total buffer len: 16663568 view len 288
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 36
+glTF: accessor offset 0 view offset: 768 total buffer len: 16663568 view len 72
+glTF: accessor type VEC3 component type: Float stride: 12 amount 24
+glTF: accessor offset 0 view offset: 3144 total buffer len: 16663568 view len 288
+glTF: accessor type VEC3 component type: Float stride: 12 amount 24
+glTF: accessor offset 0 view offset: 3432 total buffer len: 16663568 view len 288
+glTF: accessor type VEC2 component type: Float stride: 8 amount 24
+glTF: accessor offset 0 view offset: 3720 total buffer len: 16663568 view len 192
+glTF: Parsing mesh: 5
+glTF: accessor type VEC3 component type: Float stride: 12 amount 24
+glTF: accessor offset 0 view offset: 3912 total buffer len: 16663568 view len 288
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 36
+glTF: accessor offset 0 view offset: 768 total buffer len: 16663568 view len 72
+glTF: accessor type VEC3 component type: Float stride: 12 amount 24
+glTF: accessor offset 0 view offset: 3912 total buffer len: 16663568 view len 288
+glTF: accessor type VEC3 component type: Float stride: 12 amount 24
+glTF: accessor offset 0 view offset: 4200 total buffer len: 16663568 view len 288
+glTF: accessor type VEC2 component type: Float stride: 8 amount 24
+glTF: accessor offset 0 view offset: 4488 total buffer len: 16663568 view len 192
+glTF: Parsing mesh: 6
+glTF: accessor type VEC3 component type: Float stride: 12 amount 14244
+glTF: accessor offset 0 view offset: 4680 total buffer len: 16663568 view len 170928
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 39396
+glTF: accessor offset 0 view offset: 460488 total buffer len: 16663568 view len 78792
+glTF: accessor type VEC3 component type: Float stride: 12 amount 14244
+glTF: accessor offset 0 view offset: 4680 total buffer len: 16663568 view len 170928
+glTF: accessor type VEC3 component type: Float stride: 12 amount 14244
+glTF: accessor offset 0 view offset: 175608 total buffer len: 16663568 view len 170928
+glTF: accessor type VEC2 component type: Float stride: 8 amount 14244
+glTF: accessor offset 0 view offset: 346536 total buffer len: 16663568 view len 113952
+glTF: Parsing mesh: 7
+glTF: accessor type VEC3 component type: Float stride: 12 amount 14244
+glTF: accessor offset 0 view offset: 539280 total buffer len: 16663568 view len 170928
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 39396
+glTF: accessor offset 0 view offset: 460488 total buffer len: 16663568 view len 78792
+glTF: accessor type VEC3 component type: Float stride: 12 amount 14244
+glTF: accessor offset 0 view offset: 539280 total buffer len: 16663568 view len 170928
+glTF: accessor type VEC3 component type: Float stride: 12 amount 14244
+glTF: accessor offset 0 view offset: 710208 total buffer len: 16663568 view len 170928
+glTF: accessor type VEC2 component type: Float stride: 8 amount 14244
+glTF: accessor offset 0 view offset: 881136 total buffer len: 16663568 view len 113952
+glTF: Parsing mesh: 8
+glTF: accessor type VEC3 component type: Float stride: 12 amount 14244
+glTF: accessor offset 0 view offset: 995088 total buffer len: 16663568 view len 170928
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 39396
+glTF: accessor offset 0 view offset: 460488 total buffer len: 16663568 view len 78792
+glTF: accessor type VEC3 component type: Float stride: 12 amount 14244
+glTF: accessor offset 0 view offset: 995088 total buffer len: 16663568 view len 170928
+glTF: accessor type VEC3 component type: Float stride: 12 amount 14244
+glTF: accessor offset 0 view offset: 1166016 total buffer len: 16663568 view len 170928
+glTF: accessor type VEC2 component type: Float stride: 8 amount 14244
+glTF: accessor offset 0 view offset: 1336944 total buffer len: 16663568 view len 113952
+glTF: Parsing mesh: 9
+glTF: accessor type VEC3 component type: Float stride: 12 amount 14244
+glTF: accessor offset 0 view offset: 1450896 total buffer len: 16663568 view len 170928
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 39396
+glTF: accessor offset 0 view offset: 460488 total buffer len: 16663568 view len 78792
+glTF: accessor type VEC3 component type: Float stride: 12 amount 14244
+glTF: accessor offset 0 view offset: 1450896 total buffer len: 16663568 view len 170928
+glTF: accessor type VEC3 component type: Float stride: 12 amount 14244
+glTF: accessor offset 0 view offset: 1621824 total buffer len: 16663568 view len 170928
+glTF: accessor type VEC2 component type: Float stride: 8 amount 14244
+glTF: accessor offset 0 view offset: 1792752 total buffer len: 16663568 view len 113952
+glTF: Parsing mesh: 10
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 1906704 total buffer len: 16663568 view len 51900
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12894
+glTF: accessor offset 0 view offset: 2045104 total buffer len: 16663568 view len 25788
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 1906704 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 1958604 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC2 component type: Float stride: 8 amount 4325
+glTF: accessor offset 0 view offset: 2010504 total buffer len: 16663568 view len 34600
+glTF: Parsing mesh: 11
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 2070892 total buffer len: 16663568 view len 51900
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12894
+glTF: accessor offset 0 view offset: 2045104 total buffer len: 16663568 view len 25788
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 2070892 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 2122792 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC2 component type: Float stride: 8 amount 4325
+glTF: accessor offset 0 view offset: 2174692 total buffer len: 16663568 view len 34600
+glTF: Parsing mesh: 12
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 2209292 total buffer len: 16663568 view len 51900
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12894
+glTF: accessor offset 0 view offset: 2045104 total buffer len: 16663568 view len 25788
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 2209292 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 2261192 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC2 component type: Float stride: 8 amount 4325
+glTF: accessor offset 0 view offset: 2313092 total buffer len: 16663568 view len 34600
+glTF: Parsing mesh: 13
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 2347692 total buffer len: 16663568 view len 51900
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12894
+glTF: accessor offset 0 view offset: 2045104 total buffer len: 16663568 view len 25788
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 2347692 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 2399592 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC2 component type: Float stride: 8 amount 4325
+glTF: accessor offset 0 view offset: 2451492 total buffer len: 16663568 view len 34600
+glTF: Parsing mesh: 14
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 2486092 total buffer len: 16663568 view len 51900
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12894
+glTF: accessor offset 0 view offset: 2045104 total buffer len: 16663568 view len 25788
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 2486092 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 2537992 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC2 component type: Float stride: 8 amount 4325
+glTF: accessor offset 0 view offset: 2589892 total buffer len: 16663568 view len 34600
+glTF: Parsing mesh: 15
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 2624492 total buffer len: 16663568 view len 51900
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12894
+glTF: accessor offset 0 view offset: 2045104 total buffer len: 16663568 view len 25788
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 2624492 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 2676392 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC2 component type: Float stride: 8 amount 4325
+glTF: accessor offset 0 view offset: 2728292 total buffer len: 16663568 view len 34600
+glTF: Parsing mesh: 16
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 2762892 total buffer len: 16663568 view len 51900
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12894
+glTF: accessor offset 0 view offset: 2045104 total buffer len: 16663568 view len 25788
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 2762892 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 2814792 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC2 component type: Float stride: 8 amount 4325
+glTF: accessor offset 0 view offset: 2866692 total buffer len: 16663568 view len 34600
+glTF: Parsing mesh: 17
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 2901292 total buffer len: 16663568 view len 51900
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12894
+glTF: accessor offset 0 view offset: 2045104 total buffer len: 16663568 view len 25788
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 2901292 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 2953192 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC2 component type: Float stride: 8 amount 4325
+glTF: accessor offset 0 view offset: 3005092 total buffer len: 16663568 view len 34600
+glTF: Parsing mesh: 18
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 3039692 total buffer len: 16663568 view len 51900
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12894
+glTF: accessor offset 0 view offset: 2045104 total buffer len: 16663568 view len 25788
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 3039692 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 3091592 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC2 component type: Float stride: 8 amount 4325
+glTF: accessor offset 0 view offset: 3143492 total buffer len: 16663568 view len 34600
+glTF: Parsing mesh: 19
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 3178092 total buffer len: 16663568 view len 51900
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12894
+glTF: accessor offset 0 view offset: 2045104 total buffer len: 16663568 view len 25788
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 3178092 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 3229992 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC2 component type: Float stride: 8 amount 4325
+glTF: accessor offset 0 view offset: 3281892 total buffer len: 16663568 view len 34600
+glTF: Parsing mesh: 20
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 3316492 total buffer len: 16663568 view len 51900
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12894
+glTF: accessor offset 0 view offset: 2045104 total buffer len: 16663568 view len 25788
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 3316492 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 3368392 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC2 component type: Float stride: 8 amount 4325
+glTF: accessor offset 0 view offset: 3420292 total buffer len: 16663568 view len 34600
+glTF: Parsing mesh: 21
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 3454892 total buffer len: 16663568 view len 51900
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12894
+glTF: accessor offset 0 view offset: 2045104 total buffer len: 16663568 view len 25788
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 3454892 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 3506792 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC2 component type: Float stride: 8 amount 4325
+glTF: accessor offset 0 view offset: 3558692 total buffer len: 16663568 view len 34600
+glTF: Parsing mesh: 22
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 3593292 total buffer len: 16663568 view len 51900
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12894
+glTF: accessor offset 0 view offset: 2045104 total buffer len: 16663568 view len 25788
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 3593292 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 3645192 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC2 component type: Float stride: 8 amount 4325
+glTF: accessor offset 0 view offset: 3697092 total buffer len: 16663568 view len 34600
+glTF: Parsing mesh: 23
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 3731692 total buffer len: 16663568 view len 51900
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12894
+glTF: accessor offset 0 view offset: 2045104 total buffer len: 16663568 view len 25788
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 3731692 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 3783592 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC2 component type: Float stride: 8 amount 4325
+glTF: accessor offset 0 view offset: 3835492 total buffer len: 16663568 view len 34600
+glTF: Parsing mesh: 24
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 3870092 total buffer len: 16663568 view len 51900
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12894
+glTF: accessor offset 0 view offset: 2045104 total buffer len: 16663568 view len 25788
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 3870092 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 3921992 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC2 component type: Float stride: 8 amount 4325
+glTF: accessor offset 0 view offset: 3973892 total buffer len: 16663568 view len 34600
+glTF: Parsing mesh: 25
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 4008492 total buffer len: 16663568 view len 51900
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12894
+glTF: accessor offset 0 view offset: 2045104 total buffer len: 16663568 view len 25788
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 4008492 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 4060392 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC2 component type: Float stride: 8 amount 4325
+glTF: accessor offset 0 view offset: 4112292 total buffer len: 16663568 view len 34600
+glTF: Parsing mesh: 26
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 4146892 total buffer len: 16663568 view len 51900
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12894
+glTF: accessor offset 0 view offset: 2045104 total buffer len: 16663568 view len 25788
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 4146892 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 4198792 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC2 component type: Float stride: 8 amount 4325
+glTF: accessor offset 0 view offset: 4250692 total buffer len: 16663568 view len 34600
+glTF: Parsing mesh: 27
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 4285292 total buffer len: 16663568 view len 51900
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12894
+glTF: accessor offset 0 view offset: 2045104 total buffer len: 16663568 view len 25788
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 4285292 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 4337192 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC2 component type: Float stride: 8 amount 4325
+glTF: accessor offset 0 view offset: 4389092 total buffer len: 16663568 view len 34600
+glTF: Parsing mesh: 28
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 4423692 total buffer len: 16663568 view len 51900
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12894
+glTF: accessor offset 0 view offset: 2045104 total buffer len: 16663568 view len 25788
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 4423692 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 4475592 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC2 component type: Float stride: 8 amount 4325
+glTF: accessor offset 0 view offset: 4527492 total buffer len: 16663568 view len 34600
+glTF: Parsing mesh: 29
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 4562092 total buffer len: 16663568 view len 51900
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12894
+glTF: accessor offset 0 view offset: 2045104 total buffer len: 16663568 view len 25788
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 4562092 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 4613992 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC2 component type: Float stride: 8 amount 4325
+glTF: accessor offset 0 view offset: 4665892 total buffer len: 16663568 view len 34600
+glTF: Parsing mesh: 30
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 4700492 total buffer len: 16663568 view len 51900
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12894
+glTF: accessor offset 0 view offset: 2045104 total buffer len: 16663568 view len 25788
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 4700492 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 4752392 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC2 component type: Float stride: 8 amount 4325
+glTF: accessor offset 0 view offset: 4804292 total buffer len: 16663568 view len 34600
+glTF: Parsing mesh: 31
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 4838892 total buffer len: 16663568 view len 51900
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12894
+glTF: accessor offset 0 view offset: 2045104 total buffer len: 16663568 view len 25788
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 4838892 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 4890792 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC2 component type: Float stride: 8 amount 4325
+glTF: accessor offset 0 view offset: 4942692 total buffer len: 16663568 view len 34600
+glTF: Parsing mesh: 32
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 4977292 total buffer len: 16663568 view len 51900
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12894
+glTF: accessor offset 0 view offset: 2045104 total buffer len: 16663568 view len 25788
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 4977292 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 5029192 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC2 component type: Float stride: 8 amount 4325
+glTF: accessor offset 0 view offset: 5081092 total buffer len: 16663568 view len 34600
+glTF: Parsing mesh: 33
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 5115692 total buffer len: 16663568 view len 51900
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12894
+glTF: accessor offset 0 view offset: 2045104 total buffer len: 16663568 view len 25788
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 5115692 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 5167592 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC2 component type: Float stride: 8 amount 4325
+glTF: accessor offset 0 view offset: 5219492 total buffer len: 16663568 view len 34600
+glTF: Parsing mesh: 34
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 5254092 total buffer len: 16663568 view len 51900
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12894
+glTF: accessor offset 0 view offset: 2045104 total buffer len: 16663568 view len 25788
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 5254092 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 5305992 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC2 component type: Float stride: 8 amount 4325
+glTF: accessor offset 0 view offset: 5357892 total buffer len: 16663568 view len 34600
+glTF: Parsing mesh: 35
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 5392492 total buffer len: 16663568 view len 51900
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12894
+glTF: accessor offset 0 view offset: 2045104 total buffer len: 16663568 view len 25788
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 5392492 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 5444392 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC2 component type: Float stride: 8 amount 4325
+glTF: accessor offset 0 view offset: 5496292 total buffer len: 16663568 view len 34600
+glTF: Parsing mesh: 36
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 5530892 total buffer len: 16663568 view len 51900
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12894
+glTF: accessor offset 0 view offset: 2045104 total buffer len: 16663568 view len 25788
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 5530892 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 5582792 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC2 component type: Float stride: 8 amount 4325
+glTF: accessor offset 0 view offset: 5634692 total buffer len: 16663568 view len 34600
+glTF: Parsing mesh: 37
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 5669292 total buffer len: 16663568 view len 51900
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12894
+glTF: accessor offset 0 view offset: 2045104 total buffer len: 16663568 view len 25788
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 5669292 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 5721192 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC2 component type: Float stride: 8 amount 4325
+glTF: accessor offset 0 view offset: 5773092 total buffer len: 16663568 view len 34600
+glTF: Parsing mesh: 38
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 5807692 total buffer len: 16663568 view len 51900
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12894
+glTF: accessor offset 0 view offset: 2045104 total buffer len: 16663568 view len 25788
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 5807692 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 5859592 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC2 component type: Float stride: 8 amount 4325
+glTF: accessor offset 0 view offset: 5911492 total buffer len: 16663568 view len 34600
+glTF: Parsing mesh: 39
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 5946092 total buffer len: 16663568 view len 51900
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12894
+glTF: accessor offset 0 view offset: 2045104 total buffer len: 16663568 view len 25788
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 5946092 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 5997992 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC2 component type: Float stride: 8 amount 4325
+glTF: accessor offset 0 view offset: 6049892 total buffer len: 16663568 view len 34600
+glTF: Parsing mesh: 40
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 6084492 total buffer len: 16663568 view len 51900
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12894
+glTF: accessor offset 0 view offset: 2045104 total buffer len: 16663568 view len 25788
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 6084492 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 6136392 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC2 component type: Float stride: 8 amount 4325
+glTF: accessor offset 0 view offset: 6188292 total buffer len: 16663568 view len 34600
+glTF: Parsing mesh: 41
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 6222892 total buffer len: 16663568 view len 51900
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12894
+glTF: accessor offset 0 view offset: 2045104 total buffer len: 16663568 view len 25788
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 6222892 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 6274792 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC2 component type: Float stride: 8 amount 4325
+glTF: accessor offset 0 view offset: 6326692 total buffer len: 16663568 view len 34600
+glTF: Parsing mesh: 42
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 6361292 total buffer len: 16663568 view len 51900
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12894
+glTF: accessor offset 0 view offset: 2045104 total buffer len: 16663568 view len 25788
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 6361292 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 6413192 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC2 component type: Float stride: 8 amount 4325
+glTF: accessor offset 0 view offset: 6465092 total buffer len: 16663568 view len 34600
+glTF: Parsing mesh: 43
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 6499692 total buffer len: 16663568 view len 51900
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12894
+glTF: accessor offset 0 view offset: 2045104 total buffer len: 16663568 view len 25788
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 6499692 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 6551592 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC2 component type: Float stride: 8 amount 4325
+glTF: accessor offset 0 view offset: 6603492 total buffer len: 16663568 view len 34600
+glTF: Parsing mesh: 44
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 6638092 total buffer len: 16663568 view len 51900
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12894
+glTF: accessor offset 0 view offset: 2045104 total buffer len: 16663568 view len 25788
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 6638092 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 6689992 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC2 component type: Float stride: 8 amount 4325
+glTF: accessor offset 0 view offset: 6741892 total buffer len: 16663568 view len 34600
+glTF: Parsing mesh: 45
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 6776492 total buffer len: 16663568 view len 51900
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12894
+glTF: accessor offset 0 view offset: 2045104 total buffer len: 16663568 view len 25788
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 6776492 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 6828392 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC2 component type: Float stride: 8 amount 4325
+glTF: accessor offset 0 view offset: 6880292 total buffer len: 16663568 view len 34600
+glTF: Parsing mesh: 46
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 6914892 total buffer len: 16663568 view len 51900
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12894
+glTF: accessor offset 0 view offset: 2045104 total buffer len: 16663568 view len 25788
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 6914892 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 6966792 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC2 component type: Float stride: 8 amount 4325
+glTF: accessor offset 0 view offset: 7018692 total buffer len: 16663568 view len 34600
+glTF: Parsing mesh: 47
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 7053292 total buffer len: 16663568 view len 51900
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12894
+glTF: accessor offset 0 view offset: 2045104 total buffer len: 16663568 view len 25788
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 7053292 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 7105192 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC2 component type: Float stride: 8 amount 4325
+glTF: accessor offset 0 view offset: 7157092 total buffer len: 16663568 view len 34600
+glTF: Parsing mesh: 48
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 7191692 total buffer len: 16663568 view len 51900
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12894
+glTF: accessor offset 0 view offset: 2045104 total buffer len: 16663568 view len 25788
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 7191692 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 7243592 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC2 component type: Float stride: 8 amount 4325
+glTF: accessor offset 0 view offset: 7295492 total buffer len: 16663568 view len 34600
+glTF: Parsing mesh: 49
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 7330092 total buffer len: 16663568 view len 51900
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12894
+glTF: accessor offset 0 view offset: 2045104 total buffer len: 16663568 view len 25788
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 7330092 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 7381992 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC2 component type: Float stride: 8 amount 4325
+glTF: accessor offset 0 view offset: 7433892 total buffer len: 16663568 view len 34600
+glTF: Parsing mesh: 50
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 7468492 total buffer len: 16663568 view len 51900
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12894
+glTF: accessor offset 0 view offset: 2045104 total buffer len: 16663568 view len 25788
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 7468492 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 7520392 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC2 component type: Float stride: 8 amount 4325
+glTF: accessor offset 0 view offset: 7572292 total buffer len: 16663568 view len 34600
+glTF: Parsing mesh: 51
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 7606892 total buffer len: 16663568 view len 51900
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12894
+glTF: accessor offset 0 view offset: 2045104 total buffer len: 16663568 view len 25788
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 7606892 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 7658792 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC2 component type: Float stride: 8 amount 4325
+glTF: accessor offset 0 view offset: 7710692 total buffer len: 16663568 view len 34600
+glTF: Parsing mesh: 52
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 7745292 total buffer len: 16663568 view len 51900
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12894
+glTF: accessor offset 0 view offset: 2045104 total buffer len: 16663568 view len 25788
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 7745292 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 7797192 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC2 component type: Float stride: 8 amount 4325
+glTF: accessor offset 0 view offset: 7849092 total buffer len: 16663568 view len 34600
+glTF: Parsing mesh: 53
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 7883692 total buffer len: 16663568 view len 51900
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12894
+glTF: accessor offset 0 view offset: 2045104 total buffer len: 16663568 view len 25788
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 7883692 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 7935592 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC2 component type: Float stride: 8 amount 4325
+glTF: accessor offset 0 view offset: 7987492 total buffer len: 16663568 view len 34600
+glTF: Parsing mesh: 54
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 8022092 total buffer len: 16663568 view len 51900
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12894
+glTF: accessor offset 0 view offset: 2045104 total buffer len: 16663568 view len 25788
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 8022092 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 8073992 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC2 component type: Float stride: 8 amount 4325
+glTF: accessor offset 0 view offset: 8125892 total buffer len: 16663568 view len 34600
+glTF: Parsing mesh: 55
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 8160492 total buffer len: 16663568 view len 51900
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12894
+glTF: accessor offset 0 view offset: 2045104 total buffer len: 16663568 view len 25788
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 8160492 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 8212392 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC2 component type: Float stride: 8 amount 4325
+glTF: accessor offset 0 view offset: 8264292 total buffer len: 16663568 view len 34600
+glTF: Parsing mesh: 56
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 8298892 total buffer len: 16663568 view len 51900
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12894
+glTF: accessor offset 0 view offset: 2045104 total buffer len: 16663568 view len 25788
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 8298892 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 8350792 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC2 component type: Float stride: 8 amount 4325
+glTF: accessor offset 0 view offset: 8402692 total buffer len: 16663568 view len 34600
+glTF: Parsing mesh: 57
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 8437292 total buffer len: 16663568 view len 51900
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12894
+glTF: accessor offset 0 view offset: 2045104 total buffer len: 16663568 view len 25788
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 8437292 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 8489192 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC2 component type: Float stride: 8 amount 4325
+glTF: accessor offset 0 view offset: 8541092 total buffer len: 16663568 view len 34600
+glTF: Parsing mesh: 58
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 8575692 total buffer len: 16663568 view len 51900
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12894
+glTF: accessor offset 0 view offset: 2045104 total buffer len: 16663568 view len 25788
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 8575692 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 8627592 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC2 component type: Float stride: 8 amount 4325
+glTF: accessor offset 0 view offset: 8679492 total buffer len: 16663568 view len 34600
+glTF: Parsing mesh: 59
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 8714092 total buffer len: 16663568 view len 51900
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12894
+glTF: accessor offset 0 view offset: 2045104 total buffer len: 16663568 view len 25788
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 8714092 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 8765992 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC2 component type: Float stride: 8 amount 4325
+glTF: accessor offset 0 view offset: 8817892 total buffer len: 16663568 view len 34600
+glTF: Parsing mesh: 60
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 8852492 total buffer len: 16663568 view len 51900
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12894
+glTF: accessor offset 0 view offset: 2045104 total buffer len: 16663568 view len 25788
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 8852492 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 8904392 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC2 component type: Float stride: 8 amount 4325
+glTF: accessor offset 0 view offset: 8956292 total buffer len: 16663568 view len 34600
+glTF: Parsing mesh: 61
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 8990892 total buffer len: 16663568 view len 51900
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12894
+glTF: accessor offset 0 view offset: 2045104 total buffer len: 16663568 view len 25788
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 8990892 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 9042792 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC2 component type: Float stride: 8 amount 4325
+glTF: accessor offset 0 view offset: 9094692 total buffer len: 16663568 view len 34600
+glTF: Parsing mesh: 62
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 9129292 total buffer len: 16663568 view len 51900
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12894
+glTF: accessor offset 0 view offset: 2045104 total buffer len: 16663568 view len 25788
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 9129292 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 9181192 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC2 component type: Float stride: 8 amount 4325
+glTF: accessor offset 0 view offset: 9233092 total buffer len: 16663568 view len 34600
+glTF: Parsing mesh: 63
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 9267692 total buffer len: 16663568 view len 51900
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12894
+glTF: accessor offset 0 view offset: 2045104 total buffer len: 16663568 view len 25788
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 9267692 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 9319592 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC2 component type: Float stride: 8 amount 4325
+glTF: accessor offset 0 view offset: 9371492 total buffer len: 16663568 view len 34600
+glTF: Parsing mesh: 64
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 9406092 total buffer len: 16663568 view len 51900
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12894
+glTF: accessor offset 0 view offset: 2045104 total buffer len: 16663568 view len 25788
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 9406092 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 9457992 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC2 component type: Float stride: 8 amount 4325
+glTF: accessor offset 0 view offset: 9509892 total buffer len: 16663568 view len 34600
+glTF: Parsing mesh: 65
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 9544492 total buffer len: 16663568 view len 51900
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12894
+glTF: accessor offset 0 view offset: 2045104 total buffer len: 16663568 view len 25788
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 9544492 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC3 component type: Float stride: 12 amount 4325
+glTF: accessor offset 0 view offset: 9596392 total buffer len: 16663568 view len 51900
+glTF: accessor type VEC2 component type: Float stride: 8 amount 4325
+glTF: accessor offset 0 view offset: 9648292 total buffer len: 16663568 view len 34600
+glTF: Parsing mesh: 66
+glTF: accessor type VEC3 component type: Float stride: 12 amount 1910
+glTF: accessor offset 0 view offset: 9682892 total buffer len: 16663568 view len 22920
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 8232
+glTF: accessor offset 0 view offset: 9744012 total buffer len: 16663568 view len 16464
+glTF: accessor type VEC3 component type: Float stride: 12 amount 1910
+glTF: accessor offset 0 view offset: 9682892 total buffer len: 16663568 view len 22920
+glTF: accessor type VEC3 component type: Float stride: 12 amount 1910
+glTF: accessor offset 0 view offset: 9705812 total buffer len: 16663568 view len 22920
+glTF: accessor type VEC2 component type: Float stride: 8 amount 1910
+glTF: accessor offset 0 view offset: 9728732 total buffer len: 16663568 view len 15280
+glTF: Parsing mesh: 67
+glTF: accessor type VEC3 component type: Float stride: 12 amount 1910
+glTF: accessor offset 0 view offset: 9760476 total buffer len: 16663568 view len 22920
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 8232
+glTF: accessor offset 0 view offset: 9744012 total buffer len: 16663568 view len 16464
+glTF: accessor type VEC3 component type: Float stride: 12 amount 1910
+glTF: accessor offset 0 view offset: 9760476 total buffer len: 16663568 view len 22920
+glTF: accessor type VEC3 component type: Float stride: 12 amount 1910
+glTF: accessor offset 0 view offset: 9783396 total buffer len: 16663568 view len 22920
+glTF: accessor type VEC2 component type: Float stride: 8 amount 1910
+glTF: accessor offset 0 view offset: 9806316 total buffer len: 16663568 view len 15280
+glTF: Parsing mesh: 68
+glTF: accessor type VEC3 component type: Float stride: 12 amount 1910
+glTF: accessor offset 0 view offset: 9821596 total buffer len: 16663568 view len 22920
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 8232
+glTF: accessor offset 0 view offset: 9744012 total buffer len: 16663568 view len 16464
+glTF: accessor type VEC3 component type: Float stride: 12 amount 1910
+glTF: accessor offset 0 view offset: 9821596 total buffer len: 16663568 view len 22920
+glTF: accessor type VEC3 component type: Float stride: 12 amount 1910
+glTF: accessor offset 0 view offset: 9844516 total buffer len: 16663568 view len 22920
+glTF: accessor type VEC2 component type: Float stride: 8 amount 1910
+glTF: accessor offset 0 view offset: 9867436 total buffer len: 16663568 view len 15280
+glTF: Parsing mesh: 69
+glTF: accessor type VEC3 component type: Float stride: 12 amount 1910
+glTF: accessor offset 0 view offset: 9882716 total buffer len: 16663568 view len 22920
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 8232
+glTF: accessor offset 0 view offset: 9744012 total buffer len: 16663568 view len 16464
+glTF: accessor type VEC3 component type: Float stride: 12 amount 1910
+glTF: accessor offset 0 view offset: 9882716 total buffer len: 16663568 view len 22920
+glTF: accessor type VEC3 component type: Float stride: 12 amount 1910
+glTF: accessor offset 0 view offset: 9905636 total buffer len: 16663568 view len 22920
+glTF: accessor type VEC2 component type: Float stride: 8 amount 1910
+glTF: accessor offset 0 view offset: 9928556 total buffer len: 16663568 view len 15280
+glTF: Parsing mesh: 70
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 9943836 total buffer len: 16663568 view len 43920
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12120
+glTF: accessor offset 0 view offset: 10060956 total buffer len: 16663568 view len 24240
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 9943836 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 9987756 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC2 component type: Float stride: 8 amount 3660
+glTF: accessor offset 0 view offset: 10031676 total buffer len: 16663568 view len 29280
+glTF: Parsing mesh: 71
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 10085196 total buffer len: 16663568 view len 43920
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12120
+glTF: accessor offset 0 view offset: 10060956 total buffer len: 16663568 view len 24240
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 10085196 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 10129116 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC2 component type: Float stride: 8 amount 3660
+glTF: accessor offset 0 view offset: 10173036 total buffer len: 16663568 view len 29280
+glTF: Parsing mesh: 72
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 10202316 total buffer len: 16663568 view len 43920
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12120
+glTF: accessor offset 0 view offset: 10060956 total buffer len: 16663568 view len 24240
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 10202316 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 10246236 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC2 component type: Float stride: 8 amount 3660
+glTF: accessor offset 0 view offset: 10290156 total buffer len: 16663568 view len 29280
+glTF: Parsing mesh: 73
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 10319436 total buffer len: 16663568 view len 43920
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12120
+glTF: accessor offset 0 view offset: 10060956 total buffer len: 16663568 view len 24240
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 10319436 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 10363356 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC2 component type: Float stride: 8 amount 3660
+glTF: accessor offset 0 view offset: 10407276 total buffer len: 16663568 view len 29280
+glTF: Parsing mesh: 74
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 10436556 total buffer len: 16663568 view len 43920
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12120
+glTF: accessor offset 0 view offset: 10060956 total buffer len: 16663568 view len 24240
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 10436556 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 10480476 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC2 component type: Float stride: 8 amount 3660
+glTF: accessor offset 0 view offset: 10524396 total buffer len: 16663568 view len 29280
+glTF: Parsing mesh: 75
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 10553676 total buffer len: 16663568 view len 43920
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12120
+glTF: accessor offset 0 view offset: 10060956 total buffer len: 16663568 view len 24240
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 10553676 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 10597596 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC2 component type: Float stride: 8 amount 3660
+glTF: accessor offset 0 view offset: 10641516 total buffer len: 16663568 view len 29280
+glTF: Parsing mesh: 76
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 10670796 total buffer len: 16663568 view len 43920
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12120
+glTF: accessor offset 0 view offset: 10060956 total buffer len: 16663568 view len 24240
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 10670796 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 10714716 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC2 component type: Float stride: 8 amount 3660
+glTF: accessor offset 0 view offset: 10758636 total buffer len: 16663568 view len 29280
+glTF: Parsing mesh: 77
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 10787916 total buffer len: 16663568 view len 43920
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12120
+glTF: accessor offset 0 view offset: 10060956 total buffer len: 16663568 view len 24240
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 10787916 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 10831836 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC2 component type: Float stride: 8 amount 3660
+glTF: accessor offset 0 view offset: 10875756 total buffer len: 16663568 view len 29280
+glTF: Parsing mesh: 78
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 10905036 total buffer len: 16663568 view len 43920
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12120
+glTF: accessor offset 0 view offset: 10060956 total buffer len: 16663568 view len 24240
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 10905036 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 10948956 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC2 component type: Float stride: 8 amount 3660
+glTF: accessor offset 0 view offset: 10992876 total buffer len: 16663568 view len 29280
+glTF: Parsing mesh: 79
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 11022156 total buffer len: 16663568 view len 43920
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12120
+glTF: accessor offset 0 view offset: 10060956 total buffer len: 16663568 view len 24240
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 11022156 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 11066076 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC2 component type: Float stride: 8 amount 3660
+glTF: accessor offset 0 view offset: 11109996 total buffer len: 16663568 view len 29280
+glTF: Parsing mesh: 80
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 11139276 total buffer len: 16663568 view len 43920
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12120
+glTF: accessor offset 0 view offset: 10060956 total buffer len: 16663568 view len 24240
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 11139276 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 11183196 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC2 component type: Float stride: 8 amount 3660
+glTF: accessor offset 0 view offset: 11227116 total buffer len: 16663568 view len 29280
+glTF: Parsing mesh: 81
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 11256396 total buffer len: 16663568 view len 43920
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12120
+glTF: accessor offset 0 view offset: 10060956 total buffer len: 16663568 view len 24240
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 11256396 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 11300316 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC2 component type: Float stride: 8 amount 3660
+glTF: accessor offset 0 view offset: 11344236 total buffer len: 16663568 view len 29280
+glTF: Parsing mesh: 82
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 11373516 total buffer len: 16663568 view len 43920
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12120
+glTF: accessor offset 0 view offset: 10060956 total buffer len: 16663568 view len 24240
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 11373516 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 11417436 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC2 component type: Float stride: 8 amount 3660
+glTF: accessor offset 0 view offset: 11461356 total buffer len: 16663568 view len 29280
+glTF: Parsing mesh: 83
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 11490636 total buffer len: 16663568 view len 43920
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12120
+glTF: accessor offset 0 view offset: 10060956 total buffer len: 16663568 view len 24240
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 11490636 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 11534556 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC2 component type: Float stride: 8 amount 3660
+glTF: accessor offset 0 view offset: 11578476 total buffer len: 16663568 view len 29280
+glTF: Parsing mesh: 84
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 11607756 total buffer len: 16663568 view len 43920
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12120
+glTF: accessor offset 0 view offset: 10060956 total buffer len: 16663568 view len 24240
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 11607756 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 11651676 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC2 component type: Float stride: 8 amount 3660
+glTF: accessor offset 0 view offset: 11695596 total buffer len: 16663568 view len 29280
+glTF: Parsing mesh: 85
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 11724876 total buffer len: 16663568 view len 43920
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12120
+glTF: accessor offset 0 view offset: 10060956 total buffer len: 16663568 view len 24240
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 11724876 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 11768796 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC2 component type: Float stride: 8 amount 3660
+glTF: accessor offset 0 view offset: 11812716 total buffer len: 16663568 view len 29280
+glTF: Parsing mesh: 86
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 11841996 total buffer len: 16663568 view len 43920
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12120
+glTF: accessor offset 0 view offset: 10060956 total buffer len: 16663568 view len 24240
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 11841996 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 11885916 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC2 component type: Float stride: 8 amount 3660
+glTF: accessor offset 0 view offset: 11929836 total buffer len: 16663568 view len 29280
+glTF: Parsing mesh: 87
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 11959116 total buffer len: 16663568 view len 43920
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12120
+glTF: accessor offset 0 view offset: 10060956 total buffer len: 16663568 view len 24240
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 11959116 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 12003036 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC2 component type: Float stride: 8 amount 3660
+glTF: accessor offset 0 view offset: 12046956 total buffer len: 16663568 view len 29280
+glTF: Parsing mesh: 88
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 12076236 total buffer len: 16663568 view len 43920
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12120
+glTF: accessor offset 0 view offset: 10060956 total buffer len: 16663568 view len 24240
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 12076236 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 12120156 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC2 component type: Float stride: 8 amount 3660
+glTF: accessor offset 0 view offset: 12164076 total buffer len: 16663568 view len 29280
+glTF: Parsing mesh: 89
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 12193356 total buffer len: 16663568 view len 43920
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12120
+glTF: accessor offset 0 view offset: 10060956 total buffer len: 16663568 view len 24240
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 12193356 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 12237276 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC2 component type: Float stride: 8 amount 3660
+glTF: accessor offset 0 view offset: 12281196 total buffer len: 16663568 view len 29280
+glTF: Parsing mesh: 90
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 12310476 total buffer len: 16663568 view len 43920
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12120
+glTF: accessor offset 0 view offset: 10060956 total buffer len: 16663568 view len 24240
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 12310476 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 12354396 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC2 component type: Float stride: 8 amount 3660
+glTF: accessor offset 0 view offset: 12398316 total buffer len: 16663568 view len 29280
+glTF: Parsing mesh: 91
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 12427596 total buffer len: 16663568 view len 43920
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12120
+glTF: accessor offset 0 view offset: 10060956 total buffer len: 16663568 view len 24240
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 12427596 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 12471516 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC2 component type: Float stride: 8 amount 3660
+glTF: accessor offset 0 view offset: 12515436 total buffer len: 16663568 view len 29280
+glTF: Parsing mesh: 92
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 12544716 total buffer len: 16663568 view len 43920
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12120
+glTF: accessor offset 0 view offset: 10060956 total buffer len: 16663568 view len 24240
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 12544716 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 12588636 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC2 component type: Float stride: 8 amount 3660
+glTF: accessor offset 0 view offset: 12632556 total buffer len: 16663568 view len 29280
+glTF: Parsing mesh: 93
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 12661836 total buffer len: 16663568 view len 43920
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12120
+glTF: accessor offset 0 view offset: 10060956 total buffer len: 16663568 view len 24240
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 12661836 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 12705756 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC2 component type: Float stride: 8 amount 3660
+glTF: accessor offset 0 view offset: 12749676 total buffer len: 16663568 view len 29280
+glTF: Parsing mesh: 94
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 12778956 total buffer len: 16663568 view len 43920
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12120
+glTF: accessor offset 0 view offset: 10060956 total buffer len: 16663568 view len 24240
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 12778956 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 12822876 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC2 component type: Float stride: 8 amount 3660
+glTF: accessor offset 0 view offset: 12866796 total buffer len: 16663568 view len 29280
+glTF: Parsing mesh: 95
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 12896076 total buffer len: 16663568 view len 43920
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12120
+glTF: accessor offset 0 view offset: 10060956 total buffer len: 16663568 view len 24240
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 12896076 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 12939996 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC2 component type: Float stride: 8 amount 3660
+glTF: accessor offset 0 view offset: 12983916 total buffer len: 16663568 view len 29280
+glTF: Parsing mesh: 96
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 13013196 total buffer len: 16663568 view len 43920
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12120
+glTF: accessor offset 0 view offset: 10060956 total buffer len: 16663568 view len 24240
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 13013196 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 13057116 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC2 component type: Float stride: 8 amount 3660
+glTF: accessor offset 0 view offset: 13101036 total buffer len: 16663568 view len 29280
+glTF: Parsing mesh: 97
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 13130316 total buffer len: 16663568 view len 43920
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12120
+glTF: accessor offset 0 view offset: 10060956 total buffer len: 16663568 view len 24240
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 13130316 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 13174236 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC2 component type: Float stride: 8 amount 3660
+glTF: accessor offset 0 view offset: 13218156 total buffer len: 16663568 view len 29280
+glTF: Parsing mesh: 98
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 13247436 total buffer len: 16663568 view len 43920
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12120
+glTF: accessor offset 0 view offset: 10060956 total buffer len: 16663568 view len 24240
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 13247436 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 13291356 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC2 component type: Float stride: 8 amount 3660
+glTF: accessor offset 0 view offset: 13335276 total buffer len: 16663568 view len 29280
+glTF: Parsing mesh: 99
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 13364556 total buffer len: 16663568 view len 43920
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12120
+glTF: accessor offset 0 view offset: 10060956 total buffer len: 16663568 view len 24240
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 13364556 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 13408476 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC2 component type: Float stride: 8 amount 3660
+glTF: accessor offset 0 view offset: 13452396 total buffer len: 16663568 view len 29280
+glTF: Parsing mesh: 100
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 13481676 total buffer len: 16663568 view len 43920
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12120
+glTF: accessor offset 0 view offset: 10060956 total buffer len: 16663568 view len 24240
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 13481676 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 13525596 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC2 component type: Float stride: 8 amount 3660
+glTF: accessor offset 0 view offset: 13569516 total buffer len: 16663568 view len 29280
+glTF: Parsing mesh: 101
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 13598796 total buffer len: 16663568 view len 43920
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12120
+glTF: accessor offset 0 view offset: 10060956 total buffer len: 16663568 view len 24240
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 13598796 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 13642716 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC2 component type: Float stride: 8 amount 3660
+glTF: accessor offset 0 view offset: 13686636 total buffer len: 16663568 view len 29280
+glTF: Parsing mesh: 102
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 13715916 total buffer len: 16663568 view len 43920
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12120
+glTF: accessor offset 0 view offset: 10060956 total buffer len: 16663568 view len 24240
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 13715916 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 13759836 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC2 component type: Float stride: 8 amount 3660
+glTF: accessor offset 0 view offset: 13803756 total buffer len: 16663568 view len 29280
+glTF: Parsing mesh: 103
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 13833036 total buffer len: 16663568 view len 43920
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12120
+glTF: accessor offset 0 view offset: 10060956 total buffer len: 16663568 view len 24240
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 13833036 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 13876956 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC2 component type: Float stride: 8 amount 3660
+glTF: accessor offset 0 view offset: 13920876 total buffer len: 16663568 view len 29280
+glTF: Parsing mesh: 104
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 13950156 total buffer len: 16663568 view len 43920
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12120
+glTF: accessor offset 0 view offset: 10060956 total buffer len: 16663568 view len 24240
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 13950156 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 13994076 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC2 component type: Float stride: 8 amount 3660
+glTF: accessor offset 0 view offset: 14037996 total buffer len: 16663568 view len 29280
+glTF: Parsing mesh: 105
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 14067276 total buffer len: 16663568 view len 43920
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12120
+glTF: accessor offset 0 view offset: 10060956 total buffer len: 16663568 view len 24240
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 14067276 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 14111196 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC2 component type: Float stride: 8 amount 3660
+glTF: accessor offset 0 view offset: 14155116 total buffer len: 16663568 view len 29280
+glTF: Parsing mesh: 106
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 14184396 total buffer len: 16663568 view len 43920
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12120
+glTF: accessor offset 0 view offset: 10060956 total buffer len: 16663568 view len 24240
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 14184396 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 14228316 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC2 component type: Float stride: 8 amount 3660
+glTF: accessor offset 0 view offset: 14272236 total buffer len: 16663568 view len 29280
+glTF: Parsing mesh: 107
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 14301516 total buffer len: 16663568 view len 43920
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12120
+glTF: accessor offset 0 view offset: 10060956 total buffer len: 16663568 view len 24240
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 14301516 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 14345436 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC2 component type: Float stride: 8 amount 3660
+glTF: accessor offset 0 view offset: 14389356 total buffer len: 16663568 view len 29280
+glTF: Parsing mesh: 108
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 14418636 total buffer len: 16663568 view len 43920
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12120
+glTF: accessor offset 0 view offset: 10060956 total buffer len: 16663568 view len 24240
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 14418636 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 14462556 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC2 component type: Float stride: 8 amount 3660
+glTF: accessor offset 0 view offset: 14506476 total buffer len: 16663568 view len 29280
+glTF: Parsing mesh: 109
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 14535756 total buffer len: 16663568 view len 43920
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 12120
+glTF: accessor offset 0 view offset: 10060956 total buffer len: 16663568 view len 24240
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 14535756 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC3 component type: Float stride: 12 amount 3660
+glTF: accessor offset 0 view offset: 14579676 total buffer len: 16663568 view len 43920
+glTF: accessor type VEC2 component type: Float stride: 8 amount 3660
+glTF: accessor offset 0 view offset: 14623596 total buffer len: 16663568 view len 29280
+glTF: Parsing mesh: 110
+glTF: accessor type VEC3 component type: Float stride: 12 amount 14244
+glTF: accessor offset 0 view offset: 14652876 total buffer len: 16663568 view len 170928
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 39396
+glTF: accessor offset 0 view offset: 460488 total buffer len: 16663568 view len 78792
+glTF: accessor type VEC3 component type: Float stride: 12 amount 14244
+glTF: accessor offset 0 view offset: 14652876 total buffer len: 16663568 view len 170928
+glTF: accessor type VEC3 component type: Float stride: 12 amount 14244
+glTF: accessor offset 0 view offset: 14823804 total buffer len: 16663568 view len 170928
+glTF: accessor type VEC2 component type: Float stride: 8 amount 14244
+glTF: accessor offset 0 view offset: 14994732 total buffer len: 16663568 view len 113952
+glTF: Parsing mesh: 111
+glTF: accessor type VEC3 component type: Float stride: 12 amount 14244
+glTF: accessor offset 0 view offset: 15108684 total buffer len: 16663568 view len 170928
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 39396
+glTF: accessor offset 0 view offset: 460488 total buffer len: 16663568 view len 78792
+glTF: accessor type VEC3 component type: Float stride: 12 amount 14244
+glTF: accessor offset 0 view offset: 15108684 total buffer len: 16663568 view len 170928
+glTF: accessor type VEC3 component type: Float stride: 12 amount 14244
+glTF: accessor offset 0 view offset: 15279612 total buffer len: 16663568 view len 170928
+glTF: accessor type VEC2 component type: Float stride: 8 amount 14244
+glTF: accessor offset 0 view offset: 15450540 total buffer len: 16663568 view len 113952
+glTF: Parsing mesh: 112
+glTF: accessor type VEC3 component type: Float stride: 12 amount 14244
+glTF: accessor offset 0 view offset: 15564492 total buffer len: 16663568 view len 170928
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 39396
+glTF: accessor offset 0 view offset: 460488 total buffer len: 16663568 view len 78792
+glTF: accessor type VEC3 component type: Float stride: 12 amount 14244
+glTF: accessor offset 0 view offset: 15564492 total buffer len: 16663568 view len 170928
+glTF: accessor type VEC3 component type: Float stride: 12 amount 14244
+glTF: accessor offset 0 view offset: 15735420 total buffer len: 16663568 view len 170928
+glTF: accessor type VEC2 component type: Float stride: 8 amount 14244
+glTF: accessor offset 0 view offset: 15906348 total buffer len: 16663568 view len 113952
+glTF: Parsing mesh: 113
+glTF: accessor type VEC3 component type: Float stride: 12 amount 14244
+glTF: accessor offset 0 view offset: 16020300 total buffer len: 16663568 view len 170928
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 39396
+glTF: accessor offset 0 view offset: 460488 total buffer len: 16663568 view len 78792
+glTF: accessor type VEC3 component type: Float stride: 12 amount 14244
+glTF: accessor offset 0 view offset: 16020300 total buffer len: 16663568 view len 170928
+glTF: accessor type VEC3 component type: Float stride: 12 amount 14244
+glTF: accessor offset 0 view offset: 16191228 total buffer len: 16663568 view len 170928
+glTF: accessor type VEC2 component type: Float stride: 8 amount 14244
+glTF: accessor offset 0 view offset: 16362156 total buffer len: 16663568 view len 113952
+glTF: Parsing mesh: 114
+glTF: accessor type VEC3 component type: Float stride: 12 amount 364
+glTF: accessor offset 0 view offset: 16476108 total buffer len: 16663568 view len 4368
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 546
+glTF: accessor offset 0 view offset: 16487756 total buffer len: 16663568 view len 1092
+glTF: accessor type VEC3 component type: Float stride: 12 amount 364
+glTF: accessor offset 0 view offset: 16476108 total buffer len: 16663568 view len 4368
+glTF: accessor type VEC3 component type: Float stride: 12 amount 364
+glTF: accessor offset 0 view offset: 16480476 total buffer len: 16663568 view len 4368
+glTF: accessor type VEC2 component type: Float stride: 8 amount 364
+glTF: accessor offset 0 view offset: 16484844 total buffer len: 16663568 view len 2912
+glTF: Parsing mesh: 115
+glTF: accessor type VEC3 component type: Float stride: 12 amount 364
+glTF: accessor offset 0 view offset: 16488848 total buffer len: 16663568 view len 4368
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 546
+glTF: accessor offset 0 view offset: 16487756 total buffer len: 16663568 view len 1092
+glTF: accessor type VEC3 component type: Float stride: 12 amount 364
+glTF: accessor offset 0 view offset: 16488848 total buffer len: 16663568 view len 4368
+glTF: accessor type VEC3 component type: Float stride: 12 amount 364
+glTF: accessor offset 0 view offset: 16493216 total buffer len: 16663568 view len 4368
+glTF: accessor type VEC2 component type: Float stride: 8 amount 364
+glTF: accessor offset 0 view offset: 16497584 total buffer len: 16663568 view len 2912
+glTF: Parsing mesh: 116
+glTF: accessor type VEC3 component type: Float stride: 12 amount 364
+glTF: accessor offset 0 view offset: 16500496 total buffer len: 16663568 view len 4368
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 546
+glTF: accessor offset 0 view offset: 16487756 total buffer len: 16663568 view len 1092
+glTF: accessor type VEC3 component type: Float stride: 12 amount 364
+glTF: accessor offset 0 view offset: 16500496 total buffer len: 16663568 view len 4368
+glTF: accessor type VEC3 component type: Float stride: 12 amount 364
+glTF: accessor offset 0 view offset: 16504864 total buffer len: 16663568 view len 4368
+glTF: accessor type VEC2 component type: Float stride: 8 amount 364
+glTF: accessor offset 0 view offset: 16509232 total buffer len: 16663568 view len 2912
+glTF: Parsing mesh: 117
+glTF: accessor type VEC3 component type: Float stride: 12 amount 364
+glTF: accessor offset 0 view offset: 16512144 total buffer len: 16663568 view len 4368
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 546
+glTF: accessor offset 0 view offset: 16487756 total buffer len: 16663568 view len 1092
+glTF: accessor type VEC3 component type: Float stride: 12 amount 364
+glTF: accessor offset 0 view offset: 16512144 total buffer len: 16663568 view len 4368
+glTF: accessor type VEC3 component type: Float stride: 12 amount 364
+glTF: accessor offset 0 view offset: 16516512 total buffer len: 16663568 view len 4368
+glTF: accessor type VEC2 component type: Float stride: 8 amount 364
+glTF: accessor offset 0 view offset: 16520880 total buffer len: 16663568 view len 2912
+glTF: Parsing mesh: 118
+glTF: accessor type VEC3 component type: Float stride: 12 amount 364
+glTF: accessor offset 0 view offset: 16523792 total buffer len: 16663568 view len 4368
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 546
+glTF: accessor offset 0 view offset: 16487756 total buffer len: 16663568 view len 1092
+glTF: accessor type VEC3 component type: Float stride: 12 amount 364
+glTF: accessor offset 0 view offset: 16523792 total buffer len: 16663568 view len 4368
+glTF: accessor type VEC3 component type: Float stride: 12 amount 364
+glTF: accessor offset 0 view offset: 16528160 total buffer len: 16663568 view len 4368
+glTF: accessor type VEC2 component type: Float stride: 8 amount 364
+glTF: accessor offset 0 view offset: 16532528 total buffer len: 16663568 view len 2912
+glTF: Parsing mesh: 119
+glTF: accessor type VEC3 component type: Float stride: 12 amount 364
+glTF: accessor offset 0 view offset: 16535440 total buffer len: 16663568 view len 4368
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 546
+glTF: accessor offset 0 view offset: 16487756 total buffer len: 16663568 view len 1092
+glTF: accessor type VEC3 component type: Float stride: 12 amount 364
+glTF: accessor offset 0 view offset: 16535440 total buffer len: 16663568 view len 4368
+glTF: accessor type VEC3 component type: Float stride: 12 amount 364
+glTF: accessor offset 0 view offset: 16539808 total buffer len: 16663568 view len 4368
+glTF: accessor type VEC2 component type: Float stride: 8 amount 364
+glTF: accessor offset 0 view offset: 16544176 total buffer len: 16663568 view len 2912
+glTF: Parsing mesh: 120
+glTF: accessor type VEC3 component type: Float stride: 12 amount 364
+glTF: accessor offset 0 view offset: 16547088 total buffer len: 16663568 view len 4368
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 546
+glTF: accessor offset 0 view offset: 16487756 total buffer len: 16663568 view len 1092
+glTF: accessor type VEC3 component type: Float stride: 12 amount 364
+glTF: accessor offset 0 view offset: 16547088 total buffer len: 16663568 view len 4368
+glTF: accessor type VEC3 component type: Float stride: 12 amount 364
+glTF: accessor offset 0 view offset: 16551456 total buffer len: 16663568 view len 4368
+glTF: accessor type VEC2 component type: Float stride: 8 amount 364
+glTF: accessor offset 0 view offset: 16555824 total buffer len: 16663568 view len 2912
+glTF: Parsing mesh: 121
+glTF: accessor type VEC3 component type: Float stride: 12 amount 364
+glTF: accessor offset 0 view offset: 16558736 total buffer len: 16663568 view len 4368
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 546
+glTF: accessor offset 0 view offset: 16487756 total buffer len: 16663568 view len 1092
+glTF: accessor type VEC3 component type: Float stride: 12 amount 364
+glTF: accessor offset 0 view offset: 16558736 total buffer len: 16663568 view len 4368
+glTF: accessor type VEC3 component type: Float stride: 12 amount 364
+glTF: accessor offset 0 view offset: 16563104 total buffer len: 16663568 view len 4368
+glTF: accessor type VEC2 component type: Float stride: 8 amount 364
+glTF: accessor offset 0 view offset: 16567472 total buffer len: 16663568 view len 2912
+glTF: Parsing mesh: 122
+glTF: accessor type VEC3 component type: Float stride: 12 amount 364
+glTF: accessor offset 0 view offset: 16570384 total buffer len: 16663568 view len 4368
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 546
+glTF: accessor offset 0 view offset: 16487756 total buffer len: 16663568 view len 1092
+glTF: accessor type VEC3 component type: Float stride: 12 amount 364
+glTF: accessor offset 0 view offset: 16570384 total buffer len: 16663568 view len 4368
+glTF: accessor type VEC3 component type: Float stride: 12 amount 364
+glTF: accessor offset 0 view offset: 16574752 total buffer len: 16663568 view len 4368
+glTF: accessor type VEC2 component type: Float stride: 8 amount 364
+glTF: accessor offset 0 view offset: 16579120 total buffer len: 16663568 view len 2912
+glTF: Parsing mesh: 123
+glTF: accessor type VEC3 component type: Float stride: 12 amount 364
+glTF: accessor offset 0 view offset: 16582032 total buffer len: 16663568 view len 4368
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 546
+glTF: accessor offset 0 view offset: 16487756 total buffer len: 16663568 view len 1092
+glTF: accessor type VEC3 component type: Float stride: 12 amount 364
+glTF: accessor offset 0 view offset: 16582032 total buffer len: 16663568 view len 4368
+glTF: accessor type VEC3 component type: Float stride: 12 amount 364
+glTF: accessor offset 0 view offset: 16586400 total buffer len: 16663568 view len 4368
+glTF: accessor type VEC2 component type: Float stride: 8 amount 364
+glTF: accessor offset 0 view offset: 16590768 total buffer len: 16663568 view len 2912
+glTF: Parsing mesh: 124
+glTF: accessor type VEC3 component type: Float stride: 12 amount 364
+glTF: accessor offset 0 view offset: 16593680 total buffer len: 16663568 view len 4368
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 546
+glTF: accessor offset 0 view offset: 16487756 total buffer len: 16663568 view len 1092
+glTF: accessor type VEC3 component type: Float stride: 12 amount 364
+glTF: accessor offset 0 view offset: 16593680 total buffer len: 16663568 view len 4368
+glTF: accessor type VEC3 component type: Float stride: 12 amount 364
+glTF: accessor offset 0 view offset: 16598048 total buffer len: 16663568 view len 4368
+glTF: accessor type VEC2 component type: Float stride: 8 amount 364
+glTF: accessor offset 0 view offset: 16602416 total buffer len: 16663568 view len 2912
+glTF: Parsing mesh: 125
+glTF: accessor type VEC3 component type: Float stride: 12 amount 364
+glTF: accessor offset 0 view offset: 16605328 total buffer len: 16663568 view len 4368
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 546
+glTF: accessor offset 0 view offset: 16487756 total buffer len: 16663568 view len 1092
+glTF: accessor type VEC3 component type: Float stride: 12 amount 364
+glTF: accessor offset 0 view offset: 16605328 total buffer len: 16663568 view len 4368
+glTF: accessor type VEC3 component type: Float stride: 12 amount 364
+glTF: accessor offset 0 view offset: 16609696 total buffer len: 16663568 view len 4368
+glTF: accessor type VEC2 component type: Float stride: 8 amount 364
+glTF: accessor offset 0 view offset: 16614064 total buffer len: 16663568 view len 2912
+glTF: Parsing mesh: 126
+glTF: accessor type VEC3 component type: Float stride: 12 amount 364
+glTF: accessor offset 0 view offset: 16616976 total buffer len: 16663568 view len 4368
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 546
+glTF: accessor offset 0 view offset: 16487756 total buffer len: 16663568 view len 1092
+glTF: accessor type VEC3 component type: Float stride: 12 amount 364
+glTF: accessor offset 0 view offset: 16616976 total buffer len: 16663568 view len 4368
+glTF: accessor type VEC3 component type: Float stride: 12 amount 364
+glTF: accessor offset 0 view offset: 16621344 total buffer len: 16663568 view len 4368
+glTF: accessor type VEC2 component type: Float stride: 8 amount 364
+glTF: accessor offset 0 view offset: 16625712 total buffer len: 16663568 view len 2912
+glTF: Parsing mesh: 127
+glTF: accessor type VEC3 component type: Float stride: 12 amount 364
+glTF: accessor offset 0 view offset: 16628624 total buffer len: 16663568 view len 4368
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 546
+glTF: accessor offset 0 view offset: 16487756 total buffer len: 16663568 view len 1092
+glTF: accessor type VEC3 component type: Float stride: 12 amount 364
+glTF: accessor offset 0 view offset: 16628624 total buffer len: 16663568 view len 4368
+glTF: accessor type VEC3 component type: Float stride: 12 amount 364
+glTF: accessor offset 0 view offset: 16632992 total buffer len: 16663568 view len 4368
+glTF: accessor type VEC2 component type: Float stride: 8 amount 364
+glTF: accessor offset 0 view offset: 16637360 total buffer len: 16663568 view len 2912
+glTF: Parsing mesh: 128
+glTF: accessor type VEC3 component type: Float stride: 12 amount 364
+glTF: accessor offset 0 view offset: 16640272 total buffer len: 16663568 view len 4368
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 546
+glTF: accessor offset 0 view offset: 16487756 total buffer len: 16663568 view len 1092
+glTF: accessor type VEC3 component type: Float stride: 12 amount 364
+glTF: accessor offset 0 view offset: 16640272 total buffer len: 16663568 view len 4368
+glTF: accessor type VEC3 component type: Float stride: 12 amount 364
+glTF: accessor offset 0 view offset: 16644640 total buffer len: 16663568 view len 4368
+glTF: accessor type VEC2 component type: Float stride: 8 amount 364
+glTF: accessor offset 0 view offset: 16649008 total buffer len: 16663568 view len 2912
+glTF: Parsing mesh: 129
+glTF: accessor type VEC3 component type: Float stride: 12 amount 364
+glTF: accessor offset 0 view offset: 16651920 total buffer len: 16663568 view len 4368
+glTF: accessor type SCALAR component type: UShort stride: 2 amount 546
+glTF: accessor offset 0 view offset: 16487756 total buffer len: 16663568 view len 1092
+glTF: accessor type VEC3 component type: Float stride: 12 amount 364
+glTF: accessor offset 0 view offset: 16651920 total buffer len: 16663568 view len 4368
+glTF: accessor type VEC3 component type: Float stride: 12 amount 364
+glTF: accessor offset 0 view offset: 16656288 total buffer len: 16663568 view len 4368
+glTF: accessor type VEC2 component type: Float stride: 8 amount 364
+glTF: accessor offset 0 view offset: 16660656 total buffer len: 16663568 view len 2912
+glTF: Total meshes: 130
+glTF: Converting spatial: SPAWN_PLAYER
+glTF: Creating mesh for: COLLIDER_GROUND_FLOOR
+glTF: Creating mesh for: COLLIDER_MEZZANINE
+glTF: Creating mesh for: COLLIDER_WALL_NORTH
+glTF: Creating mesh for: COLLIDER_WALL_SOUTH
+glTF: Creating mesh for: COLLIDER_WALL_EAST
+glTF: Creating mesh for: COLLIDER_WALL_WEST
+glTF: Creating mesh for: COLLIDER_STAIRS_00
+glTF: Creating mesh for: COLLIDER_STAIRS_01
+glTF: Creating mesh for: COLLIDER_STAIRS_02
+glTF: Creating mesh for: COLLIDER_STAIRS_03
+glTF: Creating mesh for: Column2_002
+glTF: Creating mesh for: Column2_003
+glTF: Creating mesh for: Column2_004
+glTF: Creating mesh for: Column2_005
+glTF: Creating mesh for: Column2_006
+glTF: Creating mesh for: Column2_007
+glTF: Creating mesh for: Column2_008
+glTF: Creating mesh for: Column2_009
+glTF: Creating mesh for: Column2_010
+glTF: Creating mesh for: Column2_011
+glTF: Creating mesh for: Column2_012
+glTF: Creating mesh for: Column2_013
+glTF: Creating mesh for: Column2_014
+glTF: Creating mesh for: Column2_015
+glTF: Creating mesh for: Column2_016
+glTF: Creating mesh for: Column2_017
+glTF: Creating mesh for: Column2_018
+glTF: Creating mesh for: Column2_019
+glTF: Creating mesh for: Column2_020
+glTF: Creating mesh for: Column2_021
+glTF: Creating mesh for: Column2_022
+glTF: Creating mesh for: Column2_023
+glTF: Creating mesh for: Column2_024
+glTF: Creating mesh for: Column2_025
+glTF: Creating mesh for: Column2_026
+glTF: Creating mesh for: Column2_027
+glTF: Creating mesh for: Column2_028
+glTF: Creating mesh for: Column2_029
+glTF: Creating mesh for: Column2_030
+glTF: Creating mesh for: Column2_031
+glTF: Creating mesh for: Column2_032
+glTF: Creating mesh for: Column2_033
+glTF: Creating mesh for: Column2_034
+glTF: Creating mesh for: Column2_035
+glTF: Creating mesh for: Column2_036
+glTF: Creating mesh for: Column2_037
+glTF: Creating mesh for: Column2_038
+glTF: Creating mesh for: Column2_039
+glTF: Creating mesh for: Column2_040
+glTF: Creating mesh for: Column2_041
+glTF: Creating mesh for: Column2_042
+glTF: Creating mesh for: Column2_043
+glTF: Creating mesh for: Column2_044
+glTF: Creating mesh for: Column2_045
+glTF: Creating mesh for: Column2_046
+glTF: Creating mesh for: Column2_047
+glTF: Creating mesh for: Column2_048
+glTF: Creating mesh for: Column2_049
+glTF: Creating mesh for: Column2_050
+glTF: Creating mesh for: Column2_051
+glTF: Creating mesh for: Column2_052
+glTF: Creating mesh for: Column2_053
+glTF: Creating mesh for: Column2_054
+glTF: Creating mesh for: Column2_055
+glTF: Creating mesh for: Column2_056
+glTF: Creating mesh for: Column2_057
+glTF: Creating mesh for: GIK_Arch1_001
+glTF: Creating mesh for: GIK_Arch1_002
+glTF: Creating mesh for: GIK_Arch1_003
+glTF: Creating mesh for: GIK_Arch1_004
+glTF: Creating mesh for: GIK_UpperWall_002
+glTF: Creating mesh for: GIK_UpperWall_003
+glTF: Creating mesh for: GIK_UpperWall_004
+glTF: Creating mesh for: GIK_UpperWall_005
+glTF: Creating mesh for: GIK_UpperWall_006
+glTF: Creating mesh for: GIK_UpperWall_007
+glTF: Creating mesh for: GIK_UpperWall_008
+glTF: Creating mesh for: GIK_UpperWall_009
+glTF: Creating mesh for: GIK_UpperWall_010
+glTF: Creating mesh for: GIK_UpperWall_011
+glTF: Creating mesh for: GIK_UpperWall_012
+glTF: Creating mesh for: GIK_UpperWall_013
+glTF: Creating mesh for: GIK_UpperWall_014
+glTF: Creating mesh for: GIK_UpperWall_015
+glTF: Creating mesh for: GIK_UpperWall_016
+glTF: Creating mesh for: GIK_UpperWall_017
+glTF: Creating mesh for: GIK_UpperWall_018
+glTF: Creating mesh for: GIK_UpperWall_019
+glTF: Creating mesh for: GIK_UpperWall_020
+glTF: Creating mesh for: GIK_UpperWall_021
+glTF: Creating mesh for: GIK_UpperWall_022
+glTF: Creating mesh for: GIK_UpperWall_023
+glTF: Creating mesh for: GIK_UpperWall_024
+glTF: Creating mesh for: GIK_UpperWall_025
+glTF: Creating mesh for: GIK_UpperWall_026
+glTF: Creating mesh for: GIK_UpperWall_027
+glTF: Creating mesh for: GIK_UpperWall_028
+glTF: Creating mesh for: GIK_UpperWall_029
+glTF: Creating mesh for: GIK_UpperWall_030
+glTF: Creating mesh for: GIK_UpperWall_031
+glTF: Creating mesh for: GIK_UpperWall_032
+glTF: Creating mesh for: GIK_UpperWall_033
+glTF: Creating mesh for: GIK_UpperWall_034
+glTF: Creating mesh for: GIK_UpperWall_035
+glTF: Creating mesh for: GIK_UpperWall_036
+glTF: Creating mesh for: GIK_UpperWall_037
+glTF: Creating mesh for: GIK_UpperWall_038
+glTF: Creating mesh for: GIK_UpperWall_039
+glTF: Creating mesh for: GIK_UpperWall_040
+glTF: Creating mesh for: GIK_UpperWall_041
+glTF: Creating mesh for: GIK_CornerStair1_001
+glTF: Creating mesh for: GIK_CornerStair1_002
+glTF: Creating mesh for: GIK_CornerStair1_003
+glTF: Creating mesh for: GIK_CornerStair1_005
+glTF: Creating mesh for: Shelf_01_001
+glTF: Creating mesh for: Shelf_01_002
+glTF: Creating mesh for: Shelf_01_003
+glTF: Creating mesh for: Shelf_01_004
+glTF: Creating mesh for: Shelf_01_005
+glTF: Creating mesh for: Shelf_01_006
+glTF: Creating mesh for: Shelf_01_007
+glTF: Creating mesh for: Shelf_01_008
+glTF: Creating mesh for: Shelf_01_009
+glTF: Creating mesh for: Shelf_01_010
+glTF: Creating mesh for: Shelf_01_011
+glTF: Creating mesh for: Shelf_01_012
+glTF: Creating mesh for: Shelf_01_013
+glTF: Creating mesh for: Shelf_01_014
+glTF: Creating mesh for: Shelf_01_015
+glTF: Creating mesh for: Shelf_01_016
+[   1% ] [90m[1mimport[22m | Running Custom Script...[39m[0m
+[  99% ] [90m[1mimport[22m | Saving...[39m[0m
+Saving scene to: res://.godot/imported/level.glb-dadcc56a2e5f0c7946f5dd2ed4295803.scn
+[92m[ DONE ][39m [1mimport[22m
+[0m
+EditorFileSystem: "res://assets/level.glb" import took 1331 ms.
+[  50% ] [90m[1mreimport[22m | Finalizing Asset Import...[39m[0m
+[92m[ DONE ][39m [1mreimport[22m
+[0m
+[   0% ] [90m[1mreimport[22m | Started (Re)Importing Assets (1 steps)[39m[0m
+[   0% ] [90m[1mreimport[22m | Executing post-reimport operations...[39m[0m
+[92m[ DONE ][39m [1mreimport[22m
+[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Started Loading editor (5 steps)[39m[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Loading editor layout...[39m[0m
+[92m[ DONE ][39m [1mloading_editor_layout[22m
+[0m
+Loading resource: res://scenes/Main.tscn
+Loading resource: res://scripts/FabLevelLoader.gd
+Loading resource: res://scenes/Player.tscn
+Loading resource: res://scripts/FabPlayerController.gd
+Loading resource: res://assets/fab_environment.tres
+Script docs haven't been properly loaded or regenerated, so don't save them to disk.
+EditorSettings: Save OK!
+XR: Clearing primary interface
+XR: Removed interface "Native mobile"
+XR: Removed interface "OpenXR"
+Orphan StringName: Node (static: 8, total: 9)
+StringName: 1 unclaimed string names at exit.
+
+WARNING: Screen-space ambient occlusion (SSAO) can only be enabled when using the Forward+ renderer.
+     at: environment_set_ssao (servers/rendering/storage/environment_storage.cpp:586)

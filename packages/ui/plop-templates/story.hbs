@@ -1,0 +1,54 @@
+import type { Meta, StoryObj } from '@storybook/react'
+import { {{pascalCase name}} } from './{{pascalCase name}}'
+
+const meta: Meta<typeof {{pascalCase name}}> = {
+  title: '{{titleCase category}}/{{pascalCase name}}',
+  component: {{pascalCase name}},
+  parameters: {
+    layout: 'centered',
+    docs: {
+      description: {
+        component: '{{description}}'
+      }
+    }
+  },
+  tags: ['autodocs'],
+  argTypes: {
+    // Define controls for props here
+  },
+}
+
+export default meta
+type Story = StoryObj<typeof meta>
+
+export const Default: Story = {
+  args: {
+    // Default props
+  },
+}
+
+{{#if withVariants}}
+export const AllVariants: Story = {
+  render: () => (
+    <div className="flex flex-col gap-4">
+      <{{pascalCase name}} variant="default">Default Variant</{{pascalCase name}}>
+      {/* Add more variant examples */}
+    </div>
+  ),
+}
+{{/if}}
+
+export const WithCustomStyling: Story = {
+  args: {
+    className: "border-2 border-cyan-neon shadow-neon-cyan",
+  },
+}
+
+export const Interactive: Story = {
+  args: {
+    // Interactive props
+  },
+  play: async ({ canvasElement }) => {
+    // Add interaction tests here using @storybook/test
+  },
+}

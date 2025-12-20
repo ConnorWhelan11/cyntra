@@ -1,0 +1,2 @@
+export { FloatingNav } from "./FloatingNavbar";
+

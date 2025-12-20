@@ -1,0 +1,74 @@
+{
+  "gate_config_id": "godot_integration_v001",
+  "asset_id": "walkable_library_v0.1",
+  "verdict": "pass",
+  "stats": {
+    "node_count": 131,
+    "mesh_count": 130,
+    "material_count": 2,
+    "primitive_count": 130,
+    "draw_calls_estimate": 130,
+    "gltf": {
+      "extensions_used": [
+        "KHR_draco_mesh_compression"
+      ],
+      "extensions_required": [
+        "KHR_draco_mesh_compression"
+      ]
+    },
+    "contract": {
+      "spawns": [
+        "SPAWN_PLAYER"
+      ],
+      "colliders": [
+        "COLLIDER_GROUND_FLOOR",
+        "COLLIDER_MEZZANINE",
+        "COLLIDER_WALL_NORTH",
+        "COLLIDER_WALL_SOUTH",
+        "COLLIDER_WALL_EAST",
+        "COLLIDER_WALL_WEST",
+        "COLLIDER_STAIRS_00",
+        "COLLIDER_STAIRS_01",
+        "COLLIDER_STAIRS_02",
+        "COLLIDER_STAIRS_03"
+      ],
+      "triggers": [],
+      "interactables": []
+    }
+  },
+  "failures": {
+    "hard": [],
+    "soft": [
+      "GODOT_EXPORT_FALLBACK_USED"
+    ],
+    "details": {
+      "GODOT_EXPORT_FALLBACK_USED": {
+        "warning": "Godot --export-release failed; built Web export via --export-pack + template zip.",
+        "export_release_exit_code": 1,
+        "export_release_log": "fab/outora-library/viewer/assets/games/walkable_library_v0.1/godot_export.log",
+        "export_pack_log": "fab/outora-library/viewer/assets/games/walkable_library_v0.1/godot_export_pack.log"
+      }
+    }
+  },
+  "artifacts": {
+    "decode_draco_log": "fab/outora-library/viewer/assets/games/walkable_library_v0.1/blender_decode_draco.log",
+    "project_dir": "fab/outora-library/viewer/assets/games/walkable_library_v0.1/project",
+    "import_log": "fab/outora-library/viewer/assets/games/walkable_library_v0.1/godot_import.log",
+    "export_log": "fab/outora-library/viewer/assets/games/walkable_library_v0.1/godot_export.log",
+    "export_pack_log": "fab/outora-library/viewer/assets/games/walkable_library_v0.1/godot_export_pack.log",
+    "web_index": "fab/outora-library/viewer/assets/games/walkable_library_v0.1/index.html",
+    "export_pack": "fab/outora-library/viewer/assets/games/walkable_library_v0.1/walkable_library_v0.1.pck",
+    "web_build_meta": "fab/outora-library/viewer/assets/games/walkable_library_v0.1/web_build_meta.json"
+  },
+  "timing": {
+    "duration_ms": 13989
+  },
+  "tool_versions": {
+    "godot": "4.5.1.stable.official.f62fdbde1"
+  },
+  "next_actions": [],
+  "scores": {
+    "budgets_ok": true,
+    "contract_ok": true
+  }
+}

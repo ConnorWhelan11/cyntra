@@ -28,6 +28,7 @@ from dev_kernel.adapters.outora import (
     LibraryValidationResult,
     create_outora_adapter,
 )
+from dev_kernel.adapters.fab_world import FabWorldAdapter
 
 __all__ = [
     # Code adapters
@@ -51,6 +52,8 @@ __all__ = [
     "PodPlacement",
     "LibraryValidationResult",
     "create_outora_adapter",
+    # Fab World adapter
+    "FabWorldAdapter",
 ]
 
 
@@ -59,7 +62,7 @@ def get_adapter(name: str, config: dict | None = None) -> ToolchainAdapter | Non
     Get an adapter by name.
 
     Args:
-        name: Adapter name (codex, claude, crush)
+        name: Adapter name (codex, claude, crush, fab-world)
         config: Optional adapter configuration
 
     Returns:
@@ -70,6 +73,7 @@ def get_adapter(name: str, config: dict | None = None) -> ToolchainAdapter | Non
         "claude": ClaudeAdapter,
         "opencode": OpenCodeAdapter,
         "crush": CrushAdapter,
+        "fab-world": FabWorldAdapter,
     }
 
     adapter_class = adapters.get(name.lower())

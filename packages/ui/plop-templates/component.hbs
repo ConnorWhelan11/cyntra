@@ -1,0 +1,74 @@
+{{#if withForwardRef}}import { forwardRef } from 'react'{{/if}}
+{{#if withVariants}}import { cva, type VariantProps } from 'class-variance-authority'{{/if}}
+import { cn } from '@/lib/utils'
+
+{{#if withVariants}}
+const {{camelCase name}}Variants = cva(
+  "base-classes-here",
+  {
+    variants: {
+      variant: {
+        default: "default-variant-classes",
+        // Add more variants as needed
+      },
+      size: {
+        default: "default-size-classes",
+        // Add more sizes as needed
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+      size: "default",
+    },
+  }
+)
+{{/if}}
+
+{{#if withVariants}}
+export interface {{pascalCase name}}Props
+  extends React.HTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof {{camelCase name}}Variants> {
+  // Add additional props here
+}
+{{else}}
+export interface {{pascalCase name}}Props extends React.HTMLAttributes<HTMLDivElement> {
+  // Add component-specific props here
+}
+{{/if}}
+
+{{#if withForwardRef}}
+const {{pascalCase name}} = forwardRef<HTMLDivElement, {{pascalCase name}}Props>(
+  ({ className{{#if withVariants}}, variant, size{{/if}}, ...props }, ref) => {
+    return (
+      <div
+        ref={ref}
+        className={cn(
+          {{#if withVariants}}{{camelCase name}}Variants({ variant, size }){{else}}"component-base-classes"{{/if}},
+          className
+        )}
+        {...props}
+      >
+        {/* Component content */}
+      </div>
+    )
+  }
+)
+
+{{pascalCase name}}.displayName = "{{pascalCase name}}"
+{{else}}
+export function {{pascalCase name}}({ className{{#if withVariants}}, variant, size{{/if}}, ...props }: {{pascalCase name}}Props) {
+  return (
+    <div
+      className={cn(
+        {{#if withVariants}}{{camelCase name}}Variants({ variant, size }){{else}}"component-base-classes"{{/if}},
+        className
+      )}
+      {...props}
+    >
+      {/* Component content */}
+    </div>
+  )
+}
+{{/if}}
+
+export { {{pascalCase name}} }

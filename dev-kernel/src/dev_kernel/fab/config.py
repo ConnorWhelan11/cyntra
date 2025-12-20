@@ -87,6 +87,7 @@ class GateConfig:
     # Failure handling
     hard_fail_codes: List[str] = field(default_factory=list)
     repair_playbook: Dict[str, Dict[str, Any]] = field(default_factory=dict)
+    library_checks: Dict[str, Any] = field(default_factory=dict)
 
 
 def load_gate_config(config_path: Path) -> GateConfig:
@@ -165,6 +166,7 @@ def load_gate_config(config_path: Path) -> GateConfig:
         iteration=iteration,
         hard_fail_codes=raw.get("hard_fail_codes", []),
         repair_playbook=raw.get("repair_playbook", {}),
+        library_checks=raw.get("library_checks", {}) or {},
     )
 
 

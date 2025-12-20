@@ -20,6 +20,7 @@ def make_issue(
     id: str = "42",
     title: str = "Test Issue",
     tool_hint: str | None = None,
+    tags: list[str] | None = None,
 ) -> Issue:
     """Helper to create test issues."""
     now = _now()
@@ -32,6 +33,7 @@ def make_issue(
         updated=now,
         dk_priority="P2",
         dk_tool_hint=tool_hint,
+        tags=tags or [],
     )
 
 
@@ -96,6 +98,21 @@ class TestDispatcher:
 
         assert manifest["speculate_mode"] is True
         assert manifest["speculate_tag"] == "spec-0"
+
+    def test_build_manifest_world_job(self, config: KernelConfig) -> None:
+        """World-tagged issues get a fab-world job manifest."""
+        dispatcher = Dispatcher(config)
+        issue = make_issue(tags=["asset:world", "world:outora_library", "seed:1337"])
+
+        manifest = dispatcher._build_manifest(issue, "wc-42-123", "codex", None)
+
+        assert manifest["job_type"] == "fab-world"
+        assert manifest["quality_gates"] == {}
+        assert "world_config" in manifest
+        world_cfg = manifest["world_config"]
+        assert world_cfg["world_path"] == "fab/worlds/outora_library"
+        assert world_cfg["seed"] == 1337
+        assert "quality_gates" in world_cfg
 
     def test_get_available_toolchains(self, config: KernelConfig) -> None:
         """Returns list of available toolchains."""
@@ -163,4 +180,3 @@ class TestManifestWriting:
         assert manifest_path.exists()
         loaded = json.loads(manifest_path.read_text())
         assert loaded["issue"]["id"] == "42"
-

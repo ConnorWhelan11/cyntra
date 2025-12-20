@@ -1,0 +1,7 @@
+[install]
+# Ensure hoisting for Tauri compatibility
+auto = "auto"
+
+[install.scopes]
+# Lock React version
+"@oos" = { "react" = "19.1.1" }

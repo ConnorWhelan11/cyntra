@@ -1,0 +1,75 @@
+/* Import @oos/ui Tailwind v4 styles with OKLCH colors */
+@import "@oos/ui/styles";
+@import "./app.css" layer(legacy);
+
+@layer base {
+  :root {
+    color-scheme: dark;
+    /* Legacy CSS variable bridge for gradual migration */
+    --bg: oklch(0.141 0.005 285.823);
+    --panel: color-mix(in srgb, var(--color-card), transparent 60%);
+    --border: var(--color-border);
+    --text: var(--color-foreground);
+    --muted: var(--color-muted-foreground);
+    --accent: #d4a574; /* Preserve original accent color */
+  }
+
+  html,
+  body {
+    height: 100%;
+    margin: 0;
+    color: var(--text);
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
+      Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  }
+
+  body {
+    /* Preserve radial gradient background */
+    background: radial-gradient(
+      1200px 800px at 20% 10%,
+      #141823,
+      #0b0d10
+    );
+  }
+
+  #root {
+    height: 100%;
+  }
+}
+
+@layer components {
+  /* Terminal styling */
+  .terminal {
+    height: 100%;
+    width: 100%;
+  }
+
+  /* iframe for viewer */
+  .iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    background: #000;
+  }
+
+  /* Status badge colors matching old design */
+  .badge-ready,
+  .badge-done,
+  .badge-success {
+    border-color: rgba(34, 197, 94, 0.35);
+    background-color: rgba(34, 197, 94, 0.12);
+  }
+
+  .badge-failed,
+  .badge-fail,
+  .badge-blocked,
+  .badge-escalated {
+    border-color: rgba(239, 68, 68, 0.35);
+    background-color: rgba(239, 68, 68, 0.12);
+  }
+
+  .badge-running {
+    border-color: rgba(212, 165, 116, 0.35);
+    background-color: rgba(212, 165, 116, 0.12);
+  }
+}

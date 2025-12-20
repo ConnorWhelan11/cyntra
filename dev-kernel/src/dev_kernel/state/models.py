@@ -59,6 +59,9 @@ class Issue:
         if data.get("ready_since"):
             ready_since = cls._parse_timestamp(data["ready_since"])
 
+        raw_tags = data.get("tags", []) or []
+        tags = [t for t in raw_tags if isinstance(t, str) and t.strip()]
+
         return cls(
             id=str(data.get("id", "")),
             title=data.get("title", ""),
@@ -68,7 +71,7 @@ class Issue:
             description=data.get("description"),
             acceptance_criteria=data.get("acceptance_criteria"),
             context_files=data.get("context_files"),
-            tags=data.get("tags", []) or [],
+            tags=tags,
             dk_priority=data.get("dk_priority") or data.get("priority", "P2"),
             dk_risk=data.get("dk_risk") or data.get("risk", "medium"),
             dk_size=data.get("dk_size") or data.get("size", "M"),
@@ -227,4 +230,3 @@ class BeadsGraph:
         ]
 
         return BeadsGraph(issues=filtered_issues, deps=filtered_deps)
-

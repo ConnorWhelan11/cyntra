@@ -1,0 +1,162 @@
+# Interior Realism Gate Configuration v001
+#
+# Compatibility alias for earlier workcells/config references.
+# Prefer using `interior_library_v001` for library/study interiors.
+
+gate_config_id: interior_realism_v001
+category: interior_architecture
+schema_version: "1.0"
+
+# Scene references
+lookdev_scene_id: interior_lookdev_v001
+camera_rig_id: interior_camrig_v001
+
+# Render settings
+render:
+  engine: CYCLES
+  device: CPU
+  resolution: [1024, 768]
+  samples: 128
+  seed: 1337
+  denoise: false
+  film_transparent: false
+  ground_plane_size: 50.0
+
+# Critics configuration
+critics:
+  category:
+    enabled: true
+    min_views_passing: 6
+    per_view_conf_min: 0.45
+    require_clay_agreement: true
+    target_classes:
+      - library
+      - interior
+      - reading_room
+      - hall
+      - cathedral
+      - room
+      - building_interior
+    excluded_classes:
+      - blob
+      - abstract
+      - vehicle
+      - exterior
+      - landscape
+
+  alignment:
+    enabled: true
+    clip_model: "ViT-L/14"
+    margin_min: 0.04
+    views_to_evaluate: 8
+
+  realism:
+    enabled: true
+    aesthetic_min: 0.50
+    niqe_max: 7.0
+    artifact_checks:
+      noise_threshold: 0.15
+      missing_texture_threshold: 0.05
+      edge_density_min: 0.008
+
+  geometry:
+    enabled: true
+    bounds_m:
+      length: [10.0, 300.0]
+      width: [10.0, 300.0]
+      height: [3.0, 50.0]
+    triangle_count: [10000, 5000000]
+    symmetry_min: 0.40
+    manifold_tolerance: 0.25
+    ground_contact: true
+    floor_coverage_min: 0.3
+    ceiling_detected: true
+    vertical_elements: true
+
+# Decision logic
+decision:
+  weights:
+    category: 0.20
+    alignment: 0.25
+    realism: 0.30
+    geometry: 0.25
+  overall_pass_min: 0.60
+  subscore_floors:
+    category: 0.40
+    geometry: 0.45
+    realism: 0.50
+
+# Hard fail codes
+hard_fail_codes:
+  - IMPORT_FAILED
+  - MESH_EMPTY
+  - SCALE_INVALID
+  - GEO_NO_FLOOR
+  - GEO_NO_CEILING
+  - REAL_MISSING_TEXTURES_SEVERE
+
+# Iteration settings
+iteration:
+  max_iterations: 3
+  vote_pack_on_uncertainty: true
+  uncertainty_band: 0.06
+  template_fallback:
+    enabled: false
+
+# Repair playbook
+repair_playbook:
+  GEO_NO_FLOOR:
+    priority: 1
+    instructions: |
+      Add a floor plane to the interior:
+      - Ground plane at z=0
+      - Cover the footprint of the space
+      - Apply appropriate floor material (stone, wood)
+  GEO_NO_CEILING:
+    priority: 2
+    instructions: |
+      Add ceiling/roof structure:
+      - Vaulted ceiling for cathedral style
+      - Or flat ceiling with beams
+      - Consider oculus/skylight for light shafts
+  GEO_SCALE_TOO_SMALL:
+    priority: 1
+    instructions: |
+      Scale up to realistic interior dimensions:
+      - Minimum 3m ceiling height
+      - Door frames ~2m reference
+      - Human scale: desks ~0.75m, chairs ~0.45m seat
+  REAL_MISSING_TEXTURES_SEVERE:
+    priority: 1
+    instructions: |
+      Apply materials to visible surfaces:
+      - Stone/marble for structural elements
+      - Wood for furniture and trim
+      - Glass for windows (emissive for stained glass)
+  CAT_NOT_INTERIOR:
+    priority: 2
+    instructions: |
+      Add recognizable interior elements:
+      - Enclosed space with walls
+      - Furniture (desks, chairs, shelves)
+      - Lighting fixtures
+      - Floor and ceiling visible
+
+# Library-specific validation (custom checks)
+library_checks:
+  furniture_presence:
+    enabled: true
+    required_types:
+      - desk
+      - chair
+      - shelf
+    min_furniture_count: 5
+  structural_rhythm:
+    enabled: true
+    column_spacing_tolerance: 0.3
+    expected_bay_size: 6.0
+  lighting_quality:
+    enabled: true
+    min_light_sources: 2
+    ambient_occlusion: true
+

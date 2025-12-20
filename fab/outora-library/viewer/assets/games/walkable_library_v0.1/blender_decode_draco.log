@@ -1,0 +1,660 @@
+16:47:51 | INFO: Data are loaded, start creating Blender stuff
+16:47:51 | INFO: Blender create Mesh node Cube.091
+16:47:51 | INFO: Draco Decoder: Decode primitive Cube.091
+16:47:51 | INFO: Blender create Mesh node Cube.094
+16:47:51 | INFO: Draco Decoder: Decode primitive Cube.094
+16:47:51 | INFO: Blender create Mesh node Cube.095
+16:47:51 | INFO: Draco Decoder: Decode primitive Cube.095
+16:47:51 | INFO: Blender create Mesh node Cube.096
+16:47:51 | INFO: Draco Decoder: Decode primitive Cube.096
+16:47:51 | INFO: Blender create Mesh node Cube.097
+16:47:51 | INFO: Draco Decoder: Decode primitive Cube.097
+16:47:51 | INFO: Blender create Mesh node Cube.098
+16:47:51 | INFO: Draco Decoder: Decode primitive Cube.098
+16:47:51 | INFO: Blender create Mesh node Cube.099
+16:47:51 | INFO: Draco Decoder: Decode primitive Cube.099
+16:47:51 | INFO: Blender create Mesh node Cube.100
+16:47:51 | INFO: Draco Decoder: Decode primitive Cube.100
+16:47:51 | INFO: Blender create Mesh node Cube.101
+16:47:51 | INFO: Draco Decoder: Decode primitive Cube.101
+16:47:51 | INFO: Blender create Mesh node Cube.102
+16:47:51 | INFO: Draco Decoder: Decode primitive Cube.102
+16:47:51 | INFO: Blender create Mesh node Cube.952
+16:47:51 | INFO: Draco Decoder: Decode primitive Cube.952
+16:47:51 | INFO: Blender create Mesh node Cube.953
+16:47:51 | INFO: Draco Decoder: Decode primitive Cube.953
+16:47:51 | INFO: Blender create Mesh node Cube.954
+16:47:51 | INFO: Draco Decoder: Decode primitive Cube.954
+16:47:51 | INFO: Blender create Mesh node Cube.955
+16:47:51 | INFO: Draco Decoder: Decode primitive Cube.955
+16:47:51 | INFO: Blender create Mesh node Cube.956
+16:47:51 | INFO: Draco Decoder: Decode primitive Cube.956
+16:47:51 | INFO: Blender create Mesh node Cube.957
+16:47:51 | INFO: Draco Decoder: Decode primitive Cube.957
+16:47:51 | INFO: Blender create Mesh node Cube.958
+16:47:51 | INFO: Draco Decoder: Decode primitive Cube.958
+16:47:51 | INFO: Blender create Mesh node Cube.959
+16:47:51 | INFO: Draco Decoder: Decode primitive Cube.959
+16:47:51 | INFO: Blender create Mesh node Cube.960
+16:47:51 | INFO: Draco Decoder: Decode primitive Cube.960
+16:47:51 | INFO: Blender create Mesh node Cube.961
+16:47:51 | INFO: Draco Decoder: Decode primitive Cube.961
+16:47:51 | INFO: Blender create Mesh node Cube.962
+16:47:51 | INFO: Draco Decoder: Decode primitive Cube.962
+16:47:51 | INFO: Blender create Mesh node Cube.963
+16:47:51 | INFO: Draco Decoder: Decode primitive Cube.963
+16:47:51 | INFO: Blender create Mesh node Cube.964
+16:47:51 | INFO: Draco Decoder: Decode primitive Cube.964
+16:47:51 | INFO: Blender create Mesh node Cube.965
+16:47:51 | INFO: Draco Decoder: Decode primitive Cube.965
+16:47:51 | INFO: Blender create Mesh node Cube.966
+16:47:51 | INFO: Draco Decoder: Decode primitive Cube.966
+16:47:51 | INFO: Blender create Mesh node Cube.967
+16:47:51 | INFO: Draco Decoder: Decode primitive Cube.967
+16:47:51 | INFO: Blender create Mesh node Cube.968
+16:47:51 | INFO: Draco Decoder: Decode primitive Cube.968
+16:47:51 | INFO: Blender create Mesh node Cube.969
+16:47:51 | INFO: Draco Decoder: Decode primitive Cube.969
+16:47:51 | INFO: Blender create Mesh node Cube.970
+16:47:51 | INFO: Draco Decoder: Decode primitive Cube.970
+16:47:51 | INFO: Blender create Mesh node Cube.971
+16:47:51 | INFO: Draco Decoder: Decode primitive Cube.971
+16:47:51 | INFO: Blender create Mesh node Cube.972
+16:47:51 | INFO: Draco Decoder: Decode primitive Cube.972
+16:47:51 | INFO: Blender create Mesh node Cube.973
+16:47:51 | INFO: Draco Decoder: Decode primitive Cube.973
+16:47:51 | INFO: Blender create Mesh node Cube.974
+16:47:51 | INFO: Draco Decoder: Decode primitive Cube.974
+16:47:51 | INFO: Blender create Mesh node Cube.975
+16:47:51 | INFO: Draco Decoder: Decode primitive Cube.975
+16:47:51 | INFO: Blender create Mesh node Cube.976
+16:47:51 | INFO: Draco Decoder: Decode primitive Cube.976
+16:47:51 | INFO: Blender create Mesh node Cube.977
+16:47:51 | INFO: Draco Decoder: Decode primitive Cube.977
+16:47:51 | INFO: Blender create Mesh node Cube.978
+16:47:51 | INFO: Draco Decoder: Decode primitive Cube.978
+16:47:51 | INFO: Blender create Mesh node Cube.979
+16:47:51 | INFO: Draco Decoder: Decode primitive Cube.979
+16:47:51 | INFO: Blender create Mesh node Cube.980
+16:47:51 | INFO: Draco Decoder: Decode primitive Cube.980
+16:47:51 | INFO: Blender create Mesh node Cube.981
+16:47:51 | INFO: Draco Decoder: Decode primitive Cube.981
+16:47:52 | INFO: Blender create Mesh node Cube.982
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.982
+16:47:52 | INFO: Blender create Mesh node Cube.983
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.983
+16:47:52 | INFO: Blender create Mesh node Cube.984
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.984
+16:47:52 | INFO: Blender create Mesh node Cube.985
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.985
+16:47:52 | INFO: Blender create Mesh node Cube.986
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.986
+16:47:52 | INFO: Blender create Mesh node Cube.987
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.987
+16:47:52 | INFO: Blender create Mesh node Cube.988
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.988
+16:47:52 | INFO: Blender create Mesh node Cube.989
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.989
+16:47:52 | INFO: Blender create Mesh node Cube.990
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.990
+16:47:52 | INFO: Blender create Mesh node Cube.991
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.991
+16:47:52 | INFO: Blender create Mesh node Cube.992
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.992
+16:47:52 | INFO: Blender create Mesh node Cube.993
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.993
+16:47:52 | INFO: Blender create Mesh node Cube.994
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.994
+16:47:52 | INFO: Blender create Mesh node Cube.995
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.995
+16:47:52 | INFO: Blender create Mesh node Cube.996
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.996
+16:47:52 | INFO: Blender create Mesh node Cube.997
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.997
+16:47:52 | INFO: Blender create Mesh node Cube.998
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.998
+16:47:52 | INFO: Blender create Mesh node Cube.999
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.999
+16:47:52 | INFO: Blender create Mesh node Cube.1000
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.1000
+16:47:52 | INFO: Blender create Mesh node Cube.1001
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.1001
+16:47:52 | INFO: Blender create Mesh node Cube.1002
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.1002
+16:47:52 | INFO: Blender create Mesh node Cube.1003
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.1003
+16:47:52 | INFO: Blender create Mesh node Cube.1004
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.1004
+16:47:52 | INFO: Blender create Mesh node Cube.1005
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.1005
+16:47:52 | INFO: Blender create Mesh node Cube.1006
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.1006
+16:47:52 | INFO: Blender create Mesh node Cube.1007
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.1007
+16:47:52 | INFO: Blender create Mesh node Cube.948
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.948
+16:47:52 | INFO: Blender create Mesh node Cube.949
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.949
+16:47:52 | INFO: Blender create Mesh node Cube.950
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.950
+16:47:52 | INFO: Blender create Mesh node Cube.951
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.951
+16:47:52 | INFO: Blender create Mesh node Cube.1008
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.1008
+16:47:52 | INFO: Blender create Mesh node Cube.1009
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.1009
+16:47:52 | INFO: Blender create Mesh node Cube.1010
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.1010
+16:47:52 | INFO: Blender create Mesh node Cube.1011
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.1011
+16:47:52 | INFO: Blender create Mesh node Cube.1012
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.1012
+16:47:52 | INFO: Blender create Mesh node Cube.1013
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.1013
+16:47:52 | INFO: Blender create Mesh node Cube.1014
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.1014
+16:47:52 | INFO: Blender create Mesh node Cube.1015
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.1015
+16:47:52 | INFO: Blender create Mesh node Cube.1016
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.1016
+16:47:52 | INFO: Blender create Mesh node Cube.1017
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.1017
+16:47:52 | INFO: Blender create Mesh node Cube.1018
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.1018
+16:47:52 | INFO: Blender create Mesh node Cube.1019
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.1019
+16:47:52 | INFO: Blender create Mesh node Cube.1020
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.1020
+16:47:52 | INFO: Blender create Mesh node Cube.1021
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.1021
+16:47:52 | INFO: Blender create Mesh node Cube.1022
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.1022
+16:47:52 | INFO: Blender create Mesh node Cube.1023
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.1023
+16:47:52 | INFO: Blender create Mesh node Cube.3868
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.3868
+16:47:52 | INFO: Blender create Mesh node Cube.3869
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.3869
+16:47:52 | INFO: Blender create Mesh node Cube.3870
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.3870
+16:47:52 | INFO: Blender create Mesh node Cube.3871
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.3871
+16:47:52 | INFO: Blender create Mesh node Cube.3872
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.3872
+16:47:52 | INFO: Blender create Mesh node Cube.3873
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.3873
+16:47:52 | INFO: Blender create Mesh node Cube.3874
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.3874
+16:47:52 | INFO: Blender create Mesh node Cube.3875
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.3875
+16:47:52 | INFO: Blender create Mesh node Cube.3876
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.3876
+16:47:52 | INFO: Blender create Mesh node Cube.3877
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.3877
+16:47:52 | INFO: Blender create Mesh node Cube.3878
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.3878
+16:47:52 | INFO: Blender create Mesh node Cube.3879
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.3879
+16:47:52 | INFO: Blender create Mesh node Cube.3880
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.3880
+16:47:52 | INFO: Blender create Mesh node Cube.3881
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.3881
+16:47:52 | INFO: Blender create Mesh node Cube.3882
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.3882
+16:47:52 | INFO: Blender create Mesh node Cube.3883
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.3883
+16:47:52 | INFO: Blender create Mesh node Cube.3884
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.3884
+16:47:52 | INFO: Blender create Mesh node Cube.3885
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.3885
+16:47:52 | INFO: Blender create Mesh node Cube.3886
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.3886
+16:47:52 | INFO: Blender create Mesh node Cube.3887
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.3887
+16:47:52 | INFO: Blender create Mesh node Cube.3888
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.3888
+16:47:52 | INFO: Blender create Mesh node Cube.3889
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.3889
+16:47:52 | INFO: Blender create Mesh node Cube.3890
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.3890
+16:47:52 | INFO: Blender create Mesh node Cube.3891
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.3891
+16:47:52 | INFO: Blender create Mesh node Cube.3892
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.3892
+16:47:52 | INFO: Blender create Mesh node Cube.3893
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.3893
+16:47:52 | INFO: Blender create Mesh node Cube.3894
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.3894
+16:47:52 | INFO: Blender create Mesh node Cube.3895
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.3895
+16:47:52 | INFO: Blender create Mesh node Cube.3896
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.3896
+16:47:52 | INFO: Blender create Mesh node Cube.3897
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.3897
+16:47:52 | INFO: Blender create Mesh node Cube.3898
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.3898
+16:47:52 | INFO: Blender create Mesh node Cube.3899
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.3899
+16:47:52 | INFO: Blender create Mesh node Cube.3900
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.3900
+16:47:52 | INFO: Blender create Mesh node Cube.3901
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.3901
+16:47:52 | INFO: Blender create Mesh node Cube.3902
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.3902
+16:47:52 | INFO: Blender create Mesh node Cube.3903
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.3903
+16:47:52 | INFO: Blender create Mesh node Cube.3904
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.3904
+16:47:52 | INFO: Blender create Mesh node Cube.3905
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.3905
+16:47:52 | INFO: Blender create Mesh node Cube.3906
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.3906
+16:47:52 | INFO: Blender create Mesh node Cube.3907
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.3907
+16:47:52 | INFO: Blender create Mesh node Cube.3908
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.3908
+16:47:52 | INFO: Blender create Mesh node Cube.3909
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.3909
+16:47:52 | INFO: Blender create Mesh node Cube.3910
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.3910
+16:47:52 | INFO: Blender create Mesh node Cube.3911
+16:47:52 | INFO: Draco Decoder: Decode primitive Cube.3911
+16:47:52 | INFO: glTF import finished in 0.68s
+INFO Draco mesh compression is available, use library at /Applications/Blender.app/Contents/Resources/5.0/scripts/addons_core/io_scene_gltf2/libextern_draco.dylib
+16:47:52 | INFO: Starting glTF 2.0 export
+16:47:52 | INFO: Extracting primitive: Cube.091
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.094
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.095
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.096
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.097
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.098
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.099
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.100
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.101
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.102
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.952
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.953
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.954
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.955
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.956
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.957
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.958
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.959
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.960
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.961
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.962
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.963
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.964
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.965
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.966
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.967
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.968
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.969
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.970
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.971
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.972
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.973
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.974
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.975
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.976
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.977
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.978
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.979
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.980
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.981
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.982
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.983
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.984
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.985
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.986
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.987
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.988
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.989
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.990
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.991
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.992
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.993
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.994
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.995
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.996
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.997
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.998
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.999
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.1000
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.1001
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.1002
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.1003
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.1004
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.1005
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.1006
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.1007
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.948
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.949
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.950
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.951
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.1008
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.1009
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.1010
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.1011
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.1012
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.1013
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.1014
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.1015
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.1016
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.1017
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.1018
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.1019
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.1020
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.1021
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.1022
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.1023
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.3868
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.3869
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.3870
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.3871
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.3872
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.3873
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.3874
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.3875
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.3876
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.3877
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.3878
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.3879
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.3880
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.3881
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.3882
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.3883
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.3884
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.3885
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.3886
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.3887
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.3888
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.3889
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.3890
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.3891
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.3892
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.3893
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.3894
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.3895
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.3896
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.3897
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.3898
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.3899
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.3900
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.3901
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.3902
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.3903
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.3904
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.3905
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.3906
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.3907
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.3908
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.3909
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.3910
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Extracting primitive: Cube.3911
+16:47:52 | INFO: Primitives created: 1
+16:47:52 | INFO: Finished glTF 2.0 export in 0.43505406379699707 s
+
+Blender 5.0.1 (hash a3db93c5b259 built 2025-12-16 01:51:40)
+DracoDecoder | Decoded 24 vertices, 36 indices
+DracoDecoder | Decoded 24 vertices, 36 indices
+DracoDecoder | Decoded 24 vertices, 36 indices
+DracoDecoder | Decoded 24 vertices, 36 indices
+DracoDecoder | Decoded 24 vertices, 36 indices
+DracoDecoder | Decoded 24 vertices, 36 indices
+DracoDecoder | Decoded 14159 vertices, 39396 indices
+DracoDecoder | Decoded 14159 vertices, 39396 indices
+DracoDecoder | Decoded 14159 vertices, 39396 indices
+DracoDecoder | Decoded 14159 vertices, 39396 indices
+DracoDecoder | Decoded 4256 vertices, 12894 indices
+DracoDecoder | Decoded 4256 vertices, 12894 indices
+DracoDecoder | Decoded 4256 vertices, 12894 indices
+DracoDecoder | Decoded 4256 vertices, 12894 indices
+DracoDecoder | Decoded 4256 vertices, 12894 indices
+DracoDecoder | Decoded 4256 vertices, 12894 indices
+DracoDecoder | Decoded 4256 vertices, 12894 indices
+DracoDecoder | Decoded 4256 vertices, 12894 indices
+DracoDecoder | Decoded 4256 vertices, 12894 indices
+DracoDecoder | Decoded 4256 vertices, 12894 indices
+DracoDecoder | Decoded 4256 vertices, 12894 indices
+DracoDecoder | Decoded 4256 vertices, 12894 indices
+DracoDecoder | Decoded 4256 vertices, 12894 indices
+DracoDecoder | Decoded 4256 vertices, 12894 indices
+DracoDecoder | Decoded 4256 vertices, 12894 indices
+DracoDecoder | Decoded 4256 vertices, 12894 indices
+DracoDecoder | Decoded 4256 vertices, 12894 indices
+DracoDecoder | Decoded 4256 vertices, 12894 indices
+DracoDecoder | Decoded 4256 vertices, 12894 indices
+DracoDecoder | Decoded 4256 vertices, 12894 indices
+DracoDecoder | Decoded 4256 vertices, 12894 indices
+DracoDecoder | Decoded 4256 vertices, 12894 indices
+DracoDecoder | Decoded 4256 vertices, 12894 indices
+DracoDecoder | Decoded 4256 vertices, 12894 indices
+DracoDecoder | Decoded 4256 vertices, 12894 indices
+DracoDecoder | Decoded 4256 vertices, 12894 indices
+DracoDecoder | Decoded 4256 vertices, 12894 indices
+DracoDecoder | Decoded 4256 vertices, 12894 indices
+DracoDecoder | Decoded 4256 vertices, 12894 indices
+DracoDecoder | Decoded 4256 vertices, 12894 indices
+DracoDecoder | Decoded 4256 vertices, 12894 indices
+DracoDecoder | Decoded 4256 vertices, 12894 indices
+DracoDecoder | Decoded 4256 vertices, 12894 indices
+DracoDecoder | Decoded 4256 vertices, 12894 indices
+DracoDecoder | Decoded 4256 vertices, 12894 indices
+DracoDecoder | Decoded 4256 vertices, 12894 indices
+DracoDecoder | Decoded 4256 vertices, 12894 indices
+DracoDecoder | Decoded 4256 vertices, 12894 indices
+DracoDecoder | Decoded 4256 vertices, 12894 indices
+DracoDecoder | Decoded 4256 vertices, 12894 indices
+DracoDecoder | Decoded 4256 vertices, 12894 indices
+DracoDecoder | Decoded 4256 vertices, 12894 indices
+DracoDecoder | Decoded 4256 vertices, 12894 indices
+DracoDecoder | Decoded 4256 vertices, 12894 indices
+DracoDecoder | Decoded 4256 vertices, 12894 indices
+DracoDecoder | Decoded 4256 vertices, 12894 indices
+DracoDecoder | Decoded 4256 vertices, 12894 indices
+DracoDecoder | Decoded 4256 vertices, 12894 indices
+DracoDecoder | Decoded 4256 vertices, 12894 indices
+DracoDecoder | Decoded 4256 vertices, 12894 indices
+DracoDecoder | Decoded 4256 vertices, 12894 indices
+DracoDecoder | Decoded 4256 vertices, 12894 indices
+DracoDecoder | Decoded 4256 vertices, 12894 indices
+DracoDecoder | Decoded 4256 vertices, 12894 indices
+DracoDecoder | Decoded 4256 vertices, 12894 indices
+DracoDecoder | Decoded 4256 vertices, 12894 indices
+DracoDecoder | Decoded 1910 vertices, 8232 indices
+DracoDecoder | Decoded 1910 vertices, 8232 indices
+DracoDecoder | Decoded 1910 vertices, 8232 indices
+DracoDecoder | Decoded 1910 vertices, 8232 indices
+DracoDecoder | Decoded 3640 vertices, 12120 indices
+DracoDecoder | Decoded 3640 vertices, 12120 indices
+DracoDecoder | Decoded 3640 vertices, 12120 indices
+DracoDecoder | Decoded 3640 vertices, 12120 indices
+DracoDecoder | Decoded 3640 vertices, 12120 indices
+DracoDecoder | Decoded 3640 vertices, 12120 indices
+DracoDecoder | Decoded 3640 vertices, 12120 indices
+DracoDecoder | Decoded 3640 vertices, 12120 indices
+DracoDecoder | Decoded 3640 vertices, 12120 indices
+DracoDecoder | Decoded 3640 vertices, 12120 indices
+DracoDecoder | Decoded 3640 vertices, 12120 indices
+DracoDecoder | Decoded 3640 vertices, 12120 indices
+DracoDecoder | Decoded 3640 vertices, 12120 indices
+DracoDecoder | Decoded 3640 vertices, 12120 indices
+DracoDecoder | Decoded 3640 vertices, 12120 indices
+DracoDecoder | Decoded 3640 vertices, 12120 indices
+DracoDecoder | Decoded 3640 vertices, 12120 indices
+DracoDecoder | Decoded 3640 vertices, 12120 indices
+DracoDecoder | Decoded 3640 vertices, 12120 indices
+DracoDecoder | Decoded 3640 vertices, 12120 indices
+DracoDecoder | Decoded 3640 vertices, 12120 indices
+DracoDecoder | Decoded 3640 vertices, 12120 indices
+DracoDecoder | Decoded 3640 vertices, 12120 indices
+DracoDecoder | Decoded 3640 vertices, 12120 indices
+DracoDecoder | Decoded 3640 vertices, 12120 indices
+DracoDecoder | Decoded 3640 vertices, 12120 indices
+DracoDecoder | Decoded 3640 vertices, 12120 indices
+DracoDecoder | Decoded 3640 vertices, 12120 indices
+DracoDecoder | Decoded 3640 vertices, 12120 indices
+DracoDecoder | Decoded 3640 vertices, 12120 indices
+DracoDecoder | Decoded 3640 vertices, 12120 indices
+DracoDecoder | Decoded 3640 vertices, 12120 indices
+DracoDecoder | Decoded 3640 vertices, 12120 indices
+DracoDecoder | Decoded 3640 vertices, 12120 indices
+DracoDecoder | Decoded 3640 vertices, 12120 indices
+DracoDecoder | Decoded 3640 vertices, 12120 indices
+DracoDecoder | Decoded 3640 vertices, 12120 indices
+DracoDecoder | Decoded 3640 vertices, 12120 indices
+DracoDecoder | Decoded 3640 vertices, 12120 indices
+DracoDecoder | Decoded 3640 vertices, 12120 indices
+DracoDecoder | Decoded 14159 vertices, 39396 indices
+DracoDecoder | Decoded 14159 vertices, 39396 indices
+DracoDecoder | Decoded 14159 vertices, 39396 indices
+DracoDecoder | Decoded 14159 vertices, 39396 indices
+DracoDecoder | Decoded 364 vertices, 546 indices
+DracoDecoder | Decoded 364 vertices, 546 indices
+DracoDecoder | Decoded 364 vertices, 546 indices
+DracoDecoder | Decoded 364 vertices, 546 indices
+DracoDecoder | Decoded 364 vertices, 546 indices
+DracoDecoder | Decoded 364 vertices, 546 indices
+DracoDecoder | Decoded 364 vertices, 546 indices
+DracoDecoder | Decoded 364 vertices, 546 indices
+DracoDecoder | Decoded 364 vertices, 546 indices
+DracoDecoder | Decoded 364 vertices, 546 indices
+DracoDecoder | Decoded 364 vertices, 546 indices
+DracoDecoder | Decoded 364 vertices, 546 indices
+DracoDecoder | Decoded 364 vertices, 546 indices
+DracoDecoder | Decoded 364 vertices, 546 indices
+DracoDecoder | Decoded 364 vertices, 546 indices
+DracoDecoder | Decoded 364 vertices, 546 indices
+
+Blender quit
+

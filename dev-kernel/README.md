@@ -157,11 +157,15 @@ toolchains:
   codex:
     enabled: true
     timeout_seconds: 1800
-    model: o3
+    model: gpt-5.2
+    config:
+      model_reasoning_effort: xhigh
   claude:
     enabled: true
     timeout_seconds: 1800
-    model: claude-sonnet-4-20250514
+    model: opus
+    config:
+      ultrathink: true
   crush:
     enabled: true
     timeout_seconds: 1800
