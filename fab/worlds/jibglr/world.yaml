@@ -1,0 +1,135 @@
+# fab/worlds/jibglr/world.yaml
+schema_version: "1.0"
+
+world_id: jibglr
+world_config_id: jibglr_forest_clearing_v001
+world_type: exterior_environment
+version: "0.1.0"
+
+generator:
+  name: Jibglr Forest Clearing
+  description: |
+    A stylized low-poly forest clearing with a small stream and wooden bridge.
+    Features procedural tree placement, stylized vegetation, and peaceful atmosphere.
+  author: Fab Pipeline
+  required_addons: []  # No Sverchok needed for simple low-poly
+
+build:
+  # No template needed - prepare stage creates scene from scratch
+  template_blend: null
+  blender_version_min: "4.0.0"
+  determinism:
+    seed: 42
+    pythonhashseed: 0
+    cycles_seed: 42
+  blender:
+    args: ["--background", "--factory-startup"]
+    env:
+      CYCLES_DEVICE: "CPU"
+      PYTHONHASHSEED: "0"
+
+parameters:
+  defaults:
+    layout:
+      clearing_radius_m: 12.0
+      stream_width_m: 2.5
+      bridge_length_m: 4.0
+    trees:
+      count: 18
+      min_distance_m: 3.0
+      style: stylized_low_poly  # stylized_low_poly | realistic_low_poly
+    vegetation:
+      grass_patches: 30
+      rock_count: 8
+      flower_patches: 5
+    bridge:
+      style: rustic_planks
+      has_rails: true
+    materials:
+      palette: forest_autumn  # forest_autumn | forest_spring | forest_winter
+    lighting:
+      preset: golden_hour  # golden_hour | midday | overcast
+      sun_angle_deg: 35.0
+  schema:
+    trees.style:
+      type: enum
+      values: [stylized_low_poly, realistic_low_poly]
+    materials.palette:
+      type: enum
+      values: [forest_autumn, forest_spring, forest_winter]
+    lighting.preset:
+      type: enum
+      values: [golden_hour, midday, overcast]
+
+stages:
+  - id: prepare
+    type: blender
+    script: blender/stages/prepare.py
+    outputs: ["stages/prepare/"]
+
+  - id: generate
+    type: blender
+    script: blender/stages/generate.py
+    requires: [prepare]
+    outputs: ["stages/generate/"]
+
+  - id: navmesh
+    type: blender
+    script: blender/stages/navmesh.py
+    requires: [generate]
+    outputs: ["stages/navmesh/"]
+
+  - id: materials
+    type: blender
+    script: blender/stages/materials.py
+    requires: [navmesh]
+    outputs: ["stages/materials/"]
+
+  - id: lighting
+    type: blender
+    script: blender/stages/lighting.py
+    requires: [materials]
+    params: ["lighting.preset"]
+    outputs: ["stages/lighting/"]
+
+  - id: export
+    type: blender
+    script: blender/stages/export.py
+    requires: [lighting]
+    outputs: ["world/jibglr.glb"]
+    settings:
+      draco_compression: true
+
+  - id: render
+    type: blender
+    script: blender/stages/render.py
+    requires: [lighting]
+    outputs: ["render/beauty/*.png"]
+
+  - id: validate
+    type: gate
+    requires: [export]
+    gates:
+      - fab/gates/godot_integration_v001.yaml
+
+  - id: godot
+    type: godot
+    requires: [validate]
+    optional: true
+    outputs: ["godot/project/", "godot/index.html"]
+
+budgets:
+  blender:
+    max_objects: 500
+    max_vertices: 50000  # Low-poly target
+  godot:
+    max_glb_size_mb: 5
+    max_materials: 16
+    max_draw_calls_est: 100
+
+publish:
+  viewer:
+    enabled: true
+    paths:
+      glb: fab/outora-library/viewer/assets/exports/jibglr.glb
+      game: fab/outora-library/viewer/assets/games/jibglr/

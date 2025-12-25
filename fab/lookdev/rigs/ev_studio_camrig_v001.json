@@ -1,0 +1,99 @@
+{
+  "rig_id": "ev_studio_camrig_v001",
+  "version": "1.0.0",
+  "category": "product_showcase",
+  "created_at": "2024-12-25T00:00:00Z",
+
+  "normalization": {
+    "origin": "center_ground",
+    "up_axis": "Z",
+    "forward_axis": "-Y",
+    "distance_mode": "bbox_diagonal"
+  },
+
+  "fixed_cameras": [
+    {
+      "id": "hero_3q",
+      "description": "Hero three-quarter, dramatic low angle",
+      "type": "perspective",
+      "focal_length_mm": 50,
+      "sensor_width_mm": 36,
+      "azimuth_deg": 45,
+      "elevation_deg": 18,
+      "distance_factor": 2.8,
+      "look_at": [0, 0, 0.6]
+    },
+    {
+      "id": "front",
+      "description": "Direct front, product catalog style",
+      "type": "perspective",
+      "focal_length_mm": 50,
+      "sensor_width_mm": 36,
+      "azimuth_deg": 0,
+      "elevation_deg": 12,
+      "distance_factor": 2.6,
+      "look_at": [0, 0, 0.5]
+    },
+    {
+      "id": "rear_3q",
+      "description": "Rear three-quarter, showing taillights",
+      "type": "perspective",
+      "focal_length_mm": 50,
+      "sensor_width_mm": 36,
+      "azimuth_deg": 210,
+      "elevation_deg": 15,
+      "distance_factor": 2.6,
+      "look_at": [0, 0, 0.5]
+    },
+    {
+      "id": "profile",
+      "description": "Side profile, full vehicle silhouette",
+      "type": "perspective",
+      "focal_length_mm": 85,
+      "sensor_width_mm": 36,
+      "azimuth_deg": 90,
+      "elevation_deg": 5,
+      "distance_factor": 3.0,
+      "look_at": [0, 0, 0.5]
+    },
+    {
+      "id": "low_drama",
+      "description": "Low dramatic angle, heroic perspective",
+      "type": "perspective",
+      "focal_length_mm": 35,
+      "sensor_width_mm": 36,
+      "azimuth_deg": 40,
+      "elevation_deg": 5,
+      "distance_factor": 2.2,
+      "look_at": [0, 0, 0.7]
+    },
+    {
+      "id": "detail_headlight",
+      "description": "Close-up on front headlight detail",
+      "type": "perspective",
+      "focal_length_mm": 100,
+      "sensor_width_mm": 36,
+      "azimuth_deg": 25,
+      "elevation_deg": 10,
+      "distance_factor": 1.0,
+      "look_at_offset": [0.7, 1.8, 0.6],
+      "notes": "Offset targets front headlight region"
+    }
+  ],
+
+  "turntable": {
+    "enabled": true,
+    "frames": 12,
+    "axis": "Z",
+    "start_angle_deg": 0,
+    "base_camera": "hero_3q",
+    "notes": "Rotates vehicle, camera stays fixed at hero_3q position"
+  },
+
+  "render_modes": ["beauty", "clay"],
+
+  "output_naming": {
+    "fixed": "{mode}_{camera_id}.png",
+    "turntable": "{mode}_turntable_f{frame:02d}.png"
+  }
+}

@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JHTSIC - Electric Vehicle Photo Studio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg-void: #050507;
+        --bg-panel: rgba(12, 12, 16, 0.92);
+        --accent-electric: #2d7fff;
+        --accent-glow: #4a9eff;
+        --accent-dim: #1a4a8c;
+        --text-primary: #e8eaed;
+        --text-muted: #6b7280;
+        --border-subtle: rgba(255, 255, 255, 0.06);
+        --border-accent: rgba(45, 127, 255, 0.3);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Instrument Sans", -apple-system, sans-serif;
+        background: var(--bg-void);
+        color: var(--text-primary);
+        overflow: hidden;
+        cursor: default;
+      }
+
+      #canvas-container {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+      }
+
+      canvas {
+        display: block;
+      }
+
+      .ui-panel {
+        position: fixed;
+        background: var(--bg-panel);
+        border: 1px solid var(--border-subtle);
+        border-radius: 16px;
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        z-index: 100;
+        box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5),
+          inset 0 1px 0 rgba(255, 255, 255, 0.03);
+      }
+
+      #header {
+        top: 24px;
+        left: 24px;
+        right: 24px;
+        padding: 16px 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .brand-icon {
+        width: 48px;
+        height: 48px;
+        background: linear-gradient(
+          135deg,
+          var(--accent-electric),
+          var(--accent-dim)
+        );
+        border-radius: 12px;
+        display: grid;
+        place-items: center;
+        font-size: 24px;
+        box-shadow: 0 4px 20px rgba(45, 127, 255, 0.35);
+      }
+
+      .brand-text h1 {
+        font-size: 1.35rem;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        background: linear-gradient(
+          135deg,
+          var(--text-primary),
+          var(--accent-glow)
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .brand-text span {
+        font-size: 0.68rem;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        font-weight: 500;
+      }
+
+      .controls-hint {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        display: flex;
+        gap: 16px;
+      }
+
+      .key {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 22px;
+        height: 22px;
+        padding: 0 6px;
+        background: rgba(45, 127, 255, 0.12);
+        border: 1px solid var(--border-accent);
+        border-radius: 5px;
+        color: var(--accent-glow);
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.65rem;
+        font-weight: 500;
+        margin-right: 6px;
+      }
+
+      #controls {
+        bottom: 24px;
+        left: 24px;
+        width: 320px;
+        padding: 20px;
+      }
+
+      .section {
+        margin-bottom: 20px;
+      }
+
+      .section:last-child {
+        margin-bottom: 0;
+      }
+
+      .section-label {
+        font-size: 0.6rem;
+        text-transform: uppercase;
+        letter-spacing: 0.18em;
+        color: var(--accent-electric);
+        font-weight: 600;
+        margin-bottom: 12px;
+      }
+
+      .slider-row {
+        margin-bottom: 14px;
+      }
+
+      .slider-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+      }
+
+      .slider-header span {
+        font-size: 0.8rem;
+        color: var(--text-primary);
+      }
+
+      .slider-value {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.75rem;
+        color: var(--accent-glow);
+        font-weight: 500;
+      }
+
+      input[type="range"] {
+        width: 100%;
+        height: 4px;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 2px;
+        -webkit-appearance: none;
+        appearance: none;
+        cursor: pointer;
+      }
+
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 16px;
+        height: 16px;
+        background: linear-gradient(
+          135deg,
+          var(--accent-glow),
+          var(--accent-electric)
+        );
+        border-radius: 50%;
+        cursor: grab;
+        box-shadow: 0 2px 12px rgba(45, 127, 255, 0.5);
+        transition: transform 0.15s ease;
+      }
+
+      input[type="range"]::-webkit-slider-thumb:active {
+        cursor: grabbing;
+        transform: scale(1.15);
+      }
+
+      .toggle-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 6px 0;
+      }
+
+      .toggle-row span {
+        font-size: 0.8rem;
+      }
+
+      .toggle {
+        width: 40px;
+        height: 22px;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 11px;
+        cursor: pointer;
+        position: relative;
+        transition: background 0.25s ease;
+      }
+
+      .toggle.on {
+        background: linear-gradient(
+          135deg,
+          var(--accent-electric),
+          var(--accent-dim)
+        );
+      }
+
+      .toggle::after {
+        content: "";
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        background: var(--text-primary);
+        border-radius: 50%;
+        top: 3px;
+        left: 3px;
+        transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      .toggle.on::after {
+        transform: translateX(18px);
+      }
+
+      #info {
+        bottom: 24px;
+        right: 24px;
+        width: 240px;
+        padding: 18px 20px;
+      }
+
+      .info-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px solid var(--border-subtle);
+      }
+
+      .info-row:last-child {
+        border-bottom: none;
+      }
+
+      .info-row .label {
+        font-size: 0.78rem;
+        color: var(--text-muted);
+      }
+
+      .info-row .value {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.78rem;
+        color: var(--text-primary);
+        font-weight: 500;
+      }
+
+      #loading {
+        position: fixed;
+        inset: 0;
+        background: var(--bg-void);
+        display: grid;
+        place-items: center;
+        z-index: 500;
+        transition: opacity 0.6s ease;
+      }
+
+      #loading.fade-out {
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .loader {
+        text-align: center;
+      }
+
+      .loader-ring {
+        width: 56px;
+        height: 56px;
+        border: 3px solid rgba(45, 127, 255, 0.15);
+        border-top-color: var(--accent-electric);
+        border-radius: 50%;
+        animation: spin 0.9s linear infinite;
+        margin: 0 auto 20px;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .loader p {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        letter-spacing: 0.02em;
+      }
+
+      .quality-chip {
+        position: fixed;
+        top: 100px;
+        right: 24px;
+        background: linear-gradient(
+          135deg,
+          rgba(45, 127, 255, 0.15),
+          rgba(45, 127, 255, 0.05)
+        );
+        border: 1px solid var(--border-accent);
+        border-radius: 20px;
+        padding: 8px 16px;
+        font-size: 0.65rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--accent-glow);
+        font-weight: 500;
+        z-index: 100;
+      }
+
+      .color-swatch {
+        display: flex;
+        gap: 8px;
+        margin-top: 10px;
+      }
+
+      .swatch {
+        width: 28px;
+        height: 28px;
+        border-radius: 8px;
+        cursor: pointer;
+        border: 2px solid transparent;
+        transition: all 0.2s ease;
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+      }
+
+      .swatch:hover {
+        transform: scale(1.1);
+      }
+
+      .swatch.active {
+        border-color: var(--accent-glow);
+        box-shadow: 0 0 12px rgba(45, 127, 255, 0.4);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="canvas-container"></div>
+
+    <div id="loading">
+      <div class="loader">
+        <div class="loader-ring"></div>
+        <p>Initializing photo studio...</p>
+      </div>
+    </div>
+
+    <div id="header" class="ui-panel">
+      <div class="brand">
+        <div class="brand-icon">EV</div>
+        <div class="brand-text">
+          <h1>Electric Vehicle Studio</h1>
+          <span>Dramatic Lighting Preview</span>
+        </div>
+      </div>
+      <div class="controls-hint">
+        <span><span class="key">LMB</span>Orbit</span>
+        <span><span class="key">RMB</span>Pan</span>
+        <span><span class="key">Scroll</span>Zoom</span>
+      </div>
+    </div>
+
+    <div class="quality-chip">Realtime Preview</div>
+
+    <div id="controls" class="ui-panel">
+      <div class="section">
+        <div class="section-label">Vehicle Paint</div>
+        <div class="color-swatch" id="paint-colors">
+          <div
+            class="swatch active"
+            data-color="#1a1a2e"
+            style="background: linear-gradient(145deg, #2a2a40, #0a0a12)"
+          ></div>
+          <div
+            class="swatch"
+            data-color="#2d1f1f"
+            style="background: linear-gradient(145deg, #4a2828, #1a0808)"
+          ></div>
+          <div
+            class="swatch"
+            data-color="#1f2d1f"
+            style="background: linear-gradient(145deg, #283a28, #081008)"
+          ></div>
+          <div
+            class="swatch"
+            data-color="#f8f8f8"
+            style="background: linear-gradient(145deg, #ffffff, #d0d0d0)"
+          ></div>
+          <div
+            class="swatch"
+            data-color="#0a2040"
+            style="background: linear-gradient(145deg, #1a3a60, #040810)"
+          ></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-label">Lighting</div>
+        <div class="slider-row">
+          <div class="slider-header">
+            <span>Key Light</span>
+            <span class="slider-value" id="key-value">1.5</span>
+          </div>
+          <input type="range" id="key-slider" min="0" max="3" step="0.1" value="1.5" />
+        </div>
+        <div class="slider-row">
+          <div class="slider-header">
+            <span>Fill Ratio</span>
+            <span class="slider-value" id="fill-value">0.30</span>
+          </div>
+          <input type="range" id="fill-slider" min="0" max="1" step="0.05" value="0.3" />
+        </div>
+        <div class="slider-row">
+          <div class="slider-header">
+            <span>Rim Intensity</span>
+            <span class="slider-value" id="rim-value">2.0</span>
+          </div>
+          <input type="range" id="rim-slider" min="0" max="4" step="0.1" value="2.0" />
+        </div>
+        <div class="slider-row">
+          <div class="slider-header">
+            <span>Exposure</span>
+            <span class="slider-value" id="exposure-value">1.00</span>
+          </div>
+          <input type="range" id="exposure-slider" min="0.3" max="2" step="0.05" value="1.0" />
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-label">Effects</div>
+        <div class="toggle-row">
+          <span>Bloom</span>
+          <div class="toggle on" id="bloom-toggle"></div>
+        </div>
+        <div class="toggle-row">
+          <span>Floor Reflections</span>
+          <div class="toggle on" id="reflection-toggle"></div>
+        </div>
+        <div class="toggle-row">
+          <span>Rotate Vehicle</span>
+          <div class="toggle" id="rotate-toggle"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="info" class="ui-panel">
+      <div class="section-label">Scene Info</div>
+      <div class="info-row">
+        <span class="label">Triangles</span>
+        <span class="value" id="info-tris">-</span>
+      </div>
+      <div class="info-row">
+        <span class="label">Draw Calls</span>
+        <span class="value" id="info-draws">-</span>
+      </div>
+      <div class="info-row">
+        <span class="label">FPS</span>
+        <span class="value" id="info-fps">-</span>
+      </div>
+    </div>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+        }
+      }
+    </script>
+
+    <script type="module">
+      import * as THREE from "three";
+      import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+      import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
+      import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
+      import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
+      import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
+
+      // ============================================
+      // SCENE SETUP
+      // ============================================
+
+      const container = document.getElementById("canvas-container");
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x050507);
+
+      // Camera
+      const camera = new THREE.PerspectiveCamera(
+        45,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        100
+      );
+      camera.position.set(8, 3, 10);
+
+      // Renderer
+      const renderer = new THREE.WebGLRenderer({
+        antialias: true,
+        powerPreference: "high-performance",
+      });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.0;
+      renderer.outputColorSpace = THREE.SRGBColorSpace;
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      container.appendChild(renderer.domElement);
+
+      // Controls
+      const controls = new OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.05;
+      controls.minDistance = 4;
+      controls.maxDistance = 25;
+      controls.target.set(0, 0.8, 0);
+      controls.maxPolarAngle = Math.PI * 0.55;
+
+      // ============================================
+      // STUDIO ENVIRONMENT (Cyclorama)
+      // ============================================
+
+      // Infinity cove / cyclorama backdrop
+      const cycloramaGeom = new THREE.CylinderGeometry(16, 16, 10, 64, 1, true, 0, Math.PI);
+      const cycloramaMat = new THREE.MeshStandardMaterial({
+        color: 0x0c0c10,
+        roughness: 0.95,
+        metalness: 0,
+        side: THREE.BackSide,
+      });
+      const cyclorama = new THREE.Mesh(cycloramaGeom, cycloramaMat);
+      cyclorama.position.set(0, 5, -6);
+      cyclorama.rotation.y = Math.PI;
+      scene.add(cyclorama);
+
+      // Studio floor - reflective
+      const floorGeom = new THREE.PlaneGeometry(40, 40);
+      const floorMat = new THREE.MeshStandardMaterial({
+        color: 0x080810,
+        roughness: 0.15,
+        metalness: 0.85,
+        envMapIntensity: 0.8,
+      });
+      const floor = new THREE.Mesh(floorGeom, floorMat);
+      floor.rotation.x = -Math.PI / 2;
+      floor.receiveShadow = true;
+      scene.add(floor);
+
+      // ============================================
+      // ELECTRIC VEHICLE (Procedural)
+      // ============================================
+
+      const vehicleGroup = new THREE.Group();
+
+      // Vehicle body material
+      let bodyColor = new THREE.Color(0x1a1a2e);
+      const bodyMat = new THREE.MeshStandardMaterial({
+        color: bodyColor,
+        roughness: 0.12,
+        metalness: 0.95,
+        envMapIntensity: 1.2,
+      });
+
+      // Main body (low-poly sedan shape)
+      const bodyShape = new THREE.Shape();
+      bodyShape.moveTo(-2.2, 0.3);
+      bodyShape.lineTo(2.4, 0.3);
+      bodyShape.lineTo(2.3, 0.5);
+      bodyShape.lineTo(1.8, 1.1);
+      bodyShape.lineTo(0.6, 1.4);
+      bodyShape.lineTo(-0.8, 1.4);
+      bodyShape.lineTo(-1.6, 1.1);
+      bodyShape.lineTo(-2.1, 0.6);
+      bodyShape.lineTo(-2.2, 0.3);
+
+      const extrudeSettings = {
+        steps: 1,
+        depth: 1.7,
+        bevelEnabled: true,
+        bevelThickness: 0.08,
+        bevelSize: 0.06,
+        bevelSegments: 3,
+      };
+
+      const bodyGeom = new THREE.ExtrudeGeometry(bodyShape, extrudeSettings);
+      bodyGeom.center();
+      const body = new THREE.Mesh(bodyGeom, bodyMat);
+      body.position.y = 0.5;
+      body.rotation.y = -Math.PI / 2;
+      body.castShadow = true;
+      body.receiveShadow = true;
+      vehicleGroup.add(body);
+
+      // Windows (glass)
+      const glassMat = new THREE.MeshStandardMaterial({
+        color: 0x111118,
+        roughness: 0.05,
+        metalness: 0.9,
+        transparent: true,
+        opacity: 0.7,
+      });
+
+      const windowShape = new THREE.Shape();
+      windowShape.moveTo(-0.7, 1.05);
+      windowShape.lineTo(0.5, 1.05);
+      windowShape.lineTo(0.9, 0.75);
+      windowShape.lineTo(-0.95, 0.75);
+      windowShape.lineTo(-0.7, 1.05);
+
+      const windowExtrudeSettings = {
+        steps: 1,
+        depth: 1.5,
+        bevelEnabled: false,
+      };
+
+      const windowGeom = new THREE.ExtrudeGeometry(windowShape, windowExtrudeSettings);
+      windowGeom.center();
+      const windowMesh = new THREE.Mesh(windowGeom, glassMat);
+      windowMesh.position.y = 0.58;
+      windowMesh.rotation.y = -Math.PI / 2;
+      vehicleGroup.add(windowMesh);
+
+      // Wheels
+      const wheelGeom = new THREE.CylinderGeometry(0.35, 0.35, 0.25, 32);
+      const tireMat = new THREE.MeshStandardMaterial({
+        color: 0x1a1a1a,
+        roughness: 0.9,
+        metalness: 0.1,
+      });
+      const rimMat = new THREE.MeshStandardMaterial({
+        color: 0x3a3a3a,
+        roughness: 0.2,
+        metalness: 0.9,
+      });
+
+      const wheelPositions = [
+        [-1.4, 0.35, 0.75],
+        [-1.4, 0.35, -0.75],
+        [1.5, 0.35, 0.75],
+        [1.5, 0.35, -0.75],
+      ];
+
+      wheelPositions.forEach((pos) => {
+        // Tire
+        const tire = new THREE.Mesh(wheelGeom, tireMat);
+        tire.rotation.x = Math.PI / 2;
+        tire.position.set(...pos);
+        tire.castShadow = true;
+        vehicleGroup.add(tire);
+
+        // Rim (inner)
+        const rimGeom = new THREE.CylinderGeometry(0.25, 0.25, 0.26, 5);
+        const rim = new THREE.Mesh(rimGeom, rimMat);
+        rim.rotation.x = Math.PI / 2;
+        rim.position.set(...pos);
+        vehicleGroup.add(rim);
+      });
+
+      // Headlights
+      const headlightGeom = new THREE.BoxGeometry(0.08, 0.12, 0.5);
+      const headlightMat = new THREE.MeshStandardMaterial({
+        color: 0xffffff,
+        emissive: 0xaaddff,
+        emissiveIntensity: 0.3,
+        roughness: 0.1,
+        metalness: 0.8,
+      });
+
+      const leftHeadlight = new THREE.Mesh(headlightGeom, headlightMat);
+      leftHeadlight.position.set(2.35, 0.55, 0.55);
+      vehicleGroup.add(leftHeadlight);
+
+      const rightHeadlight = new THREE.Mesh(headlightGeom, headlightMat);
+      rightHeadlight.position.set(2.35, 0.55, -0.55);
+      vehicleGroup.add(rightHeadlight);
+
+      // Taillights
+      const taillightMat = new THREE.MeshStandardMaterial({
+        color: 0x880000,
+        emissive: 0xff2222,
+        emissiveIntensity: 0.4,
+        roughness: 0.2,
+        metalness: 0.6,
+      });
+
+      const taillightGeom = new THREE.BoxGeometry(0.05, 0.1, 0.4);
+      const leftTaillight = new THREE.Mesh(taillightGeom, taillightMat);
+      leftTaillight.position.set(-2.2, 0.55, 0.5);
+      vehicleGroup.add(leftTaillight);
+
+      const rightTaillight = new THREE.Mesh(taillightGeom, taillightMat);
+      rightTaillight.position.set(-2.2, 0.55, -0.5);
+      vehicleGroup.add(rightTaillight);
+
+      // Electric accent strip (light bar)
+      const accentGeom = new THREE.BoxGeometry(0.02, 0.02, 1.4);
+      const accentMat = new THREE.MeshStandardMaterial({
+        color: 0x2277ff,
+        emissive: 0x2277ff,
+        emissiveIntensity: 1.0,
+        roughness: 0.1,
+      });
+      const accentStrip = new THREE.Mesh(accentGeom, accentMat);
+      accentStrip.position.set(2.4, 0.45, 0);
+      vehicleGroup.add(accentStrip);
+
+      scene.add(vehicleGroup);
+
+      // ============================================
+      // DRAMATIC LIGHTING SETUP
+      // ============================================
+
+      // Key light (main light from above-right)
+      const keyLight = new THREE.SpotLight(0xffffff, 150);
+      keyLight.position.set(6, 8, 4);
+      keyLight.angle = Math.PI / 5;
+      keyLight.penumbra = 0.6;
+      keyLight.decay = 2;
+      keyLight.castShadow = true;
+      keyLight.shadow.mapSize.width = 2048;
+      keyLight.shadow.mapSize.height = 2048;
+      keyLight.shadow.bias = -0.0001;
+      keyLight.target = vehicleGroup;
+      scene.add(keyLight);
+
+      // Fill light (softer, from left)
+      const fillLight = new THREE.SpotLight(0xd4e5ff, 45);
+      fillLight.position.set(-8, 5, 2);
+      fillLight.angle = Math.PI / 4;
+      fillLight.penumbra = 0.8;
+      fillLight.decay = 2;
+      fillLight.target = vehicleGroup;
+      scene.add(fillLight);
+
+      // Rim light (dramatic backlight)
+      const rimLight = new THREE.SpotLight(0xffeedd, 200);
+      rimLight.position.set(-4, 6, -8);
+      rimLight.angle = Math.PI / 6;
+      rimLight.penumbra = 0.4;
+      rimLight.decay = 2;
+      rimLight.target = vehicleGroup;
+      scene.add(rimLight);
+
+      // Accent lights (blue, for EV feel)
+      const accentLight1 = new THREE.PointLight(0x2277ff, 30, 8);
+      accentLight1.position.set(3, 0.3, 0);
+      scene.add(accentLight1);
+
+      const accentLight2 = new THREE.PointLight(0x2277ff, 20, 6);
+      accentLight2.position.set(-2.5, 0.3, 0);
+      scene.add(accentLight2);
+
+      // Very subtle ambient
+      const ambient = new THREE.AmbientLight(0x101020, 0.15);
+      scene.add(ambient);
+
+      // ============================================
+      // ENVIRONMENT MAP (for reflections)
+      // ============================================
+
+      const pmremGenerator = new THREE.PMREMGenerator(renderer);
+      pmremGenerator.compileEquirectangularShader();
+
+      const envScene = new THREE.Scene();
+      const envSphereGeom = new THREE.SphereGeometry(50, 32, 32);
+      const envSphereMat = new THREE.MeshBasicMaterial({
+        side: THREE.BackSide,
+        color: 0x0a0a12,
+      });
+      const envSphere = new THREE.Mesh(envSphereGeom, envSphereMat);
+      envScene.add(envSphere);
+
+      // Add gradient lights to environment
+      const envLight1 = new THREE.PointLight(0xffffff, 0.5, 100);
+      envLight1.position.set(20, 30, 10);
+      envScene.add(envLight1);
+
+      const envLight2 = new THREE.PointLight(0x4488ff, 0.3, 100);
+      envLight2.position.set(-20, 20, -15);
+      envScene.add(envLight2);
+
+      const envTexture = pmremGenerator.fromScene(envScene).texture;
+      scene.environment = envTexture;
+
+      // ============================================
+      // POST-PROCESSING
+      // ============================================
+
+      const composer = new EffectComposer(renderer);
+      const renderPass = new RenderPass(scene, camera);
+      composer.addPass(renderPass);
+
+      const bloomPass = new UnrealBloomPass(
+        new THREE.Vector2(window.innerWidth, window.innerHeight),
+        0.4,
+        0.3,
+        0.9
+      );
+      composer.addPass(bloomPass);
+
+      const outputPass = new OutputPass();
+      composer.addPass(outputPass);
+
+      // ============================================
+      // STATE
+      // ============================================
+
+      let autoRotate = false;
+      let frameCount = 0;
+      let lastTime = performance.now();
+
+      // ============================================
+      // CONTROLS UI
+      // ============================================
+
+      // Paint color swatches
+      document.querySelectorAll("#paint-colors .swatch").forEach((swatch) => {
+        swatch.addEventListener("click", () => {
+          document.querySelectorAll("#paint-colors .swatch").forEach((s) => s.classList.remove("active"));
+          swatch.classList.add("active");
+          const color = swatch.dataset.color;
+          bodyMat.color.set(color);
+        });
+      });
+
+      // Sliders
+      document.getElementById("key-slider").addEventListener("input", (e) => {
+        const val = parseFloat(e.target.value);
+        keyLight.intensity = val * 100;
+        document.getElementById("key-value").textContent = val.toFixed(1);
+      });
+
+      document.getElementById("fill-slider").addEventListener("input", (e) => {
+        const val = parseFloat(e.target.value);
+        fillLight.intensity = val * 150;
+        document.getElementById("fill-value").textContent = val.toFixed(2);
+      });
+
+      document.getElementById("rim-slider").addEventListener("input", (e) => {
+        const val = parseFloat(e.target.value);
+        rimLight.intensity = val * 100;
+        document.getElementById("rim-value").textContent = val.toFixed(1);
+      });
+
+      document.getElementById("exposure-slider").addEventListener("input", (e) => {
+        const val = parseFloat(e.target.value);
+        renderer.toneMappingExposure = val;
+        document.getElementById("exposure-value").textContent = val.toFixed(2);
+      });
+
+      // Toggles
+      document.getElementById("bloom-toggle").addEventListener("click", function () {
+        this.classList.toggle("on");
+        bloomPass.enabled = this.classList.contains("on");
+      });
+
+      document.getElementById("reflection-toggle").addEventListener("click", function () {
+        this.classList.toggle("on");
+        floorMat.roughness = this.classList.contains("on") ? 0.15 : 0.9;
+        floorMat.metalness = this.classList.contains("on") ? 0.85 : 0.1;
+      });
+
+      document.getElementById("rotate-toggle").addEventListener("click", function () {
+        this.classList.toggle("on");
+        autoRotate = this.classList.contains("on");
+      });
+
+      // ============================================
+      // ANIMATION LOOP
+      // ============================================
+
+      function countTriangles() {
+        let count = 0;
+        scene.traverse((obj) => {
+          if (obj.isMesh && obj.geometry) {
+            const geom = obj.geometry;
+            if (geom.index) {
+              count += geom.index.count / 3;
+            } else if (geom.attributes.position) {
+              count += geom.attributes.position.count / 3;
+            }
+          }
+        });
+        return Math.round(count);
+      }
+
+      function animate() {
+        requestAnimationFrame(animate);
+
+        if (autoRotate) {
+          vehicleGroup.rotation.y += 0.003;
+        }
+
+        controls.update();
+        composer.render();
+
+        // FPS counter
+        frameCount++;
+        const now = performance.now();
+        if (now - lastTime >= 1000) {
+          document.getElementById("info-fps").textContent = frameCount;
+          frameCount = 0;
+          lastTime = now;
+        }
+      }
+
+      // ============================================
+      // RESIZE HANDLER
+      // ============================================
+
+      window.addEventListener("resize", () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        composer.setSize(window.innerWidth, window.innerHeight);
+      });
+
+      // ============================================
+      // INIT
+      // ============================================
+
+      // Update info panel
+      document.getElementById("info-tris").textContent = countTriangles().toLocaleString();
+      document.getElementById("info-draws").textContent = renderer.info.render.calls || "~12";
+
+      // Hide loading screen
+      setTimeout(() => {
+        document.getElementById("loading").classList.add("fade-out");
+      }, 400);
+
+      animate();
+    </script>
+  </body>
+</html>

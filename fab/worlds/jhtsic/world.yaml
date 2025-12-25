@@ -1,0 +1,114 @@
+# fab/worlds/jhtsic/world.yaml
+schema_version: "1.0"
+
+world_id: jhtsic
+world_config_id: jhtsic_ev_photostudio_v001
+world_type: product_showcase
+version: "0.1.0"
+
+generator:
+  name: EV Photo Studio
+  description: |
+    A sleek electric vehicle in a minimalist photo studio with dramatic lighting.
+    Features:
+    - High-key cyclorama backdrop with subtle gradient
+    - Three-point dramatic lighting setup (key, fill, rim)
+    - Reflective studio floor with depth
+    - Procedural electric vehicle placeholder (for asset injection)
+    - Product photography camera angles
+  author: Fab Pipeline
+  required_addons: []
+
+build:
+  template_blend: null
+  blender_version_min: "4.0.0"
+  determinism:
+    seed: 42
+    pythonhashseed: 0
+    cycles_seed: 42
+  blender:
+    args: ["--background", "--factory-startup"]
+    env:
+      CYCLES_DEVICE: "CPU"
+      PYTHONHASHSEED: "0"
+
+parameters:
+  defaults:
+    studio:
+      backdrop_radius_m: 12.0
+      floor_size_m: 20.0
+      backdrop_height_m: 8.0
+      floor_reflectivity: 0.15
+    vehicle:
+      length_m: 4.8
+      width_m: 1.9
+      height_m: 1.5
+      body_color: [0.02, 0.02, 0.03]  # Near-black metallic
+      accent_color: [0.0, 0.5, 0.9]   # Electric blue
+    lighting:
+      preset: dramatic  # dramatic | soft | high_key
+      key_energy: 1500.0
+      fill_ratio: 0.3
+      rim_energy: 800.0
+      ambient_strength: 0.05
+    materials:
+      floor_color: [0.04, 0.04, 0.045]
+      backdrop_color: [0.12, 0.12, 0.13]
+  schema:
+    lighting.preset:
+      type: enum
+      values: [dramatic, soft, high_key]
+
+stages:
+  - id: prepare
+    type: blender
+    script: blender/stages/prepare.py
+    outputs: ["stages/prepare/"]
+
+  - id: generate
+    type: blender
+    script: blender/stages/generate.py
+    requires: [prepare]
+    outputs: ["stages/generate/"]
+
+  - id: lighting
+    type: blender
+    script: blender/stages/lighting.py
+    requires: [generate]
+    params: ["lighting.preset"]
+    outputs: ["stages/lighting/"]
+
+  - id: export
+    type: blender
+    script: blender/stages/export.py
+    requires: [lighting]
+    outputs: ["world/jhtsic.glb"]
+    settings:
+      draco_compression: true
+
+  - id: render
+    type: blender
+    script: blender/stages/render.py
+    requires: [lighting]
+    outputs: ["render/beauty/*.png"]
+
+  - id: validate
+    type: gate
+    requires: [export, render]
+    gates:
+      - fab/gates/car_realism_v001.yaml
+
+budgets:
+  blender:
+    max_objects: 200
+    max_vertices: 500000
+  godot:
+    max_glb_size_mb: 25
+    max_materials: 32
+    max_draw_calls_est: 200
+
+publish:
+  viewer:
+    enabled: true
+    paths:
+      glb: fab/outora-library/viewer/assets/exports/jhtsic.glb

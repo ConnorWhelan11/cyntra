@@ -49,8 +49,8 @@ class CodexAdapter(ToolchainAdapter):
         self.model_reasoning_effort = self.config.get(
             "model_reasoning_effort", self.config.get("reasoning_effort")
         )
-        # Codex CLI uses `--ask-for-approval` and `--sandbox`. Keep `approval_mode` as a
-        # backward-compatible alias.
+        # Codex CLI v0.77+ uses `--sandbox` and `--full-auto`. Keep `approval_mode` as a
+        # backward-compatible alias for config.
         self.approval_mode = self.config.get("approval_mode", "full-auto")
         self.sandbox_mode = self.config.get("sandbox", "workspace-write")
         self.ask_for_approval = self.config.get("ask_for_approval")
@@ -347,9 +347,16 @@ class CodexAdapter(ToolchainAdapter):
             "-",  # read prompt from stdin
             "--sandbox",
             str(self.sandbox_mode),
-            "--ask-for-approval",
-            str(self.ask_for_approval),
         ]
+
+        # Handle approval mode - Codex CLI v0.77+ removed --ask-for-approval
+        # Use --full-auto for automatic execution with sandbox
+        # Use --dangerously-bypass-approvals-and-sandbox for no prompts and no sandbox
+        if self.ask_for_approval == "never":
+            if self.sandbox_mode == "danger-full-access":
+                cmd.append("--dangerously-bypass-approvals-and-sandbox")
+            else:
+                cmd.append("--full-auto")
 
         reasoning_effort = self.model_reasoning_effort
         if reasoning_effort is None and isinstance(model, str) and model.startswith("gpt-5"):

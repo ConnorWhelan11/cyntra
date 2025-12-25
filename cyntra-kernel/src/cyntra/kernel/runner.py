@@ -236,7 +236,12 @@ class KernelRunner:
                     console.print(
                         f"[yellow]Target issue not ready ({reason}); forcing one-shot run[/yellow]"
                     )
-                    await self._dispatch_single_async(issue)
+                    from cyntra.planner.artifacts import collect_history_candidates
+                    history_candidates = collect_history_candidates(
+                        repo_root=self.config.repo_root,
+                        include_world=False,
+                    )
+                    await self._dispatch_single_async(issue, history_candidates=history_candidates)
                     return True
             console.print("[dim]Nothing ready to schedule[/dim]")
             return False
