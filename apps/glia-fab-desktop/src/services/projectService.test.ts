@@ -17,7 +17,7 @@ describe('projectService', () => {
       const mockResponse = {
         root: '/path/to/project',
         viewer_dir: '/path/to/viewer',
-        dev_kernel_dir: '/path/to/kernel',
+        cyntra_kernel_dir: '/path/to/kernel',
       };
       mockTauriInvoke({ detect_project: mockResponse });
 

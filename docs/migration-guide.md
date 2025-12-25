@@ -8,7 +8,7 @@ This guide helps you migrate from the legacy `fab/outora-library/` pipeline to t
 - ✓ Deterministic builds (reproducible outputs)
 - ✓ Portable (runs in isolated workcells)
 - ✓ Integrated quality gates
-- ✓ Dev-kernel automation support
+- ✓ Cyntra automation support
 - ✓ Parameter override system
 - ✓ Proper Git LFS handling
 
@@ -33,7 +33,7 @@ Both systems coexist:
 
 1. **Install fab-world CLI**:
    ```bash
-   cd dev-kernel
+   cd cyntra-kernel
    pip install -e .
    fab-world --help
    ```
@@ -43,13 +43,13 @@ Both systems coexist:
    # Quick test (prepare stage only)
    fab-world build \
      --world fab/worlds/outora_library \
-     --output .glia-fab/runs/test \
+     --output .cyntra/runs/test \
      --until prepare
 
    # Full build
    fab-world build \
      --world fab/worlds/outora_library \
-     --output .glia-fab/runs/full_build
+     --output .cyntra/runs/full_build
    ```
 
 3. **Compare outputs**:
@@ -59,7 +59,7 @@ Both systems coexist:
    blender --background outora_library_v0.4.0.blend --python export_fab_game_glb.py
 
    # New way (fab-world)
-   fab-world build --world fab/worlds/outora_library --output .glia-fab/runs/comparison
+   fab-world build --world fab/worlds/outora_library --output .cyntra/runs/comparison
 
    # Compare GLB sizes, vertex counts, etc.
    ```
@@ -120,7 +120,7 @@ Both systems coexist:
 | Old Location | New Location |
 |--------------|--------------|
 | `fab/outora-library/blender/*.blend1` | Gitignored |
-| `fab/outora-library/exports/*.glb` | `.glia-fab/runs/<run_id>/world/` (gitignored) |
+| `fab/outora-library/exports/*.glb` | `.cyntra/runs/<run_id>/world/` (gitignored) |
 | Manual `/tmp/` usage | `FAB_RUN_DIR`, `FAB_STAGE_DIR` env vars |
 | `fab/outora-library/viewer/assets/` | Published via `fab-world publish --viewer` |
 
@@ -256,10 +256,10 @@ python gate_validation.py --asset output.glb
 # Single command replaces entire pipeline
 fab-world build \
   --world fab/worlds/outora_library \
-  --output .glia-fab/runs/auto_build
+  --output .cyntra/runs/auto_build
 
 # Manifest tracks all stages, SHA256 hashes, timing
-cat .glia-fab/runs/auto_build/manifest.json
+cat .cyntra/runs/auto_build/manifest.json
 ```
 
 ## Verification Checklist
@@ -293,11 +293,11 @@ If migration causes issues:
    ```
 
 3. **Report issues**:
-   - Check logs: `.glia-fab/runs/<run_id>/logs/*.log`
+   - Check logs: `.cyntra/runs/<run_id>/logs/*.log`
    - File issue with manifest.json attached
    - Include Blender version, Python version
 
-## Dev-Kernel Integration
+## Cyntra Integration
 
 ### Old Approach (Manual)
 
@@ -321,7 +321,7 @@ If migration causes issues:
    }
    ```
 
-2. Dev-kernel automatically:
+2. Cyntra automatically:
    - Spawns workcell
    - Runs `fab-world build`
    - Validates with quality gates
@@ -348,7 +348,7 @@ A: Manifest tracks version. Non-determinism across versions is expected. Pin Ble
 A: Use `--param` CLI flag or edit `world.yaml` defaults. No code changes needed.
 
 **Q: What if gates fail?**
-A: Gates produce repair playbooks. Fix issues and re-run. Dev-kernel can automate iteration.
+A: Gates produce repair playbooks. Fix issues and re-run. Cyntra can automate iteration.
 
 **Q: Can I skip Godot export?**
 A: Yes. Set `optional: true` on godot stage or use `--until export` flag.

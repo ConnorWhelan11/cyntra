@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0",
+  "addon_id": "dialogue_manager",
+  "kind": "dialogue",
+  "version": "3.0.1",
+  "upstream": {
+    "repo": "https://github.com/nathanhoad/godot_dialogue_manager",
+    "ref": "v3.0.1",
+    "ref_type": "tag",
+    "fetched_at": "2024-12-21T00:00:00Z"
+  },
+  "compatibility": {
+    "godot_min": "4.0",
+    "godot_max": null,
+    "license": "MIT",
+    "dependencies": []
+  },
+  "install": {
+    "source_path": "addon/",
+    "target_path": "addons/dialogue_manager"
+  },
+  "checksums": {
+    "sha256": "33d079767218aa37c5da75734eabbed353ca28929daa87b6db746b3e38f5d488",
+    "verified_at": "2025-12-23T01:13:49.281280Z"
+  },
+  "description": "A powerful nonlinear dialogue system for Godot with visual editor",
+  "why": "Branching dialogue trees with visual editor. Essential for narrative games and NPC interactions.",
+  "notes": [
+    "Visual dialogue editor in Godot",
+    "Supports conditions and mutations",
+    "Localization support built-in",
+    "Signal-based event system",
+    "Works with any UI implementation"
+  ]
+}

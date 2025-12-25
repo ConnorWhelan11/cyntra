@@ -10,6 +10,7 @@ category: engine_integration
 schema_version: "1.0"
 
 requirements:
+  # Core markers (required for basic gameplay)
   require_spawn: true
   spawn_names:
     - SPAWN_PLAYER
@@ -27,6 +28,29 @@ requirements:
   interact_prefixes:
     - INTERACT_
     - OL_INTERACT_
+
+  # Extended markers (optional, enables advanced features)
+  require_navmesh: false  # Set true for NPC-enabled levels
+  navmesh_prefixes:
+    - NAV_
+    - OL_NAV_
+
+  require_npc_spawns: false  # Set true for NPC-required levels
+  npc_spawn_prefixes:
+    - NPC_SPAWN_
+    - OL_NPC_SPAWN_
+
+  item_spawn_prefixes:
+    - ITEM_SPAWN_
+    - OL_ITEM_SPAWN_
+
+  audio_zone_prefixes:
+    - AUDIO_ZONE_
+    - OL_AUDIO_ZONE_
+
+  waypoint_prefixes:
+    - WAYPOINT_
+    - OL_WAYPOINT_
 
 budgets:
   # Soft budgets; violations fail the gate in v001.
@@ -46,9 +70,15 @@ hard_fail_codes:
   - GODOT_UNSUPPORTED_GLTF_EXTENSION
   - GODOT_DRACO_DECODE_FAILED
   - ASSET_PARSE_FAILED
+  # Core contract
   - CONTRACT_NO_SPAWN
   - CONTRACT_TOO_MANY_SPAWNS
   - CONTRACT_NO_COLLIDERS
+  # Extended contract (only when require_* is true)
+  - CONTRACT_NO_NAVMESH
+  - CONTRACT_NO_NPC_SPAWNS
+  - CONTRACT_NPC_WITHOUT_NAV
+  # Budgets
   - BUDGET_TOO_MANY_MATERIALS
   - BUDGET_TOO_MANY_DRAW_CALLS
   - BUDGET_TOO_MANY_NODES
@@ -164,3 +194,34 @@ repair_playbook:
       Fix options:
       - Install Blender on the machine running `fab-godot` (required for Draco decode).
       - Or re-export a non-Draco `.glb` for engine integration builds.
+
+  CONTRACT_NO_NAVMESH:
+    priority: 2
+    instructions: |
+      Missing navigation mesh for NPC pathfinding.
+
+      In Blender:
+      - Ensure the navmesh stage has run to generate NAV_ meshes.
+      - Or manually create mesh objects named `NAV_*` (e.g. `NAV_WALKABLE`).
+      - The navmesh should cover all walkable floor surfaces.
+      - Include NAV_ objects in the export selection/collection.
+
+  CONTRACT_NO_NPC_SPAWNS:
+    priority: 2
+    instructions: |
+      Missing NPC spawn markers when `require_npc_spawns` is enabled.
+
+      In Blender:
+      - Create Empty objects named `NPC_SPAWN_<type>` (e.g. `NPC_SPAWN_librarian`).
+      - Place them at floor level where NPCs should appear.
+      - Set rotation to indicate initial facing direction.
+      - Include NPC_SPAWN_ empties in the export.
+
+  CONTRACT_NPC_WITHOUT_NAV:
+    priority: 2
+    instructions: |
+      NPC spawn markers found but no navigation mesh - NPCs won't be able to pathfind.
+
+      Either:
+      - Add NAV_ navigation meshes for pathfinding, OR
+      - Remove NPC_SPAWN_ markers if NPCs are not needed.

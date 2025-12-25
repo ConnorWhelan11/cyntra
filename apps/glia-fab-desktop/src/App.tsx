@@ -10,7 +10,6 @@ import type {
   BeadsIssue,
   BeadsIssuePatch,
   ChatMessage,
-  JobInfo,
   KernelSnapshot,
   Nav,
   ProjectInfo,
@@ -41,17 +40,28 @@ import {
   updateIssue as updateIssueService,
   writePty as writePtyService,
 } from "@/services";
-import { useInterval } from "@/hooks";
+import { useInterval, useKernelEventStream, useEventStreamCallback } from "@/hooks";
+import type { KernelEvent } from "@/types";
 
 import { WorkcellDetail } from "./WorkcellDetail";
 import { ViewerView } from "./features/viewer";
+import { ImmersaView } from "./features/immersa";
 import { ProjectsView } from "./features/projects";
 import { TerminalsView } from "./features/terminals";
 import { RunsView } from "./features/runs";
 import { KernelView } from "./features/kernel";
+import { HomeWorldBuilderView } from "./features/home";
+import { EvolutionLabView } from "./features/evolution";
+import { MemoryAtlasView } from "./features/memory";
+import { GalleryView2 } from "./features/gallery";
+import { StageView } from "./features/stage";
+import { GameplayView } from "./features/gameplay";
+import { GameplayProvider } from "./context/GameplayContext";
 import { AddProjectModal, NewRunModal, CreateIssueModal } from "./components/modals";
-import { Sidebar } from "./components/layout";
+import { MainLayout, PcbAmbientLayer } from "./components/layout";
+import { CommandPalette } from "./components/shared";
 import { ErrorBanner } from "./components/ui";
+import { ViewportDevPanel } from "./components/dev/ViewportDevPanel";
 
 function readStoredProjectRoots(): string[] {
   if (typeof localStorage === "undefined") return [];
@@ -82,9 +92,10 @@ function readStoredActiveProjectRoot(): string | null {
 }
 
 export default function App() {
-  const [nav, setNav] = useState<Nav>("projects");
+  const [nav, setNav] = useState<Nav>("universe");
   const [serverInfo, setServerInfo] = useState<ServerInfo | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [activeWorldId, setActiveWorldId] = useState<string | null>(null);
 
   const [projects, setProjects] = useState<ProjectInfo[]>([]);
   const [projectsHydrated, setProjectsHydrated] = useState(false);
@@ -128,6 +139,7 @@ export default function App() {
   const [kernelOnlyActiveIssues, setKernelOnlyActiveIssues] = useState(false);
   const [kernelEventsForSelectedIssue, setKernelEventsForSelectedIssue] =
     useState(false);
+  const [streamedEvents, setStreamedEvents] = useState<KernelEvent[]>([]);
 
   const [activeJobs, setActiveJobs] = useState<ActiveJobInfo[]>([]);
   const [kernelJobId, setKernelJobId] = useState<string | null>(null);
@@ -146,7 +158,10 @@ export default function App() {
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [chatInput, setChatInput] = useState("");
 
-  const terminalRef = useRef<HTMLDivElement | null>(null);
+  // Command palette state
+  const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
+
+  const terminalRef = useRef<HTMLDivElement>(null!);
   const xtermRef = useRef<Terminal | null>(null);
   const fitRef = useRef<FitAddon | null>(null);
   const activeSessionIdRef = useRef<string | null>(null);
@@ -194,6 +209,18 @@ export default function App() {
         setError(String(e));
       }
     })();
+  }, []);
+
+  // Command palette keyboard shortcut (Cmd+K / Ctrl+K)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        setIsCommandPaletteOpen(true);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
   useEffect(() => {
@@ -452,12 +479,12 @@ export default function App() {
       const mode = kernelMatch[1];
       if (mode === "once") {
         await kernelRunOnce();
-        addChat("system", "Started: dev-kernel run --once");
+        addChat("system", "Started: cyntra run --once");
         return;
       }
       if (mode === "watch") {
         await kernelRunWatch();
-        addChat("system", "Started: dev-kernel run --watch");
+        addChat("system", "Started: cyntra run --watch");
         return;
       }
       if (mode === "stop") {
@@ -471,7 +498,7 @@ export default function App() {
     const runIssueMatch = lower.match(/^run\\s+issue\\s+(\\d+)\\b/);
     if (runIssueMatch) {
       await kernelRunIssueOnce(runIssueMatch[1]);
-      addChat("system", `Started: dev-kernel run --once --issue ${runIssueMatch[1]}`);
+      addChat("system", `Started: cyntra run --once --issue ${runIssueMatch[1]}`);
       return;
     }
 
@@ -535,8 +562,8 @@ export default function App() {
       setError("Select a project first.");
       return;
     }
-    setNewRunLabel("dev_kernel_init");
-    setNewRunCommand("dev-kernel init");
+    setNewRunLabel("cyntra_init");
+    setNewRunCommand("cyntra init");
     setIsNewRunOpen(true);
   }
 
@@ -548,8 +575,8 @@ export default function App() {
     try {
       const job = await startJobService({
         projectRoot: activeProject.root,
-        command: "dev-kernel run --once",
-        label: "dev_kernel_once",
+        command: "cyntra run --once",
+        label: "cyntra_once",
       });
       setKernelJobId(job.jobId);
       setKernelRunId(job.runId);
@@ -570,8 +597,8 @@ export default function App() {
     try {
       const job = await startJobService({
         projectRoot: activeProject.root,
-        command: "dev-kernel run --watch",
-        label: "dev_kernel_watch",
+        command: "cyntra run --watch",
+        label: "cyntra_watch",
       });
       setKernelJobId(job.jobId);
       setKernelRunId(job.runId);
@@ -602,8 +629,8 @@ export default function App() {
     try {
       const job = await startJobService({
         projectRoot: activeProject.root,
-        command: `dev-kernel run --once --issue ${issueId}`,
-        label: `dev_kernel_issue_${issueId}`,
+        command: `cyntra run --once --issue ${issueId}`,
+        label: `cyntra_issue_${issueId}`,
       });
       setKernelJobId(job.jobId);
       setKernelRunId(job.runId);
@@ -822,24 +849,24 @@ export default function App() {
     await setActiveProjectWithInfo(root, info);
   }
 
-  async function bootstrapDevKernel() {
+  async function bootstrapCyntraKernel() {
     if (!activeProject) {
       setError("Select a project first.");
       return;
     }
-    if (!activeProject.dev_kernel_dir) {
-      setError("This project does not contain `dev-kernel/`.");
+    if (!activeProject.cyntra_kernel_dir) {
+      setError("This project does not contain `cyntra-kernel/`.");
       return;
     }
-    setNewRunLabel("bootstrap_dev_kernel");
+    setNewRunLabel("bootstrap_cyntra_kernel");
     setNewRunCommand(
       [
         'set -e',
-        'mkdir -p .glia-fab',
-        '[ -x .glia-fab/venv/bin/python ] || python3 -m venv .glia-fab/venv',
-        'source .glia-fab/venv/bin/activate',
+        'mkdir -p .cyntra',
+        '[ -x .cyntra/venv/bin/python ] || python3 -m venv .cyntra/venv',
+        'source .cyntra/venv/bin/activate',
         'python -m pip install -U pip',
-        'python -m pip install -e dev-kernel',
+        'python -m pip install -e "cyntra-kernel[dev]"',
       ].join(' && ')
     );
     setIsNewRunOpen(true);
@@ -944,7 +971,27 @@ export default function App() {
 
   const kernelIssues = useMemo(() => kernelSnapshot?.issues ?? [], [kernelSnapshot]);
   const kernelWorkcells = useMemo(() => kernelSnapshot?.workcells ?? [], [kernelSnapshot]);
-  const kernelEvents = useMemo(() => kernelSnapshot?.events ?? [], [kernelSnapshot]);
+  // Merge polled events with streamed events, prefer streamed for real-time updates
+  const kernelEvents = useMemo(() => {
+    const polledEvents = kernelSnapshot?.events ?? [];
+    if (streamedEvents.length === 0) return polledEvents;
+
+    // Merge and deduplicate, sorted by timestamp (newest last)
+    const all = [...polledEvents, ...streamedEvents];
+    const seen = new Set<string>();
+    const deduped = all.filter((e) => {
+      const key = `${e.timestamp}-${e.type}-${e.issueId ?? ""}-${e.workcellId ?? ""}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+
+    return deduped.sort((a, b) => {
+      const ta = a.timestamp ?? "";
+      const tb = b.timestamp ?? "";
+      return ta.localeCompare(tb);
+    });
+  }, [kernelSnapshot, streamedEvents]);
   const visibleKernelEvents = useMemo(() => {
     if (!kernelEventsForSelectedIssue) return kernelEvents;
     if (!kernelSelectedIssueId) return kernelEvents;
@@ -998,21 +1045,123 @@ export default function App() {
       refreshKernel(activeProject.root);
       refreshActiveJobs();
     },
-    nav === "kernel" && activeProject ? 2500 : null
+    // Increase polling interval since events stream in real-time
+    nav === "kernel" && activeProject ? 5000 : null
   );
 
-  return (
-    <div className="app">
-      <Sidebar
-        nav={nav}
-        setNav={setNav}
-        serverInfo={serverInfo}
-        activeProject={activeProject}
-      />
+  // Real-time event streaming via file watcher
+  const handleStreamedEvents = useEventStreamCallback((events: KernelEvent[]) => {
+    setStreamedEvents((prev) => {
+      // Deduplicate by timestamp+type, keep last 500 events
+      const newEvents = [...prev, ...events];
+      const seen = new Set<string>();
+      const deduped = newEvents.filter((e) => {
+        const key = `${e.timestamp}-${e.type}-${e.issueId ?? ""}-${e.workcellId ?? ""}`;
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
+      return deduped.slice(-500);
+    });
+  });
 
-      <div className="main">
+  // Only enable streaming when on kernel page with active project
+  const streamProjectRoot = nav === "kernel" && activeProject ? activeProject.root : null;
+  useKernelEventStream(streamProjectRoot, handleStreamedEvents);
+
+  // Clear streamed events when project changes
+  useEffect(() => {
+    setStreamedEvents([]);
+  }, [activeProjectRoot]);
+
+  // Derive kernel state from active jobs
+  const kernelState = useMemo(() => {
+    if (!kernelJobId) return "idle" as const;
+    const isActive = activeJobs.some((j) => j.jobId === kernelJobId);
+    return isActive ? "running" as const : "idle" as const;
+  }, [kernelJobId, activeJobs]);
+
+  // Command palette items - use sigil icons for navigation
+  const commandPaletteItems = useMemo(() => [
+    { id: "nav-universe", type: "navigation" as const, title: "Go to Universe", icon: "cosmograph", isSigil: true, action: () => setNav("universe") },
+    { id: "nav-kernel", type: "navigation" as const, title: "Go to Kernel", icon: "hexcore", isSigil: true, action: () => setNav("kernel") },
+    { id: "nav-evolution", type: "navigation" as const, title: "Go to Evolution", icon: "helix", isSigil: true, action: () => setNav("evolution") },
+    { id: "nav-memory", type: "navigation" as const, title: "Go to Memory", icon: "neuron", isSigil: true, action: () => setNav("memory") },
+    { id: "nav-terminals", type: "navigation" as const, title: "Go to Terminals", icon: "prompt", isSigil: true, action: () => setNav("terminals") },
+    { id: "nav-gallery", type: "navigation" as const, title: "Go to Gallery", icon: "aperture", isSigil: true, action: () => setNav("gallery") },
+    { id: "nav-stage", type: "navigation" as const, title: "Go to Stage", icon: "stage", isSigil: true, action: () => setNav("stage") },
+    { id: "nav-projects", type: "navigation" as const, title: "Go to Projects", icon: "cog", isSigil: true, action: () => setNav("projects") },
+    { id: "kernel-once", type: "command" as const, title: "Kernel: Run Once", action: () => kernelRunOnce() },
+    { id: "kernel-watch", type: "command" as const, title: "Kernel: Run Watch", action: () => kernelRunWatch() },
+    { id: "kernel-stop", type: "command" as const, title: "Kernel: Stop", action: () => kernelStop() },
+    { id: "new-terminal", type: "command" as const, title: "New Terminal", action: () => { createTerminal(); setNav("terminals"); } },
+    { id: "new-issue", type: "command" as const, title: "Create Issue", action: () => setIsCreateIssueOpen(true) },
+    { id: "add-project", type: "command" as const, title: "Add Project", action: () => setIsAddProjectOpen(true) },
+  ], []);
+
+  return (
+    <>
+      {/* PCB substrate background - renders behind all UI */}
+      <PcbAmbientLayer performance="medium" />
+
+      <MainLayout
+        nav={nav}
+        onNavChange={setNav}
+        serverInfo={serverInfo}
+        kernelSnapshot={kernelSnapshot}
+        kernelState={kernelState}
+        onOpenCommandPalette={() => setIsCommandPaletteOpen(true)}
+      >
         <ErrorBanner error={error} onDismiss={() => setError(null)} />
 
+        {/* New Mission Control views */}
+        {nav === "universe" && (
+          <HomeWorldBuilderView
+            projectRoot={activeProject?.root}
+            onNavigateToWorld={(_worldId) => {
+              // Navigate to evolution view with this world
+              setNav("evolution");
+              // TODO: Pass worldId to EvolutionLabView via state
+            }}
+          />
+        )}
+
+        {nav === "evolution" && (
+          <EvolutionLabView activeProject={activeProject} />
+        )}
+
+        {nav === "memory" && (
+          <MemoryAtlasView activeProject={activeProject} />
+        )}
+
+        {nav === "gallery" && (
+          <GalleryView2 activeProject={activeProject} />
+        )}
+
+        {nav === "stage" && (
+          <StageView
+            activeProject={activeProject}
+            serverInfo={serverInfo}
+            initialWorldId={activeWorldId}
+            onWorldSelected={setActiveWorldId}
+            onNavigate={(n) => setNav(n)}
+          />
+        )}
+
+        {nav === "gameplay" && (
+          <GameplayProvider>
+            <GameplayView
+              worldPath={
+                activeProject?.root
+                  ? `${activeProject.root}/fab/worlds/${activeWorldId ?? "outora_library"}`
+                  : undefined
+              }
+              onNavigate={(n) => setNav(n as Nav)}
+            />
+          </GameplayProvider>
+        )}
+
+        {/* Legacy views */}
         {nav === "projects" && (
           <ProjectsView
             projects={projects}
@@ -1028,7 +1177,7 @@ export default function App() {
             saveGlobalEnv={saveGlobalEnv}
             clearGlobalEnv={clearGlobalEnv}
             createTerminal={createTerminal}
-            bootstrapDevKernel={bootstrapDevKernel}
+            bootstrapCyntraKernel={bootstrapCyntraKernel}
           />
         )}
 
@@ -1054,9 +1203,11 @@ export default function App() {
             selectArtifact={selectArtifact}
           />
         )}
+
         {nav === "kernel" && (
           <KernelView
             activeProject={activeProject}
+            serverInfo={serverInfo}
             kernelSnapshot={kernelSnapshot}
             kernelCounts={kernelCounts}
             kernelWorkcells={kernelWorkcells}
@@ -1121,8 +1272,20 @@ export default function App() {
         {nav === "viewer" && (
           <ViewerView serverInfo={serverInfo} activeProject={activeProject} />
         )}
-      </div>
 
+        {nav === "immersa" && (
+          <ImmersaView serverInfo={serverInfo} activeProject={activeProject} />
+        )}
+      </MainLayout>
+
+      {/* Command Palette */}
+      <CommandPalette
+        isOpen={isCommandPaletteOpen}
+        onClose={() => setIsCommandPaletteOpen(false)}
+        items={commandPaletteItems}
+      />
+
+      {/* Modals */}
       <AddProjectModal
         isOpen={isAddProjectOpen}
         newProjectPath={newProjectPath}
@@ -1140,6 +1303,7 @@ export default function App() {
         onClose={() => setIsNewRunOpen(false)}
         onConfirm={confirmStartRun}
       />
+
       <CreateIssueModal
         isOpen={isCreateIssueOpen}
         newIssueTitle={newIssueTitle}
@@ -1169,6 +1333,8 @@ export default function App() {
           onClose={() => setSelectedWorkcellId(null)}
         />
       )}
-    </div>
+
+      <ViewportDevPanel />
+    </>
   );
 }

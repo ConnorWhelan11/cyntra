@@ -1,0 +1,40 @@
+name: asset-repair-playbook
+version: 1.0.0
+description: |
+  Given gate failures, generate targeted fix instructions (iteration.py pattern).
+  Produces actionable repair steps for failed assets.
+category: fab
+priority: high
+phase: fab
+
+inputs:
+  - name: verdict_path
+    type: string
+    description: Path to gate verdict JSON
+    required: true
+  - name: asset_path
+    type: string
+    description: Path to failing asset
+    required: true
+  - name: max_iterations
+    type: integer
+    description: Maximum repair iterations
+    required: false
+    default: 3
+
+outputs:
+  - name: playbook
+    type: array
+    description: Ordered list of repair steps
+  - name: priority_failures
+    type: array
+    description: Failures ordered by severity/impact
+  - name: estimated_iterations
+    type: integer
+    description: Estimated iterations needed
+
+examples: []
+
+implementation:
+  type: python
+  path: asset-repair-playbook.py

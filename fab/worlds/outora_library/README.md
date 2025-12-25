@@ -19,7 +19,7 @@ A massive Gothic cathedral library featuring:
 ### Software
 - Blender 4.0.0 or higher
 - Python 3.10+
-- dev-kernel with fab-world CLI
+- cyntra-kernel (provides `fab-world` CLI)
 
 ### Blender Add-ons
 - **Sverchok** (required) - Procedural node-based generation
@@ -31,7 +31,7 @@ Build the entire world:
 ```bash
 fab-world build \
   --world fab/worlds/outora_library \
-  --output .glia-fab/runs/outora_001 \
+  --output .cyntra/runs/outora_001 \
   --seed 42
 ```
 
@@ -40,7 +40,7 @@ Build with custom parameters:
 ```bash
 fab-world build \
   --world fab/worlds/outora_library \
-  --output .glia-fab/runs/cosmic_variant \
+  --output .cyntra/runs/cosmic_variant \
   --param lighting.preset=cosmic \
   --param layout.complexity=high
 ```
@@ -90,7 +90,7 @@ fab-world build \
 
 ## Outputs
 
-Build outputs are written to `.glia-fab/runs/<run_id>/`:
+Build outputs are written to `.cyntra/runs/<run_id>/`:
 
 - `world/outora_library.glb` - Main GLB export
 - `world/sections/*.glb` - Sectioned exports for streaming
@@ -124,7 +124,7 @@ Successful builds can publish to the viewer:
 
 ```bash
 fab-world publish \
-  --run .glia-fab/runs/outora_001 \
+  --run .cyntra/runs/outora_001 \
   --viewer fab/outora-library/viewer
 ```
 
@@ -150,7 +150,7 @@ Edit > Preferences > Add-ons > Install > select sverchok.zip
 - Ensure PYTHONHASHSEED=0 is set
 
 **Missing outputs:**
-- Check logs in `.glia-fab/runs/<run_id>/logs/`
+- Check logs in `.cyntra/runs/<run_id>/logs/`
 - Verify stage dependencies are met
 - Ensure sufficient disk space
 

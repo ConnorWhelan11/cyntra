@@ -1,3 +1,4 @@
+import React from "react";
 import { Badge as BaseBadge } from "@oos/ui";
 import { cn } from "@/lib/utils";
 

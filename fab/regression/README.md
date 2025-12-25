@@ -44,7 +44,7 @@ fab/regression/
 2. Name format: `{category}_{type}_{number}.glb` (e.g., `car_sedan_001.glb`)
 3. Run gate to generate golden renders:
    ```bash
-   python -m dev_kernel.fab.gate \
+   python -m cyntra.fab.gate \
      --asset fab/regression/assets/good/car_sedan_001.glb \
      --config fab/gates/car_realism_v001.yaml \
      --output fab/regression/golden_renders/car_sedan_001
@@ -88,16 +88,16 @@ fab/regression/
 
 ```bash
 # Full regression suite
-python -m dev_kernel.fab.regression run
+python -m cyntra.fab.regression run
 
 # Specific category
-python -m dev_kernel.fab.regression run --category car
+python -m cyntra.fab.regression run --category car
 
 # Update golden renders (after intentional changes)
-python -m dev_kernel.fab.regression update-golden
+python -m cyntra.fab.regression update-golden
 
 # Compare current results to golden
-python -m dev_kernel.fab.regression compare
+python -m cyntra.fab.regression compare
 ```
 
 ## Calibration Process
@@ -111,7 +111,7 @@ python -m dev_kernel.fab.regression compare
 ### Calibration Script
 
 ```bash
-python -m dev_kernel.fab.calibrate \
+python -m cyntra.fab.calibrate \
   --good-dir fab/regression/assets/good \
   --bad-dir fab/regression/assets/bad \
   --output fab/calibration_report.json

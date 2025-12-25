@@ -216,6 +216,8 @@ export interface FieldConfig {
   microGridStrength: number;
   /** How much hover reveals the lattice (0-1) */
   revealStrength: number;
+  /** Base visibility of lattice without hover (0-1, default 0.05) */
+  baseVisibility: number;
   /** Domain warp amount for organic feel (0-0.1) */
   microWarp: number;
   // --- Etch Inscription Config (PCB) ---
@@ -299,6 +301,7 @@ export const DEFAULT_FIELD_CONFIG: FieldConfig = {
   microGrid2: 200,
   microGridStrength: 0.8,
   revealStrength: 1.0,
+  baseVisibility: 0.05, // Low default for reveal-based UX, increase for always-visible background
   microWarp: 0.015,
   // Etch Inscription defaults
   etchDistortion: 0.008,

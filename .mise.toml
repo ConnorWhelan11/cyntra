@@ -1,0 +1,35 @@
+# Glia Fab toolchain
+# https://mise.jdx.dev
+
+[tools]
+python = "3.12"
+node = "24.11.0"
+bun = "1.1.24"
+rust = "1.85"
+
+[env]
+# Ensure uv uses mise's Python
+UV_PYTHON = "{{env.HOME}}/.local/share/mise/installs/python/3.12/bin/python"
+
+[tasks.dev]
+description = "Start desktop app in dev mode"
+run = "cd apps/glia-fab-desktop && bun run tauri dev"
+
+[tasks.kernel]
+description = "Run cyntra kernel once"
+run = "crates/target/release/cyntra run --once"
+
+[tasks.kernel-py]
+description = "Run cyntra kernel (Python) once"
+run = "cd cyntra-kernel && python -m cyntra run --once"
+
+[tasks.build-cyntra]
+description = "Build Rust cyntra binary"
+run = "cd crates && cargo build --release"
+
+[tasks.test]
+description = "Run all tests"
+run = """
+cd cyntra-kernel && pytest -v
+cd ../apps/glia-fab-desktop && bun test
+"""

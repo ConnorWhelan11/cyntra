@@ -1,0 +1,1 @@
+../../../../skills/development/cyntra-schema-validator.py

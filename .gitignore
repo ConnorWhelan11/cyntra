@@ -118,15 +118,30 @@ tmp/
 #########################
 
 ###############################################################################
-# Dev Kernel
+# Legacy Dev Kernel (deprecated)
 ###############################################################################
 .workcells/
-.dev-kernel/logs/
-.dev-kernel/archives/
-.dev-kernel/state/
-.dev-kernel/config.local.yaml
+.dev-kernel/
 
 ###############################################################################
-# Glia Fab (runs/artifacts)
+# Legacy Glia Fab (runs/artifacts)
 ###############################################################################
 .glia-fab/
+
+###############################################################################
+# Cyntra (runs/artifacts)
+###############################################################################
+.cyntra/**
+!.cyntra/
+!.cyntra/config.yaml
+!.cyntra/README.md
+
+###############################################################################
+# mise (toolchain manager)
+###############################################################################
+.mise.local.toml
+
+# Embedded repos
+apps/immersa/
+train/URM/ git add .gitignore git status --short
+crates/target/

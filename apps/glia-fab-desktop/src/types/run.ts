@@ -15,6 +15,16 @@ export interface ArtifactInfo {
   url: string;
 }
 
+export interface ArtifactNode {
+  name: string;
+  relPath: string;
+  isDir: boolean;
+  kind: string;
+  sizeBytes: number;
+  url: string | null;
+  children: ArtifactNode[];
+}
+
 export interface JobInfo {
   jobId: string;
   runId: string;
@@ -27,4 +37,22 @@ export interface ActiveJobInfo {
   runDir: string;
   command: string;
   startedMs: number;
+}
+
+export interface RunDetails {
+  id: string;
+  projectRoot: string;
+  runDir: string;
+  command: string;
+  label: string | null;
+  startedMs: number | null;
+  endedMs: number | null;
+  exitCode: number | null;
+  durationMs: number | null;
+  artifactsCount: number;
+  terminalLogLines: number;
+  issuesProcessed: string[];
+  workcellsSpawned: number;
+  gatesPassed: number;
+  gatesFailed: number;
 }

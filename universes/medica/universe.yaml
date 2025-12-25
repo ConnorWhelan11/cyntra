@@ -1,0 +1,26 @@
+schema_version: "1.0"
+universe_id: medica
+name: Medica
+description: >
+  Medical + Fab asset universe (Outora library, training environments).
+
+worlds:
+  - world_id: outora_library
+    world_kind: fab_world
+    path: fab/worlds/outora_library/world.yaml
+    enabled: true
+    tags: ["fab", "interior_architecture"]
+
+policies:
+  determinism:
+    enforce_cpu_only: true
+    pythonhashseed: 0
+  budgets:
+    max_concurrent_workcells: 3
+    max_run_minutes: 120
+  routing_overrides: []
+
+defaults:
+  swarm_id: speculate_vote
+  objective_id: realism_perf_v1
+

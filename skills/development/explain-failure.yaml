@@ -1,0 +1,60 @@
+name: explain-failure
+version: 1.0.0
+description: |
+  Analyze gate failure output and explain root cause.
+  Used by debug-specialist hook to diagnose failing gates.
+category: development
+priority: high
+phase: 2
+
+inputs:
+  - name: gate_name
+    type: string
+    description: Name of the failing gate (test, lint, typecheck)
+    required: true
+  - name: error_output
+    type: string
+    description: Error/failure output from the gate
+    required: true
+  - name: files_modified
+    type: array
+    description: Files modified in the patch
+    required: false
+
+outputs:
+  - name: root_cause
+    type: string
+    description: Identified root cause of the failure
+  - name: suggestions
+    type: array
+    description: Fix suggestions ordered by likelihood
+  - name: related_files
+    type: array
+    description: Files related to the failure
+  - name: severity
+    type: string
+    description: "Severity: low (easy fix), medium, high (complex)"
+  - name: category
+    type: string
+    description: "Category: syntax, type, test, lint, import, runtime"
+
+examples:
+  - description: Analyze a pytest failure
+    inputs:
+      gate_name: test
+      error_output: |
+        FAILED tests/test_foo.py::test_bar - AssertionError
+        assert 1 == 2
+      files_modified: ["src/foo.py"]
+    outputs:
+      root_cause: "Assertion failure in test_bar"
+      suggestions:
+        - "Check the expected value in the assertion"
+        - "Verify the logic in src/foo.py matches test expectations"
+      related_files: ["tests/test_foo.py", "src/foo.py"]
+      severity: medium
+      category: test
+
+implementation:
+  type: python
+  path: explain-failure.py

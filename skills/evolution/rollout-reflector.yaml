@@ -1,0 +1,40 @@
+name: rollout-reflector
+version: 1.0.0
+description: |
+  Analyze failed trajectories, propose prompt patches with rationale.
+  Reflection-based prompt improvement from failures.
+category: evolution
+priority: high
+phase: 5
+
+inputs:
+  - name: rollout_paths
+    type: array
+    description: Paths to failed rollout.json files
+    required: true
+  - name: genome_id
+    type: string
+    description: Genome that produced these rollouts
+    required: true
+  - name: reflection_depth
+    type: string
+    description: Depth of analysis (quick, medium, deep)
+    required: false
+    default: "medium"
+
+outputs:
+  - name: patches
+    type: array
+    description: Proposed prompt patches with rationales
+  - name: failure_patterns
+    type: array
+    description: Common failure patterns identified
+  - name: recommendations
+    type: object
+    description: Suggested genome improvements
+
+examples: []
+
+implementation:
+  type: python
+  path: rollout-reflector.py

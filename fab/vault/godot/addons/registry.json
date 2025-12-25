@@ -1,0 +1,355 @@
+{
+  "schema_version": "1.0",
+  "addons": [
+    {
+      "addon_id": "gdunit4",
+      "kind": "testing",
+      "version": "4.4.0",
+      "path": "gdunit4",
+      "description": "GdUnit4 - A unit testing framework for Godot 4.x supporting GDScript and C#",
+      "created_at": "2024-12-21T00:00:00Z",
+      "status": "active",
+      "sha256": null,
+      "upstream": {
+        "repo": "https://github.com/MikeSchulze/gdUnit4",
+        "ref": "v4.4.0",
+        "ref_type": "tag"
+      },
+      "compatibility": {
+        "godot_min": "4.2",
+        "godot_max": null,
+        "license": "MIT",
+        "dependencies": []
+      },
+      "install": {
+        "source_path": "addon/",
+        "target_path": "addons/gdUnit4"
+      }
+    },
+    {
+      "addon_id": "gut",
+      "kind": "testing",
+      "version": "9.3.0",
+      "path": "gut",
+      "description": "Godot Unit Test - Simpler unit testing tool for Godot",
+      "created_at": "2024-12-21T00:00:00Z",
+      "status": "active",
+      "sha256": null,
+      "upstream": {
+        "repo": "https://github.com/bitwes/Gut",
+        "ref": "v9.3.0",
+        "ref_type": "tag"
+      },
+      "compatibility": {
+        "godot_min": "4.0",
+        "godot_max": null,
+        "license": "MIT",
+        "dependencies": []
+      },
+      "install": {
+        "source_path": "addon/",
+        "target_path": "addons/gut"
+      }
+    },
+    {
+      "addon_id": "debug_draw_3d",
+      "kind": "debug",
+      "version": "1.4.5",
+      "path": "debug_draw_3d",
+      "description": "Draw 3D debug graphics and 2D overlays with this add-on",
+      "created_at": "2024-12-21T00:00:00Z",
+      "status": "active",
+      "sha256": null,
+      "upstream": {
+        "repo": "https://github.com/DmitriySalnikov/godot_debug_draw_3d",
+        "ref": "1.4.5",
+        "ref_type": "tag"
+      },
+      "compatibility": {
+        "godot_min": "4.0",
+        "godot_max": null,
+        "license": "MIT",
+        "dependencies": []
+      },
+      "install": {
+        "source_path": "addon/",
+        "target_path": "addons/debug_draw_3d"
+      }
+    },
+    {
+      "addon_id": "phantom_camera",
+      "kind": "camera",
+      "version": "0.8.2",
+      "path": "phantom_camera",
+      "description": "Phantom Camera - Cinematic camera behaviors for Godot (Cinemachine-like)",
+      "created_at": "2024-12-21T00:00:00Z",
+      "status": "active",
+      "sha256": null,
+      "upstream": {
+        "repo": "https://github.com/ramokz/phantom-camera",
+        "ref": "v0.8.2",
+        "ref_type": "tag"
+      },
+      "compatibility": {
+        "godot_min": "4.2",
+        "godot_max": null,
+        "license": "MIT",
+        "dependencies": []
+      },
+      "install": {
+        "source_path": "addon/",
+        "target_path": "addons/phantom_camera"
+      }
+    },
+    {
+      "addon_id": "dialogue_manager",
+      "kind": "dialogue",
+      "version": "3.0.1",
+      "path": "dialogue_manager",
+      "description": "A powerful nonlinear dialogue system for Godot with visual editor",
+      "created_at": "2024-12-21T00:00:00Z",
+      "status": "active",
+      "sha256": null,
+      "upstream": {
+        "repo": "https://github.com/nathanhoad/godot_dialogue_manager",
+        "ref": "v3.0.1",
+        "ref_type": "tag"
+      },
+      "compatibility": {
+        "godot_min": "4.0",
+        "godot_max": null,
+        "license": "MIT",
+        "dependencies": []
+      },
+      "install": {
+        "source_path": "addon/",
+        "target_path": "addons/dialogue_manager"
+      }
+    },
+    {
+      "addon_id": "gloot",
+      "kind": "inventory",
+      "version": "3.0.1",
+      "path": "gloot",
+      "description": "GLoot - A universal inventory system for Godot",
+      "created_at": "2024-12-21T00:00:00Z",
+      "status": "active",
+      "sha256": null,
+      "upstream": {
+        "repo": "https://github.com/peter-kish/gloot",
+        "ref": "v3.0.1",
+        "ref_type": "tag"
+      },
+      "compatibility": {
+        "godot_min": "4.0",
+        "godot_max": null,
+        "license": "MIT",
+        "dependencies": []
+      },
+      "install": {
+        "source_path": "addon/",
+        "target_path": "addons/gloot"
+      }
+    },
+    {
+      "addon_id": "beehave",
+      "kind": "ai",
+      "version": "2.9.2",
+      "path": "beehave",
+      "description": "Beehave - Behavior tree AI for Godot Engine",
+      "created_at": "2024-12-21T00:00:00Z",
+      "status": "active",
+      "sha256": null,
+      "upstream": {
+        "repo": "https://github.com/bitbrain/beehave",
+        "ref": "v2.9.2",
+        "ref_type": "tag"
+      },
+      "compatibility": {
+        "godot_min": "4.0",
+        "godot_max": null,
+        "license": "MIT",
+        "dependencies": []
+      },
+      "install": {
+        "source_path": "addon/",
+        "target_path": "addons/beehave"
+      }
+    },
+    {
+      "addon_id": "proton_scatter",
+      "kind": "scattering",
+      "version": "4.0",
+      "path": "proton_scatter",
+      "description": "ProtonScatter - Procedural asset placement for Godot 4",
+      "created_at": "2024-12-22T00:00:00Z",
+      "status": "active",
+      "sha256": null,
+      "upstream": {
+        "repo": "https://github.com/HungryProton/scatter",
+        "ref": "4.0",
+        "ref_type": "tag"
+      },
+      "compatibility": {
+        "godot_min": "4.0",
+        "godot_max": null,
+        "license": "MIT",
+        "dependencies": []
+      },
+      "install": {
+        "source_path": "addon/",
+        "target_path": "addons/proton_scatter"
+      }
+    },
+    {
+      "addon_id": "gaea",
+      "kind": "procedural_generation",
+      "version": "2.0",
+      "path": "gaea",
+      "description": "Gaea - Procedural generation add-on for Godot 4",
+      "created_at": "2024-12-22T00:00:00Z",
+      "status": "active",
+      "sha256": null,
+      "upstream": {
+        "repo": "https://github.com/BenjaTK/Gaea",
+        "ref": "2.0",
+        "ref_type": "branch"
+      },
+      "compatibility": {
+        "godot_min": "4.4",
+        "godot_max": null,
+        "license": "MIT",
+        "dependencies": []
+      },
+      "install": {
+        "source_path": "addon/",
+        "target_path": "addons/gaea"
+      }
+    },
+    {
+      "addon_id": "panku_console",
+      "kind": "debug",
+      "version": "1.7.9",
+      "path": "panku_console",
+      "description": "Panku Console - Real-time debugging toolkit for Godot 4",
+      "created_at": "2024-12-22T00:00:00Z",
+      "status": "active",
+      "sha256": null,
+      "upstream": {
+        "repo": "https://github.com/Ark2000/PankuConsole",
+        "ref": "v1.7.9",
+        "ref_type": "tag"
+      },
+      "compatibility": {
+        "godot_min": "4.0",
+        "godot_max": null,
+        "license": "MIT",
+        "dependencies": []
+      },
+      "install": {
+        "source_path": "addon/",
+        "target_path": "addons/panku_console"
+      }
+    },
+    {
+      "addon_id": "aseprite_wizard",
+      "kind": "animation",
+      "version": "9.6.0",
+      "path": "aseprite_wizard",
+      "description": "Aseprite Wizard - Import Aseprite animations directly into Godot",
+      "created_at": "2024-12-22T00:00:00Z",
+      "status": "active",
+      "sha256": null,
+      "upstream": {
+        "repo": "https://github.com/viniciusgerevini/godot-aseprite-wizard",
+        "ref": "v9.6.0-4",
+        "ref_type": "tag"
+      },
+      "compatibility": {
+        "godot_min": "4.0",
+        "godot_max": null,
+        "license": "MIT",
+        "dependencies": ["aseprite"]
+      },
+      "install": {
+        "source_path": "addon/",
+        "target_path": "addons/AsepriteWizard"
+      }
+    },
+    {
+      "addon_id": "godot_state_charts",
+      "kind": "state_machine",
+      "version": "0.9.1",
+      "path": "godot_state_charts",
+      "description": "Godot State Charts - Hierarchical state machine implementation",
+      "created_at": "2024-12-22T00:00:00Z",
+      "status": "active",
+      "sha256": null,
+      "upstream": {
+        "repo": "https://github.com/derkork/godot-statecharts",
+        "ref": "v0.9.1",
+        "ref_type": "tag"
+      },
+      "compatibility": {
+        "godot_min": "4.0",
+        "godot_max": null,
+        "license": "MIT",
+        "dependencies": []
+      },
+      "install": {
+        "source_path": "addon/",
+        "target_path": "addons/godot_state_charts"
+      }
+    },
+    {
+      "addon_id": "smart_shape_2d",
+      "kind": "2d_tools",
+      "version": "3.3.1",
+      "path": "smart_shape_2d",
+      "description": "SmartShape2D - Create nicely textured 2D polygons and curves",
+      "created_at": "2024-12-22T00:00:00Z",
+      "status": "active",
+      "sha256": null,
+      "upstream": {
+        "repo": "https://github.com/SirRamEsq/SmartShape2D",
+        "ref": "v3.3.1",
+        "ref_type": "tag"
+      },
+      "compatibility": {
+        "godot_min": "4.0",
+        "godot_max": null,
+        "license": "MIT",
+        "dependencies": []
+      },
+      "install": {
+        "source_path": "addon/",
+        "target_path": "addons/rmsmartshape"
+      }
+    },
+    {
+      "addon_id": "dialogic",
+      "kind": "dialogue",
+      "version": "1.5.1",
+      "path": "dialogic",
+      "description": "Dialogic 2 - Create dialogs, characters and scenes for Godot 4",
+      "created_at": "2024-12-22T00:00:00Z",
+      "status": "active",
+      "sha256": null,
+      "upstream": {
+        "repo": "https://github.com/dialogic-godot/dialogic",
+        "ref": "v1.5.1",
+        "ref_type": "tag"
+      },
+      "compatibility": {
+        "godot_min": "4.0",
+        "godot_max": null,
+        "license": "MIT",
+        "dependencies": []
+      },
+      "install": {
+        "source_path": "addon/",
+        "target_path": "addons/dialogic"
+      }
+    }
+  ]
+}

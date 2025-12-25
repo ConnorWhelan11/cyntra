@@ -1,0 +1,40 @@
+{
+  "schema_version": "1.0",
+  "addon_id": "terrain3d",
+  "kind": "terrain",
+  "type": "gdextension",
+  "version": "1.0.1",
+  "upstream": {
+    "repo": "https://github.com/TokisanGames/Terrain3D",
+    "ref": "v1.0.1",
+    "ref_type": "tag",
+    "releases_url": "https://github.com/TokisanGames/Terrain3D/releases"
+  },
+  "compatibility": {
+    "godot_min": "4.2",
+    "godot_max": null,
+    "license": "MIT",
+    "platforms": ["windows", "linux", "macos"],
+    "dependencies": []
+  },
+  "install": {
+    "requires_binary": true,
+    "download_url": "https://github.com/TokisanGames/Terrain3D/releases/download/v1.0.1/",
+    "target_path": "addons/terrain_3d",
+    "instructions": "Download release for your platform from GitHub releases"
+  },
+  "checksums": {
+    "sha256": null,
+    "verified_at": null
+  },
+  "description": "Terrain3D - High-performance editable terrain for Godot 4 (C++ GDExtension)",
+  "why": "Professional terrain system with sculpting, texturing, and LOD. Essential for open-world games.",
+  "notes": [
+    "C++ GDExtension - requires platform-specific binaries",
+    "Real-time sculpting and painting",
+    "16 texture layers with auto-blending",
+    "Level of Detail (LOD) system",
+    "Grass and vegetation support",
+    "Import heightmaps from external tools"
+  ]
+}

@@ -1,0 +1,39 @@
+name: firecrawl-scrape
+version: 1.0.0
+description: |
+  Scrape a single URL and convert to markdown/structured data.
+  Uses Firecrawl API for reliable extraction with JS rendering.
+category: search
+priority: high
+
+inputs:
+  - name: url
+    type: string
+    description: The URL to scrape
+    required: true
+  - name: formats
+    type: array
+    description: Output formats (markdown, html, json, screenshot)
+    required: false
+    default: ["markdown"]
+  - name: actions
+    type: array
+    description: Browser actions before scraping (click, scroll, wait)
+    required: false
+  - name: cache_ttl
+    type: integer
+    description: Cache TTL in seconds (0 to disable)
+    required: false
+    default: 3600
+
+outputs:
+  - name: content
+    type: object
+    description: Scraped content in requested formats
+  - name: metadata
+    type: object
+    description: Page metadata (title, description, links)
+
+implementation:
+  type: python
+  path: firecrawl-scrape.py

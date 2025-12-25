@@ -1,0 +1,34 @@
+{
+  "schema_version": "1.0",
+  "addon_id": "gdunit4",
+  "kind": "testing",
+  "version": "4.4.0",
+  "upstream": {
+    "repo": "https://github.com/MikeSchulze/gdUnit4",
+    "ref": "v4.4.0",
+    "ref_type": "tag",
+    "fetched_at": "2024-12-21T00:00:00Z"
+  },
+  "compatibility": {
+    "godot_min": "4.2",
+    "godot_max": null,
+    "license": "MIT",
+    "dependencies": []
+  },
+  "install": {
+    "source_path": "addon/",
+    "target_path": "addons/gdUnit4"
+  },
+  "checksums": {
+    "sha256": "2634dd497879f8818e8e8c25090781ec38144b0e1143bcd2147561299e58ba66",
+    "verified_at": "2025-12-23T01:13:49.278873Z"
+  },
+  "description": "GdUnit4 - A unit testing framework for Godot 4.x supporting both GDScript and C#",
+  "why": "Unit tests for GDScript/C#; gate in CI. Essential for quality gates.",
+  "notes": [
+    "Enable via Project > Project Settings > Plugins",
+    "Requires C# SDK for C# test support",
+    "Includes test explorer panel in editor",
+    "Supports parameterized tests, mocking, and assertions"
+  ]
+}

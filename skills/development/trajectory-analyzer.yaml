@@ -1,0 +1,39 @@
+name: trajectory-analyzer
+version: 1.0.0
+description: |
+  Compute tool usage stats, file change summaries, transition boundaries.
+  Analyzes agent trajectories for patterns and metrics.
+category: development
+priority: medium
+phase: 2
+
+inputs:
+  - name: rollout_path
+    type: string
+    description: Path to rollout.json
+    required: true
+  - name: compute_transitions
+    type: boolean
+    description: Compute T1 state transitions
+    required: false
+    default: false
+
+outputs:
+  - name: tool_summary
+    type: object
+    description: Tool usage counts and patterns
+  - name: file_changes
+    type: array
+    description: Files modified with change types
+  - name: transitions
+    type: array
+    description: State transitions (if requested)
+  - name: metrics
+    type: object
+    description: Duration, cost, quality metrics
+
+examples: []
+
+implementation:
+  type: python
+  path: trajectory-analyzer.py

@@ -1,0 +1,32 @@
+name: schema-roundtrip-test
+version: 1.0.0
+description: |
+  Validate that all schemas can serialize/deserialize without data loss.
+  Tests schema stability and completeness.
+category: development
+priority: medium
+phase: 2
+
+inputs:
+  - name: schema_dir
+    type: string
+    description: Directory containing schemas
+    required: false
+    default: "cyntra-kernel/schemas/cyntra"
+
+outputs:
+  - name: all_passed
+    type: boolean
+    description: True if all schemas passed roundtrip test
+  - name: results
+    type: array
+    description: Per-schema test results
+  - name: failures
+    type: array
+    description: Schemas that failed roundtrip
+
+examples: []
+
+implementation:
+  type: python
+  path: schema-roundtrip-test.py

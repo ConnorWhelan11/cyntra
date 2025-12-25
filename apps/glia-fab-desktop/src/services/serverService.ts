@@ -2,7 +2,7 @@
  * Server-related Tauri IPC service
  */
 
-import { invoke } from '@tauri-apps/api/tauri';
+import { invoke } from '@tauri-apps/api/core';
 import type { ServerInfo } from '@/types';
 
 export async function getServerInfo(): Promise<ServerInfo> {

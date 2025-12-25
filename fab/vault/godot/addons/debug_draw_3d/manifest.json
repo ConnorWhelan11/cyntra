@@ -1,0 +1,34 @@
+{
+  "schema_version": "1.0",
+  "addon_id": "debug_draw_3d",
+  "kind": "debug",
+  "version": "1.4.5",
+  "upstream": {
+    "repo": "https://github.com/DmitriySalnikov/godot_debug_draw_3d",
+    "ref": "1.4.5",
+    "ref_type": "tag",
+    "fetched_at": "2024-12-21T00:00:00Z"
+  },
+  "compatibility": {
+    "godot_min": "4.0",
+    "godot_max": null,
+    "license": "MIT",
+    "dependencies": []
+  },
+  "install": {
+    "source_path": "addon/",
+    "target_path": "addons/debug_draw_3d"
+  },
+  "checksums": {
+    "sha256": "b4ad40ea22f87779c75917df2ac8048cff0fcff1ec5410c2ff9125ee598dc23c",
+    "verified_at": "2025-12-23T01:13:49.280165Z"
+  },
+  "description": "Draw 3D debug graphics and 2D overlays in Godot 4.x",
+  "why": "Runtime debug visualization for 3D shapes, lines, text. Essential for debugging agent-built systems.",
+  "notes": [
+    "GDExtension-based (requires precompiled binaries)",
+    "Supports lines, boxes, spheres, arrows, text in 3D space",
+    "2D overlay for debug text and graphs",
+    "Zero performance impact when disabled"
+  ]
+}

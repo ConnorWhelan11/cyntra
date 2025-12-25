@@ -8,3 +8,6 @@ export * from './project';
 export * from './terminal';
 export * from './run';
 export * from './kernel';
+export * from './ui';
+export * from './gameplay';
+export * from './viewport';

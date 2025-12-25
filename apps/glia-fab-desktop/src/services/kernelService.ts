@@ -2,7 +2,7 @@
  * Kernel and Beads-related Tauri IPC service
  */
 
-import { invoke } from '@tauri-apps/api/tauri';
+import { invoke } from '@tauri-apps/api/core';
 import type { KernelSnapshot, BeadsIssue, BeadsIssuePatch } from '@/types';
 
 export async function kernelSnapshot(params: {

@@ -88,10 +88,16 @@ stages:
     params: ["bake.mode", "layout.complexity"]
     outputs: ["world/outora_library_baked.blend"]
 
+  - id: navmesh
+    type: blender
+    script: blender/stages/navmesh.py
+    requires: [bake]
+    outputs: ["stages/navmesh/"]
+
   - id: materials
     type: blender
     script: blender/stages/materials.py
-    requires: [bake]
+    requires: [navmesh]
     outputs: ["stages/materials/"]
 
   - id: lighting

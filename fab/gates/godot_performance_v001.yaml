@@ -1,0 +1,167 @@
+# Godot Engine Performance Gate v001
+#
+# Purpose:
+# - Validate runtime performance of Godot projects with Fab assets
+# - Measure FPS, frame times, memory usage, and startup time
+# - Fail builds that don't meet minimum performance thresholds
+#
+# Usage:
+# This gate runs a headless Godot session with FabPerfTest.gd
+# and evaluates the collected metrics against configured thresholds.
+
+gate_config_id: godot_performance_v001
+category: engine_performance
+schema_version: "1.0"
+
+performance:
+  # Target metrics (what we aim for)
+  target_fps: 30              # Minimum acceptable FPS
+  max_frame_time_ms: 33.3     # 30 FPS ceiling
+  memory_budget_mb: 512       # VRAM + heap budget
+  startup_time_max_ms: 10000  # 10 second max startup
+  test_duration_seconds: 10   # How long to run the test
+
+godot:
+  # Test configuration
+  test_scene: res://scenes/perf_test.tscn
+  export_preset: Web
+  headless: true
+  # Command line args for Godot
+  args: ["--headless", "--fixed-fps", "60"]
+
+thresholds:
+  # Hard limits - fail below these
+  fps_floor: 25               # Hard fail below 25 FPS
+  frame_spike_max_ms: 100     # Single frame spike limit
+  memory_spike_max_mb: 768    # Memory spike limit
+
+  # Soft limits - warn but don't fail
+  fps_warning: 45             # Warn below 45 FPS
+  avg_frame_time_warn_ms: 25  # Warn above 25ms average
+
+metrics:
+  # What to measure
+  collect:
+    - fps
+    - frame_time_ms
+    - frame_time_min_ms
+    - frame_time_max_ms
+    - memory_peak_mb
+    - startup_time_ms
+    - frames_rendered
+    - draw_calls_avg
+
+  # Output format
+  output_file: perf_results.json
+
+hard_fail_codes:
+  - PERF_FPS_BELOW_FLOOR
+  - PERF_STARTUP_TIMEOUT
+  - PERF_MEMORY_EXCEEDED
+  - PERF_FRAME_SPIKE
+  - PERF_TEST_CRASH
+  - PERF_GODOT_MISSING
+  - PERF_SCENE_NOT_FOUND
+
+warning_codes:
+  - PERF_FPS_BELOW_TARGET
+  - PERF_MEMORY_HIGH
+  - PERF_FRAME_TIME_HIGH
+
+repair_playbook:
+  PERF_FPS_BELOW_FLOOR:
+    priority: 1
+    instructions: |
+      FPS is critically low (below 25). Immediate optimization required:
+
+      Reduce draw calls:
+      - Merge meshes that share materials
+      - Use mesh instancing for repeated geometry
+      - Enable occlusion culling in project settings
+      - Add LOD (Level of Detail) for distant objects
+
+      Simplify materials:
+      - Reduce shader complexity
+      - Use texture atlases
+      - Disable expensive effects (SSR, SSAO)
+
+      Reduce geometry:
+      - Simplify collision meshes
+      - Use imposters for distant objects
+      - Reduce vertex count on hero assets
+
+  PERF_MEMORY_EXCEEDED:
+    priority: 1
+    instructions: |
+      Memory budget exceeded. Consider:
+
+      Texture optimization:
+      - Enable VRAM streaming
+      - Use appropriate compression (BPTC for quality, ETC2 for size)
+      - Reduce texture resolution where not visible
+      - Use texture atlases
+
+      Mesh optimization:
+      - Reduce polygon count
+      - Use mesh compression in GLB export
+      - Share materials across objects
+
+      Scene structure:
+      - Stream sections instead of loading everything
+      - Use visibility ranges to cull distant objects
+
+  PERF_FRAME_SPIKE:
+    priority: 2
+    instructions: |
+      Frame time spike detected (single frame took >100ms).
+
+      Common causes:
+      - Shader compilation on first render (use shader cache)
+      - Large physics simulation spikes
+      - GDScript garbage collection
+
+      Fixes:
+      - Pre-warm shaders during loading screen
+      - Spread physics objects across multiple frames
+      - Use object pooling instead of instantiate/free
+
+  PERF_STARTUP_TIMEOUT:
+    priority: 1
+    instructions: |
+      Startup took too long (>10 seconds).
+
+      Reduce initial load:
+      - Defer non-critical resource loading
+      - Use threaded loading for large assets
+      - Reduce number of autoload singletons
+      - Simplify main scene
+
+  PERF_FPS_BELOW_TARGET:
+    priority: 2
+    instructions: |
+      FPS is below target (30) but above critical threshold.
+
+      Consider the same optimizations as FPS_BELOW_FLOOR,
+      but with less urgency. Focus on:
+      - Draw call reduction
+      - Material batching
+      - Occlusion culling
+
+  PERF_GODOT_MISSING:
+    priority: 1
+    instructions: |
+      Godot executable not found.
+
+      Install Godot 4.x and ensure it's accessible:
+      - macOS: /Applications/Godot.app/Contents/MacOS/Godot
+      - Linux: godot4 or godot on PATH
+      - Or set GODOT_BIN environment variable
+
+  PERF_SCENE_NOT_FOUND:
+    priority: 1
+    instructions: |
+      Performance test scene not found.
+
+      Ensure the project has res://scenes/perf_test.tscn:
+      - Create the scene with FabPerfTest.gd script attached
+      - Or update gate config to point to correct test scene

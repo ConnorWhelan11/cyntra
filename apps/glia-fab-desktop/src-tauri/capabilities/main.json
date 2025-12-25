@@ -1,0 +1,9 @@
+{
+  "identifier": "main",
+  "description": "Main + viewport windows (dev + prod).",
+  "windows": ["main", "viewport", "viewport_poc"],
+  "remote": {
+    "urls": ["http://localhost:1420/*", "http://127.0.0.1:1420/*"]
+  },
+  "permissions": ["core:default"]
+}

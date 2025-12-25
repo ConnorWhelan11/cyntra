@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+.workcells/
+.cyntra/
+
+# Build outputs
+dist/
+build/
+*.min.js
+*.min.css
+
+# Generated files
+*.lock
+bun.lockb
+uv.lock
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Rust
+target/
+Cargo.lock
+
+# IDE
+.idea/
+.vscode/
+
+# Other
+.git/
+coverage/
+storybook-static/

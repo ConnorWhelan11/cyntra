@@ -38,7 +38,7 @@ export function NewRunModal({
           }
         />
         <div className="form">
-          <div className="muted">Command runs in the project root and writes to `.glia-fab/runs/…`.</div>
+          <div className="muted">Command runs in the project root and writes to `.cyntra/runs/…`.</div>
           <input
             className="text-input"
             autoFocus

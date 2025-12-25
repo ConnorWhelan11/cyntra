@@ -1,0 +1,36 @@
+name: telemetry-parser
+version: 1.0.0
+description: |
+  Parse adapter-specific telemetry formats into normalized event stream.
+  Handles different formats from Codex/Claude/OpenCode/Crush adapters.
+category: development
+priority: high
+phase: 2
+
+inputs:
+  - name: telemetry_path
+    type: string
+    description: Path to telemetry.jsonl file
+    required: true
+  - name: adapter_type
+    type: string
+    description: Adapter type (codex, claude, opencode, crush, auto-detect)
+    required: false
+    default: "auto-detect"
+
+outputs:
+  - name: events
+    type: array
+    description: Normalized event stream
+  - name: summary
+    type: object
+    description: Event summary (counts by type, tools used, etc.)
+  - name: adapter_detected
+    type: string
+    description: Detected adapter type
+
+examples: []
+
+implementation:
+  type: python
+  path: telemetry-parser.py

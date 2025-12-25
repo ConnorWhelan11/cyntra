@@ -8,3 +8,5 @@ export * from './projectService';
 export * from './terminalService';
 export * from './runService';
 export * from './kernelService';
+export * from './gameplayService';
+export * from './viewportService';

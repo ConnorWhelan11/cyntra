@@ -1,0 +1,44 @@
+name: beads-graph-ops
+version: 1.0.0
+description: |
+  Query/update .beads/issues.jsonl with proper status transitions and dependency validation.
+  Ensures work graph integrity.
+category: development
+priority: high
+phase: 1-2
+
+inputs:
+  - name: operation
+    type: string
+    description: Operation (get, update, list, validate-deps)
+    required: true
+    enum: [get, update, list, validate-deps]
+  - name: issue_id
+    type: string
+    description: Issue ID (required for get/update)
+    required: false
+  - name: updates
+    type: object
+    description: Fields to update (required for update operation)
+    required: false
+  - name: filters
+    type: object
+    description: Filters for list operation (tags, status, etc.)
+    required: false
+
+outputs:
+  - name: issues
+    type: array
+    description: List of issues matching query
+  - name: validation_errors
+    type: array
+    description: Dependency validation errors (if any)
+  - name: updated
+    type: boolean
+    description: True if update succeeded
+
+examples: []
+
+implementation:
+  type: python
+  path: beads-graph-ops.py

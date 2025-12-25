@@ -1,0 +1,49 @@
+name: find-tests
+version: 1.0.0
+description: |
+  Find existing tests related to source files.
+  Maps source files to their test counterparts.
+category: development
+priority: medium
+phase: 1
+
+inputs:
+  - name: source_files
+    type: array
+    description: List of source file paths
+    required: true
+  - name: repo_path
+    type: string
+    description: Repository root path
+    required: true
+  - name: test_patterns
+    type: array
+    description: Custom test file patterns
+    required: false
+    default: ["tests/test_*.py", "tests/**/test_*.py", "*_test.py"]
+
+outputs:
+  - name: test_mapping
+    type: object
+    description: Map of source file to test files
+  - name: untested_files
+    type: array
+    description: Source files without tests
+  - name: test_frameworks
+    type: array
+    description: Detected test frameworks (pytest, jest, etc.)
+
+examples:
+  - description: Find tests for a Python module
+    inputs:
+      source_files: ["src/auth/login.py"]
+      repo_path: "/path/to/repo"
+    outputs:
+      test_mapping:
+        "src/auth/login.py": ["tests/auth/test_login.py"]
+      untested_files: []
+      test_frameworks: ["pytest"]
+
+implementation:
+  type: python
+  path: find-tests.py

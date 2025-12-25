@@ -1,0 +1,59 @@
+name: analyze-diff
+version: 1.0.0
+description: |
+  Analyze a git diff for code quality issues, potential bugs, and improvements.
+  Used by code-reviewer hook to review patches.
+category: development
+priority: high
+phase: 2
+
+inputs:
+  - name: diff
+    type: string
+    description: Git diff content
+    required: true
+  - name: context
+    type: object
+    description: Issue context (id, title, acceptance_criteria)
+    required: false
+  - name: review_depth
+    type: string
+    description: "Depth of review: quick, standard, deep"
+    required: false
+    default: "standard"
+    enum: [quick, standard, deep]
+
+outputs:
+  - name: summary
+    type: string
+    description: Overall review summary
+  - name: issues
+    type: array
+    description: List of issues found with file, line, severity, message
+  - name: approval
+    type: string
+    description: "Recommendation: approve, request_changes, needs_discussion"
+  - name: coverage_gaps
+    type: array
+    description: Areas lacking test coverage
+
+examples:
+  - description: Analyze a simple diff
+    inputs:
+      diff: |
+        diff --git a/foo.py b/foo.py
+        +++ b/foo.py
+        +    print("debug")
+      review_depth: quick
+    outputs:
+      summary: "Found 1 issue: debug statement"
+      issues:
+        - file: foo.py
+          line: 1
+          severity: warning
+          message: Contains debug statement
+      approval: needs_discussion
+
+implementation:
+  type: python
+  path: analyze-diff.py

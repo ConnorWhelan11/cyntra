@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0",
+  "addon_id": "gut",
+  "kind": "testing",
+  "version": "9.3.0",
+  "upstream": {
+    "repo": "https://github.com/bitwes/Gut",
+    "ref": "v9.3.0",
+    "ref_type": "tag",
+    "fetched_at": "2024-12-21T00:00:00Z"
+  },
+  "compatibility": {
+    "godot_min": "4.0",
+    "godot_max": null,
+    "license": "MIT",
+    "dependencies": []
+  },
+  "install": {
+    "source_path": "addon/",
+    "target_path": "addons/gut"
+  },
+  "checksums": {
+    "sha256": "072828ce93cd1fea732b1495754f030c16b32162472e3978e0d4c8062f65ad42",
+    "verified_at": "2025-12-23T01:13:49.279711Z"
+  },
+  "description": "Godot Unit Test (GUT) - Unit testing tool for Godot",
+  "why": "Alternative unit test framework with simpler syntax. Good for quick tests.",
+  "notes": [
+    "Simpler API than gdUnit4",
+    "In-editor test runner panel",
+    "Supports parameterized tests",
+    "Double/stub/mock support",
+    "Command-line runner for CI"
+  ]
+}

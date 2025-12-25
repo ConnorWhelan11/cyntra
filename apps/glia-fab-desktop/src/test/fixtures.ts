@@ -7,7 +7,7 @@
 export const mockProjectInfo = {
   root: '/Users/test/project',
   viewer_dir: '/Users/test/project/fab/outora-library/viewer',
-  dev_kernel_dir: '/Users/test/project/dev-kernel',
+  cyntra_kernel_dir: '/Users/test/project/cyntra-kernel',
 };
 
 export const mockServerInfo = {
@@ -22,7 +22,7 @@ export const mockPtySessionInfo = {
 
 export const mockRunInfo = {
   id: 'run-123',
-  dir: '/Users/test/project/.glia-fab/runs/run-123',
+  dir: '/Users/test/project/.cyntra/runs/run-123',
   modifiedMs: Date.now(),
 };
 
@@ -52,10 +52,22 @@ export const mockBeadsIssue = {
   ready: true,
 };
 
+export const mockKernelWorkcell = {
+  id: 'wc-abc123',
+  issueId: '1',
+  created: '2025-01-01T00:00:00Z',
+  path: '/Users/test/project/.cyntra/workcells/wc-abc123',
+  speculateTag: null,
+  toolchain: 'claude',
+  proofStatus: 'running',
+  progress: 0.45,
+  progressStage: 'running',
+};
+
 export const mockKernelSnapshot = {
   beadsPresent: true,
   issues: [mockBeadsIssue],
   deps: [],
-  workcells: [],
+  workcells: [mockKernelWorkcell],
   events: [],
 };

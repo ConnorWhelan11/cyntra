@@ -347,7 +347,7 @@ gates:
 Stage outputs are written to the run directory:
 
 ```
-.glia-fab/runs/<run_id>/
+.cyntra/runs/<run_id>/
 ├── stages/
 │   ├── prepare/     # From "stages/prepare/"
 │   └── generate/    # From "stages/generate/"

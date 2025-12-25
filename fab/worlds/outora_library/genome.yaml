@@ -1,0 +1,26 @@
+schema_version: "1.0"
+
+# Fab World genome surface (v1).
+# Defines the explicit, evolvable parameter surface + mutation operators used by
+# `cyntra evolve --universe <id> --world outora_library`.
+
+genome_id: outora_library_genome_surface_v1
+world_id: outora_library
+world_config_id: outora_library_gothic_v001
+
+genes:
+  - key: layout.complexity
+    kind: enum
+    values: [low, medium, high]
+
+  - key: lighting.preset
+    kind: enum
+    values: [dramatic, warm_reading, cosmic]
+
+  - key: bake.mode
+    kind: enum
+    values: [all, layout_only, test]
+
+mutation:
+  # Number of genes mutated per candidate.
+  per_candidate: 1

@@ -1,0 +1,415 @@
+# fab/worlds/outora_library/gameplay.yaml
+# Gameplay definition for the Outora Gothic Library
+#
+# This file defines runtime behavior: what NPCs do, what triggers fire,
+# what objectives the player must complete, and how items/interactions work.
+
+schema_version: "1.0"
+world_id: outora_library
+
+# =============================================================================
+# PLAYER CONFIGURATION
+# =============================================================================
+player:
+  controller: first_person
+  capabilities: [walk, run, jump, interact, inventory]
+  settings:
+    move_speed: 5.0
+    run_multiplier: 1.6
+    jump_height: 1.2
+    interact_distance: 2.5
+    mouse_sensitivity: 0.3
+
+# =============================================================================
+# ENTITIES
+# Configure NPCs (NPC_SPAWN_*) and items (ITEM_SPAWN_*)
+# =============================================================================
+entities:
+  # ---------------------------------------------------------------------------
+  # NPCs
+  # ---------------------------------------------------------------------------
+  librarian:
+    display_name: "Head Librarian Aldric"
+    type: npc
+    behavior: patrol_and_interact
+    patrol_path: main_hall  # Uses WAYPOINT_main_hall_* markers
+    dialogue: librarian.dialogue
+    schedule:
+      - time: [6, 18]
+        location: circulation_desk
+        behavior: idle
+      - time: [18, 22]
+        location: reading_alcove
+        behavior: reading
+      - time: [22, 6]
+        behavior: patrol
+
+  scholar:
+    display_name: "Visiting Scholar Mira"
+    type: npc
+    behavior: stationary
+    dialogue: scholar.dialogue
+
+  archivist:
+    display_name: "Senior Archivist"
+    type: npc
+    behavior: patrol
+    patrol_path: archive_wing
+    dialogue: archivist.dialogue
+
+  # ---------------------------------------------------------------------------
+  # Key Items
+  # ---------------------------------------------------------------------------
+  ancient_tome:
+    display_name: "Ancient Tome of Wisdom"
+    type: key_item
+    on_pickup:
+      - add_to_inventory
+      - { trigger: found_tome }
+      - { show_hint: "You've found the Ancient Tome! Now escape the library." }
+
+  library_key:
+    display_name: "Brass Library Key"
+    type: key_item
+    unlocks: [vault_door, archive_gate]
+    on_pickup:
+      - add_to_inventory
+      - { trigger: found_key }
+
+  archive_pass:
+    display_name: "Archive Access Pass"
+    type: key_item
+    unlocks: [archive_entrance]
+    on_pickup:
+      - add_to_inventory
+
+  # ---------------------------------------------------------------------------
+  # Collectibles & Consumables
+  # ---------------------------------------------------------------------------
+  book_rare:
+    display_name: "Rare Manuscript"
+    type: document
+    on_pickup:
+      - add_to_inventory
+      - { trigger: collected_book }
+
+  health_potion:
+    type: consumable
+    display_name: "Restoration Elixir"
+    effect:
+      restore_health: 25
+    stackable: true
+    max_stack: 5
+
+  candle:
+    display_name: "Enchanted Candle"
+    type: consumable
+    effect:
+      buff: light_source
+      duration_seconds: 300
+
+# =============================================================================
+# INTERACTIONS
+# Configure interactable objects (INTERACT_* markers)
+# =============================================================================
+interactions:
+  # ---------------------------------------------------------------------------
+  # Bookshelves
+  # ---------------------------------------------------------------------------
+  bookshelf_ancient:
+    action: examine
+    requires: null
+    result:
+      - { show_text: "Dusty tomes line the shelves, their spines cracked with age. Some titles are written in languages you don't recognize." }
+      - { trigger: examined_ancient_books }
+
+  bookshelf_forbidden:
+    action: examine
+    requires: { objective_complete: find_key }
+    locked_message: "These books are behind a locked glass case."
+    result:
+      - { show_text: "The forbidden section contains knowledge too dangerous for casual readers. You feel a strange energy emanating from within." }
+
+  # ---------------------------------------------------------------------------
+  # Doors & Passages
+  # ---------------------------------------------------------------------------
+  vault_door:
+    action: use
+    requires: { item: library_key }
+    locked_message: "The heavy vault door is securely locked. You'll need a key."
+    result:
+      - { play_animation: door_open }
+      - { play_sound: door_creak_heavy }
+      - { consume_item: library_key }
+      - { enable_passage: vault_interior }
+      - { trigger: vault_opened }
+    one_shot: true
+
+  archive_gate:
+    action: use
+    requires: { item: archive_pass }
+    locked_message: "This gate requires authorized access."
+    result:
+      - { play_animation: gate_open }
+      - { enable_passage: archive_section }
+      - { trigger: archive_entered }
+    one_shot: true
+
+  # ---------------------------------------------------------------------------
+  # Furniture & Objects
+  # ---------------------------------------------------------------------------
+  reading_desk:
+    action: use
+    requires: null
+    result:
+      - { trigger: started_reading }
+      - { show_text: "You sit at the desk. The wood is worn smooth by centuries of scholars." }
+
+  librarian_desk:
+    action: examine
+    requires: null
+    result:
+      - { show_text: "The librarian's desk is covered in cataloging cards and a half-finished cup of tea." }
+      - { trigger: examined_desk }
+
+  secret_drawer:
+    action: use
+    requires: { flag: knows_secret }
+    locked_message: "It appears to be a decorative panel."
+    result:
+      - { play_sound: drawer_open }
+      - { spawn_item: library_key }
+      - { show_text: "The hidden drawer slides open, revealing a brass key!" }
+      - { trigger: found_secret }
+    one_shot: true
+
+  chandelier_rope:
+    action: use
+    requires: null
+    result:
+      - { play_animation: chandelier_lower }
+      - { play_sound: rope_creak }
+      - { show_text: "You lower the great chandelier. Something glints in its frame..." }
+      - { trigger: chandelier_lowered }
+
+# =============================================================================
+# TRIGGERS
+# Configure trigger zones (TRIGGER_* markers)
+# =============================================================================
+triggers:
+  # ---------------------------------------------------------------------------
+  # Entrance & Atmosphere
+  # ---------------------------------------------------------------------------
+  entrance:
+    on_enter:
+      - { play_music: music_library_ambient }
+      - { show_hint: "Welcome to the Outora Library. Seek the Ancient Tome within the vault." }
+    one_shot: true
+
+  main_hall:
+    on_enter:
+      - { trigger: entered_main_hall }
+
+  # ---------------------------------------------------------------------------
+  # Discovery Triggers
+  # ---------------------------------------------------------------------------
+  wing_east:
+    on_enter:
+      - { trigger: discovered_east_wing }
+    one_shot: true
+
+  wing_west:
+    on_enter:
+      - { trigger: discovered_west_wing }
+    one_shot: true
+
+  upper_gallery:
+    on_enter:
+      - { trigger: discovered_gallery }
+      - { show_hint: "The upper gallery offers a view of the entire library." }
+    one_shot: true
+
+  # ---------------------------------------------------------------------------
+  # Story Triggers
+  # ---------------------------------------------------------------------------
+  vault_entrance:
+    requires: { objective_complete: find_key }
+    on_enter:
+      - { show_text: "The vault doors loom before you. What secrets lie within?" }
+      - { play_music: music_tension }
+
+  vault_interior:
+    on_enter:
+      - { trigger: entered_vault }
+      - { play_sound: echo_footsteps }
+    one_shot: true
+
+  tome_pedestal:
+    requires: null
+    on_enter:
+      - { show_hint: "The Ancient Tome rests on an ornate pedestal." }
+    one_shot: true
+
+  # ---------------------------------------------------------------------------
+  # Exit Trigger
+  # ---------------------------------------------------------------------------
+  exit:
+    requires: { item: ancient_tome }
+    on_enter:
+      - { complete_objective: escape_library }
+      - { trigger: game_complete }
+      - { fade_out: 2.0 }
+      - { wait_seconds: 2.5 }
+      - { end_game: victory }
+
+  exit_blocked:
+    requires: null
+    on_enter:
+      - { show_text: "You cannot leave without the Ancient Tome." }
+    cooldown_seconds: 5.0
+
+# =============================================================================
+# AUDIO ZONES
+# Configure ambient audio areas (AUDIO_ZONE_* markers)
+# =============================================================================
+audio_zones:
+  reading_room:
+    ambient: sfx_ambient_quiet
+    music: null
+    volume: 0.4
+    fade_time: 2.0
+
+  main_hall:
+    ambient: sfx_ambient_hall_echo
+    music: music_library_ambient
+    volume: 0.7
+    fade_time: 1.5
+
+  archive:
+    ambient: sfx_ambient_dust
+    music: music_archive_mystery
+    volume: 0.5
+    fade_time: 2.0
+    reverb_preset: large_room
+
+  vault:
+    ambient: sfx_ambient_vault
+    music: music_tension
+    volume: 0.6
+    fade_time: 1.0
+    reverb_preset: stone_chamber
+
+# =============================================================================
+# OBJECTIVES
+# Quest chain for the library exploration
+# =============================================================================
+objectives:
+  - id: explore_library
+    description: "Explore the Outora Library"
+    type: discovery
+    complete_when:
+      triggers_activated: [discovered_east_wing, discovered_west_wing, discovered_gallery]
+    rewards:
+      xp: 50
+
+  - id: meet_librarian
+    description: "Speak with the Head Librarian"
+    type: main
+    requires: []
+    complete_when:
+      dialogue_complete: librarian_intro
+    hint: "The librarian can usually be found near the circulation desk."
+
+  - id: find_secret
+    description: "Discover the hidden drawer"
+    type: side
+    requires: [meet_librarian]
+    complete_when:
+      trigger: found_secret
+    hint: "The librarian mentioned something about secrets in the old furniture..."
+    on_complete:
+      - { set_flag: knows_secret }
+
+  - id: find_key
+    description: "Obtain the Library Key"
+    type: main
+    requires: [meet_librarian]
+    complete_when:
+      item_acquired: library_key
+    hint: "Perhaps the librarian knows where the key is kept."
+
+  - id: open_vault
+    description: "Access the Restricted Vault"
+    type: main
+    requires: [find_key]
+    complete_when:
+      trigger: vault_opened
+    rewards:
+      xp: 100
+
+  - id: find_tome
+    description: "Retrieve the Ancient Tome of Wisdom"
+    type: main
+    requires: [open_vault]
+    complete_when:
+      item_acquired: ancient_tome
+    rewards:
+      xp: 150
+
+  - id: escape_library
+    description: "Escape the Library with the Tome"
+    type: final
+    requires: [find_tome]
+    complete_when:
+      trigger: game_complete
+    rewards:
+      xp: 200
+    on_complete:
+      - { show_text: "Congratulations! You have escaped with the Ancient Tome of Wisdom." }
+
+  # Optional side objectives
+  - id: collect_manuscripts
+    description: "Collect rare manuscripts (0/5)"
+    type: side
+    requires: []
+    complete_when:
+      items_collected:
+        item: book_rare
+        count: 5
+    rewards:
+      xp: 75
+    hint: "Rare manuscripts are scattered throughout the library."
+
+  - id: discover_all_zones
+    description: "Fully explore the library"
+    type: discovery
+    requires: [explore_library]
+    complete_when:
+      triggers_activated:
+        - discovered_east_wing
+        - discovered_west_wing
+        - discovered_gallery
+        - entered_vault
+        - archive_entered
+    rewards:
+      xp: 100
+
+# =============================================================================
+# GLOBAL RULES
+# =============================================================================
+rules:
+  combat:
+    enabled: false
+
+  inventory:
+    max_slots: 12
+    weight_limit: null
+    stack_limit: 10
+
+  saving:
+    mode: checkpoint
+    checkpoints: [entrance, vault_entrance]
+    autosave_interval_seconds: 300
+
+  time:
+    enabled: false  # No day/night cycle for this world

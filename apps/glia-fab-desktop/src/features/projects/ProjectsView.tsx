@@ -17,7 +17,7 @@ interface ProjectsViewProps {
   saveGlobalEnv: () => void;
   clearGlobalEnv: () => void;
   createTerminal: () => void;
-  bootstrapDevKernel: () => void;
+  bootstrapCyntraKernel: () => void;
 }
 
 /**
@@ -37,7 +37,7 @@ export function ProjectsView({
   saveGlobalEnv,
   clearGlobalEnv,
   createTerminal,
-  bootstrapDevKernel,
+  bootstrapCyntraKernel,
 }: ProjectsViewProps) {
   return (
     <Panel style={{ height: "100%" }}>
@@ -79,8 +79,8 @@ export function ProjectsView({
                 {p.root}
               </div>
               <div className="muted" style={{ fontSize: 12, marginTop: 6 }}>
-                Viewer: {p.viewer_dir ? "yes" : "no"} · Dev Kernel:{" "}
-                {p.dev_kernel_dir ? "yes" : "no"}
+                Viewer: {p.viewer_dir ? "yes" : "no"} · Cyntra Kernel:{" "}
+                {p.cyntra_kernel_dir ? "yes" : "no"}
               </div>
             </div>
           ))}
@@ -96,11 +96,11 @@ export function ProjectsView({
               </button>
               <button
                 className="btn primary"
-                onClick={bootstrapDevKernel}
-                disabled={!activeProject || !activeProject.dev_kernel_dir}
-                title="Creates .glia-fab/venv and installs dev-kernel deps"
+                onClick={bootstrapCyntraKernel}
+                disabled={!activeProject || !activeProject.cyntra_kernel_dir}
+                title="Creates .cyntra/venv and installs cyntra-kernel deps"
               >
-                Bootstrap Dev Kernel
+                Bootstrap Cyntra
               </button>
             </div>
           </div>
@@ -117,7 +117,7 @@ export function ProjectsView({
                   Viewer dir: {activeProject.viewer_dir ?? "—"}
                 </div>
                 <div className="muted">
-                  Dev kernel dir: {activeProject.dev_kernel_dir ?? "—"}
+                  Cyntra kernel dir: {activeProject.cyntra_kernel_dir ?? "—"}
                 </div>
                 <div style={{ height: 16 }} />
                 <div className="panel">
@@ -142,7 +142,7 @@ export function ProjectsView({
                   </div>
                   <div style={{ padding: 14, display: "grid", gap: 8 }}>
                     <div className="muted" style={{ fontSize: 12 }}>
-                      Merged into workcell env with <code>.dev-kernel/.env</code> per project.
+                      Merged into workcell env with <code>.cyntra/.env</code> per project.
                     </div>
                     <textarea
                       className="text-input"
@@ -160,7 +160,7 @@ export function ProjectsView({
                 </div>
                 <div style={{ height: 18 }} />
                 <div className="muted">
-                  Tip: run `fab-gate`, `fab-render`, `fab-godot`, or `dev-kernel`
+                  Tip: run `fab-gate`, `fab-render`, `fab-godot`, or `cyntra`
                   commands in a terminal session.
                 </div>
               </>

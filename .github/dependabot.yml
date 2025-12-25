@@ -1,0 +1,70 @@
+# Dependabot configuration for automated dependency updates
+version: 2
+
+updates:
+  # Python dependencies (cyntra-kernel)
+  - package-ecosystem: "pip"
+    directory: "/cyntra-kernel"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    groups:
+      python-minor:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+    labels:
+      - "dependencies"
+      - "python"
+
+  # npm/bun dependencies (root + workspaces)
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    groups:
+      npm-minor:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+      react-ecosystem:
+        patterns:
+          - "react*"
+          - "@types/react*"
+    labels:
+      - "dependencies"
+      - "javascript"
+
+  # Rust/Cargo dependencies (Tauri)
+  - package-ecosystem: "cargo"
+    directory: "/apps/glia-fab-desktop/src-tauri"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 3
+    groups:
+      cargo-minor:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+    labels:
+      - "dependencies"
+      - "rust"
+
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "ci"

@@ -154,7 +154,7 @@ Emitted when errors occur.
 When implementing a new adapter, use `TelemetryWriter` to emit events:
 
 ```python
-from dev_kernel.adapters.telemetry import TelemetryWriter
+from cyntra.adapters.telemetry import TelemetryWriter
 
 async def execute(self, manifest, workcell_path, timeout):
     telemetry = TelemetryWriter(workcell_path / "telemetry.jsonl")
@@ -293,17 +293,17 @@ Array<{
 ## File Locations
 
 - **Telemetry files**: `.workcells/<workcell-id>/telemetry.jsonl`
-- **Python implementation**: `dev-kernel/src/dev_kernel/adapters/telemetry.py`
+- **Python implementation**: `cyntra-kernel/src/cyntra/adapters/telemetry.py`
 - **Tauri commands**: `apps/glia-fab-desktop/src-tauri/src/main.rs`
 - **UI component**: `apps/glia-fab-desktop/src/WorkcellDetail.tsx`
-- **Tests**: `dev-kernel/tests/test_telemetry.py`
+- **Tests**: `cyntra-kernel/tests/test_telemetry.py`
 
 ## Testing
 
 Run telemetry tests:
 
 ```bash
-cd dev-kernel
+cd cyntra-kernel
 pytest tests/test_telemetry.py -v
 pytest tests/integration/test_telemetry_integration.py -v
 ```
@@ -311,7 +311,7 @@ pytest tests/integration/test_telemetry_integration.py -v
 Create demo telemetry for UI testing:
 
 ```bash
-cd dev-kernel
+cd cyntra-kernel
 python scripts/create_demo_telemetry.py
 ```
 

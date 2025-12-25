@@ -1,0 +1,72 @@
+name: priority-rebalancer
+version: 1.0.0
+description: |
+  Adjust exploration priorities based on accumulated evidence from rollouts.
+  Updates genome weights, toolchain routing preferences, and bead priorities
+  based on observed success rates and pattern analysis.
+category: sleeptime
+priority: medium
+phase: 4
+
+inputs:
+  - name: patterns
+    type: object
+    description: Output from pattern-distiller
+    required: true
+  - name: current_config
+    type: object
+    description: Current routing/priority config
+    required: false
+  - name: adjustment_strength
+    type: number
+    description: How aggressively to adjust (0-1, higher = more change)
+    required: false
+    default: 0.3
+  - name: min_evidence
+    type: integer
+    description: Minimum pattern occurrences before adjusting
+    required: false
+    default: 5
+
+outputs:
+  - name: recommended_adjustments
+    type: array
+    description: |
+      Suggested config changes:
+      - target (routing/genome/priority)
+      - current_value
+      - recommended_value
+      - evidence (pattern_ids supporting change)
+      - confidence
+  - name: exploration_suggestions
+    type: array
+    description: Areas that need more exploration (low sample count)
+  - name: exploitation_candidates
+    type: array
+    description: High-confidence patterns to exploit more
+
+examples:
+  - description: Rebalance based on pattern analysis
+    inputs:
+      patterns:
+        patterns: [...]
+        anti_patterns: [...]
+      adjustment_strength: 0.3
+    outputs:
+      recommended_adjustments:
+        - target: "routing.risk.high.toolchain"
+          current_value: "codex"
+          recommended_value: "claude"
+          evidence: ["pattern_tc_003", "pattern_tc_007"]
+          confidence: 0.78
+          rationale: "Claude shows 85% success on high-risk tasks vs Codex 62%"
+        - target: "genome.repair_prompt.temperature"
+          current_value: 0.7
+          recommended_value: 0.5
+          evidence: ["anti_pattern_001"]
+          confidence: 0.65
+          rationale: "Lower temperature reduces oscillation in repair loops"
+
+implementation:
+  type: python
+  path: priority-rebalancer.py

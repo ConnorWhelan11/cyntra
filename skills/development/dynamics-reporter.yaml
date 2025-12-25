@@ -1,0 +1,41 @@
+name: dynamics-reporter
+version: 1.0.0
+description: |
+  Generate dynamics_report.json with V(state), action metrics, trap warnings.
+  Produces comprehensive dynamics analysis for exploration tuning.
+category: development
+priority: high
+phase: 4
+
+inputs:
+  - name: dynamics_db_path
+    type: string
+    description: Path to dynamics SQLite database
+    required: true
+  - name: window_days
+    type: integer
+    description: Number of days to include in window
+    required: false
+    default: 30
+  - name: smoothing_alpha
+    type: number
+    description: Smoothing parameter for estimates
+    required: false
+    default: 1.0
+
+outputs:
+  - name: report_path
+    type: string
+    description: Path to generated dynamics_report.json
+  - name: traps_detected
+    type: array
+    description: States with trapping behavior
+  - name: controller_recommendations
+    type: object
+    description: Per-domain exploration parameter recommendations
+
+examples: []
+
+implementation:
+  type: python
+  path: dynamics-reporter.py

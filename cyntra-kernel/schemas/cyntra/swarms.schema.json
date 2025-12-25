@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://cyntra-kernel/schemas/cyntra/swarms.schema.json",
+  "title": "Cyntra Universe Swarm Catalog",
+  "description": "Optional universe-scoped swarm catalog (v1 draft).",
+  "type": "object",
+  "required": ["schema_version", "swarms"],
+  "properties": {
+    "schema_version": { "type": "string", "const": "1.0" },
+    "swarms": {
+      "type": "object",
+      "additionalProperties": { "type": "object", "additionalProperties": true }
+    }
+  },
+  "additionalProperties": false
+}
+

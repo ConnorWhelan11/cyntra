@@ -116,6 +116,7 @@ export function PcbField({ bus, config }: PcbFieldProps) {
     u.uMicroGrid2.value = config.microGrid2;
     u.uMicroGridStrength.value = config.microGridStrength;
     u.uRevealStrength.value = config.revealStrength;
+    u.uBaseVisibility.value = config.baseVisibility;
     u.uMicroWarp.value = config.microWarp;
     u.uEtchDistortion.value = config.etchDistortion;
     // === Phase Lens Uniforms ===
@@ -142,7 +143,7 @@ export function PcbField({ bus, config }: PcbFieldProps) {
     size.width, size.height, config.probeRadius,
     planeSize.width, planeSize.height, config.arrowsMaxPointSize,
     config.microGrid1, config.microGrid2, config.microGridStrength,
-    config.revealStrength, config.microWarp, config.etchDistortion,
+    config.revealStrength, config.baseVisibility, config.microWarp, config.etchDistortion,
     config.lensEnabled, config.lensRadius, config.lensMagnification,
     config.lensChromatic, config.latticeMode,
     config.paletteMode, config.accentIntensity, config.iridescenceStrength,

@@ -1,0 +1,40 @@
+{
+  "schema_version": "1.0",
+  "addon_id": "godot_jolt",
+  "kind": "physics",
+  "type": "gdextension",
+  "version": "0.9.0",
+  "upstream": {
+    "repo": "https://github.com/godot-jolt/godot-jolt",
+    "ref": "v0.9.0-stable",
+    "ref_type": "tag",
+    "releases_url": "https://github.com/godot-jolt/godot-jolt/releases"
+  },
+  "compatibility": {
+    "godot_min": "4.2",
+    "godot_max": null,
+    "license": "MIT",
+    "platforms": ["windows", "linux", "macos", "android", "ios"],
+    "dependencies": []
+  },
+  "install": {
+    "requires_binary": true,
+    "download_url": "https://github.com/godot-jolt/godot-jolt/releases/download/v0.9.0-stable/",
+    "target_path": "addons/godot-jolt",
+    "instructions": "Download release for your platform, extract to addons/, enable in Project Settings > Physics > 3D"
+  },
+  "checksums": {
+    "sha256": null,
+    "verified_at": null
+  },
+  "description": "Godot Jolt - Jolt Physics engine for Godot 4 (drop-in replacement)",
+  "why": "Better physics performance and stability than GodotPhysics. Drop-in replacement for 3D physics.",
+  "notes": [
+    "C++ GDExtension - requires platform-specific binaries",
+    "Drop-in replacement for GodotPhysics 3D",
+    "Better performance and determinism",
+    "Same API as built-in physics",
+    "Enable in Project Settings after installing",
+    "Widely used in production games"
+  ]
+}

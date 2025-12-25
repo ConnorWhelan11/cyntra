@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "addon_id": "dialogic",
+  "kind": "dialogue",
+  "version": "1.5.1",
+  "upstream": {
+    "repo": "https://github.com/dialogic-godot/dialogic",
+    "ref": "v1.5.1",
+    "ref_type": "tag",
+    "fetched_at": "2024-12-22T00:00:00Z"
+  },
+  "compatibility": {
+    "godot_min": "4.0",
+    "godot_max": null,
+    "license": "MIT",
+    "dependencies": []
+  },
+  "install": {
+    "source_path": "addon/",
+    "target_path": "addons/dialogic"
+  },
+  "checksums": {
+    "sha256": "cf367b08381bdef65431f0cb8d4552ac32c80920b25d766c2e1d6a214d0d70c3",
+    "verified_at": "2025-12-23T01:13:49.282285Z"
+  },
+  "description": "Dialogic 2 - Create dialogs, characters and scenes for Godot 4",
+  "why": "Full-featured dialogue system with timeline editor, characters, and visual novel features. Alternative to dialogue_manager.",
+  "notes": [
+    "Visual timeline editor",
+    "Character portraits and expressions",
+    "Built-in dialogue UI themes",
+    "Branching and conditions",
+    "Localization support",
+    "Signal-based event system"
+  ]
+}

@@ -28,5 +28,5 @@ The app starts a local HTTP server on `127.0.0.1` (ephemeral port) to serve:
 
 ## Artifacts (recommended convention)
 
-- Centralize run outputs under `<repo>/.glia-fab/runs/<run_id>/…`
+- Centralize run outputs under `<repo>/.cyntra/runs/<run_id>/…`
 - “Publish” (copy/symlink) any curated exports you want visible in the static viewer under `fab/outora-library/viewer/assets/...`

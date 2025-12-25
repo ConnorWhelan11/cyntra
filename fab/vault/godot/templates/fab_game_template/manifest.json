@@ -1,0 +1,59 @@
+{
+  "schema_version": "1.0",
+  "template_id": "fab_game_template",
+  "kind": "game",
+  "version": "1.0.0",
+  "upstream": {
+    "repo": null,
+    "local_source": "fab/godot/template/",
+    "ref": "local",
+    "migrated_at": "2024-12-21T00:00:00Z"
+  },
+  "compatibility": {
+    "godot_min": "4.3",
+    "godot_max": null,
+    "renderer": "gl_compatibility"
+  },
+  "features": {
+    "fab_contract": true,
+    "spawn_detection": true,
+    "collider_detection": true,
+    "trigger_detection": true,
+    "interact_detection": true,
+    "web_export_preset": true,
+    "first_person_controller": true
+  },
+  "files": {
+    "project_godot": "project/project.godot",
+    "main_scene": "project/scenes/Main.tscn",
+    "player_scene": "project/scenes/Player.tscn",
+    "export_presets": "project/export_presets.cfg",
+    "level_loader": "project/scripts/FabLevelLoader.gd",
+    "player_controller": "project/scripts/FabPlayerController.gd"
+  },
+  "checksums": {
+    "sha256": "ac1b162fbce496d5e3deb2531f461846da495e3be1192641b81018f40de59cc6",
+    "verified_at": "2025-12-23T01:13:49.284769Z"
+  },
+  "bundled_addons": [
+    {
+      "id": "fab_importer",
+      "local": true,
+      "path": "project/addons/fab_importer/",
+      "description": "Optional GLB post-import processing for Fab conventions"
+    }
+  ],
+  "display": {
+    "viewport_width": 1280,
+    "viewport_height": 720,
+    "window_mode": 2
+  },
+  "description": "Minimal Fab-compatible Godot template with FabLevelLoader for dynamic GLB loading, first-person player controller, and Web export preset",
+  "why": "Base template for Fab World Godot integration stage. Automatically detects SPAWN_PLAYER markers, COLLIDER_* meshes, TRIGGER_* areas, and INTERACT_* objects in imported GLB files.",
+  "notes": [
+    "Uses Compatibility renderer for WebGL support",
+    "Expects level.glb at assets/level.glb by default (configurable)",
+    "Supports both FAB naming (SPAWN_PLAYER) and Outora naming (ol_spawn_player)",
+    "First-person WASD+mouse controller included"
+  ]
+}

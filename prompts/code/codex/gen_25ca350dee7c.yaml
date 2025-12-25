@@ -1,0 +1,19 @@
+schema_version: cyntra.genome.v1
+genome_id: gen_25ca350dee7c
+domain: code
+toolchain: codex
+created_at: '2025-12-21T03:28:13.803320Z'
+parent_id: gen_762efa51d78a
+system_prompt: 'Toy bench (no kernel).
+
+
+  Avoid unrelated refactors; focus only on the requested change.'
+instruction_blocks:
+- Prefer minimal diffs.
+- Prefer minimal diffs; fix root cause.
+tool_use_rules: []
+sampling:
+  temperature: 0.1
+  top_p: 0.95
+metadata:
+  bench: toy

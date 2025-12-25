@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0",
+  "addon_id": "phantom_camera",
+  "kind": "camera",
+  "version": "0.8.2",
+  "upstream": {
+    "repo": "https://github.com/ramokz/phantom-camera",
+    "ref": "v0.8.2",
+    "ref_type": "tag",
+    "fetched_at": "2024-12-21T00:00:00Z"
+  },
+  "compatibility": {
+    "godot_min": "4.2",
+    "godot_max": null,
+    "license": "MIT",
+    "dependencies": []
+  },
+  "install": {
+    "source_path": "addon/",
+    "target_path": "addons/phantom_camera"
+  },
+  "checksums": {
+    "sha256": "c84dcc8d247e52a2cf4faadad8143f517a05d0878d432a9ef2ffe5cc195d2b64",
+    "verified_at": "2025-12-23T01:13:49.280846Z"
+  },
+  "description": "Phantom Camera - Cinematic camera behaviors for Godot (Cinemachine-like)",
+  "why": "Cinematic camera system with tweening, follow modes, and look-at targets. Essential for polished camera work.",
+  "notes": [
+    "Similar to Unity's Cinemachine",
+    "Supports 2D and 3D cameras",
+    "Multiple camera blend modes",
+    "Follow and look-at targets with smoothing",
+    "Priority-based camera switching"
+  ]
+}

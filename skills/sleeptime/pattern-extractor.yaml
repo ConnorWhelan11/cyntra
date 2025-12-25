@@ -1,0 +1,41 @@
+name: pattern-extractor
+version: 1.0.0
+description: |
+  Lightweight pattern extraction from observations database.
+  Queries pre-indexed observations to find successful tool chains and failure modes.
+
+  Use this for quick queries against accumulated observations.
+  For richer analysis of raw run summaries, use pattern-distiller instead.
+category: sleeptime
+priority: high
+
+inputs:
+  - name: db_path
+    type: string
+    description: Path to observations database
+    required: true
+  - name: domain
+    type: string
+    description: Domain to analyze (code, fab_asset, fab_world, all)
+    required: false
+    default: "all"
+  - name: min_occurrences
+    type: integer
+    description: Minimum occurrences to qualify as pattern
+    required: false
+    default: 3
+
+outputs:
+  - name: patterns
+    type: array
+    description: Extracted successful patterns
+  - name: anti_patterns
+    type: array
+    description: Extracted failure patterns
+  - name: confidence_scores
+    type: object
+    description: Confidence score per pattern
+
+implementation:
+  type: python
+  path: pattern-extractor.py

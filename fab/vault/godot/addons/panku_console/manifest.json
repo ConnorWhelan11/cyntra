@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "addon_id": "panku_console",
+  "kind": "debug",
+  "version": "1.7.9",
+  "upstream": {
+    "repo": "https://github.com/Ark2000/PankuConsole",
+    "ref": "v1.7.9",
+    "ref_type": "tag",
+    "fetched_at": "2024-12-22T00:00:00Z"
+  },
+  "compatibility": {
+    "godot_min": "4.0",
+    "godot_max": null,
+    "license": "MIT",
+    "dependencies": []
+  },
+  "install": {
+    "source_path": "addon/",
+    "target_path": "addons/panku_console"
+  },
+  "checksums": {
+    "sha256": "915284167ce60e95984891437d63b178b91e6184041ad2b4bf556ec618eaae19",
+    "verified_at": "2025-12-23T01:13:49.280601Z"
+  },
+  "description": "Panku Console - Real-time debugging toolkit for Godot 4",
+  "why": "Runtime debug console with variable inspection, command execution, and performance monitoring.",
+  "notes": [
+    "In-game developer console",
+    "Expression evaluation",
+    "Variable watching and editing",
+    "Performance profiler overlay",
+    "Customizable UI themes",
+    "Notification system"
+  ]
+}

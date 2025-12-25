@@ -1,0 +1,42 @@
+name: web-research
+version: 1.0.0
+description: |
+  Meta-skill that orchestrates search → scrape → extract pipeline.
+  Performs comprehensive web research on a topic.
+category: search
+priority: high
+
+inputs:
+  - name: topic
+    type: string
+    description: Research topic or question
+    required: true
+  - name: depth
+    type: string
+    description: Research depth (shallow, medium, deep)
+    required: false
+    default: medium
+    enum: [shallow, medium, deep]
+  - name: output_format
+    type: string
+    description: Output format (summary, detailed, raw)
+    required: false
+    default: summary
+    enum: [summary, detailed, raw]
+  - name: cache_ttl
+    type: integer
+    description: Cache TTL in seconds (0 to disable)
+    required: false
+    default: 3600
+
+outputs:
+  - name: findings
+    type: string
+    description: Consolidated research findings
+  - name: sources
+    type: array
+    description: List of source URLs used
+
+implementation:
+  type: python
+  path: web-research.py

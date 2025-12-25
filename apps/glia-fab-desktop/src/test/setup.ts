@@ -73,7 +73,7 @@ vi.mock('@oos/ui', () => {
   };
 });
 
-vi.mock('@tauri-apps/api/tauri', () => {
+vi.mock('@tauri-apps/api/core', () => {
   return {
     invoke: (...args: any[]) => {
       const tauri = (globalThis as any).__TAURI__;

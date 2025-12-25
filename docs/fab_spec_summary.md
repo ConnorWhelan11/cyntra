@@ -6,7 +6,7 @@ critics + geometry priors, and drive iterate-until-pass repair loops.
 
 ## 1) Executive Summary
 
-Glia Fab’s next phase adds a Realism Gate pipeline to the Dev Kernel + Workcells system,
+Glia Fab’s next phase adds a Realism Gate pipeline to the Cyntra Kernel + Workcells system,
 extending beyond code into Blender asset creation (and later Godot assembly). The gate is
 kernel-owned (agents cannot self-certify), and evaluates assets only via:
 
@@ -63,7 +63,7 @@ Cannot guarantee:
 
 ### 3.1 Components
 
-Dev Kernel (source of truth)
+Cyntra Kernel (source of truth)
 
 - Orchestrates bead graph execution.
 - Owns gate configs, thresholds, versions.

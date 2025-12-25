@@ -2,7 +2,7 @@
  * Project-related Tauri IPC service
  */
 
-import { invoke } from '@tauri-apps/api/tauri';
+import { invoke } from '@tauri-apps/api/core';
 import type { ProjectInfo } from '@/types';
 
 export async function detectProject(root: string): Promise<ProjectInfo> {

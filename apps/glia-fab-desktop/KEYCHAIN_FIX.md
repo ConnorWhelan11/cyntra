@@ -14,7 +14,7 @@ Every time you restarted the Glia Fab Desktop app in development mode, macOS wou
 Implemented a **hybrid storage approach** that prioritizes file-based storage for development:
 
 ### File-Based Storage (Primary)
-- **Location**: `~/.glia-fab/global-env.txt`
+- **Location**: `~/.cyntra/global-env.txt`
 - **No keychain prompts** in development
 - **Persists across rebuilds** (same file used every time)
 - **Fast and reliable**
@@ -32,7 +32,7 @@ Implemented a **hybrid storage approach** that prioritizes file-based storage fo
    ```rust
    fn global_env_file_path() -> PathBuf {
      let home = std::env::var("HOME").unwrap_or_else(|_| ".".to_string());
-     PathBuf::from(home).join(".glia-fab").join("global-env.txt")
+     PathBuf::from(home).join(".cyntra").join("global-env.txt")
    }
    ```
 
@@ -52,7 +52,7 @@ Implemented a **hybrid storage approach** that prioritizes file-based storage fo
 
 ### Development Mode
 When you set environment variables in the app:
-1. They're saved to `~/.glia-fab/global-env.txt`
+1. They're saved to `~/.cyntra/global-env.txt`
 2. No keychain prompts
 3. Persists across app restarts
 4. Works immediately on first try
@@ -75,7 +75,7 @@ If you already have env vars in the keychain:
 Or manually copy:
 ```bash
 # If you have keychain entries, export them
-security find-generic-password -s "glia-fab-desktop" -a "global-env" -w > ~/.glia-fab/global-env.txt
+security find-generic-password -s "glia-fab-desktop" -a "global-env" -w > ~/.cyntra/global-env.txt
 ```
 
 ## File Format
@@ -83,7 +83,7 @@ security find-generic-password -s "glia-fab-desktop" -a "global-env" -w > ~/.gli
 The file contains your environment variables in the same format you enter in the UI:
 
 ```bash
-# Example ~/.glia-fab/global-env.txt
+# Example ~/.cyntra/global-env.txt
 ANTHROPIC_API_KEY=sk-ant-...
 OPENAI_API_KEY=sk-...
 ```
@@ -105,7 +105,7 @@ OPENAI_API_KEY=sk-...
 
 After rebuilding, you should see:
 - ✅ No keychain prompt on app start
-- ✅ File created at `~/.glia-fab/global-env.txt`
+- ✅ File created at `~/.cyntra/global-env.txt`
 - ✅ Environment variables persist across restarts
 - ✅ Settings work on first attempt
 
@@ -113,15 +113,15 @@ After rebuilding, you should see:
 
 **Still getting keychain prompts?**
 - Make sure you've rebuilt: `cargo build`
-- Check if file exists: `ls -la ~/.glia-fab/global-env.txt`
+- Check if file exists: `ls -la ~/.cyntra/global-env.txt`
 - Try manually creating the file first
 
 **Can't read environment variables?**
-- Check file permissions: `chmod 600 ~/.glia-fab/global-env.txt`
-- Verify file contents: `cat ~/.glia-fab/global-env.txt`
+- Check file permissions: `chmod 600 ~/.cyntra/global-env.txt`
+- Verify file contents: `cat ~/.cyntra/global-env.txt`
 
 **Want to use keychain instead?**
-- Delete the file: `rm ~/.glia-fab/global-env.txt`
+- Delete the file: `rm ~/.cyntra/global-env.txt`
 - App will fall back to keychain on next read
 - You'll need to approve keychain access once
 
@@ -130,7 +130,7 @@ After rebuilding, you should see:
 To remove all stored environment variables:
 ```bash
 # Remove file storage
-rm -f ~/.glia-fab/global-env.txt
+rm -f ~/.cyntra/global-env.txt
 
 # Remove keychain entry
 security delete-generic-password -s "glia-fab-desktop" -a "global-env"

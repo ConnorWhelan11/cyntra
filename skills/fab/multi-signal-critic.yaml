@@ -1,0 +1,42 @@
+name: multi-signal-critic
+version: 1.0.0
+description: |
+  Aggregate realism/geometry/category critics into weighted overall score.
+  Combines multiple evaluation signals.
+category: fab
+priority: high
+phase: fab
+
+inputs:
+  - name: critic_reports
+    type: array
+    description: Paths to individual critic report JSONs
+    required: true
+  - name: weights
+    type: object
+    description: Per-critic weights for aggregation
+    required: false
+  - name: thresholds
+    type: object
+    description: Pass/fail thresholds per critic
+    required: false
+
+outputs:
+  - name: overall_score
+    type: number
+    description: Weighted overall score (0-1)
+  - name: passed
+    type: boolean
+    description: True if all thresholds met
+  - name: breakdown
+    type: object
+    description: Per-critic scores and weights
+  - name: recommendations
+    type: array
+    description: Suggested improvements based on scores
+
+examples: []
+
+implementation:
+  type: python
+  path: multi-signal-critic.py

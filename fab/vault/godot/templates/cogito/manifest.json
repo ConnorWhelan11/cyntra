@@ -1,0 +1,55 @@
+{
+  "schema_version": "1.0",
+  "template_id": "cogito",
+  "kind": "immersive_sim",
+  "version": "1.1.2",
+  "upstream": {
+    "repo": "https://github.com/Phazorknight/Cogito",
+    "ref": "v1.1.2",
+    "ref_type": "tag",
+    "fetched_at": "2024-12-22T00:00:00Z"
+  },
+  "compatibility": {
+    "godot_min": "4.2",
+    "godot_max": null,
+    "renderer": null,
+    "license": "MIT"
+  },
+  "features": {
+    "first_person_controller": true,
+    "interaction_system": true,
+    "inventory_system": true,
+    "wieldable_items": true,
+    "doors_switches": true,
+    "save_system": true,
+    "ui_system": true
+  },
+  "files": {
+    "project_godot": "project/project.godot",
+    "cogito_addon": "project/addons/cogito/"
+  },
+  "checksums": {
+    "sha256": "19f4d6978888d5e123d88eec47b0166985ca09da43237932319fd07e1b95a2c9",
+    "verified_at": "2025-12-23T01:13:49.285505Z"
+  },
+  "bundled_addons": [
+    {
+      "id": "cogito",
+      "path": "project/addons/cogito/",
+      "description": "Complete immersive sim framework"
+    }
+  ],
+  "description": "COGITO - Immersive sim template for first-person games in Godot 4",
+  "why": "Complete immersive sim starter. First-person controller, interaction, inventory, wieldables, doors/switches, save system.",
+  "notes": [
+    "First-person character controller",
+    "Raycast-based interaction system",
+    "Inventory with item stacking",
+    "Wieldable items (weapons, tools)",
+    "Doors, switches, and buttons",
+    "Carriable objects (physics props)",
+    "Save/load game system",
+    "HUD and menu UI",
+    "Good for System Shock-style games"
+  ]
+}

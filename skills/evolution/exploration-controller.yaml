@@ -1,0 +1,42 @@
+name: exploration-controller
+version: 1.0.0
+description: |
+  Adjust temperature/parallelism/M based on action bands and ΔV trends.
+  Closed-loop exploration/exploitation control.
+category: evolution
+priority: critical
+phase: 6
+
+inputs:
+  - name: dynamics_report_path
+    type: string
+    description: Path to current dynamics_report.json
+    required: true
+  - name: domain
+    type: string
+    description: Domain to tune (code, fab_asset, fab_world)
+    required: true
+  - name: current_config
+    type: object
+    description: Current exploration configuration
+    required: true
+
+outputs:
+  - name: updated_config
+    type: object
+    description: New exploration parameters
+  - name: adjustments
+    type: array
+    description: List of parameter changes made
+  - name: rationale
+    type: string
+    description: Explanation for adjustments
+  - name: mode
+    type: string
+    description: Control mode (explore, exploit, balanced)
+
+examples: []
+
+implementation:
+  type: python
+  path: exploration-controller.py

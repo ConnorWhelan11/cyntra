@@ -2,7 +2,7 @@
 
 ## Introduction
 
-The Fab World system transforms 3D asset generation from ad-hoc scripts into a deterministic, portable, and testable pipeline. Worlds are self-contained recipes that can be built, validated, and iterated automatically by the dev-kernel.
+The Fab World system transforms 3D asset generation from ad-hoc scripts into a deterministic, portable, and testable pipeline. Worlds are self-contained recipes that can be built, validated, and iterated automatically by Cyntra.
 
 **Key Benefits**:
 - **Deterministic**: Same seed → same output (SHA256-verified)
@@ -87,7 +87,7 @@ fab/worlds/<world_id>/
 ### Build Outputs (Gitignored)
 
 ```
-.glia-fab/runs/<run_id>/
+.cyntra/runs/<run_id>/
 ├── manifest.json           # SHA256 hashes, versions, timing
 ├── stages/                 # Intermediate stage outputs
 │   ├── prepare/prepared.blend
@@ -187,12 +187,12 @@ def execute(
 # Full build
 fab-world build \
   --world fab/worlds/outora_library \
-  --output .glia-fab/runs/build_001
+  --output .cyntra/runs/build_001
 
 # With custom parameters
 fab-world build \
   --world fab/worlds/outora_library \
-  --output .glia-fab/runs/cosmic \
+  --output .cyntra/runs/cosmic \
   --param lighting.preset=cosmic \
   --param layout.complexity=high
 
@@ -219,16 +219,16 @@ fab-world inspect fab/worlds/outora_library --json
 
 # Publish to viewer
 fab-world publish \
-  --run .glia-fab/runs/build_001 \
+  --run .cyntra/runs/build_001 \
   --viewer fab/outora-library/viewer
 
 # Publish to release directory
 fab-world publish \
-  --run .glia-fab/runs/build_001 \
+  --run .cyntra/runs/build_001 \
   --export fab/worlds/outora_library/export
 ```
 
-## Dev-Kernel Integration
+## Cyntra Integration
 
 ### Issue Tagging
 
@@ -520,7 +520,7 @@ The `manifest.json` tracks all build metadata:
 
 1. **Create critic class**:
    ```python
-   # dev-kernel/src/dev_kernel/fab/critics/my_critic.py
+   # cyntra-kernel/src/cyntra/fab/critics/my_critic.py
    class MyCritic:
        def __init__(self, config):
            self.config = config

@@ -1,0 +1,38 @@
+{
+  "schema_version": "1.0",
+  "addon_id": "aseprite_wizard",
+  "kind": "animation",
+  "version": "9.6.0",
+  "upstream": {
+    "repo": "https://github.com/viniciusgerevini/godot-aseprite-wizard",
+    "ref": "v9.6.0-4",
+    "ref_type": "tag",
+    "fetched_at": "2024-12-22T00:00:00Z"
+  },
+  "compatibility": {
+    "godot_min": "4.0",
+    "godot_max": null,
+    "license": "MIT",
+    "dependencies": [
+      "aseprite"
+    ]
+  },
+  "install": {
+    "source_path": "addon/",
+    "target_path": "addons/AsepriteWizard"
+  },
+  "checksums": {
+    "sha256": "af087ae5af98d6f4bd5de1c7710619ca098468776287f491989d0c578a38601b",
+    "verified_at": "2025-12-23T01:13:49.284110Z"
+  },
+  "description": "Aseprite Wizard - Import Aseprite animations directly into Godot",
+  "why": "Automatic Aseprite file import with animation timing, layers, and batch processing. Essential for pixel art games.",
+  "notes": [
+    "Direct .aseprite file import",
+    "Preserves animation timing and loops",
+    "Layer filtering support",
+    "Creates SpriteFrames or AnimationPlayer",
+    "Batch import support",
+    "Requires Aseprite installed"
+  ]
+}

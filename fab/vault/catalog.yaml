@@ -1,0 +1,255 @@
+schema_version: '1.0'
+vault_id: glia-fab-ude-vault
+updated_at: '2025-12-23T01:13:49.270821Z'
+registries:
+  godot_templates: fab/vault/godot/templates/registry.json
+  godot_addons: fab/vault/godot/addons/registry.json
+  godot_gdextensions: fab/vault/godot/gdextensions/registry.json
+  godot_tooling: fab/vault/godot/tooling/registry.json
+addons:
+- id: gdunit4
+  kind: testing
+  godot_min: '4.2'
+  upstream: https://github.com/MikeSchulze/gdUnit4
+  pinned_ref: v4.4.0
+  sha256: 2634dd497879f8818e8e8c25090781ec38144b0e1143bcd2147561299e58ba66
+  install_path: addons/gdUnit4
+  license: MIT
+  why: Unit tests for GDScript/C#; gate in CI.
+- id: gut
+  kind: testing
+  godot_min: '4.0'
+  upstream: https://github.com/bitwes/Gut
+  pinned_ref: v9.3.0
+  sha256: 072828ce93cd1fea732b1495754f030c16b32162472e3978e0d4c8062f65ad42
+  install_path: addons/gut
+  license: MIT
+  why: Alternative unit test framework, simpler syntax.
+- id: debug_draw_3d
+  kind: debug
+  godot_min: '4.0'
+  upstream: https://github.com/DmitriySalnikov/godot_debug_draw_3d
+  pinned_ref: 1.4.5
+  sha256: b4ad40ea22f87779c75917df2ac8048cff0fcff1ec5410c2ff9125ee598dc23c
+  install_path: addons/debug_draw_3d
+  license: MIT
+  why: Runtime debug visualization for 3D shapes/text.
+- id: panku_console
+  kind: debug
+  godot_min: '4.0'
+  upstream: https://github.com/Ark2000/PankuConsole
+  pinned_ref: v1.7.9
+  sha256: 915284167ce60e95984891437d63b178b91e6184041ad2b4bf556ec618eaae19
+  install_path: addons/panku_console
+  license: MIT
+  why: Runtime debug console with variable inspection and command execution.
+- id: phantom_camera
+  kind: camera
+  godot_min: '4.2'
+  upstream: https://github.com/ramokz/phantom-camera
+  pinned_ref: v0.8.2
+  sha256: c84dcc8d247e52a2cf4faadad8143f517a05d0878d432a9ef2ffe5cc195d2b64
+  install_path: addons/phantom_camera
+  license: MIT
+  why: Cinematic camera system with tweening (Cinemachine-like).
+- id: dialogue_manager
+  kind: dialogue
+  godot_min: '4.0'
+  upstream: https://github.com/nathanhoad/godot_dialogue_manager
+  pinned_ref: v3.0.1
+  sha256: 33d079767218aa37c5da75734eabbed353ca28929daa87b6db746b3e38f5d488
+  install_path: addons/dialogue_manager
+  license: MIT
+  why: Branching dialogue trees with visual editor.
+- id: dialogic
+  kind: dialogue
+  godot_min: '4.0'
+  upstream: https://github.com/dialogic-godot/dialogic
+  pinned_ref: v1.5.1
+  sha256: cf367b08381bdef65431f0cb8d4552ac32c80920b25d766c2e1d6a214d0d70c3
+  install_path: addons/dialogic
+  license: MIT
+  why: Full dialogue system with timeline editor, characters, and visual novel features.
+- id: gloot
+  kind: inventory
+  godot_min: '4.0'
+  upstream: https://github.com/peter-kish/gloot
+  pinned_ref: v3.0.1
+  sha256: 78266f46e95f770821b4cba595509092c47bb2243583790711f648a76b9b95be
+  install_path: addons/gloot
+  license: MIT
+  why: Grid-based universal inventory system.
+- id: beehave
+  kind: ai
+  godot_min: '4.0'
+  upstream: https://github.com/bitbrain/beehave
+  pinned_ref: v2.9.2
+  sha256: b4ba2755443ef1590773088735ef3f7e3d756d4cbefc9bd0d0b2033e92c123d1
+  install_path: addons/beehave
+  license: MIT
+  why: Behavior tree editor and runtime for AI (GDScript).
+- id: godot_state_charts
+  kind: state_machine
+  godot_min: '4.0'
+  upstream: https://github.com/derkork/godot-statecharts
+  pinned_ref: v0.9.1
+  sha256: 8c6524acc7cdee4444bf16b37d90d2a30c6daf3b47e4fc652f6d9a050d3f2e60
+  install_path: addons/godot_state_charts
+  license: MIT
+  why: Hierarchical state machines with guards, history, and visual editor.
+- id: proton_scatter
+  kind: scattering
+  godot_min: '4.0'
+  upstream: https://github.com/HungryProton/scatter
+  pinned_ref: '4.0'
+  sha256: ff5069ead7de1ef81f9a2437627c6bef77b94519865515a3991e19bb69d8baaa
+  install_path: addons/proton_scatter
+  license: MIT
+  why: Procedural asset placement with graph-based modifiers. Essential for world
+    building.
+- id: gaea
+  kind: procedural_generation
+  godot_min: '4.4'
+  upstream: https://github.com/BenjaTK/Gaea
+  pinned_ref: '2.0'
+  sha256: f9bb32a937c5c69fdc35f384b40f0a7eb4ae34999dc3a10c45a3510ef5ada1c8
+  install_path: addons/gaea
+  license: MIT
+  why: Procedural generation toolkit with noise, cellular automata, WFC.
+- id: aseprite_wizard
+  kind: animation
+  godot_min: '4.0'
+  upstream: https://github.com/viniciusgerevini/godot-aseprite-wizard
+  pinned_ref: v9.6.0-4
+  sha256: af087ae5af98d6f4bd5de1c7710619ca098468776287f491989d0c578a38601b
+  install_path: addons/AsepriteWizard
+  license: MIT
+  why: Direct Aseprite file import with animation timing. Essential for pixel art.
+- id: smart_shape_2d
+  kind: 2d_tools
+  godot_min: '4.0'
+  upstream: https://github.com/SirRamEsq/SmartShape2D
+  pinned_ref: v3.3.1
+  sha256: 61614f916c68d34e70ad6d7a3164f3af402b4ea3ecbde39ef5a63d827d0bf2ad
+  install_path: addons/rmsmartshape
+  license: MIT
+  why: Draw 2D terrain and shapes with automatic texturing and collision.
+gdextensions:
+- id: terrain3d
+  kind: terrain
+  godot_min: '4.2'
+  upstream: https://github.com/TokisanGames/Terrain3D
+  pinned_ref: v1.0.1
+  requires_binary: true
+  platforms:
+  - windows
+  - linux
+  - macos
+  license: MIT
+  why: High-performance C++ terrain with sculpting, painting, LOD. Essential for open
+    worlds.
+- id: godot_jolt
+  kind: physics
+  godot_min: '4.2'
+  upstream: https://github.com/godot-jolt/godot-jolt
+  pinned_ref: v0.9.0-stable
+  requires_binary: true
+  platforms:
+  - windows
+  - linux
+  - macos
+  - android
+  - ios
+  license: MIT
+  why: Drop-in Jolt physics replacement. Better performance and determinism.
+- id: limboai
+  kind: ai
+  godot_min: '4.2'
+  upstream: https://github.com/limbonaut/limboai
+  pinned_ref: v1.5.3
+  requires_binary: true
+  platforms:
+  - windows
+  - linux
+  - macos
+  - android
+  - ios
+  - web
+  license: MIT
+  why: C++ behavior trees + state machines. More performant than Beehave.
+- id: godot_steam
+  kind: platform
+  godot_min: '4.2'
+  upstream: https://github.com/GodotSteam/GodotSteam
+  pinned_ref: v4.17
+  requires_binary: true
+  platforms:
+  - windows
+  - linux
+  - macos
+  license: MIT
+  why: Steam integration - achievements, leaderboards, workshop, multiplayer.
+- id: godot_sqlite
+  kind: database
+  godot_min: '4.2'
+  upstream: https://github.com/2shady4u/godot-sqlite
+  pinned_ref: v4.6
+  requires_binary: true
+  platforms:
+  - windows
+  - linux
+  - macos
+  - android
+  - ios
+  - web
+  license: MIT
+  why: SQLite database for save games, player data, inventories, and analytics.
+templates:
+- id: fab_game_template
+  kind: game
+  godot_min: '4.3'
+  version: 1.2.0
+  upstream: null
+  sha256: 79834e805bcc3f218428c4e7b37d8c3894bc5a6f9ae2cd3f8f69724766f53952
+  why: Fab-compatible template with FabLevelLoader, Cogito integration, NPC/item spawning,
+    audio zones, navigation, performance testing, and generic NPC scene.
+- id: maaack_game_template
+  kind: game
+  godot_min: '4.0'
+  upstream: https://github.com/Maaack/Godot-Game-Template
+  pinned_ref: v1.4.2
+  sha256: 06fdc19047363eda07968d4572a0cd34b11ecaf6a1bbc417b61632103f3057f7
+  why: Full-featured starter with menus, settings, loading screens.
+- id: cogito
+  kind: immersive_sim
+  godot_min: '4.2'
+  upstream: https://github.com/Phazorknight/Cogito
+  pinned_ref: v1.1.2
+  sha256: 19f4d6978888d5e123d88eec47b0166985ca09da43237932319fd07e1b95a2c9
+  why: Immersive sim template - FPS controller, interaction, inventory, save system.
+- id: minimal_template
+  kind: minimal
+  godot_min: '4.0'
+  version: 1.0.0
+  upstream: null
+  sha256: null
+  why: Tiny baseline template for quick experiments.
+tooling:
+- id: gdscript_toolkit
+  kind: lint_format
+  upstream: https://github.com/Scony/godot-gdscript-toolkit
+  pinned_ref: 4.3.0
+  sha256: null
+  why: GDScript linting and formatting (gdlint, gdformat).
+- id: setup_godot_action
+  kind: ci
+  upstream: https://github.com/chickensoft-games/setup-godot
+  pinned_ref: v2.1.0
+  sha256: null
+  why: GitHub Actions setup for Godot CI.
+- id: godot_export_action
+  kind: ci
+  upstream: https://github.com/firebelley/godot-export
+  pinned_ref: v6.0.0
+  sha256: null
+  why: GitHub Actions export for Godot builds.

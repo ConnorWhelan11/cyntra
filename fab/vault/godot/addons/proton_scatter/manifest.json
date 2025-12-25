@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0",
+  "addon_id": "proton_scatter",
+  "kind": "scattering",
+  "version": "4.0",
+  "upstream": {
+    "repo": "https://github.com/HungryProton/scatter",
+    "ref": "4.0",
+    "ref_type": "tag",
+    "fetched_at": "2024-12-22T00:00:00Z"
+  },
+  "compatibility": {
+    "godot_min": "4.0",
+    "godot_max": null,
+    "license": "MIT",
+    "dependencies": []
+  },
+  "install": {
+    "source_path": "addon/",
+    "target_path": "addons/proton_scatter"
+  },
+  "checksums": {
+    "sha256": "ff5069ead7de1ef81f9a2437627c6bef77b94519865515a3991e19bb69d8baaa",
+    "verified_at": "2025-12-23T01:13:49.283698Z"
+  },
+  "description": "ProtonScatter - Procedural asset placement for Godot 4",
+  "why": "Automates positioning of props, foliage, and assets in scenes. Essential for world building.",
+  "notes": [
+    "Visual scatter graph editor",
+    "Multiple scatter shapes (box, sphere, path, curve)",
+    "Supports instancing for performance",
+    "Modifier system for position, rotation, scale",
+    "Mask system for exclusion zones"
+  ]
+}

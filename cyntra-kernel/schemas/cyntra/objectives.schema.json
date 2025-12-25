@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://cyntra-kernel/schemas/cyntra/objectives.schema.json",
+  "title": "Cyntra Universe Objectives Catalog",
+  "description": "Optional universe-scoped objective catalog (v1 draft).",
+  "type": "object",
+  "required": ["schema_version", "objectives"],
+  "properties": {
+    "schema_version": { "type": "string", "const": "1.0" },
+    "objectives": {
+      "type": "object",
+      "additionalProperties": { "type": "object", "additionalProperties": true }
+    }
+  },
+  "additionalProperties": false
+}
+

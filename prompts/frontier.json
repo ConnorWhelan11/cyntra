@@ -1,0 +1,12 @@
+{
+  "schema_version": "cyntra.frontier.v1",
+  "generated_at": "2025-12-21T00:00:00Z",
+  "objectives": {},
+  "items": [
+    {
+      "genome_id": "gen_base",
+      "note": "Baseline starting point"
+    }
+  ]
+}
+

@@ -1,0 +1,26 @@
+[package]
+name = "cyntra-core"
+description = "Core kernel logic for Cyntra autonomous development system"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[dependencies]
+tokio.workspace = true
+reqwest.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+serde_yaml.workspace = true
+git2.workspace = true
+tracing.workspace = true
+anyhow.workspace = true
+thiserror.workspace = true
+chrono.workspace = true
+uuid.workspace = true
+futures.workspace = true
+async-trait.workspace = true
+
+[dev-dependencies]
+tokio-test = "0.4"
+tempfile = "3"

@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "addon_id": "smart_shape_2d",
+  "kind": "2d_tools",
+  "version": "3.3.1",
+  "upstream": {
+    "repo": "https://github.com/SirRamEsq/SmartShape2D",
+    "ref": "v3.3.1",
+    "ref_type": "tag",
+    "fetched_at": "2024-12-22T00:00:00Z"
+  },
+  "compatibility": {
+    "godot_min": "4.0",
+    "godot_max": null,
+    "license": "MIT",
+    "dependencies": []
+  },
+  "install": {
+    "source_path": "addon/",
+    "target_path": "addons/rmsmartshape"
+  },
+  "checksums": {
+    "sha256": "61614f916c68d34e70ad6d7a3164f3af402b4ea3ecbde39ef5a63d827d0bf2ad",
+    "verified_at": "2025-12-23T01:13:49.284299Z"
+  },
+  "description": "SmartShape2D - Create nicely textured 2D polygons and curves",
+  "why": "Draw 2D terrain, platforms, and shapes with automatic texturing. Essential for 2D level design.",
+  "notes": [
+    "Draw terrain with auto-texturing",
+    "Edge and corner texture support",
+    "Collision shape generation",
+    "Open and closed shapes",
+    "Weld points for smooth curves",
+    "Material-based rendering"
+  ]
+}

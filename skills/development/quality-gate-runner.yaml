@@ -1,0 +1,40 @@
+name: quality-gate-runner
+version: 1.0.0
+description: |
+  Orchestrate pytest/mypy/ruff/fab gates with consistent reporting format.
+  Runs quality checks and produces standardized verification results.
+category: development
+priority: critical
+phase: 1-2
+
+inputs:
+  - name: workcell_path
+    type: string
+    description: Path to workcell to validate
+    required: true
+  - name: gates
+    type: object
+    description: Gate configuration (code.test, code.lint, code.typecheck, fab.validate)
+    required: true
+  - name: fail_fast
+    type: boolean
+    description: Stop on first failure
+    required: false
+    default: false
+
+outputs:
+  - name: all_passed
+    type: boolean
+    description: True if all gates passed
+  - name: results
+    type: object
+    description: Per-gate results with exit codes and durations
+  - name: blocking_failures
+    type: array
+    description: List of blocking failures requiring fixes
+
+examples: []
+
+implementation:
+  type: python
+  path: quality-gate-runner.py

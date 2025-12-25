@@ -1,6 +1,4 @@
-import type { ProjectInfo } from "@/types";
-
-type Nav = "projects" | "runs" | "terminals" | "viewer" | "kernel";
+import type { Nav, ProjectInfo } from "@/types";
 
 interface SidebarProps {
   nav: Nav;
@@ -53,6 +51,12 @@ export function Sidebar({ nav, setNav, serverInfo, activeProject }: SidebarProps
           onClick={() => setNav("viewer")}
         >
           Viewer
+        </button>
+        <button
+          className={nav === "immersa" ? "active" : ""}
+          onClick={() => setNav("immersa")}
+        >
+          Immersa
         </button>
       </div>
 

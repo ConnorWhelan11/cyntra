@@ -1,0 +1,20 @@
+schema_version: "1.0"
+
+# Universe swarm catalog (v1).
+# Swarms are coordination topologies used by `cyntra evolve`.
+
+swarms:
+  speculate_vote:
+    type: parallel_compete
+    population_size: 3
+    selection:
+      # `objectives` uses the objective directions from `objectives.yaml`.
+      mode: objectives
+      require_all_gates_pass: true
+
+  serial_handoff:
+    type: serial_handoff
+    population_size: 1
+    selection:
+      mode: objectives
+      require_all_gates_pass: true

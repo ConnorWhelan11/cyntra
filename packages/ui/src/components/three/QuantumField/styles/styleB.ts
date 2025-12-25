@@ -42,6 +42,7 @@ uniform float uMicroGrid1;      // Fine grid frequency (default ~60)
 uniform float uMicroGrid2;      // Ultra-fine grid frequency (default ~200)
 uniform float uMicroGridStrength; // Overall micro-lattice visibility (0-1)
 uniform float uRevealStrength;  // How much hover reveals the lattice (0-1)
+uniform float uBaseVisibility;  // Base visibility without hover (0-1, default 0.05)
 uniform float uMicroWarp;       // Domain warp amount (subtle, ~0.01-0.05)
 uniform float uEtchDistortion;  // UV distortion in etched areas (0-0.02)
 
@@ -162,26 +163,11 @@ float triLatticeAA(vec2 uv, float freq, float thickness) {
 
 // Hexagonal lattice with node emphasis at hex centers
 float hexLatticeAA(vec2 uv, float freq, float thickness) {
-  // Base tri lattice
+  // Base tri lattice already gives you the hex look.
   float tri = triLatticeAA(uv, freq, thickness);
-  
-  // Hex centers: scale and offset for honeycomb pattern
-  // Convert to axial coordinates for hex tiling
-  float hexScale = freq * 0.577; // 1/sqrt(3) for hex aspect
-  vec2 hexUv = vec2(uv.x * 1.1547, uv.y + uv.x * 0.5774);
-  hexUv *= hexScale;
-  
-  vec2 hexCell = floor(hexUv);
-  vec2 hexFrac = fract(hexUv);
-  
-  // Distance to hex center
-  float centerDist = length(hexFrac - 0.5);
-  float nodeDeriv = fwidth(hexUv.x);
-  float node = 1.0 - smoothstep(0.15 - nodeDeriv, 0.15 + nodeDeriv, centerDist);
-  
-  // Combine lattice lines with emphasized nodes
-  return max(tri, node * 0.7);
+  return tri; // <-- removes center “bulbs”
 }
+
 
 // Unified lattice function that selects mode
 // mode: 0=rect, 1=hex, 2=tri
@@ -267,9 +253,9 @@ vec3 paletteBase(int mode) {
 vec3 paletteLattice(int mode, float reveal) {
   vec3 dim, bright;
   
-  if (mode == 0) { // glia-cyan
-    dim = vec3(0.02, 0.06, 0.05);
-    bright = vec3(0.04, 0.32, 0.28);
+  if (mode == 0) { // glia-cyan - boosted for visibility
+    dim = vec3(0.03, 0.10, 0.08);
+    bright = vec3(0.08, 0.50, 0.42);
   } else if (mode == 1) { // orchid
     dim = vec3(0.04, 0.02, 0.06);
     bright = vec3(0.25, 0.12, 0.45);
@@ -462,31 +448,35 @@ void main() {
   }
   
   // ========================================================================
-  // Compute Reveal Mask (hover/anchor proximity increases lattice visibility)
+  // Compute Reveal Mask (etch/anchor proximity increases lattice visibility)
+  // Only respond to ETCH (click+drag), not probe hover. uHover.z = 1 for etch.
   // ========================================================================
-  
-  float reveal = computeReveal(uv, uHover.xy, uHover.w, uProbeRadius, uRevealStrength);
-  
+
+  // Only compute reveal from cursor if in etch mode (uHover.z > 0.5)
+  float isEtchMode = step(0.5, uHover.z);
+  float reveal = computeReveal(uv, uHover.xy, uHover.w * isEtchMode, uProbeRadius, uRevealStrength);
+
   // Anchors also reveal the lattice
   for (int i = 0; i < 8; i++) {
     if (i >= uAnchorCount) break;
     float anchorDist = length(uv - uAnchors[i].xy);
     reveal = max(reveal, smoothstep(0.15, 0.02, anchorDist) * uAnchors[i].z * uRevealStrength);
   }
-  
-  // Etched areas are always revealed
+
+  // Etched areas (trails) are always revealed
   reveal = max(reveal, trailIntensity * 1.5);
   reveal = clamp(reveal, 0.0, 1.0);
-  
+
   // ========================================================================
-  // Phase Lens Setup (if enabled)
+  // Phase Lens Setup (if enabled) - only active during ETCH, not hover
   // ========================================================================
-  
+
   float lensMask = 0.0;
   float lensRim = 0.0;
   vec2 lensDistortedUv = distortedUv;
-  
-  if (uLensEnabled > 0.5 && uHover.w > 0.5) {
+
+  // Lens only activates in etch mode (click+drag), not probe hover
+  if (uLensEnabled > 0.5 && uHover.w > 0.5 && uHover.z > 0.5) {
     vec2 lensCenter = uLens.xy;
     float lensRadius = uLens.z;
     float lensMag = uLens.w;
@@ -523,12 +513,15 @@ void main() {
   float lensRevealBoost = lensMask * 0.6;
   float effectiveReveal = min(reveal + lensRevealBoost, 1.0);
   
-  // Base visibility is very subtle; reveal increases it dramatically
-  // COLOR SCARCITY: Reduce base visibility, accents only where energy is
-  float latticeVis = uMicroGridStrength * (0.05 + effectiveReveal * 0.95);
-  
+  // Base visibility can be set via uBaseVisibility; reveal increases it to full
+  // COLOR SCARCITY: Use baseVisibility for always-on backgrounds, low for reveal-based UX
+  float latticeVis = uMicroGridStrength * (uBaseVisibility + effectiveReveal * (1.0 - uBaseVisibility));
+
   // Lattice color: use palette system
-  vec3 baseLatticeColor = paletteLattice(uPaletteMode, effectiveReveal);
+  // IMPORTANT: Use max of baseVisibility and reveal for color lookup so lattice is visible
+  // without hover when baseVisibility is high (for always-on backgrounds)
+  float latticeColorMix = max(uBaseVisibility, effectiveReveal);
+  vec3 baseLatticeColor = paletteLattice(uPaletteMode, latticeColorMix);
   
   // Inside lens: boost saturation + add iridescence
   vec3 lensLatticeColor = baseLatticeColor * 1.3;
@@ -537,21 +530,14 @@ void main() {
   
   vec3 latticeColor = mix(baseLatticeColor, lensLatticeColor, lensMask);
   
-  // COLOR SCARCITY: Reduce base lattice contribution, boost only in high-energy zones
-  float latticeEnergy = max(effectiveReveal, lensMask * 0.6);
-  color += latticeColor * microLattice * latticeVis * (0.6 + latticeEnergy * 0.4);
+  // Base energy from baseVisibility + boost from reveal/lens
+  float latticeEnergy = max(uBaseVisibility * 0.5, max(effectiveReveal, lensMask * 0.6));
+  // When baseVisibility is high, don't penalize - scale from 0.7 to 1.0
+  float baseMult = 0.7 + uBaseVisibility * 0.3;
+  color += latticeColor * microLattice * latticeVis * (baseMult + latticeEnergy * 0.3);
   
-  // Add subtle "energy nodes" at grid intersections when revealed
-  if (effectiveReveal > 0.3) {
-    vec2 nodeUv = fract(warpedLensUv * uMicroGrid1);
-    float nodeDist = length(nodeUv - 0.5);
-    float node = smoothstep(0.08, 0.02, nodeDist);
-    float nodePulse = 0.5 + 0.5 * sin(uTime * 3.0 + (floor(warpedLensUv.x * uMicroGrid1) + floor(warpedLensUv.y * uMicroGrid1)) * 0.5);
-    // Boost node brightness inside lens, use palette accent
-    float nodeBoost = 1.0 + lensMask * 0.4;
-    vec3 nodeColor = paletteAccent(uPaletteMode) * 0.4;
-    color += nodeColor * node * effectiveReveal * nodePulse * 0.3 * nodeBoost;
-  }
+  // Energy nodes at grid intersections - DISABLED for cleaner look
+  // (uncomment to re-enable pulsing intersection dots)
   
   // ========================================================================
   // Phase Lens Rim Effect (iridescent + chromatic fringe)
@@ -1026,6 +1012,7 @@ export interface PcbUniforms {
   uMicroGrid2: { value: number };
   uMicroGridStrength: { value: number };
   uRevealStrength: { value: number };
+  uBaseVisibility: { value: number };
   uMicroWarp: { value: number };
   uEtchDistortion: { value: number };
   // === Phase Lens Uniforms ===
@@ -1074,11 +1061,12 @@ export function createPcbUniforms(): PcbUniforms {
     uPlaneSize: { value: new THREE.Vector2(20, 15) },
     uMaxPointSize: { value: 8 },
     // === Ultra-Fine Lattice Uniforms ===
-    uMicroGrid1: { value: 60 },      // Fine grid frequency
-    uMicroGrid2: { value: 200 },     // Ultra-fine grid frequency
+    uMicroGrid1: { value: 60 }, // Fine grid frequency
+    uMicroGrid2: { value: 200 }, // Ultra-fine grid frequency
     uMicroGridStrength: { value: 0.8 }, // Overall lattice visibility
-    uRevealStrength: { value: 1.0 },   // How much hover reveals lattice
-    uMicroWarp: { value: 0.015 },      // Subtle domain warping
+    uRevealStrength: { value: 1.0 }, // How much hover reveals lattice
+    uBaseVisibility: { value: 0.05 }, // Base visibility without hover (0-1)
+    uMicroWarp: { value: 0.015 }, // Subtle domain warping
     uEtchDistortion: { value: 0.008 }, // UV distortion in etched areas
     // === Phase Lens Uniforms ===
     uLens: { value: new THREE.Vector4(0.5, 0.5, 0.12, 1.0) }, // center, radius, mag
@@ -1135,7 +1123,8 @@ export function createPcbArrowsMaterial(
     transparent: true,
     depthWrite: false,
     // FIX: Default to normal blending for debugging; additive can be enabled via config
-    blending: blending === "additive" ? THREE.AdditiveBlending : THREE.NormalBlending,
+    blending:
+      blending === "additive" ? THREE.AdditiveBlending : THREE.NormalBlending,
   });
 }
 
@@ -1166,8 +1155,7 @@ export function createPcbArrowsGeometry(
     const jitterX = (Math.random() - 0.5) * 0.3;
     const jitterY = (Math.random() - 0.5) * 0.3;
 
-    positions[i * 3] =
-      ((gx + 0.5 + jitterX) / gridSizeX - 0.5) * planeWidth;
+    positions[i * 3] = ((gx + 0.5 + jitterX) / gridSizeX - 0.5) * planeWidth;
     positions[i * 3 + 1] =
       ((gy + 0.5 + jitterY) / gridSizeY - 0.5) * planeHeight;
     positions[i * 3 + 2] = 0.02;
@@ -1182,4 +1170,3 @@ export function createPcbArrowsGeometry(
 
   return geometry;
 }
-

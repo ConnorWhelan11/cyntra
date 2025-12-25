@@ -1,0 +1,1 @@
+../../../../skills/development/analyze-diff.py

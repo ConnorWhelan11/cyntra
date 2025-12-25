@@ -1,0 +1,48 @@
+name: workcell-lifecycle
+version: 1.0.0
+description: |
+  Create/verify/cleanup git worktree workcells with proper isolation.
+  Manages the full lifecycle of workcell directories.
+category: development
+priority: critical
+phase: 1-2
+
+inputs:
+  - name: action
+    type: string
+    description: Action to perform (create, verify, cleanup, cleanup-all)
+    required: true
+    enum: [create, verify, cleanup, cleanup-all]
+  - name: issue_id
+    type: string
+    description: Issue ID for workcell (required for create)
+    required: false
+  - name: workcell_id
+    type: string
+    description: Workcell ID (required for verify/cleanup)
+    required: false
+  - name: forbidden_paths
+    type: array
+    description: Paths that should not be accessible in workcell
+    required: false
+    default: [".beads/", ".cyntra/", ".cyntra/secrets/"]
+
+outputs:
+  - name: workcell_id
+    type: string
+    description: Workcell ID
+  - name: workcell_path
+    type: string
+    description: Path to workcell directory
+  - name: branch_name
+    type: string
+    description: Git branch name for workcell
+  - name: status
+    type: string
+    description: Status of operation
+
+examples: []
+
+implementation:
+  type: python
+  path: workcell-lifecycle.py

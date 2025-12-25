@@ -1,0 +1,39 @@
+name: state-hasher-t1
+version: 1.0.0
+description: |
+  Extract coarse-grained features, compute deterministic state_id.
+  Tier-1 state representation for Markov analysis.
+category: dynamics
+priority: critical
+phase: 3
+
+inputs:
+  - name: snapshot
+    type: object
+    description: State snapshot (phase, gates, artifacts, policy)
+    required: true
+  - name: domain
+    type: string
+    description: Domain (code, fab_asset, fab_world)
+    required: true
+  - name: job_type
+    type: string
+    description: Job type (code.patch, fab.gate, fab.world.build)
+    required: true
+
+outputs:
+  - name: state_id
+    type: string
+    description: Deterministic state ID (st1_<hash>)
+  - name: features
+    type: object
+    description: Extracted T1 features
+  - name: policy_key
+    type: object
+    description: Policy parameters for this state
+
+examples: []
+
+implementation:
+  type: python
+  path: state-hasher-t1.py

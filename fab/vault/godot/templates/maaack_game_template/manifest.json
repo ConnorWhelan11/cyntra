@@ -1,0 +1,67 @@
+{
+  "schema_version": "1.0",
+  "template_id": "maaack_game_template",
+  "kind": "game",
+  "version": "1.4.2",
+  "upstream": {
+    "repo": "https://github.com/Maaack/Godot-Game-Template",
+    "ref": "v1.4.2",
+    "ref_type": "tag",
+    "fetched_at": "2024-12-22T00:00:00Z"
+  },
+  "compatibility": {
+    "godot_min": "4.0",
+    "godot_max": null,
+    "renderer": null,
+    "license": "MIT"
+  },
+  "features": {
+    "main_menu": true,
+    "options_menu": true,
+    "pause_menu": true,
+    "loading_screen": true,
+    "scene_transitions": true,
+    "audio_management": true,
+    "input_remapping": true,
+    "credits_screen": true
+  },
+  "files": {
+    "project_godot": "project/project.godot",
+    "main_menu": "project/scenes/Menus/MainMenu/",
+    "options_menu": "project/scenes/Menus/OptionsMenu/",
+    "loading_screen": "project/scenes/Loading/"
+  },
+  "checksums": {
+    "sha256": "06fdc19047363eda07968d4572a0cd34b11ecaf6a1bbc417b61632103f3057f7",
+    "verified_at": "2025-12-23T01:13:49.285247Z"
+  },
+  "bundled_addons": [
+    {
+      "id": "maaacks_game_template",
+      "path": "project/addons/maaacks_game_template/",
+      "description": "Core template addon"
+    },
+    {
+      "id": "maaacks_options_menus",
+      "path": "project/addons/maaacks_options_menus/",
+      "description": "Options menu system"
+    },
+    {
+      "id": "maaacks_scene_loader",
+      "path": "project/addons/maaacks_scene_loader/",
+      "description": "Scene loading with transitions"
+    }
+  ],
+  "description": "Full-featured Godot game template with menus, settings, loading screens, and scene management",
+  "why": "Complete starter template for polished games. Includes main menu, options, pause menu, loading screens, and scene transitions.",
+  "notes": [
+    "Main menu with new game, continue, options, quit",
+    "Options menu with audio, video, input settings",
+    "Pause menu during gameplay",
+    "Loading screen with progress bar",
+    "Scene transitions with fade effects",
+    "Audio bus management",
+    "Input remapping support",
+    "Credits screen"
+  ]
+}

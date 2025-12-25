@@ -1,0 +1,72 @@
+name: pattern-distiller
+version: 1.0.0
+description: |
+  Full-featured pattern analysis from raw run summaries (output of history-ingester).
+  Extracts recurring patterns: successful tool chains, failure modes, repair strategies.
+  Uses embedding similarity and frequency analysis to cluster related patterns.
+
+  This is the primary pattern extraction skill for the sleeptime pipeline.
+  For quick DB queries on pre-indexed patterns, use pattern-extractor instead.
+category: sleeptime
+priority: high
+phase: 2
+
+inputs:
+  - name: run_summaries
+    type: array
+    description: Output from history-ingester
+    required: true
+  - name: pattern_types
+    type: array
+    description: Types of patterns to extract
+    required: false
+    default: ["tool_chains", "error_signatures", "repair_paths", "gate_failures"]
+    enum: [tool_chains, error_signatures, repair_paths, gate_failures, file_clusters]
+  - name: min_frequency
+    type: integer
+    description: Minimum occurrences to consider a pattern
+    required: false
+    default: 2
+  - name: similarity_threshold
+    type: number
+    description: Embedding similarity threshold for clustering (0-1)
+    required: false
+    default: 0.85
+
+outputs:
+  - name: patterns
+    type: array
+    description: |
+      Extracted patterns with metadata:
+      - pattern_id, pattern_type
+      - signature (canonical representation)
+      - frequency, confidence
+      - example_run_ids
+      - outcome_distribution (success/failure ratio)
+  - name: anti_patterns
+    type: array
+    description: |
+      Patterns strongly correlated with failure:
+      - signature, failure_rate
+      - suggested_avoidance
+  - name: novel_sequences
+    type: array
+    description: Tool sequences not seen before (exploration signal)
+
+examples:
+  - description: Extract patterns from 20 run summaries
+    inputs:
+      run_summaries: [...]
+      pattern_types: ["tool_chains", "error_signatures"]
+    outputs:
+      patterns:
+        - pattern_id: "tc_001"
+          pattern_type: "tool_chains"
+          signature: "Read -> Grep -> Edit -> Bash(pytest)"
+          frequency: 8
+          confidence: 0.92
+          outcome_distribution: {success: 7, failure: 1}
+
+implementation:
+  type: python
+  path: pattern-distiller.py

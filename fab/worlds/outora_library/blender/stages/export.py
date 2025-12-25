@@ -69,8 +69,8 @@ def execute(
     # Ensure SPAWN_PLAYER marker exists
     spawn_marker = bpy.data.objects.get("SPAWN_PLAYER")
     if not spawn_marker:
-        # Create spawn marker at reasonable location
-        bpy.ops.object.empty_add(type="PLAIN_AXES", location=(0, 0, 2))
+        # Create spawn marker at reasonable location (library entrance)
+        bpy.ops.object.empty_add(type="PLAIN_AXES", location=(0, 0, 1.6))
         spawn_marker = bpy.context.active_object
         spawn_marker.name = "SPAWN_PLAYER"
         print("✓ Added SPAWN_PLAYER marker at origin")
@@ -78,6 +78,57 @@ def execute(
         print("✓ SPAWN_PLAYER marker already exists")
 
     metadata["spawn_marker_added"] = True
+
+    # ==========================================================================
+    # 1b. ADD NPC SPAWN MARKERS
+    # ==========================================================================
+
+    npc_spawn_locations = [
+        # (name, location, facing_direction_y)
+        ("NPC_SPAWN_librarian", (5.0, 0.0, 0.0), 3.14),      # Near entrance
+        ("NPC_SPAWN_scholar_01", (-12.0, 8.0, 0.0), 0.0),    # East reading alcove
+        ("NPC_SPAWN_scholar_02", (-12.0, -8.0, 0.0), 0.0),   # West reading alcove
+        ("NPC_SPAWN_student_01", (18.0, 6.0, 5.0), 1.57),    # Mezzanine study pod
+        ("NPC_SPAWN_student_02", (18.0, -6.0, 5.0), -1.57),  # Mezzanine study pod
+    ]
+
+    npc_markers_added = 0
+    for npc_name, location, rotation_z in npc_spawn_locations:
+        if not bpy.data.objects.get(npc_name):
+            bpy.ops.object.empty_add(type="PLAIN_AXES", location=location)
+            npc_marker = bpy.context.active_object
+            npc_marker.name = npc_name
+            npc_marker.rotation_euler[2] = rotation_z
+            npc_markers_added += 1
+
+    if npc_markers_added > 0:
+        print(f"✓ Added {npc_markers_added} NPC spawn markers")
+    metadata["npc_spawn_markers"] = npc_markers_added
+
+    # ==========================================================================
+    # 1c. ADD WAYPOINT MARKERS FOR PATROL PATHS
+    # ==========================================================================
+
+    waypoint_locations = [
+        # Librarian patrol path (around central hall)
+        ("WAYPOINT_01", (5.0, 5.0, 0.0)),
+        ("WAYPOINT_02", (5.0, -5.0, 0.0)),
+        ("WAYPOINT_03", (-5.0, -5.0, 0.0)),
+        ("WAYPOINT_04", (-5.0, 5.0, 0.0)),
+    ]
+
+    waypoints_added = 0
+    for wp_name, location in waypoint_locations:
+        if not bpy.data.objects.get(wp_name):
+            bpy.ops.object.empty_add(type="SPHERE", location=location)
+            wp_marker = bpy.context.active_object
+            wp_marker.name = wp_name
+            wp_marker.empty_display_size = 0.3
+            waypoints_added += 1
+
+    if waypoints_added > 0:
+        print(f"✓ Added {waypoints_added} waypoint markers")
+    metadata["waypoint_markers"] = waypoints_added
 
     # ==========================================================================
     # 2. EXPORT FULL LIBRARY GLB
@@ -88,11 +139,30 @@ def execute(
     print(f"Exporting full library to {main_glb.name}...")
 
     try:
-        # Select all mesh objects for export
+        # Select all mesh objects and markers for export
         bpy.ops.object.select_all(action="DESELECT")
+
+        # Marker prefixes to include (empties for spawns, meshes for nav/colliders)
+        marker_prefixes = (
+            "SPAWN_",
+            "COLLIDER_", "OL_COLLIDER_",
+            "TRIGGER_", "OL_TRIGGER_",
+            "NAV_", "OL_NAV_",
+            "NPC_SPAWN_", "OL_NPC_SPAWN_",
+            "ITEM_SPAWN_", "OL_ITEM_SPAWN_",
+            "AUDIO_ZONE_", "OL_AUDIO_ZONE_",
+            "WAYPOINT_", "OL_WAYPOINT_",
+            "INTERACT_", "OL_INTERACT_",
+        )
+
         for obj in bpy.context.view_layer.objects:
-            if obj.type == "MESH" or obj.name.startswith("SPAWN_") or obj.name.startswith("COLLIDER_"):
+            # Include all mesh objects
+            if obj.type == "MESH":
                 obj.select_set(True)
+            # Include marker empties
+            elif obj.type == "EMPTY":
+                if any(obj.name.startswith(prefix) for prefix in marker_prefixes):
+                    obj.select_set(True)
 
         # Export GLB with optimizations
         bpy.ops.export_scene.gltf(

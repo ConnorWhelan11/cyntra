@@ -1,0 +1,40 @@
+name: transition-probability-estimator
+version: 1.0.0
+description: |
+  Compute P(g|f) from DB counts with Laplace smoothing.
+  Estimates transition probabilities for dynamics model.
+category: dynamics
+priority: high
+phase: 3
+
+inputs:
+  - name: db_path
+    type: string
+    description: Path to dynamics SQLite database
+    required: true
+  - name: domain
+    type: string
+    description: Domain to analyze
+    required: false
+  - name: smoothing_alpha
+    type: number
+    description: Laplace smoothing parameter
+    required: false
+    default: 1.0
+
+outputs:
+  - name: transition_matrix
+    type: object
+    description: Sparse transition probability matrix
+  - name: edge_count
+    type: integer
+    description: Number of observed transitions
+  - name: state_count
+    type: integer
+    description: Number of unique states
+
+examples: []
+
+implementation:
+  type: python
+  path: transition-probability-estimator.py

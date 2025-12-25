@@ -210,6 +210,21 @@ const PixelCanvas = React.forwardRef<HTMLDivElement, PixelCanvasProps>(
       getDistanceToBottomLeft,
     ]);
 
+    const drawStatic = React.useCallback(() => {
+      const canvas = canvasRef.current;
+      const ctx = canvas?.getContext("2d");
+      if (!canvas || !ctx) return;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (const pixel of pixelsRef.current) {
+        pixel.isIdle = true;
+        pixel.isReverse = false;
+        pixel.isShimmer = false;
+        pixel.size = pixel.maxSize;
+        pixel.draw();
+      }
+    }, []);
+
     const handleResize = React.useCallback(() => {
       const container = containerRef.current;
       const canvas = canvasRef.current;
@@ -232,10 +247,16 @@ const PixelCanvas = React.forwardRef<HTMLDivElement, PixelCanvasProps>(
       ctx.scale(dpr, dpr);
 
       createPixels();
-    }, [createPixels]);
+      if (reducedMotion) {
+        drawStatic();
+      }
+    }, [createPixels, reducedMotion, drawStatic]);
 
     const handleAnimation = React.useCallback(
       (name: "appear" | "disappear") => {
+        if (reducedMotion) {
+          return;
+        }
         if (animationRef.current) {
           cancelAnimationFrame(animationRef.current);
         }
@@ -272,7 +293,7 @@ const PixelCanvas = React.forwardRef<HTMLDivElement, PixelCanvasProps>(
 
         animate();
       },
-      []
+      [reducedMotion]
     );
 
     React.useEffect(() => {
@@ -297,6 +318,7 @@ const PixelCanvas = React.forwardRef<HTMLDivElement, PixelCanvasProps>(
     React.useEffect(() => {
       const parent = containerRef.current?.parentElement;
       if (!parent) return;
+      if (reducedMotion) return;
 
       const handleEnter = () => handleAnimation("appear");
       const handleLeave = () => handleAnimation("disappear");
@@ -317,7 +339,7 @@ const PixelCanvas = React.forwardRef<HTMLDivElement, PixelCanvasProps>(
           parent.removeEventListener("blur", handleLeave, { capture: true });
         }
       };
-    }, [handleAnimation, noFocus]);
+    }, [handleAnimation, noFocus, reducedMotion]);
 
     return (
       <div
@@ -356,4 +378,3 @@ const PixelCanvas = React.forwardRef<HTMLDivElement, PixelCanvasProps>(
 PixelCanvas.displayName = "PixelCanvas";
 
 export { PixelCanvas };
-

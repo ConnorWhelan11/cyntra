@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "addon_id": "godot_state_charts",
+  "kind": "state_machine",
+  "version": "0.9.1",
+  "upstream": {
+    "repo": "https://github.com/derkork/godot-statecharts",
+    "ref": "v0.9.1",
+    "ref_type": "tag",
+    "fetched_at": "2024-12-22T00:00:00Z"
+  },
+  "compatibility": {
+    "godot_min": "4.0",
+    "godot_max": null,
+    "license": "MIT",
+    "dependencies": []
+  },
+  "install": {
+    "source_path": "addon/",
+    "target_path": "addons/godot_state_charts"
+  },
+  "checksums": {
+    "sha256": "8c6524acc7cdee4444bf16b37d90d2a30c6daf3b47e4fc652f6d9a050d3f2e60",
+    "verified_at": "2025-12-23T01:13:49.283251Z"
+  },
+  "description": "Godot State Charts - Hierarchical state machine implementation",
+  "why": "Clean state machine implementation with visual editor, guards, and history states. Good for player controllers and UI.",
+  "notes": [
+    "Hierarchical state machines (statecharts)",
+    "Visual editor in Godot",
+    "Guard conditions for transitions",
+    "History states for state memory",
+    "Parallel states support",
+    "Animation integration"
+  ]
+}

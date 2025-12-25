@@ -1,0 +1,43 @@
+{
+  "schema_version": "1.0",
+  "addon_id": "godot_steam",
+  "kind": "platform",
+  "type": "gdextension",
+  "version": "4.17",
+  "upstream": {
+    "repo": "https://github.com/GodotSteam/GodotSteam",
+    "ref": "v4.17",
+    "ref_type": "tag",
+    "releases_url": "https://github.com/GodotSteam/GodotSteam/releases",
+    "docs_url": "https://godotsteam.com/"
+  },
+  "compatibility": {
+    "godot_min": "4.2",
+    "godot_max": null,
+    "license": "MIT",
+    "platforms": ["windows", "linux", "macos"],
+    "dependencies": ["steam_sdk"]
+  },
+  "install": {
+    "requires_binary": true,
+    "download_url": "https://github.com/GodotSteam/GodotSteam/releases/download/v4.17/",
+    "target_path": "addons/godotsteam",
+    "instructions": "Download GDExtension release, requires Steam SDK. See godotsteam.com for setup guide."
+  },
+  "checksums": {
+    "sha256": null,
+    "verified_at": null
+  },
+  "description": "GodotSteam - Steamworks SDK integration for Godot 4",
+  "why": "Essential for Steam releases. Achievements, leaderboards, workshop, multiplayer, and more.",
+  "notes": [
+    "C++ GDExtension - requires platform-specific binaries",
+    "Requires Steamworks SDK (separate download from Valve)",
+    "Achievements and leaderboards",
+    "Steam Workshop support",
+    "Steam Networking / multiplayer",
+    "Rich presence and friends",
+    "Steam Input API",
+    "See godotsteam.com for documentation"
+  ]
+}

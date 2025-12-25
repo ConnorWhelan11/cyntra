@@ -27,6 +27,8 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
+      // Tauri v2: `invoke` lives in `@tauri-apps/api/core` (keep legacy import path working)
+      '@tauri-apps/api/tauri': '@tauri-apps/api/core',
       react: path.resolve(__dirname, '../../node_modules/react'),
       'react-dom': path.resolve(__dirname, '../../node_modules/react-dom'),
       'react-dom/client': path.resolve(__dirname, '../../node_modules/react-dom/client.js'),

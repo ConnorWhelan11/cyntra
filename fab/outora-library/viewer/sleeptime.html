@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sleeptime Agent - Outora Library</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      background: #0A0612;
+      color: rgba(255, 255, 255, 0.9);
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    #canvas-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+
+    .overlay {
+      position: fixed;
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    .header {
+      top: 24px;
+      left: 24px;
+      right: 24px;
+    }
+
+    .header h1 {
+      font-size: 18px;
+      font-weight: 500;
+      color: #D6BCFA;
+      margin-bottom: 4px;
+    }
+
+    .header p {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .controls {
+      bottom: 24px;
+      left: 24px;
+      right: 24px;
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      pointer-events: auto;
+    }
+
+    .state-btn {
+      padding: 8px 16px;
+      border: 1px solid rgba(159, 122, 234, 0.3);
+      background: rgba(10, 6, 18, 0.8);
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 11px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+
+    .state-btn:hover {
+      border-color: rgba(159, 122, 234, 0.6);
+      color: #D6BCFA;
+      background: rgba(159, 122, 234, 0.1);
+    }
+
+    .state-btn.active {
+      border-color: #9F7AEA;
+      color: #D6BCFA;
+      background: rgba(159, 122, 234, 0.2);
+    }
+
+    .status-panel {
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(10, 6, 18, 0.9);
+      border: 1px solid rgba(159, 122, 234, 0.3);
+      border-radius: 12px;
+      padding: 16px 24px;
+      min-width: 280px;
+    }
+
+    .status-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 12px;
+    }
+
+    .status-label {
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .status-value {
+      color: #D6BCFA;
+    }
+
+    .progress-bar {
+      height: 4px;
+      background: rgba(159, 122, 234, 0.2);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-top: 12px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #805AD5, #D6BCFA);
+      border-radius: 2px;
+      transition: width 0.3s ease;
+    }
+
+    /* Particle effect */
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .particle {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: #9F7AEA;
+      border-radius: 50%;
+      opacity: 0;
+      animation: float 8s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% {
+        opacity: 0;
+        transform: translateY(100vh) scale(0);
+      }
+      10% {
+        opacity: 0.6;
+      }
+      90% {
+        opacity: 0.6;
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-100px) scale(1);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="canvas-container"></div>
+
+  <div class="particles" id="particles"></div>
+
+  <div class="overlay header">
+    <h1>Sleeptime Agent</h1>
+    <p>Background consolidation for institutional memory</p>
+  </div>
+
+  <div class="overlay status-panel">
+    <div class="status-row">
+      <span class="status-label">State</span>
+      <span class="status-value" id="state-display">Dormant</span>
+    </div>
+    <div class="status-row">
+      <span class="status-label">Completions</span>
+      <span class="status-value"><span id="completions">2</span> / <span id="threshold">5</span></span>
+    </div>
+    <div class="status-row">
+      <span class="status-label">Patterns Found</span>
+      <span class="status-value" id="patterns">12</span>
+    </div>
+    <div class="status-row">
+      <span class="status-label">Traps Detected</span>
+      <span class="status-value" id="traps">3</span>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progress" style="width: 40%"></div>
+    </div>
+  </div>
+
+  <div class="overlay controls">
+    <button class="state-btn active" data-state="dormant">Dormant</button>
+    <button class="state-btn" data-state="ingesting">Ingesting</button>
+    <button class="state-btn" data-state="distilling">Distilling</button>
+    <button class="state-btn" data-state="consolidating">Consolidating</button>
+    <button class="state-btn" data-state="complete">Complete</button>
+  </div>
+
+  <!-- Import maps for ES modules -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.179.1/build/three.module.min.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.179.1/examples/jsm/"
+    }
+  }
+  </script>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+    import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+    import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+    import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+
+    // Color palette
+    const COLORS = {
+      core: new THREE.Color('#9F7AEA'),
+      coreEmissive: new THREE.Color('#805AD5'),
+      rings: new THREE.Color('#D6BCFA'),
+      ringsEmissive: new THREE.Color('#E9D8FD'),
+      face: new THREE.Color('#6B46C1'),
+      faceEmissive: new THREE.Color('#9F7AEA'),
+      glow: new THREE.Color('#9F7AEA'),
+      background: new THREE.Color('#0A0612'),
+    };
+
+    // State config
+    const STATE_CONFIG = {
+      dormant: { intensity: 0.3, speed: 0.3 },
+      ingesting: { intensity: 0.6, speed: 0.7 },
+      distilling: { intensity: 0.8, speed: 1.0 },
+      consolidating: { intensity: 1.0, speed: 1.2 },
+      complete: { intensity: 1.2, speed: 0.5 },
+    };
+
+    let currentState = 'dormant';
+    let mixer = null;
+    let actions = {};
+    let glyphGroup = null;
+
+    // Setup
+    const container = document.getElementById('canvas-container');
+    const scene = new THREE.Scene();
+    scene.background = COLORS.background;
+
+    const camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 0.1, 100);
+    camera.position.set(0, 0, 4);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 0.85;
+    container.appendChild(renderer.domElement);
+
+    // Post-processing
+    const composer = new EffectComposer(renderer);
+    const renderPass = new RenderPass(scene, camera);
+    composer.addPass(renderPass);
+
+    const bloomPass = new UnrealBloomPass(
+      new THREE.Vector2(window.innerWidth, window.innerHeight),
+      0.3,  // intensity
+      0.5,  // radius
+      0.7   // threshold
+    );
+    composer.addPass(bloomPass);
+
+    // Lighting
+    scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+
+    const dirLight = new THREE.DirectionalLight(0xffffff, 0.7);
+    dirLight.position.set(3, 5, 8);
+    scene.add(dirLight);
+
+    const spotLight = new THREE.SpotLight(COLORS.glow, 0.4);
+    spotLight.position.set(-3, 3, 4);
+    spotLight.angle = 0.6;
+    spotLight.penumbra = 0.7;
+    scene.add(spotLight);
+
+    // Controls
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    controls.enableZoom = false;
+    controls.enablePan = false;
+
+    // Load glyph model
+    const loader = new GLTFLoader();
+    loader.load('/models/glyph.glb', (gltf) => {
+      glyphGroup = new THREE.Group();
+      const model = gltf.scene;
+
+      // Rotate to face camera
+      model.rotation.y = Math.PI;
+
+      // Apply sleeptime materials
+      model.traverse((obj) => {
+        if (!obj.isMesh) return;
+
+        const name = (obj.material?.name || '').toLowerCase();
+        const meshName = obj.name.toLowerCase();
+
+        const isCore = name.includes('core') || meshName.includes('core') || name.includes('body');
+        const isFace = name.includes('eye') || name.includes('brow') || meshName.includes('eye') || meshName.includes('face');
+        const isRing = name.includes('ring') || name.includes('orbit') || meshName.includes('ring') || meshName.includes('orbit');
+
+        if (obj.material) {
+          const m = obj.material;
+          m.flatShading = false;
+          m.metalness = 0;
+          m.roughness = 0.6;
+
+          if (isCore) {
+            m.color = COLORS.core.clone();
+            m.emissive = COLORS.coreEmissive.clone();
+            m.emissiveIntensity = 0.25;
+            m.roughness = 0.5;
+          } else if (isRing) {
+            m.color = COLORS.rings.clone();
+            m.emissive = COLORS.ringsEmissive.clone();
+            m.emissiveIntensity = 0.9;
+            m.roughness = 0.25;
+            m.toneMapped = false;
+          } else if (isFace) {
+            m.color = COLORS.face.clone();
+            m.emissive = COLORS.faceEmissive.clone();
+            m.emissiveIntensity = 0.3;
+            m.roughness = 0.7;
+          }
+
+          m.needsUpdate = true;
+        }
+      });
+
+      // Add point light
+      const glowLight = new THREE.PointLight(COLORS.glow, 0.5, 3.5, 2);
+      glowLight.position.set(0, 0, 0.4);
+      glyphGroup.add(glowLight);
+
+      glyphGroup.add(model);
+
+      // Add halo sphere
+      const haloGeo = new THREE.SphereGeometry(1.12, 64, 32);
+      const haloMat = new THREE.MeshStandardMaterial({
+        transparent: true,
+        opacity: 0.15,
+        color: 0xB794F4,
+        emissive: 0x9F7AEA,
+        emissiveIntensity: 0.12,
+        roughness: 0.85,
+        metalness: 0,
+      });
+      const halo = new THREE.Mesh(haloGeo, haloMat);
+      glyphGroup.add(halo);
+
+      scene.add(glyphGroup);
+
+      // Setup animations
+      if (gltf.animations.length > 0) {
+        mixer = new THREE.AnimationMixer(model);
+        gltf.animations.forEach((clip) => {
+          actions[clip.name] = mixer.clipAction(clip);
+        });
+
+        // Play idle by default
+        playState('dormant');
+      }
+    }, undefined, (err) => {
+      console.error('Failed to load glyph model:', err);
+    });
+
+    // Animation
+    const clock = new THREE.Clock();
+    let timeOffset = Math.random() * Math.PI * 2;
+
+    function animate() {
+      requestAnimationFrame(animate);
+
+      const delta = clock.getDelta();
+      const elapsed = clock.getElapsedTime();
+
+      if (mixer) {
+        mixer.update(delta);
+      }
+
+      // Dreamy wobble
+      if (glyphGroup) {
+        const config = STATE_CONFIG[currentState];
+        const t = elapsed * config.speed + timeOffset;
+
+        glyphGroup.rotation.x = 0.06 * Math.sin(t * 0.2);
+        glyphGroup.rotation.y = 0.05 * Math.cos(t * 0.15);
+
+        // Breathing for dormant
+        if (currentState === 'dormant') {
+          const breathe = 1 + 0.02 * Math.sin(t * 0.4);
+          glyphGroup.scale.setScalar(breathe);
+        } else {
+          glyphGroup.scale.setScalar(1);
+        }
+      }
+
+      controls.update();
+      composer.render();
+    }
+
+    animate();
+
+    // State switching
+    function playState(state) {
+      currentState = state;
+
+      // Find matching animation actions
+      const stateMap = {
+        dormant: 'Sleep',
+        ingesting: 'Thinking',
+        distilling: 'Thinking',
+        consolidating: 'Responding',
+        complete: 'Success',
+      };
+
+      const prefix = `Glyph_${stateMap[state]}_`;
+      const config = STATE_CONFIG[state];
+
+      // Fade out all
+      Object.values(actions).forEach((action) => {
+        if (action && action.isRunning()) {
+          action.fadeOut(0.5);
+        }
+      });
+
+      // Play matching
+      Object.entries(actions).forEach(([name, action]) => {
+        if (name.startsWith(prefix)) {
+          action.reset();
+          action.setEffectiveTimeScale(config.speed);
+          action.setEffectiveWeight(1);
+          action.loop = state !== 'complete' ? THREE.LoopRepeat : THREE.LoopOnce;
+          action.clampWhenFinished = state === 'complete';
+          action.fadeIn(0.5).play();
+        }
+      });
+
+      // Update UI
+      document.getElementById('state-display').textContent =
+        state.charAt(0).toUpperCase() + state.slice(1);
+
+      document.querySelectorAll('.state-btn').forEach((btn) => {
+        btn.classList.toggle('active', btn.dataset.state === state);
+      });
+    }
+
+    // Button handlers
+    document.querySelectorAll('.state-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        playState(btn.dataset.state);
+      });
+    });
+
+    // Resize
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      composer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    // Generate particles
+    const particlesContainer = document.getElementById('particles');
+    for (let i = 0; i < 20; i++) {
+      const particle = document.createElement('div');
+      particle.className = 'particle';
+      particle.style.left = `${Math.random() * 100}%`;
+      particle.style.animationDelay = `${Math.random() * 8}s`;
+      particle.style.animationDuration = `${6 + Math.random() * 4}s`;
+      particlesContainer.appendChild(particle);
+    }
+  </script>
+</body>
+</html>

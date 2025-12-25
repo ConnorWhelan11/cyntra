@@ -1,6 +1,7 @@
 export * from "./EpisodeTimeline/EpisodeTimeline";
 export * from "./Glyph";
 export * from "./GlyphConsole";
+export * from "./SleeptimeGlyph";
 export * from "./Graph3D/Graph3D";
 export * from "./Graph3D/types";
 export * from "./GraphLens";
@@ -87,3 +88,6 @@ export type {
   WeekLensProps,
   WeekSuggestion,
 } from "./WeekLens/types";
+
+// QuantumField - PCB/Constellation/Water reactive canvas
+export * from "./QuantumField";

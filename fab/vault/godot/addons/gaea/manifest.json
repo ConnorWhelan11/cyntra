@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0",
+  "addon_id": "gaea",
+  "kind": "procedural_generation",
+  "version": "2.0",
+  "upstream": {
+    "repo": "https://github.com/BenjaTK/Gaea",
+    "ref": "2.0",
+    "ref_type": "branch",
+    "fetched_at": "2024-12-22T00:00:00Z"
+  },
+  "compatibility": {
+    "godot_min": "4.4",
+    "godot_max": null,
+    "license": "MIT",
+    "dependencies": []
+  },
+  "install": {
+    "source_path": "addon/",
+    "target_path": "addons/gaea"
+  },
+  "checksums": {
+    "sha256": "f9bb32a937c5c69fdc35f384b40f0a7eb4ae34999dc3a10c45a3510ef5ada1c8",
+    "verified_at": "2025-12-23T01:13:49.283912Z"
+  },
+  "description": "Gaea - Procedural generation add-on for Godot 4",
+  "why": "Modular procedural generation with noise, cellular automata, wave function collapse. Essential for world generation.",
+  "notes": [
+    "Graph-based generator editor",
+    "Noise generators (simplex, value, worley)",
+    "Cellular automata for caves/dungeons",
+    "Wave function collapse support",
+    "Composable generator nodes",
+    "Requires Godot 4.4+ for v2.0"
+  ]
+}

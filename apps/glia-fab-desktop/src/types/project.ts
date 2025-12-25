@@ -9,5 +9,6 @@ export interface ServerInfo {
 export interface ProjectInfo {
   root: string;
   viewer_dir: string | null;
-  dev_kernel_dir: string | null;
+  cyntra_kernel_dir: string | null;
+  immersa_data_dir: string | null;
 }

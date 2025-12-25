@@ -1,8 +1,12 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use std::collections::{HashMap, VecDeque};
+mod ipc;
+mod poc;
+mod viewport;
+
+use std::collections::{HashMap, HashSet, VecDeque};
 use std::fs;
-use std::io::{Read, Write};
+use std::io::{BufRead, Read, Write};
 use std::net::{SocketAddr, TcpListener};
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex, RwLock};
@@ -15,10 +19,14 @@ use mime_guess::MimeGuess;
 use portable_pty::{native_pty_system, CommandBuilder, PtySize};
 use keyring::Entry;
 use serde::{Deserialize, Serialize};
-use tauri::{AppHandle, Manager, State};
+use tauri::{AppHandle, Emitter, State};
 use time::format_description::well_known::Rfc3339;
 use time::OffsetDateTime;
 use uuid::Uuid;
+use walkdir::WalkDir;
+use notify::{Config, Event, RecommendedWatcher, RecursiveMode, Watcher};
+use poc::{poc_close_viewport_poc_window, poc_open_viewport_poc_window, poc_ping_viewport_poc_window, poc_pong};
+use viewport::{viewport_close, viewport_command, viewport_open, ViewportManager};
 
 type CommandResult<T> = std::result::Result<T, String>;
 
@@ -33,6 +41,8 @@ const GLOBAL_ENV_ACCOUNT: &str = "global-env";
 struct WebRoots {
   viewer_dir: Option<PathBuf>,
   runs_dir: Option<PathBuf>,
+  immersa_dir: Option<PathBuf>,      // apps/immersa/resources/public/
+  immersa_data_dir: Option<PathBuf>, // <project>/.cyntra/immersa/
 }
 
 struct WebServerState {
@@ -81,15 +91,53 @@ fn clear_global_env() -> CommandResult<()> {
   }
 
   // Also clear keychain (optional)
-  let entry = global_env_entry()?;
+  let Ok(entry) = global_env_entry() else {
+    return Ok(());
+  };
   match entry.delete_password() {
     Ok(()) => Ok(()),
     Err(keyring::Error::NoEntry) => Ok(()),
-    Err(e) => Err(e.to_string()),
+    Err(_) => Ok(()),
   }
 }
 
 fn safe_join(root: &Path, requested_path: &str) -> Result<PathBuf> {
+  fn hex_val(b: u8) -> Option<u8> {
+    match b {
+      b'0'..=b'9' => Some(b - b'0'),
+      b'a'..=b'f' => Some(b - b'a' + 10),
+      b'A'..=b'F' => Some(b - b'A' + 10),
+      _ => None,
+    }
+  }
+
+  fn percent_decode_segment(input: &str) -> Result<String> {
+    let bytes = input.as_bytes();
+    let mut out: Vec<u8> = Vec::with_capacity(bytes.len());
+    let mut i = 0usize;
+    while i < bytes.len() {
+      if bytes[i] == b'%' && i + 2 < bytes.len() {
+        let Some(hi) = hex_val(bytes[i + 1]) else {
+          out.push(bytes[i]);
+          i += 1;
+          continue;
+        };
+        let Some(lo) = hex_val(bytes[i + 2]) else {
+          out.push(bytes[i]);
+          i += 1;
+          continue;
+        };
+        out.push((hi << 4) | lo);
+        i += 3;
+        continue;
+      }
+      out.push(bytes[i]);
+      i += 1;
+    }
+
+    String::from_utf8(out).map_err(|_| anyhow!("invalid url encoding"))
+  }
+
   let path = requested_path.split('?').next().unwrap_or("");
   let mut rel = path.trim_start_matches('/').to_string();
   if rel.is_empty() || rel.ends_with('/') {
@@ -101,12 +149,28 @@ fn safe_join(root: &Path, requested_path: &str) -> Result<PathBuf> {
     if part.is_empty() || part == "." {
       continue;
     }
-    if part == ".." {
+
+    let decoded = percent_decode_segment(part)?;
+
+    // Reject traversal and unexpected separators after decoding
+    if decoded == ".." || decoded.contains('/') || decoded.contains('\\') {
       return Err(anyhow!("path traversal blocked"));
     }
-    out.push(part);
+    if decoded.is_empty() || decoded == "." {
+      continue;
+    }
+
+    out.push(decoded);
   }
   Ok(out)
+}
+
+fn is_allowed_origin(origin: &str) -> bool {
+  origin == "tauri://localhost"
+    || origin.starts_with("http://localhost")
+    || origin.starts_with("http://127.0.0.1")
+    || origin.starts_with("https://localhost")
+    || origin.starts_with("https://127.0.0.1")
 }
 
 fn ensure_executable(path: &Path) -> Result<()> {
@@ -182,7 +246,7 @@ fn read_env_file(path: &Path) -> HashMap<String, String> {
 
 fn global_env_file_path() -> PathBuf {
   let home = std::env::var("HOME").unwrap_or_else(|_| ".".to_string());
-  PathBuf::from(home).join(".glia-fab").join("global-env.txt")
+  PathBuf::from(home).join(".cyntra").join("global-env.txt")
 }
 
 fn global_env_entry() -> CommandResult<Entry> {
@@ -199,16 +263,19 @@ fn get_global_env_text_internal() -> CommandResult<Option<String>> {
   }
 
   // Fallback to keychain (production, more secure)
-  let entry = global_env_entry()?;
+  let entry = match global_env_entry() {
+    Ok(entry) => entry,
+    Err(_) => return Ok(None),
+  };
   match entry.get_password() {
     Ok(value) => Ok(Some(value)),
     Err(keyring::Error::NoEntry) => Ok(None),
-    Err(e) => Err(e.to_string()),
+    Err(_) => Ok(None),
   }
 }
 
 fn ensure_project_shims(project_root: &Path) -> Result<PathBuf> {
-  let bin_dir = project_root.join(".glia-fab/bin");
+  let bin_dir = project_root.join(".cyntra/bin");
   fs::create_dir_all(&bin_dir)?;
 
   struct Shim<'a> {
@@ -218,36 +285,36 @@ fn ensure_project_shims(project_root: &Path) -> Result<PathBuf> {
 
   let shims = [
     Shim {
-      name: "dev-kernel",
-      module: "dev_kernel.cli",
+      name: "cyntra",
+      module: "cyntra.cli",
     },
     Shim {
       name: "workcell",
-      module: "dev_kernel.workcell.cli",
+      module: "cyntra.workcell.cli",
     },
     Shim {
       name: "fab-gate",
-      module: "dev_kernel.fab.gate",
+      module: "cyntra.fab.gate",
     },
     Shim {
       name: "fab-render",
-      module: "dev_kernel.fab.render",
+      module: "cyntra.fab.render",
     },
     Shim {
       name: "fab-godot",
-      module: "dev_kernel.fab.godot",
+      module: "cyntra.fab.godot",
     },
     Shim {
       name: "fab-critics",
-      module: "dev_kernel.fab.critics.cli",
+      module: "cyntra.fab.critics.cli",
     },
     Shim {
       name: "fab-regression",
-      module: "dev_kernel.fab.regression",
+      module: "cyntra.fab.regression",
     },
     Shim {
       name: "fab-scaffold",
-      module: "dev_kernel.fab.scaffolds.cli",
+      module: "cyntra.fab.scaffolds.cli",
     },
   ];
 
@@ -261,18 +328,18 @@ ROOT="$(cd "$(dirname "${{BASH_SOURCE[0]}}")/../.." && pwd)"
 cd "$ROOT"
 
 export PYTHONUNBUFFERED=1
-export PYTHONPATH="$ROOT/dev-kernel/src${{PYTHONPATH:+:$PYTHONPATH}}"
+export PYTHONPATH="$ROOT/cyntra-kernel/src${{PYTHONPATH:+:$PYTHONPATH}}"
 
-PYTHON="${{GLIA_FAB_PYTHON:-}}"
+PYTHON="${{CYNTRA_PYTHON:-}}"
 if [[ -z "$PYTHON" ]]; then
   if [[ -n "${{VIRTUAL_ENV:-}}" && -x "${{VIRTUAL_ENV}}/bin/python" ]]; then
     PYTHON="${{VIRTUAL_ENV}}/bin/python"
-  elif [[ -x "$ROOT/.glia-fab/venv/bin/python" ]]; then
-    PYTHON="$ROOT/.glia-fab/venv/bin/python"
+  elif [[ -x "$ROOT/.cyntra/venv/bin/python" ]]; then
+    PYTHON="$ROOT/.cyntra/venv/bin/python"
   elif [[ -x "$ROOT/.venv/bin/python" ]]; then
     PYTHON="$ROOT/.venv/bin/python"
-  elif [[ -x "$ROOT/dev-kernel/.venv/bin/python" ]]; then
-    PYTHON="$ROOT/dev-kernel/.venv/bin/python"
+  elif [[ -x "$ROOT/cyntra-kernel/.venv/bin/python" ]]; then
+    PYTHON="$ROOT/cyntra-kernel/.venv/bin/python"
   else
     PYTHON="$(command -v python3 || command -v python)"
   fi
@@ -300,6 +367,80 @@ fn start_local_server(roots: Arc<RwLock<WebRoots>>) -> Result<WebServerState> {
       let url = request.url().to_string();
       let method = request.method().as_str().to_string();
 
+      let allowed_origin = request
+        .headers()
+        .iter()
+        .find(|h| h.field.equiv("Origin"))
+        .and_then(|h| {
+          let origin = h.value.as_str();
+          if is_allowed_origin(origin) {
+            Some(origin.to_string())
+          } else {
+            None
+          }
+        });
+
+      let apply_common_headers = {
+        let allowed_origin = allowed_origin.clone();
+        move |mut response: tiny_http::Response<Box<dyn Read + Send>>,
+              content_type: Option<String>| {
+          if let Some(ct) = content_type {
+            let header =
+              tiny_http::Header::from_bytes(&b"Content-Type"[..], ct.as_bytes())
+                .expect("content-type header");
+            response = response.with_header(header).boxed();
+          }
+          response = response
+            .with_header(
+              tiny_http::Header::from_bytes(
+                &b"X-Content-Type-Options"[..],
+                &b"nosniff"[..],
+              )
+              .expect("nosniff header"),
+            )
+            .boxed()
+            .with_header(
+              tiny_http::Header::from_bytes(&b"Cache-Control"[..], &b"no-store"[..])
+                .expect("cache header"),
+            )
+            .boxed();
+
+          if let Some(origin) = allowed_origin.as_deref() {
+            response = response
+              .with_header(
+                tiny_http::Header::from_bytes(
+                  &b"Access-Control-Allow-Origin"[..],
+                  origin.as_bytes(),
+                )
+                .expect("cors origin header"),
+              )
+              .boxed()
+              .with_header(
+                tiny_http::Header::from_bytes(&b"Vary"[..], &b"Origin"[..])
+                  .expect("vary header"),
+              )
+              .boxed()
+              .with_header(
+                tiny_http::Header::from_bytes(
+                  &b"Access-Control-Allow-Methods"[..],
+                  &b"GET, HEAD, OPTIONS"[..],
+                )
+                .expect("cors methods header"),
+              )
+              .boxed()
+              .with_header(
+                tiny_http::Header::from_bytes(
+                  &b"Access-Control-Allow-Headers"[..],
+                  &b"*"[..],
+                )
+                .expect("cors headers header"),
+              )
+              .boxed();
+          }
+          response
+        }
+      };
+
       let send_response = |request: tiny_http::Request,
                            status: u16,
                            content_type: Option<String>,
@@ -310,42 +451,18 @@ fn start_local_server(roots: Arc<RwLock<WebRoots>>) -> Result<WebServerState> {
             .boxed(),
           None => tiny_http::Response::empty(tiny_http::StatusCode(status)).boxed(),
         };
-        if let Some(ct) = content_type {
-          let header =
-            tiny_http::Header::from_bytes(&b"Content-Type"[..], ct.as_bytes())
-              .expect("content-type header");
-          response = response.with_header(header).boxed();
-        }
-        response = response
-          .with_header(
-            tiny_http::Header::from_bytes(
-              &b"Access-Control-Allow-Origin"[..],
-              &b"*"[..],
-            )
-            .expect("cors origin header"),
-          )
-          .boxed()
-          .with_header(
-            tiny_http::Header::from_bytes(
-              &b"Access-Control-Allow-Methods"[..],
-              &b"GET, HEAD, OPTIONS"[..],
-            )
-            .expect("cors methods header"),
-          )
-          .boxed()
-          .with_header(
-            tiny_http::Header::from_bytes(
-              &b"Access-Control-Allow-Headers"[..],
-              &b"*"[..],
-            )
-            .expect("cors headers header"),
-          )
-          .boxed()
-          .with_header(
-            tiny_http::Header::from_bytes(&b"Cache-Control"[..], &b"no-store"[..])
-              .expect("cache header"),
-          )
+        response = apply_common_headers(response, content_type);
+        let _ = request.respond(response);
+      };
+
+      let send_file_response = |request: tiny_http::Request,
+                                status: u16,
+                                content_type: Option<String>,
+                                file: fs::File| {
+        let response = tiny_http::Response::from_file(file)
+          .with_status_code(tiny_http::StatusCode(status))
           .boxed();
+        let response = apply_common_headers(response, content_type);
         let _ = request.respond(response);
       };
 
@@ -383,6 +500,23 @@ fn start_local_server(roots: Arc<RwLock<WebRoots>>) -> Result<WebServerState> {
           continue;
         };
         (runs_dir, url.trim_start_matches("/artifacts"))
+      } else if url.starts_with("/immersa") {
+        let immersa_dir = {
+          roots_for_thread
+            .read()
+            .ok()
+            .and_then(|r| r.immersa_dir.clone())
+        };
+        let Some(immersa_dir) = immersa_dir else {
+          send_response(
+            request,
+            404,
+            Some("text/plain".into()),
+            Some(b"Immersa root not configured".to_vec()),
+          );
+          continue;
+        };
+        (immersa_dir, url.trim_start_matches("/immersa"))
       } else {
         send_response(request, 404, Some("text/plain".into()), Some(b"Not found".to_vec()));
         continue;
@@ -390,6 +524,16 @@ fn start_local_server(roots: Arc<RwLock<WebRoots>>) -> Result<WebServerState> {
 
       if method == "OPTIONS" {
         send_response(request, 204, None, None);
+        continue;
+      }
+
+      if method != "GET" && method != "HEAD" {
+        send_response(
+          request,
+          405,
+          Some("text/plain".into()),
+          Some(b"Method Not Allowed".to_vec()),
+        );
         continue;
       }
 
@@ -406,7 +550,34 @@ fn start_local_server(roots: Arc<RwLock<WebRoots>>) -> Result<WebServerState> {
         continue;
       }
 
-      let mime = MimeGuess::from_path(&resolved).first_or_octet_stream();
+      let root_canon = match root.canonicalize() {
+        Ok(p) => p,
+        Err(_) => {
+          send_response(
+            request,
+            500,
+            Some("text/plain".into()),
+            Some(b"Server root invalid".to_vec()),
+          );
+          continue;
+        }
+      };
+
+      let resolved_canon = match resolved.canonicalize() {
+        Ok(p) => p,
+        Err(_) => {
+          send_response(request, 404, Some("text/plain".into()), Some(b"Not found".to_vec()));
+          continue;
+        }
+      };
+
+      // Prevent symlink escape: canonical path must remain within root
+      if !resolved_canon.starts_with(&root_canon) {
+        send_response(request, 403, Some("text/plain".into()), Some(b"Forbidden".to_vec()));
+        continue;
+      }
+
+      let mime = MimeGuess::from_path(&resolved_canon).first_or_octet_stream();
       let content_type = Some(mime.essence_str().to_string());
 
       if method == "HEAD" {
@@ -414,8 +585,8 @@ fn start_local_server(roots: Arc<RwLock<WebRoots>>) -> Result<WebServerState> {
         continue;
       }
 
-      let bytes = match fs::read(&resolved) {
-        Ok(b) => b,
+      let file = match fs::File::open(&resolved_canon) {
+        Ok(f) => f,
         Err(_) => {
           send_response(
             request,
@@ -426,7 +597,7 @@ fn start_local_server(roots: Arc<RwLock<WebRoots>>) -> Result<WebServerState> {
           continue;
         }
       };
-      send_response(request, 200, content_type, Some(bytes));
+      send_file_response(request, 200, content_type, file);
     }
   });
 
@@ -447,6 +618,8 @@ struct SetServerRootsParams {
   viewer_dir: Option<String>,
   #[serde(default)]
   project_root: Option<String>,
+  #[serde(default)]
+  immersa_dir: Option<String>,
 }
 
 #[tauri::command]
@@ -459,12 +632,17 @@ fn set_server_roots(
     .write()
     .map_err(|_| "server roots lock poisoned".to_string())?;
   roots.viewer_dir = params.viewer_dir.map(PathBuf::from);
+  roots.immersa_dir = params.immersa_dir.map(PathBuf::from);
   let project_root = params.project_root.as_ref().map(PathBuf::from);
-  roots.runs_dir = project_root.as_ref().map(|p| p.join(".glia-fab/runs"));
+  roots.runs_dir = project_root.as_ref().map(|p| p.join(".cyntra/runs"));
+  roots.immersa_data_dir = project_root.as_ref().map(|p| p.join(".cyntra/immersa"));
   if let Some(project_root) = project_root {
     let _ = ensure_project_shims(&project_root);
     if let Some(runs_dir) = &roots.runs_dir {
       let _ = fs::create_dir_all(runs_dir);
+    }
+    if let Some(immersa_data_dir) = &roots.immersa_data_dir {
+      let _ = fs::create_dir_all(immersa_data_dir.join("presentations"));
     }
   }
   Ok(())
@@ -474,7 +652,8 @@ fn set_server_roots(
 struct ProjectInfo {
   root: String,
   viewer_dir: Option<String>,
-  dev_kernel_dir: Option<String>,
+  cyntra_kernel_dir: Option<String>,
+  immersa_data_dir: Option<String>,
 }
 
 #[tauri::command]
@@ -484,13 +663,15 @@ fn detect_project(root: String) -> CommandResult<ProjectInfo> {
     return Err(format!("not a directory: {}", root));
   }
   let viewer_dir = root_path.join("fab/outora-library/viewer");
-  let dev_kernel_dir = root_path.join("dev-kernel");
+  let cyntra_kernel_dir = root_path.join("cyntra-kernel");
+  let immersa_data_dir = root_path.join(".cyntra/immersa");
   Ok(ProjectInfo {
     root,
     viewer_dir: viewer_dir.is_dir().then(|| viewer_dir.to_string_lossy().to_string()),
-    dev_kernel_dir: dev_kernel_dir
+    cyntra_kernel_dir: cyntra_kernel_dir
       .is_dir()
-      .then(|| dev_kernel_dir.to_string_lossy().to_string()),
+      .then(|| cyntra_kernel_dir.to_string_lossy().to_string()),
+    immersa_data_dir: Some(immersa_data_dir.to_string_lossy().to_string()),
   })
 }
 
@@ -510,7 +691,7 @@ fn to_epoch_ms(ts: SystemTime) -> Option<u64> {
 }
 
 fn runs_dir_for_project(project_root: &str) -> PathBuf {
-  PathBuf::from(project_root).join(".glia-fab/runs")
+  PathBuf::from(project_root).join(".cyntra/runs")
 }
 
 fn sanitize_slug(input: &str) -> String {
@@ -656,8 +837,326 @@ fn run_artifacts(params: RunArtifactsParams) -> CommandResult<Vec<ArtifactInfo>>
   Ok(artifacts)
 }
 
+// Hierarchical artifact tree node
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct ArtifactNode {
+  name: String,
+  rel_path: String,
+  is_dir: bool,
+  kind: String,
+  size_bytes: u64,
+  url: Option<String>,
+  children: Vec<ArtifactNode>,
+}
+
+fn build_artifact_tree(dir: &Path, run_dir: &Path, run_id: &str) -> ArtifactNode {
+  let name = dir
+    .file_name()
+    .and_then(|n| n.to_str())
+    .unwrap_or("")
+    .to_string();
+  let rel_path = dir
+    .strip_prefix(run_dir)
+    .map(|p| p.to_string_lossy().replace('\\', "/"))
+    .unwrap_or_default();
+
+  let mut children: Vec<ArtifactNode> = Vec::new();
+
+  if let Ok(entries) = fs::read_dir(dir) {
+    let mut entries: Vec<_> = entries.flatten().collect();
+    // Sort: directories first, then by name
+    entries.sort_by(|a, b| {
+      let a_is_dir = a.path().is_dir();
+      let b_is_dir = b.path().is_dir();
+      match (a_is_dir, b_is_dir) {
+        (true, false) => std::cmp::Ordering::Less,
+        (false, true) => std::cmp::Ordering::Greater,
+        _ => a.file_name().cmp(&b.file_name()),
+      }
+    });
+
+    for entry in entries {
+      let path = entry.path();
+      if path.is_dir() {
+        children.push(build_artifact_tree(&path, run_dir, run_id));
+      } else if path.is_file() {
+        let file_name = path
+          .file_name()
+          .and_then(|n| n.to_str())
+          .unwrap_or("")
+          .to_string();
+        let file_rel = path
+          .strip_prefix(run_dir)
+          .map(|p| p.to_string_lossy().replace('\\', "/"))
+          .unwrap_or_default();
+        let size_bytes = path.metadata().ok().map(|m| m.len()).unwrap_or(0);
+        let kind = artifact_kind(&path).to_string();
+
+        children.push(ArtifactNode {
+          name: file_name,
+          rel_path: file_rel.clone(),
+          is_dir: false,
+          kind,
+          size_bytes,
+          url: Some(format!("/artifacts/{}/{}", run_id, file_rel)),
+          children: Vec::new(),
+        });
+      }
+    }
+  }
+
+  // Calculate total size for directories
+  let total_size: u64 = children.iter().map(|c| c.size_bytes).sum();
+
+  ArtifactNode {
+    name,
+    rel_path,
+    is_dir: true,
+    kind: "dir".to_string(),
+    size_bytes: total_size,
+    url: None,
+    children,
+  }
+}
+
+#[tauri::command]
+fn run_artifacts_tree(params: RunArtifactsParams) -> CommandResult<ArtifactNode> {
+  let runs_dir = runs_dir_for_project(&params.project_root);
+  let run_dir = runs_dir.join(&params.run_id);
+
+  if !run_dir.is_dir() {
+    return Ok(ArtifactNode {
+      name: params.run_id.clone(),
+      rel_path: "".to_string(),
+      is_dir: true,
+      kind: "dir".to_string(),
+      size_bytes: 0,
+      url: None,
+      children: Vec::new(),
+    });
+  }
+
+  Ok(build_artifact_tree(&run_dir, &run_dir, &params.run_id))
+}
+
 // ---------------------------------------------
-// Beads + Dev Kernel observability
+// Run details
+// ---------------------------------------------
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct RunDetails {
+  id: String,
+  project_root: String,
+  run_dir: String,
+  command: String,
+  label: Option<String>,
+  started_ms: Option<u64>,
+  ended_ms: Option<u64>,
+  exit_code: Option<i32>,
+  duration_ms: Option<u64>,
+  artifacts_count: usize,
+  terminal_log_lines: usize,
+  issues_processed: Vec<String>,
+  workcells_spawned: usize,
+  gates_passed: usize,
+  gates_failed: usize,
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct RunDetailsParams {
+  project_root: String,
+  run_id: String,
+}
+
+#[tauri::command]
+fn run_details(params: RunDetailsParams) -> CommandResult<RunDetails> {
+  let runs_dir = runs_dir_for_project(&params.project_root);
+  let run_dir = runs_dir.join(&params.run_id);
+  let run_dir_str = run_dir.to_string_lossy().to_string();
+
+  if !run_dir.is_dir() {
+    return Err(format!("Run not found: {}", params.run_id));
+  }
+
+  // Read run_meta.json
+  let meta_path = run_dir.join("run_meta.json");
+  let (command, label, started_ms) = if meta_path.is_file() {
+    let text = fs::read_to_string(&meta_path).unwrap_or_default();
+    let meta: serde_json::Value = serde_json::from_str(&text).unwrap_or(serde_json::Value::Null);
+    (
+      meta.get("command").and_then(|v| v.as_str()).unwrap_or("").to_string(),
+      meta.get("label").and_then(|v| v.as_str()).map(|s| s.to_string()),
+      meta.get("started_ms").and_then(|v| v.as_u64()),
+    )
+  } else {
+    (String::new(), None, None)
+  };
+
+  // Read job_result.json
+  let result_path = run_dir.join("job_result.json");
+  let (exit_code, ended_ms) = if result_path.is_file() {
+    let text = fs::read_to_string(&result_path).unwrap_or_default();
+    let result: serde_json::Value = serde_json::from_str(&text).unwrap_or(serde_json::Value::Null);
+    (
+      result.get("exit_code").and_then(|v| v.as_i64()).map(|v| v as i32),
+      result.get("ended_ms").and_then(|v| v.as_u64()),
+    )
+  } else {
+    (None, None)
+  };
+
+  // Calculate duration
+  let duration_ms = match (started_ms, ended_ms) {
+    (Some(start), Some(end)) if end >= start => Some(end - start),
+    _ => None,
+  };
+
+  // Count artifacts
+  let mut files: Vec<PathBuf> = Vec::new();
+  let _ = collect_files_recursive(&run_dir, &mut files);
+  let artifacts_count = files.len();
+
+  // Count terminal.log lines
+  let log_path = run_dir.join("terminal.log");
+  let terminal_log_lines = if log_path.is_file() {
+    fs::read_to_string(&log_path)
+      .map(|text| text.lines().count())
+      .unwrap_or(0)
+  } else {
+    0
+  };
+
+  // Parse events for this run from events.jsonl
+  let events_path = cyntra_events_path(&params.project_root);
+  let mut issues_processed: HashSet<String> = HashSet::new();
+  let mut workcell_ids: HashSet<String> = HashSet::new();
+  let mut workcells_spawned_fallback = 0usize;
+  let mut gates_passed = 0usize;
+  let mut gates_failed = 0usize;
+
+  if events_path.is_file() {
+    fn parse_rfc3339_ms(ts: &str) -> Option<u64> {
+      let dt = OffsetDateTime::parse(ts, &Rfc3339).ok()?;
+      let ms = dt.unix_timestamp_nanos() / 1_000_000;
+      u64::try_from(ms).ok()
+    }
+
+    fn get_str<'a>(v: &'a serde_json::Value, keys: &[&str]) -> Option<&'a str> {
+      keys
+        .iter()
+        .find_map(|k| v.get(*k).and_then(|x| x.as_str()))
+    }
+
+    fn get_run_id_field(v: &serde_json::Value) -> Option<&str> {
+      v.get("run_id")
+        .and_then(|x| x.as_str())
+        .or_else(|| v.get("runId").and_then(|x| x.as_str()))
+    }
+
+    fn event_matches_run(
+      event: &serde_json::Value,
+      run_id: &str,
+      started_ms: Option<u64>,
+      ended_ms: Option<u64>,
+    ) -> bool {
+      if let Some(ev_run) = get_run_id_field(event) {
+        return ev_run == run_id;
+      }
+      if let Some(data) = event.get("data") {
+        if let Some(data_run) = get_run_id_field(data) {
+          return data_run == run_id;
+        }
+      }
+
+      let Some(start) = started_ms else {
+        // No reliable way to scope; fall back to including.
+        return true;
+      };
+      let end = ended_ms.unwrap_or_else(epoch_ms_now);
+
+      let Some(ts) = event.get("timestamp").and_then(|x| x.as_str()) else {
+        return false;
+      };
+      let Some(ts_ms) = parse_rfc3339_ms(ts) else {
+        return false;
+      };
+
+      ts_ms >= start && ts_ms <= end
+    }
+
+    let file = fs::File::open(&events_path).map_err(|e| e.to_string())?;
+    let reader = std::io::BufReader::new(file);
+    for line in reader.lines().flatten() {
+      let line = line.trim();
+      if line.is_empty() {
+        continue;
+      }
+
+      let event: serde_json::Value = match serde_json::from_str(line) {
+        Ok(v) => v,
+        Err(_) => continue,
+      };
+      if !event.is_object() {
+        continue;
+      }
+      if !event_matches_run(&event, &params.run_id, started_ms, ended_ms) {
+        continue;
+      }
+
+      let event_type = event.get("type").and_then(|v| v.as_str()).unwrap_or("");
+
+      // Count unique issues touched during this run.
+      if let Some(issue_id) = get_str(&event, &["issue_id", "issueId"]) {
+        issues_processed.insert(issue_id.to_string());
+      }
+
+      // Count workcell creations (prefer unique workcell IDs)
+      if event_type == "workcell.created" || event_type == "workcell.started" {
+        if let Some(workcell_id) = get_str(&event, &["workcell_id", "workcellId"]) {
+          workcell_ids.insert(workcell_id.to_string());
+        } else {
+          workcells_spawned_fallback += 1;
+        }
+      }
+
+      // Count gate results
+      if event_type == "gates.passed" {
+        gates_passed += 1;
+      }
+      if event_type == "gates.failed" {
+        gates_failed += 1;
+      }
+    }
+  }
+
+  let mut issues_processed: Vec<String> = issues_processed.into_iter().collect();
+  issues_processed.sort();
+  let workcells_spawned = workcell_ids.len() + workcells_spawned_fallback;
+
+  Ok(RunDetails {
+    id: params.run_id,
+    project_root: params.project_root,
+    run_dir: run_dir_str,
+    command,
+    label,
+    started_ms,
+    ended_ms,
+    exit_code,
+    duration_ms,
+    artifacts_count,
+    terminal_log_lines,
+    issues_processed,
+    workcells_spawned,
+    gates_passed,
+    gates_failed,
+  })
+}
+
+// ---------------------------------------------
+// Beads + Cyntra observability
 // ---------------------------------------------
 
 fn beads_dir_for_project(project_root: &str) -> PathBuf {
@@ -672,9 +1171,9 @@ fn beads_deps_path(project_root: &str) -> PathBuf {
   beads_dir_for_project(project_root).join("deps.jsonl")
 }
 
-fn dev_kernel_events_path(project_root: &str) -> PathBuf {
+fn cyntra_events_path(project_root: &str) -> PathBuf {
   PathBuf::from(project_root)
-    .join(".dev-kernel")
+    .join(".cyntra")
     .join("logs")
     .join("events.jsonl")
 }
@@ -776,9 +1275,11 @@ struct KernelWorkcell {
   speculate_tag: Option<String>,
   toolchain: Option<String>,
   proof_status: Option<String>,
+  progress: f32,
+  progress_stage: String,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Clone)]
 #[serde(rename_all = "camelCase")]
 struct KernelEvent {
   r#type: String,
@@ -948,6 +1449,67 @@ fn load_beads_issues(project_root: &str) -> Vec<BeadsIssue> {
     .collect()
 }
 
+/// Compute workcell progress based on files and telemetry
+///
+/// Progress stages and approximate percentages:
+/// - "created": 0.05 - workcell directory exists with marker
+/// - "starting": 0.10 - manifest.json exists (toolchain assigned)
+/// - "running": 0.20-0.80 - telemetry events indicate work in progress
+/// - "gates": 0.85 - gates are running (proof.json has intermediate status)
+/// - "complete": 1.0 - proof.json has final status (passed/failed/done)
+fn compute_workcell_progress(wc_path: &std::path::Path) -> (f32, String) {
+  let proof_path = wc_path.join("proof.json");
+  let manifest_path = wc_path.join("manifest.json");
+  let telemetry_path = wc_path.join("telemetry.jsonl");
+
+  // Check proof.json for final status
+  if proof_path.is_file() {
+    if let Ok(content) = fs::read_to_string(&proof_path) {
+      if let Ok(v) = serde_json::from_str::<serde_json::Value>(&content) {
+        if let Some(status) = v.get("status").and_then(|s| s.as_str()) {
+          let status_lower = status.to_lowercase();
+          // Final states
+          if status_lower.contains("pass") || status_lower.contains("done") ||
+             status_lower.contains("fail") || status_lower.contains("error") ||
+             status_lower.contains("complete") {
+            return (1.0, "complete".to_string());
+          }
+          // Gates running
+          if status_lower.contains("gate") || status_lower.contains("verif") ||
+             status_lower.contains("check") {
+            return (0.85, "gates".to_string());
+          }
+          // Running state
+          if status_lower.contains("run") {
+            return (0.50, "running".to_string());
+          }
+        }
+      }
+    }
+  }
+
+  // Check telemetry for progress indicators
+  if telemetry_path.is_file() {
+    if let Ok(content) = fs::read_to_string(&telemetry_path) {
+      let line_count = content.lines().filter(|l| !l.trim().is_empty()).count();
+      if line_count > 0 {
+        // Estimate progress based on telemetry events
+        // More events = more progress (capped at 0.80)
+        let estimated = 0.20 + (line_count as f32 * 0.02).min(0.60);
+        return (estimated, "running".to_string());
+      }
+    }
+  }
+
+  // Check for manifest (toolchain assigned)
+  if manifest_path.is_file() {
+    return (0.10, "starting".to_string());
+  }
+
+  // Just created
+  (0.05, "created".to_string())
+}
+
 fn load_workcells(project_root: &str) -> Vec<KernelWorkcell> {
   let dir = workcells_dir_for_project(project_root);
   if !dir.is_dir() {
@@ -1013,6 +1575,9 @@ fn load_workcells(project_root: &str) -> Vec<KernelWorkcell> {
       }
     }
 
+    // Compute progress based on workcell state
+    let (progress, progress_stage) = compute_workcell_progress(&wc_path);
+
     out.push(KernelWorkcell {
       id,
       issue_id,
@@ -1021,6 +1586,8 @@ fn load_workcells(project_root: &str) -> Vec<KernelWorkcell> {
       speculate_tag,
       toolchain,
       proof_status,
+      progress,
+      progress_stage,
     });
   }
 
@@ -1029,7 +1596,7 @@ fn load_workcells(project_root: &str) -> Vec<KernelWorkcell> {
 }
 
 fn load_events(project_root: &str, limit: usize) -> Vec<KernelEvent> {
-  let path = dev_kernel_events_path(project_root);
+  let path = cyntra_events_path(project_root);
   if !path.is_file() {
     return Vec::new();
   }
@@ -1039,8 +1606,8 @@ fn load_events(project_root: &str, limit: usize) -> Vec<KernelEvent> {
     .map(|m| KernelEvent {
       r#type: parse_string(m.get("type")).unwrap_or_else(|| "event".to_string()),
       timestamp: parse_string(m.get("timestamp")),
-      issue_id: parse_string(m.get("issue_id")),
-      workcell_id: parse_string(m.get("workcell_id")),
+      issue_id: parse_string(m.get("issue_id").or_else(|| m.get("issueId"))),
+      workcell_id: parse_string(m.get("workcell_id").or_else(|| m.get("workcellId"))),
       data: m
         .get("data")
         .cloned()
@@ -1454,7 +2021,7 @@ fn job_start(
   cmd.args(["-lc", &params.command]);
   cmd.cwd(&params.project_root);
   let mut merged_env: HashMap<String, String> = std::env::vars().collect();
-  let env_file = PathBuf::from(&params.project_root).join(".dev-kernel/.env");
+  let env_file = PathBuf::from(&params.project_root).join(".cyntra/.env");
   if env_file.is_file() {
     for (k, v) in read_env_file(&env_file) {
       merged_env.insert(k, v);
@@ -1474,12 +2041,12 @@ fn job_start(
   for (k, v) in merged_env {
     cmd.env(k, v);
   }
-  cmd.env("GLIA_FAB_RUN_ID", &run_id);
-  cmd.env("GLIA_FAB_RUN_DIR", run_dir_str.clone());
-  cmd.env("GLIA_FAB_PROJECT_ROOT", &params.project_root);
-  let venv_python = PathBuf::from(&params.project_root).join(".glia-fab/venv/bin/python");
+  cmd.env("CYNTRA_RUN_ID", &run_id);
+  cmd.env("CYNTRA_RUN_DIR", run_dir_str.clone());
+  cmd.env("CYNTRA_PROJECT_ROOT", &params.project_root);
+  let venv_python = PathBuf::from(&params.project_root).join(".cyntra/venv/bin/python");
   if venv_python.is_file() {
-    cmd.env("GLIA_FAB_PYTHON", venv_python.to_string_lossy().to_string());
+    cmd.env("CYNTRA_PYTHON", venv_python.to_string_lossy().to_string());
   }
   if let Ok(bin) = ensure_project_shims(&PathBuf::from(&params.project_root)) {
     let new_path = prepend_path(&bin, merged_path.map(std::ffi::OsString::from));
@@ -1541,7 +2108,7 @@ fn job_start(
         let _ = f.write_all(chunk.as_bytes());
         let _ = f.flush();
       }
-      let _ = app_for_output.emit_all(
+      let _ = app_for_output.emit(
         "job_output",
         serde_json::json!({
           "job_id": job_id_for_output,
@@ -1580,7 +2147,7 @@ fn job_start(
       .unwrap(),
     );
 
-    let _ = app_for_exit.emit_all(
+    let _ = app_for_exit.emit(
       "job_exit",
       serde_json::json!({ "job_id": job_id_str, "run_id": run_id_for_exit, "exit_code": exit_code }),
     );
@@ -1634,6 +2201,252 @@ fn job_list_active(state: State<'_, Arc<JobState>>) -> CommandResult<Vec<ActiveJ
 }
 
 // ---------------------------------------------
+// Event file watcher (real-time kernel events)
+// ---------------------------------------------
+
+struct EventWatcherHandle {
+  watcher: RecommendedWatcher,
+  stop_tx: std::sync::mpsc::Sender<()>,
+}
+
+struct EventWatcherState {
+  watchers: Mutex<HashMap<String, EventWatcherHandle>>,
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct StartEventWatcherParams {
+  project_root: String,
+  #[serde(default)]
+  last_offset: Option<u64>,
+}
+
+#[derive(Serialize, Clone)]
+#[serde(rename_all = "camelCase")]
+struct KernelEventsPayload {
+  project_root: String,
+  events: Vec<KernelEvent>,
+  offset: u64,
+}
+
+fn read_events_from_offset(path: &Path, offset: u64) -> (Vec<KernelEvent>, u64) {
+  let file = match fs::File::open(path) {
+    Ok(f) => f,
+    Err(_) => return (Vec::new(), offset),
+  };
+
+  let file_len = match file.metadata() {
+    Ok(m) => m.len(),
+    Err(_) => return (Vec::new(), offset),
+  };
+
+  // If file is smaller than offset, it was likely truncated - reset
+  let start_offset = if offset > file_len { 0 } else { offset };
+
+  let mut reader = std::io::BufReader::new(file);
+  if start_offset > 0 {
+    use std::io::Seek;
+    if reader.seek(std::io::SeekFrom::Start(start_offset)).is_err() {
+      return (Vec::new(), offset);
+    }
+  }
+
+  use std::io::BufRead;
+  let mut events = Vec::new();
+  let mut current_pos = start_offset;
+  let mut buf: Vec<u8> = Vec::new();
+
+  loop {
+    buf.clear();
+    let bytes_read = match reader.read_until(b'\n', &mut buf) {
+      Ok(0) => break,
+      Ok(n) => n,
+      Err(_) => break,
+    };
+    current_pos += bytes_read as u64;
+
+    let line = String::from_utf8_lossy(&buf);
+    let line = line.trim();
+    if line.is_empty() {
+      continue;
+    }
+
+    let value: serde_json::Value = match serde_json::from_str(line) {
+      Ok(v) => v,
+      Err(_) => continue,
+    };
+
+    if let serde_json::Value::Object(m) = value {
+      events.push(KernelEvent {
+        r#type: parse_string(m.get("type")).unwrap_or_else(|| "event".to_string()),
+        timestamp: parse_string(m.get("timestamp")),
+        issue_id: parse_string(m.get("issue_id").or_else(|| m.get("issueId"))),
+        workcell_id: parse_string(m.get("workcell_id").or_else(|| m.get("workcellId"))),
+        data: m
+          .get("data")
+          .cloned()
+          .unwrap_or_else(|| serde_json::Value::Object(serde_json::Map::new())),
+        duration_ms: parse_i64(m.get("duration_ms")),
+        tokens_used: parse_i64(m.get("tokens_used")),
+        cost_usd: m.get("cost_usd").and_then(|v| v.as_f64()),
+      });
+    }
+  }
+
+  (events, current_pos)
+}
+
+#[tauri::command]
+fn start_event_watcher(
+  app: AppHandle,
+  state: State<'_, Arc<EventWatcherState>>,
+  params: StartEventWatcherParams,
+) -> CommandResult<()> {
+  let project_root = params.project_root.clone();
+  let events_path = cyntra_events_path(&project_root);
+
+  // Ensure logs directory exists
+  if let Some(parent) = events_path.parent() {
+    let _ = fs::create_dir_all(parent);
+  }
+
+  let (stop_tx, stop_rx) = std::sync::mpsc::channel::<()>();
+  let (event_tx, event_rx) = std::sync::mpsc::channel::<notify::Result<Event>>();
+
+  let watcher = RecommendedWatcher::new(
+    move |res| {
+      let _ = event_tx.send(res);
+    },
+    Config::default().with_poll_interval(Duration::from_millis(100)),
+  )
+  .map_err(|e| format!("failed to create watcher: {}", e))?;
+
+  {
+    let mut watchers = state.watchers.lock().map_err(|_| "watcher state lock poisoned")?;
+    if watchers.contains_key(&project_root) {
+      return Ok(()); // Already watching
+    }
+
+    watchers.insert(
+      project_root.clone(),
+      EventWatcherHandle {
+        watcher,
+        stop_tx,
+      },
+    );
+
+    // Watch the logs directory (parent of events.jsonl)
+    if let Some(logs_dir) = events_path.parent() {
+      if let Some(h) = watchers.get_mut(&project_root) {
+        let _ = h.watcher.watch(logs_dir, RecursiveMode::NonRecursive);
+      }
+    }
+  }
+
+  // Spawn thread to handle events
+  let app_clone = app.clone();
+  let project_root_clone = project_root.clone();
+  let events_path_clone = events_path.clone();
+  let requested_offset = params.last_offset.unwrap_or(0);
+
+  thread::spawn(move || {
+    const DEFAULT_TAIL_BYTES: u64 = 256 * 1024;
+
+    let mut current_offset = if requested_offset == 0 && events_path_clone.is_file() {
+      events_path_clone
+        .metadata()
+        .map(|m| m.len().saturating_sub(DEFAULT_TAIL_BYTES))
+        .unwrap_or(0)
+    } else {
+      requested_offset
+    };
+
+    // Always emit an initial payload so the UI can resume from the returned offset.
+    if events_path_clone.is_file() {
+      let (events, new_offset) = read_events_from_offset(&events_path_clone, current_offset);
+      current_offset = new_offset;
+      let _ = app_clone.emit(
+        "kernel_events",
+        KernelEventsPayload {
+          project_root: project_root_clone.clone(),
+          events,
+          offset: current_offset,
+        },
+      );
+    }
+
+    loop {
+      // Check for stop signal
+      if stop_rx.try_recv().is_ok() {
+        break;
+      }
+
+      // Wait for file change events with timeout
+      match event_rx.recv_timeout(Duration::from_millis(500)) {
+        Ok(Ok(event)) => {
+          // Check if this event is for our events.jsonl file
+          let is_our_file = event.paths.iter().any(|p| {
+            p.file_name()
+              .map(|n| n == "events.jsonl")
+              .unwrap_or(false)
+          });
+
+          if is_our_file && events_path_clone.is_file() {
+            // Debounce: wait a bit for writes to complete
+            thread::sleep(Duration::from_millis(50));
+
+            let (events, new_offset) = read_events_from_offset(&events_path_clone, current_offset);
+            current_offset = new_offset;
+            if !events.is_empty() {
+              let _ = app_clone.emit(
+                "kernel_events",
+                KernelEventsPayload {
+                  project_root: project_root_clone.clone(),
+                  events,
+                  offset: current_offset,
+                },
+              );
+            }
+          }
+        }
+        Ok(Err(_)) => {
+          // Watcher error, continue
+        }
+        Err(std::sync::mpsc::RecvTimeoutError::Timeout) => {
+          // No event, check stop signal and continue
+        }
+        Err(std::sync::mpsc::RecvTimeoutError::Disconnected) => {
+          // Channel closed, exit
+          break;
+        }
+      }
+    }
+  });
+
+  Ok(())
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct StopEventWatcherParams {
+  project_root: String,
+}
+
+#[tauri::command]
+fn stop_event_watcher(
+  state: State<'_, Arc<EventWatcherState>>,
+  params: StopEventWatcherParams,
+) -> CommandResult<()> {
+  let mut watchers = state.watchers.lock().map_err(|_| "watcher state lock poisoned")?;
+  if let Some(handle) = watchers.remove(&params.project_root) {
+    // Send stop signal
+    let _ = handle.stop_tx.send(());
+    // Watcher will be dropped, stopping the watch
+  }
+  Ok(())
+}
+
+// ---------------------------------------------
 // PTY sessions (multi-terminal)
 // ---------------------------------------------
 
@@ -1684,10 +2497,10 @@ fn pty_create(
   if let Some(cwd) = &params.cwd {
     let root = PathBuf::from(cwd);
     cmd.cwd(cwd);
-    cmd.env("GLIA_FAB_PROJECT_ROOT", cwd);
-    let venv_python = root.join(".glia-fab/venv/bin/python");
+    cmd.env("CYNTRA_PROJECT_ROOT", cwd);
+    let venv_python = root.join(".cyntra/venv/bin/python");
     if venv_python.is_file() {
-      cmd.env("GLIA_FAB_PYTHON", venv_python.to_string_lossy().to_string());
+      cmd.env("CYNTRA_PYTHON", venv_python.to_string_lossy().to_string());
     }
     if let Ok(bin) = ensure_project_shims(&root) {
       let new_path = prepend_path(&bin, std::env::var_os("PATH"));
@@ -1746,7 +2559,7 @@ fn pty_create(
         Err(_) => break,
       };
       let chunk = String::from_utf8_lossy(&buf[..read]).to_string();
-      let _ = app_for_output.emit_all(
+      let _ = app_for_output.emit(
         "pty_output",
         serde_json::json!({ "session_id": session_id_for_output, "data": chunk }),
       );
@@ -1780,7 +2593,7 @@ fn pty_create(
       }
     }
 
-    let _ = app_for_exit.emit_all(
+    let _ = app_for_exit.emit(
       "pty_exit",
       serde_json::json!({ "session_id": session_id, "exit_code": exit_code }),
     );
@@ -2050,6 +2863,440 @@ fn workcell_get_info(params: WorkcellInfoParams) -> CommandResult<WorkcellInfo> 
   })
 }
 
+// ---------------------------------------------
+// Immersa integration
+// ---------------------------------------------
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct ImmersaAsset {
+  name: String,
+  path: String,
+  url: String,
+  size: u64,
+}
+
+#[tauri::command]
+fn list_immersa_assets(project_root: String) -> CommandResult<Vec<ImmersaAsset>> {
+  let root = PathBuf::from(&project_root);
+  let mut assets = Vec::new();
+
+  // Scan fab/outora-library/**/*.glb
+  let outora = root.join("fab/outora-library");
+  if outora.is_dir() {
+    for entry in WalkDir::new(&outora).follow_links(true).into_iter().filter_map(|e| e.ok()) {
+      let path = entry.path();
+      if path.extension().and_then(|s| s.to_str()) == Some("glb") {
+        let rel_path = path.strip_prefix(&root).unwrap_or(path).to_string_lossy().to_string();
+        assets.push(ImmersaAsset {
+          name: path.file_name().unwrap_or_default().to_string_lossy().to_string(),
+          path: rel_path.clone(),
+          url: format!("/artifacts/{}", rel_path),
+          size: path.metadata().map(|m| m.len()).unwrap_or(0),
+        });
+      }
+    }
+  }
+
+  // Scan .cyntra/runs/*/artifacts/**/*.glb
+  let runs = root.join(".cyntra/runs");
+  if runs.is_dir() {
+    for entry in WalkDir::new(&runs).follow_links(true).into_iter().filter_map(|e| e.ok()) {
+      let path = entry.path();
+      if path.extension().and_then(|s| s.to_str()) == Some("glb") {
+        let rel_path = path.strip_prefix(&root).unwrap_or(path).to_string_lossy().to_string();
+        assets.push(ImmersaAsset {
+          name: path.file_name().unwrap_or_default().to_string_lossy().to_string(),
+          path: rel_path.clone(),
+          url: format!("/artifacts/{}", rel_path),
+          size: path.metadata().map(|m| m.len()).unwrap_or(0),
+        });
+      }
+    }
+  }
+
+  Ok(assets)
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct SaveImmersaPresentationParams {
+  project_root: String,
+  id: String,
+  data: String,
+}
+
+#[tauri::command]
+fn save_immersa_presentation(params: SaveImmersaPresentationParams) -> CommandResult<()> {
+  let pres_dir = PathBuf::from(&params.project_root).join(".cyntra/immersa/presentations");
+  fs::create_dir_all(&pres_dir).map_err(|e| e.to_string())?;
+  let file_path = pres_dir.join(format!("{}.json", params.id));
+  fs::write(&file_path, &params.data).map_err(|e| e.to_string())?;
+  Ok(())
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct LoadImmersaPresentationParams {
+  project_root: String,
+  id: String,
+}
+
+#[tauri::command]
+fn load_immersa_presentation(params: LoadImmersaPresentationParams) -> CommandResult<String> {
+  let file_path = PathBuf::from(&params.project_root)
+    .join(format!(".cyntra/immersa/presentations/{}.json", params.id));
+  fs::read_to_string(&file_path).map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+fn list_immersa_presentations(project_root: String) -> CommandResult<Vec<String>> {
+  let pres_dir = PathBuf::from(&project_root).join(".cyntra/immersa/presentations");
+  if !pres_dir.exists() {
+    return Ok(Vec::new());
+  }
+  let mut ids = Vec::new();
+  for entry in fs::read_dir(&pres_dir).map_err(|e| e.to_string())? {
+    let entry = entry.map_err(|e| e.to_string())?;
+    if let Some(name) = entry.file_name().to_str() {
+      if name.ends_with(".json") {
+        ids.push(name.trim_end_matches(".json").to_string());
+      }
+    }
+  }
+  Ok(ids)
+}
+
+#[tauri::command]
+fn delete_immersa_presentation(params: LoadImmersaPresentationParams) -> CommandResult<()> {
+  let file_path = PathBuf::from(&params.project_root)
+    .join(format!(".cyntra/immersa/presentations/{}.json", params.id));
+  fs::remove_file(&file_path).map_err(|e| e.to_string())
+}
+
+// ---------------------------------------------
+// Gameplay Definition System
+// ---------------------------------------------
+
+#[derive(Serialize, Deserialize, Clone)]
+#[serde(rename_all = "snake_case")]
+struct GameplayConfig {
+  schema_version: String,
+  world_id: String,
+  player: serde_json::Value,
+  entities: serde_json::Map<String, serde_json::Value>,
+  interactions: serde_json::Map<String, serde_json::Value>,
+  triggers: serde_json::Map<String, serde_json::Value>,
+  audio_zones: serde_json::Map<String, serde_json::Value>,
+  objectives: Vec<serde_json::Value>,
+  rules: serde_json::Value,
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct MarkerIssue {
+  entity_id: String,
+  expected_marker: String,
+  entity_type: String,
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct ValidationMessage {
+  code: String,
+  message: String,
+  entity_id: Option<String>,
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+struct ValidationReport {
+  valid: bool,
+  matched_npcs: Vec<String>,
+  matched_items: Vec<String>,
+  matched_triggers: Vec<String>,
+  matched_interactions: Vec<String>,
+  missing_markers: Vec<MarkerIssue>,
+  orphaned_markers: Vec<String>,
+  errors: Vec<ValidationMessage>,
+  warnings: Vec<ValidationMessage>,
+}
+
+fn find_gameplay_yaml(world_path: &Path) -> Option<PathBuf> {
+  // Try direct file
+  if world_path.is_file() && world_path.file_name().map(|n| n == "gameplay.yaml").unwrap_or(false) {
+    return Some(world_path.to_path_buf());
+  }
+  // Try in directory
+  let yaml_path = world_path.join("gameplay.yaml");
+  if yaml_path.is_file() {
+    return Some(yaml_path);
+  }
+  // Try fab/worlds/<world_id>/gameplay.yaml pattern
+  if world_path.is_dir() {
+    for entry in fs::read_dir(world_path).ok()? {
+      let entry = entry.ok()?;
+      if entry.file_name() == "gameplay.yaml" {
+        return Some(entry.path());
+      }
+    }
+  }
+  None
+}
+
+fn find_glb_in_world(world_path: &Path) -> Option<PathBuf> {
+  if world_path.is_file() {
+    return None;
+  }
+  // Look for exported/*.glb or *.glb in world directory
+  let exported = world_path.join("exported");
+  if exported.is_dir() {
+    if let Ok(entries) = fs::read_dir(&exported) {
+      for entry in entries.flatten() {
+        if entry.path().extension().and_then(|s| s.to_str()) == Some("glb") {
+          return Some(entry.path());
+        }
+      }
+    }
+  }
+  // Fallback: look for any .glb in root
+  if let Ok(entries) = fs::read_dir(world_path) {
+    for entry in entries.flatten() {
+      if entry.path().extension().and_then(|s| s.to_str()) == Some("glb") {
+        return Some(entry.path());
+      }
+    }
+  }
+  None
+}
+
+fn extract_markers_from_glb(glb_path: &Path) -> Result<Vec<String>, String> {
+  // Read GLB and extract node names that match marker patterns
+  // This is a simplified implementation - in production would use gltf crate
+  let content = fs::read(glb_path).map_err(|e| e.to_string())?;
+  let mut markers = Vec::new();
+
+  // Search for marker patterns in JSON chunk (simplified approach)
+  // Real implementation would parse GLTF properly
+  let content_str = String::from_utf8_lossy(&content);
+  let marker_patterns = [
+    "NPC_SPAWN_", "ITEM_SPAWN_", "TRIGGER_", "INTERACT_",
+    "AUDIO_ZONE_", "PATH_", "PLAYER_SPAWN",
+  ];
+
+  for pattern in marker_patterns {
+    let mut start = 0;
+    while let Some(pos) = content_str[start..].find(pattern) {
+      let abs_pos = start + pos;
+      // Extract the full marker name (until non-alphanumeric)
+      let end = content_str[abs_pos..]
+        .find(|c: char| !c.is_alphanumeric() && c != '_')
+        .map(|e| abs_pos + e)
+        .unwrap_or(content_str.len());
+      let marker = &content_str[abs_pos..end];
+      if !markers.contains(&marker.to_string()) {
+        markers.push(marker.to_string());
+      }
+      start = end;
+    }
+  }
+
+  Ok(markers)
+}
+
+#[tauri::command]
+fn load_gameplay(world_path: String) -> CommandResult<serde_json::Value> {
+  let path = PathBuf::from(&world_path);
+  let yaml_path = find_gameplay_yaml(&path)
+    .ok_or_else(|| format!("gameplay.yaml not found in {}", world_path))?;
+
+  let content = fs::read_to_string(&yaml_path).map_err(|e| e.to_string())?;
+  let config: serde_json::Value = serde_yaml::from_str(&content).map_err(|e| e.to_string())?;
+  Ok(config)
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct SaveGameplayParams {
+  world_path: String,
+  config: serde_json::Value,
+}
+
+#[tauri::command]
+fn save_gameplay(world_path: String, config: serde_json::Value) -> CommandResult<()> {
+  let path = PathBuf::from(&world_path);
+  let yaml_path = if path.is_file() {
+    path
+  } else {
+    path.join("gameplay.yaml")
+  };
+
+  let yaml_str = serde_yaml::to_string(&config).map_err(|e| e.to_string())?;
+  fs::write(&yaml_path, yaml_str).map_err(|e| e.to_string())?;
+  Ok(())
+}
+
+#[tauri::command]
+fn validate_gameplay(world_path: String) -> CommandResult<ValidationReport> {
+  let path = PathBuf::from(&world_path);
+
+  // Load gameplay config
+  let yaml_path = find_gameplay_yaml(&path)
+    .ok_or_else(|| format!("gameplay.yaml not found in {}", world_path))?;
+  let content = fs::read_to_string(&yaml_path).map_err(|e| e.to_string())?;
+  let config: serde_json::Value = serde_yaml::from_str(&content).map_err(|e| e.to_string())?;
+
+  // Get markers from GLB
+  let glb_path = find_glb_in_world(&path);
+  let markers = glb_path
+    .as_ref()
+    .map(|p| extract_markers_from_glb(p).unwrap_or_default())
+    .unwrap_or_default();
+
+  let mut report = ValidationReport {
+    valid: true,
+    matched_npcs: Vec::new(),
+    matched_items: Vec::new(),
+    matched_triggers: Vec::new(),
+    matched_interactions: Vec::new(),
+    missing_markers: Vec::new(),
+    orphaned_markers: Vec::new(),
+    errors: Vec::new(),
+    warnings: Vec::new(),
+  };
+
+  // Validate entities
+  if let Some(entities) = config.get("entities").and_then(|e| e.as_object()) {
+    for (id, entity) in entities {
+      let entity_type = entity.get("type").and_then(|t| t.as_str()).unwrap_or("");
+      let expected_marker = match entity_type {
+        "npc" => format!("NPC_SPAWN_{}", id.to_uppercase()),
+        "key_item" | "consumable" | "equipment" | "document" => {
+          format!("ITEM_SPAWN_{}", id.to_uppercase())
+        }
+        _ => continue,
+      };
+
+      if markers.iter().any(|m| m == &expected_marker) {
+        match entity_type {
+          "npc" => report.matched_npcs.push(id.clone()),
+          _ => report.matched_items.push(id.clone()),
+        }
+      } else {
+        report.missing_markers.push(MarkerIssue {
+          entity_id: id.clone(),
+          expected_marker,
+          entity_type: entity_type.to_string(),
+        });
+        report.valid = false;
+      }
+    }
+  }
+
+  // Validate triggers
+  if let Some(triggers) = config.get("triggers").and_then(|t| t.as_object()) {
+    for (id, trigger) in triggers {
+      if let Some(marker) = trigger.get("marker").and_then(|m| m.as_str()) {
+        if markers.iter().any(|m| m == marker) {
+          report.matched_triggers.push(id.clone());
+        } else {
+          report.missing_markers.push(MarkerIssue {
+            entity_id: id.clone(),
+            expected_marker: marker.to_string(),
+            entity_type: "trigger".to_string(),
+          });
+        }
+      }
+    }
+  }
+
+  // Validate interactions
+  if let Some(interactions) = config.get("interactions").and_then(|i| i.as_object()) {
+    for (id, interaction) in interactions {
+      if let Some(marker) = interaction.get("marker").and_then(|m| m.as_str()) {
+        if markers.iter().any(|m| m == marker) {
+          report.matched_interactions.push(id.clone());
+        } else {
+          report.missing_markers.push(MarkerIssue {
+            entity_id: id.clone(),
+            expected_marker: marker.to_string(),
+            entity_type: "interaction".to_string(),
+          });
+        }
+      }
+    }
+  }
+
+  // Find orphaned markers (markers in GLB with no definition)
+  for marker in &markers {
+    let is_matched = report.matched_npcs.iter().any(|id| marker.contains(&id.to_uppercase()))
+      || report.matched_items.iter().any(|id| marker.contains(&id.to_uppercase()))
+      || report.matched_triggers.iter().any(|id| marker.contains(&id.to_uppercase()))
+      || report.matched_interactions.iter().any(|id| marker.contains(&id.to_uppercase()))
+      || marker == "PLAYER_SPAWN"
+      || marker.starts_with("PATH_");
+
+    if !is_matched && marker.starts_with("NPC_SPAWN_")
+      || marker.starts_with("ITEM_SPAWN_")
+      || marker.starts_with("TRIGGER_")
+      || marker.starts_with("INTERACT_")
+    {
+      report.orphaned_markers.push(marker.clone());
+      report.warnings.push(ValidationMessage {
+        code: "ORPHANED_MARKER".to_string(),
+        message: format!("Marker '{}' has no corresponding entity definition", marker),
+        entity_id: None,
+      });
+    }
+  }
+
+  Ok(report)
+}
+
+#[tauri::command]
+fn get_marker_names(glb_path: String) -> CommandResult<Vec<String>> {
+  let path = PathBuf::from(&glb_path);
+  if !path.is_file() {
+    return Err(format!("GLB file not found: {}", glb_path));
+  }
+  extract_markers_from_glb(&path)
+}
+
+#[tauri::command]
+fn gameplay_exists(world_path: String) -> CommandResult<bool> {
+  let path = PathBuf::from(&world_path);
+  Ok(find_gameplay_yaml(&path).is_some())
+}
+
+#[tauri::command]
+fn export_gameplay_json(world_path: String, output_path: String) -> CommandResult<()> {
+  let path = PathBuf::from(&world_path);
+  let yaml_path = find_gameplay_yaml(&path)
+    .ok_or_else(|| format!("gameplay.yaml not found in {}", world_path))?;
+
+  let content = fs::read_to_string(&yaml_path).map_err(|e| e.to_string())?;
+  let config: serde_json::Value = serde_yaml::from_str(&content).map_err(|e| e.to_string())?;
+
+  let json_str = serde_json::to_string_pretty(&config).map_err(|e| e.to_string())?;
+  fs::write(&output_path, json_str).map_err(|e| e.to_string())?;
+  Ok(())
+}
+
+#[tauri::command]
+fn get_patrol_paths(glb_path: String) -> CommandResult<Vec<String>> {
+  let path = PathBuf::from(&glb_path);
+  if !path.is_file() {
+    return Err(format!("GLB file not found: {}", glb_path));
+  }
+  let markers = extract_markers_from_glb(&path)?;
+  let paths: Vec<String> = markers
+    .into_iter()
+    .filter(|m| m.starts_with("PATH_"))
+    .map(|m| m.strip_prefix("PATH_").unwrap_or(&m).to_lowercase())
+    .collect();
+  Ok(paths)
+}
+
 fn main() {
   let roots = Arc::new(RwLock::new(WebRoots::default()));
   let server = Arc::new(start_local_server(roots.clone()).expect("start local server"));
@@ -2062,10 +3309,18 @@ fn main() {
     jobs: Mutex::new(HashMap::new()),
   });
 
+  let event_watcher_state = Arc::new(EventWatcherState {
+    watchers: Mutex::new(HashMap::new()),
+  });
+
+  let viewport_manager = ViewportManager::new();
+
   tauri::Builder::default()
     .manage(server)
     .manage(pty_state)
     .manage(job_state)
+    .manage(event_watcher_state)
+    .manage(viewport_manager)
     .invoke_handler(tauri::generate_handler![
       get_server_info,
       get_global_env,
@@ -2075,10 +3330,14 @@ fn main() {
       detect_project,
       runs_list,
       run_artifacts,
+      run_artifacts_tree,
+      run_details,
       job_start,
       job_kill,
       job_list_active,
       kernel_snapshot,
+      start_event_watcher,
+      stop_event_watcher,
       beads_init,
       beads_create_issue,
       beads_update_issue,
@@ -2089,6 +3348,28 @@ fn main() {
       pty_list,
       workcell_get_telemetry,
       workcell_get_info,
+      list_immersa_assets,
+      save_immersa_presentation,
+      load_immersa_presentation,
+      list_immersa_presentations,
+      delete_immersa_presentation,
+      // Gameplay commands
+      load_gameplay,
+      save_gameplay,
+      validate_gameplay,
+      get_marker_names,
+      gameplay_exists,
+      export_gameplay_json,
+      get_patrol_paths,
+      // Viewport PoC
+      viewport_open,
+      viewport_close,
+      viewport_command,
+      // Window PoC (Spike A)
+      poc_open_viewport_poc_window,
+      poc_close_viewport_poc_window,
+      poc_ping_viewport_poc_window,
+      poc_pong,
     ])
     .run(tauri::generate_context!())
     .expect("error while running Glia Fab Desktop");

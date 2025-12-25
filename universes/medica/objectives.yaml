@@ -1,0 +1,9 @@
+schema_version: "1.0"
+objectives:
+  realism_perf_v1:
+    description: >
+      Default Fab objective: maximize gate overall score while keeping evaluation time low.
+    metrics:
+      overall: max
+      duration_ms: min
+

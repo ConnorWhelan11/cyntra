@@ -1,39 +1,34 @@
-/* Import @oos/ui Tailwind v4 styles with OKLCH colors */
+/* Cyntra Mission Control UI
+   Deep Space Observatory Design System */
+
+/* Import @oos/ui base styles */
 @import "@oos/ui/styles";
+
+/* Import Mission Control design system */
+@import "./styles/tokens.css";
+@import "./styles/animations.css";
+@import "./styles/components.css";
+@import "./styles/home.css";
+@import "./styles/building.css";
+@import "./styles/nav-sigils.css";
+@import "./styles/stage.css";
+@import "./styles/gameplay.css";
+@import "./styles/shell.css";
+
+/* Legacy styles for gradual migration */
 @import "./app.css" layer(legacy);
 
 @layer base {
   :root {
     color-scheme: dark;
+
     /* Legacy CSS variable bridge for gradual migration */
-    --bg: oklch(0.141 0.005 285.823);
-    --panel: color-mix(in srgb, var(--color-card), transparent 60%);
-    --border: var(--color-border);
-    --text: var(--color-foreground);
-    --muted: var(--color-muted-foreground);
-    --accent: #d4a574; /* Preserve original accent color */
-  }
-
-  html,
-  body {
-    height: 100%;
-    margin: 0;
-    color: var(--text);
-    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
-      Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
-  }
-
-  body {
-    /* Preserve radial gradient background */
-    background: radial-gradient(
-      1200px 800px at 20% 10%,
-      #141823,
-      #0b0d10
-    );
-  }
-
-  #root {
-    height: 100%;
+    --bg: var(--void);
+    --panel: var(--abyss);
+    --border: var(--slate);
+    --text: var(--text-primary);
+    --muted: var(--text-secondary);
+    --accent: var(--accent-primary);
   }
 }
 

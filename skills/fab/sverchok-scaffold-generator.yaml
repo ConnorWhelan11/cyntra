@@ -1,0 +1,44 @@
+name: sverchok-scaffold-generator
+version: 1.0.0
+description: |
+  Create procedural geometry using Sverchok node trees from templates.
+  Generates parametric 3D structures.
+category: fab
+priority: medium
+phase: fab
+
+inputs:
+  - name: template_name
+    type: string
+    description: Name of Sverchok template to use
+    required: true
+  - name: parameters
+    type: object
+    description: Template parameters (dimensions, counts, etc.)
+    required: true
+  - name: output_path
+    type: string
+    description: Output .blend file path
+    required: true
+  - name: seed
+    type: integer
+    description: Random seed for procedural generation
+    required: false
+    default: 42
+
+outputs:
+  - name: blend_path
+    type: string
+    description: Path to generated .blend file
+  - name: geometry_stats
+    type: object
+    description: Triangle count, bounds, etc.
+  - name: parameters_used
+    type: object
+    description: Final parameters after validation
+
+examples: []
+
+implementation:
+  type: python
+  path: sverchok-scaffold-generator.py

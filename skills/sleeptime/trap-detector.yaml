@@ -1,0 +1,37 @@
+name: trap-detector
+version: 1.0.0
+description: |
+  Use dynamics data to identify stuck states and create trap warnings.
+  Integrates with dynamics layer potential/action metrics.
+category: sleeptime
+priority: high
+
+inputs:
+  - name: dynamics_report_path
+    type: string
+    description: Path to dynamics_report.json
+    required: true
+  - name: memory_path
+    type: string
+    description: Path to memory store directory
+    required: true
+  - name: action_threshold
+    type: number
+    description: Action rate below which state is considered trapped
+    required: false
+    default: 0.2
+
+outputs:
+  - name: traps_detected
+    type: array
+    description: Newly detected trap states
+  - name: trap_blocks_created
+    type: array
+    description: Memory blocks created for traps
+  - name: recommendations
+    type: array
+    description: Recommendations to escape traps
+
+implementation:
+  type: python
+  path: trap-detector.py

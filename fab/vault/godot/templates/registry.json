@@ -1,0 +1,106 @@
+{
+  "schema_version": "1.0",
+  "templates": [
+    {
+      "template_id": "fab_game_template",
+      "kind": "game",
+      "version": "1.0.0",
+      "path": "fab_game_template",
+      "description": "Minimal Fab-compatible Godot template with FabLevelLoader, spawn detection, collider handling, and Web export preset",
+      "created_at": "2024-12-21T00:00:00Z",
+      "status": "active",
+      "sha256": null,
+      "compatibility": {
+        "godot_min": "4.3",
+        "godot_max": null,
+        "renderer": "gl_compatibility"
+      },
+      "features": {
+        "fab_contract": true,
+        "spawn_detection": true,
+        "collider_detection": true,
+        "trigger_detection": true,
+        "web_export_preset": true
+      },
+      "bundled_addons": [
+        {
+          "id": "fab_importer",
+          "local": true,
+          "path": "project/addons/fab_importer/"
+        }
+      ]
+    },
+    {
+      "template_id": "maaack_game_template",
+      "kind": "game",
+      "version": "1.4.2",
+      "path": "maaack_game_template",
+      "description": "Full-featured game template with menus, settings, loading screens, scene transitions",
+      "created_at": "2024-12-22T00:00:00Z",
+      "status": "active",
+      "sha256": null,
+      "upstream": {
+        "repo": "https://github.com/Maaack/Godot-Game-Template",
+        "ref": "v1.4.2",
+        "ref_type": "tag"
+      },
+      "compatibility": {
+        "godot_min": "4.0",
+        "godot_max": null
+      },
+      "features": {
+        "main_menu": true,
+        "options_menu": true,
+        "pause_menu": true,
+        "loading_screen": true,
+        "scene_transitions": true,
+        "audio_management": true,
+        "input_remapping": true,
+        "credits_screen": true
+      }
+    },
+    {
+      "template_id": "cogito",
+      "kind": "immersive_sim",
+      "version": "1.1.2",
+      "path": "cogito",
+      "description": "COGITO - Immersive sim template for first-person games in Godot 4",
+      "created_at": "2024-12-22T00:00:00Z",
+      "status": "active",
+      "sha256": null,
+      "upstream": {
+        "repo": "https://github.com/Phazorknight/Cogito",
+        "ref": "v1.1.2",
+        "ref_type": "tag"
+      },
+      "compatibility": {
+        "godot_min": "4.2",
+        "godot_max": null
+      },
+      "features": {
+        "first_person_controller": true,
+        "interaction_system": true,
+        "inventory_system": true,
+        "wieldable_items": true,
+        "doors_switches": true,
+        "save_system": true,
+        "ui_system": true
+      }
+    },
+    {
+      "template_id": "minimal_template",
+      "kind": "minimal",
+      "version": "1.0.0",
+      "path": "minimal_template",
+      "description": "Tiny baseline template for quick experiments - just project.godot and a Main scene",
+      "created_at": "2024-12-21T00:00:00Z",
+      "status": "placeholder",
+      "sha256": null,
+      "compatibility": {
+        "godot_min": "4.0",
+        "godot_max": null
+      },
+      "features": {}
+    }
+  ]
+}

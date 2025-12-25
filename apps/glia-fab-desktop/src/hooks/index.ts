@@ -6,3 +6,4 @@
 export * from './useLocalStorage';
 export * from './useTauriEvent';
 export * from './useInterval';
+export * from './useKernelEventStream';

@@ -1,0 +1,38 @@
+name: action-metric-calculator
+version: 1.0.0
+description: |
+  Compute trajectory action, entropy production, detect trapping.
+  Measures irreversibility and exploration quality.
+category: dynamics
+priority: high
+phase: 4
+
+inputs:
+  - name: rollout_path
+    type: string
+    description: Path to rollout.json with state trajectory
+    required: true
+  - name: transition_matrix
+    type: object
+    description: Transition probabilities for action calculation
+    required: true
+
+outputs:
+  - name: trajectory_action
+    type: number
+    description: Total action along trajectory
+  - name: action_rate
+    type: number
+    description: Action per transition (entropy production)
+  - name: trapping_detected
+    type: boolean
+    description: True if low action + no ΔV improvement
+  - name: per_transition_action
+    type: array
+    description: Action for each state transition
+
+examples: []
+
+implementation:
+  type: python
+  path: action-metric-calculator.py

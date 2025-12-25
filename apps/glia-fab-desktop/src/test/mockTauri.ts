@@ -48,8 +48,12 @@ export function mockTauriEvent() {
     }
   };
 
+  // Preserve existing invoke mock if present
+  const existingInvoke = global.__TAURI__?.invoke;
+
   global.__TAURI__ = {
     ...global.__TAURI__,
+    invoke: existingInvoke ?? vi.fn(),
     event: {
       listen: listenMock as any,
       once: vi.fn(),

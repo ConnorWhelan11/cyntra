@@ -1,0 +1,66 @@
+~ librarian_intro
+Librarian: Welcome, traveler, to the Outora Library.
+Librarian: I am Aldric, Head Librarian of this ancient institution.
+- Tell me about the library.
+	Librarian: This library has stood for over a thousand years.
+	Librarian: We house knowledge from across the known world.
+	Librarian: But be warned - some knowledge is... restricted.
+	=> librarian_intro
+- I'm looking for the Ancient Tome.
+	Librarian: Ah, the Tome of Wisdom. Many seek it.
+	Librarian: It rests in the Restricted Vault below.
+	Librarian: But the vault requires a special key.
+	set knows_about_tome = true
+	=> ask_about_key
+- I should go. [END]
+
+~ ask_about_key
+Librarian: The vault key was hidden long ago.
+- Where can I find the key?
+	Librarian: *lowers voice* There are secrets in this library.
+	Librarian: The old furniture... it holds more than dust.
+	Librarian: Look carefully at the librarian's desk.
+	set knows_secret = true
+	=> librarian_farewell
+- I'll find it myself.
+	Librarian: As you wish. Good luck, traveler.
+	=> librarian_farewell
+
+~ librarian_farewell
+Librarian: May your search be fruitful.
+Librarian: Return if you need guidance.
+[END]
+
+~ scholar_intro
+Scholar: *looks up from a dusty tome*
+Scholar: Oh! A visitor. I am Mira, a researcher.
+- What are you researching?
+	Scholar: The connection between ancient texts and modern knowledge.
+	Scholar: This library holds manuscripts found nowhere else.
+	=> scholar_intro
+- Have you seen anything unusual?
+	Scholar: *glances around nervously*
+	Scholar: There are... sounds at night. From the vault.
+	Scholar: I try not to think about it.
+	=> scholar_intro
+- Goodbye.
+	Scholar: Safe travels. Mind the shadows.
+	[END]
+
+~ archivist_intro
+Archivist: The archive is for authorized personnel only.
+- I have a pass.
+	if has_archive_pass
+		Archivist: Very well. You may enter.
+		Archivist: Handle the documents with care.
+		[END]
+	else
+		Archivist: I don't see any pass. Come back when you have one.
+		[END]
+- How do I get a pass?
+	Archivist: Speak with the Head Librarian.
+	Archivist: He grants access to serious scholars.
+	[END]
+- Never mind.
+	Archivist: *returns to cataloging*
+	[END]

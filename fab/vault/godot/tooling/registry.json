@@ -1,0 +1,57 @@
+{
+  "schema_version": "1.0",
+  "tooling": [
+    {
+      "tool_id": "gdscript_toolkit",
+      "kind": "lint_format",
+      "version": "4.3.0",
+      "path": "gdscript_toolkit",
+      "description": "GDScript toolkit - parser, linter, and formatter for GDScript",
+      "created_at": "2024-12-21T00:00:00Z",
+      "status": "placeholder",
+      "sha256": null,
+      "upstream": {
+        "repo": "https://github.com/Scony/godot-gdscript-toolkit",
+        "ref": "4.3.0",
+        "ref_type": "tag"
+      },
+      "install_method": "pip",
+      "pip_package": "gdtoolkit",
+      "commands": ["gdlint", "gdformat", "gdparse"]
+    },
+    {
+      "tool_id": "setup_godot_action",
+      "kind": "ci",
+      "version": "2.1.0",
+      "path": "setup_godot_action",
+      "description": "GitHub Action to setup Godot in CI runners",
+      "created_at": "2024-12-21T00:00:00Z",
+      "status": "placeholder",
+      "sha256": null,
+      "upstream": {
+        "repo": "https://github.com/chickensoft-games/setup-godot",
+        "ref": "v2.1.0",
+        "ref_type": "tag"
+      },
+      "install_method": "github_action",
+      "action_ref": "chickensoft-games/setup-godot@v2"
+    },
+    {
+      "tool_id": "godot_export_action",
+      "kind": "ci",
+      "version": "6.0.0",
+      "path": "godot_export_action",
+      "description": "GitHub Action for automated Godot exports",
+      "created_at": "2024-12-21T00:00:00Z",
+      "status": "placeholder",
+      "sha256": null,
+      "upstream": {
+        "repo": "https://github.com/firebelley/godot-export",
+        "ref": "v6.0.0",
+        "ref_type": "tag"
+      },
+      "install_method": "github_action",
+      "action_ref": "firebelley/godot-export@v6"
+    }
+  ]
+}

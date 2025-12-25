@@ -1,4 +1,4 @@
 /**
- * Kernel feature - Beads issues and dev-kernel orchestration
+ * Kernel feature - Beads issues and Cyntra orchestration
  */
 export * from "./KernelView";

@@ -1,0 +1,34 @@
+{
+  "schema_version": "1.0",
+  "addon_id": "gloot",
+  "kind": "inventory",
+  "version": "3.0.1",
+  "upstream": {
+    "repo": "https://github.com/peter-kish/gloot",
+    "ref": "v3.0.1",
+    "ref_type": "tag",
+    "fetched_at": "2024-12-21T00:00:00Z"
+  },
+  "compatibility": {
+    "godot_min": "4.0",
+    "godot_max": null,
+    "license": "MIT",
+    "dependencies": []
+  },
+  "install": {
+    "source_path": "addon/",
+    "target_path": "addons/gloot"
+  },
+  "checksums": {
+    "sha256": "78266f46e95f770821b4cba595509092c47bb2243583790711f648a76b9b95be",
+    "verified_at": "2025-12-23T01:13:49.282567Z"
+  },
+  "description": "GLoot - A universal inventory system for Godot",
+  "why": "Grid-based inventory system with item stacking, constraints, and serialization.",
+  "notes": [
+    "Supports grid-based and list-based inventories",
+    "Item stacking and weight constraints",
+    "Save/load inventory state",
+    "Drag-and-drop support"
+  ]
+}

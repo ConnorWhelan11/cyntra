@@ -7,6 +7,10 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
+      // Tauri v2: `invoke` lives in `@tauri-apps/api/core` (keep legacy import path working)
+      "@tauri-apps/api/tauri": "@tauri-apps/api/core",
+      // QuantumField direct import for PCB background
+      "@quantum-field": path.resolve(__dirname, "../../packages/ui/src/components/three/QuantumField"),
       react: path.resolve(__dirname, "../../node_modules/react"),
       "react-dom": path.resolve(__dirname, "../../node_modules/react-dom"),
       "react-dom/client": path.resolve(__dirname, "../../node_modules/react-dom/client.js"),
@@ -14,7 +18,7 @@ export default defineConfig({
       "react/jsx-runtime": path.resolve(__dirname, "../../node_modules/react/jsx-runtime.js"),
       "react/jsx-dev-runtime": path.resolve(__dirname, "../../node_modules/react/jsx-dev-runtime.js"),
     },
-    dedupe: ["react", "react-dom"],
+    dedupe: ["react", "react-dom", "three", "@react-three/fiber", "@react-three/drei"],
   },
   define: {
     "process.env": {},

@@ -1,0 +1,49 @@
+name: fab-gate-evaluator
+version: 1.0.0
+description: |
+  Run gate config (YAML) against asset, produce verdict JSON with critic reports.
+  Core quality checking for 3D assets.
+category: fab
+priority: critical
+phase: fab
+
+inputs:
+  - name: gate_config_path
+    type: string
+    description: Path to gate YAML config
+    required: true
+  - name: asset_path
+    type: string
+    description: Path to asset (.glb or .blend)
+    required: true
+  - name: output_dir
+    type: string
+    description: Directory for verdict and reports
+    required: true
+  - name: render_samples
+    type: integer
+    description: Override render samples from config
+    required: false
+
+outputs:
+  - name: verdict_path
+    type: string
+    description: Path to gate verdict JSON
+  - name: passed
+    type: boolean
+    description: True if asset passed gate
+  - name: overall_score
+    type: number
+    description: Weighted overall score
+  - name: critic_reports
+    type: array
+    description: Paths to individual critic report JSONs
+  - name: blocking_failures
+    type: array
+    description: Hard failures requiring fixes
+
+examples: []
+
+implementation:
+  type: python
+  path: fab-gate-evaluator.py

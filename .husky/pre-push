@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# Regenerate Agent Skills from YAML definitions before push
+echo "🔄 Regenerating Agent Skills..."
+
+python skills/generate.py --clean
+
+# Check if there are any changes to commit
+if ! git diff --quiet .claude/skills/ .codex/skills/ 2>/dev/null; then
+    echo "⚠️  Skills were regenerated with changes. Please review and commit:"
+    git status .claude/skills/ .codex/skills/
+    echo ""
+    echo "Run: git add .claude/skills .codex/skills && git commit --amend --no-edit"
+    exit 1
+fi
+
+echo "✅ Agent Skills are up to date"

@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://cyntra-kernel/schemas/cyntra/executed_plan.schema.json",
+  "title": "Cyntra Executed Plan",
+  "description": "Records the plan Cyntra actually executed (post-masking/fallbacks) for labeling and provenance",
+  "type": "object",
+  "required": ["schema_version", "swarm_id_executed", "fallback_applied"],
+  "properties": {
+    "schema_version": { "type": "string", "const": "cyntra.executed_plan.v1" },
+    "swarm_id_executed": { "type": "string" },
+    "max_candidates_executed": { "type": ["integer", "null"], "minimum": 1 },
+    "timeout_seconds_executed": { "type": ["integer", "null"], "minimum": 1 },
+    "max_iterations_executed": { "type": ["integer", "null"], "minimum": 1 },
+    "fallback_applied": { "type": "boolean" },
+    "fallback_reason": { "type": ["string", "null"] }
+  },
+  "additionalProperties": true
+}
+

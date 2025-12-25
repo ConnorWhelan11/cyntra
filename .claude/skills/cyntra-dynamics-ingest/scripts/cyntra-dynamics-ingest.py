@@ -1,0 +1,1 @@
+../../../../skills/dynamics/cyntra-dynamics-ingest.py

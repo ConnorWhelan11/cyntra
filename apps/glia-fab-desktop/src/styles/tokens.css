@@ -1,0 +1,467 @@
+/* Cyntra Mission Control Design Tokens
+   Deep Space Observatory Color System
+   Built on OKLCH for perceptual uniformity */
+
+@layer tokens {
+  :root {
+    /* ═══════════════════════════════════════════════════════════
+       FOUNDATION - Near-black tones with cosmic blue undertones
+       ═══════════════════════════════════════════════════════════ */
+    --void: oklch(8% 0.02 260);           /* Near-black, slight blue */
+    --abyss: oklch(12% 0.02 260);         /* Panel backgrounds */
+    --obsidian: oklch(18% 0.015 260);     /* Elevated surfaces */
+    --slate: oklch(25% 0.01 260);         /* Borders, dividers */
+
+    /* ═══════════════════════════════════════════════════════════
+       TEXT HIERARCHY
+       ═══════════════════════════════════════════════════════════ */
+    --text-primary: oklch(92% 0.01 260);  /* Bright, high contrast */
+    --text-secondary: oklch(65% 0.01 260); /* Muted, secondary info */
+    --text-tertiary: oklch(45% 0.01 260); /* Timestamps, metadata */
+
+    /* ═══════════════════════════════════════════════════════════
+       SIGNAL COLORS - Semantic status indicators
+       ═══════════════════════════════════════════════════════════ */
+    --signal-active: oklch(75% 0.18 160);    /* Cyan - running, active */
+    --signal-success: oklch(72% 0.16 145);   /* Teal - passed, complete */
+    --signal-warning: oklch(78% 0.16 85);    /* Amber - attention, blocked */
+    --signal-error: oklch(65% 0.22 25);      /* Coral - failed, error */
+    --signal-info: oklch(70% 0.14 250);      /* Soft blue - info, neutral */
+
+    /* ═══════════════════════════════════════════════════════════
+       ACCENT - The Signature Gold
+       ═══════════════════════════════════════════════════════════ */
+    --accent-primary: oklch(78% 0.12 65);    /* Warm gold - primary actions */
+    --accent-glow: oklch(85% 0.15 65);       /* Brighter gold - hover states */
+    --accent-subtle: oklch(78% 0.06 65);     /* Desaturated - backgrounds */
+    --accent-dim: oklch(60% 0.08 65);        /* Dimmed - inactive */
+
+    /* ═══════════════════════════════════════════════════════════
+       AGENT COLORS - Distinct per toolchain
+       ═══════════════════════════════════════════════════════════ */
+    --agent-claude: oklch(70% 0.16 30);      /* Terracotta */
+    --agent-codex: oklch(72% 0.14 145);      /* Emerald */
+    --agent-opencode: oklch(70% 0.15 280);   /* Violet */
+    --agent-crush: oklch(75% 0.18 200);      /* Electric blue */
+
+    /* ═══════════════════════════════════════════════════════════
+       EVOLUTION SPECTRUM - Generation fitness gradient
+       ═══════════════════════════════════════════════════════════ */
+    --evo-low: oklch(60% 0.15 25);           /* Red - low fitness */
+    --evo-mid: oklch(75% 0.15 85);           /* Yellow - medium */
+    --evo-high: oklch(75% 0.16 145);         /* Green - high fitness */
+    --evo-frontier: oklch(80% 0.18 65);      /* Gold - Pareto optimal */
+
+    /* ═══════════════════════════════════════════════════════════
+       TYPOGRAPHY
+       ═══════════════════════════════════════════════════════════ */
+
+    /* Font Families */
+    --font-mono: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
+    --font-sans: "Inter", "SF Pro", system-ui, -apple-system, sans-serif;
+
+    /* Type Scale (modular 1.2 ratio) */
+    --text-xs: 0.694rem;    /* 11px - timestamps, metadata */
+    --text-sm: 0.833rem;    /* 13px - secondary text */
+    --text-base: 1rem;      /* 16px - body text */
+    --text-lg: 1.2rem;      /* 19px - section headers */
+    --text-xl: 1.44rem;     /* 23px - panel titles */
+    --text-2xl: 1.728rem;   /* 28px - view titles */
+    --text-3xl: 2.074rem;   /* 33px - dramatic headers */
+
+    /* Font Weights */
+    --font-normal: 400;
+    --font-medium: 500;
+    --font-semibold: 600;
+    --font-bold: 700;
+
+    /* Letter Spacing */
+    --tracking-tight: -0.02em;
+    --tracking-normal: 0;
+    --tracking-wide: 0.05em;
+    --tracking-wider: 0.1em;   /* All-caps labels */
+
+    /* ═══════════════════════════════════════════════════════════
+       SPACING
+       ═══════════════════════════════════════════════════════════ */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 20px;
+    --space-6: 24px;
+    --space-8: 32px;
+    --space-10: 40px;
+    --space-12: 48px;
+
+    /* ═══════════════════════════════════════════════════════════
+       LAYOUT DIMENSIONS
+       ═══════════════════════════════════════════════════════════ */
+    --nav-rail-width: 64px;
+    --command-bar-height: 48px;
+    --context-strip-height: 48px;
+    --status-bar-height: 24px;
+    --panel-header-height: 40px;
+
+    /* ═══════════════════════════════════════════════════════════
+       RADII
+       ═══════════════════════════════════════════════════════════ */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    --radius-full: 9999px;
+
+    /* ═══════════════════════════════════════════════════════════
+       SHADOWS & GLOWS
+       ═══════════════════════════════════════════════════════════ */
+    --shadow-sm: 0 1px 2px oklch(0% 0 0 / 0.3);
+    --shadow-md: 0 4px 12px oklch(0% 0 0 / 0.4);
+    --shadow-lg: 0 12px 40px oklch(0% 0 0 / 0.5);
+    --shadow-modal: 0 18px 60px oklch(0% 0 0 / 0.55);
+
+    --glow-accent: 0 0 20px oklch(78% 0.12 65 / 0.3);
+    --glow-success: 0 0 20px oklch(72% 0.16 145 / 0.3);
+    --glow-error: 0 0 20px oklch(65% 0.22 25 / 0.3);
+    --glow-active: 0 0 20px oklch(75% 0.18 160 / 0.3);
+
+    /* ═══════════════════════════════════════════════════════════
+       TRANSITIONS
+       ═══════════════════════════════════════════════════════════ */
+    --transition-fast: 100ms ease-out;
+    --transition-normal: 200ms ease-out;
+    --transition-slow: 300ms ease-in-out;
+    --transition-spring: 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
+
+    /* ═══════════════════════════════════════════════════════════
+       COMPATIBILITY TOKENS (for legacy/inline styles)
+       Keep these aligned with the Mission Control palette.
+       ═══════════════════════════════════════════════════════════ */
+    --surface-primary: var(--abyss);
+    --surface-secondary: var(--obsidian);
+    --surface-tertiary: oklch(18% 0.015 260 / 0.6);
+    --surface-hover: oklch(25% 0.01 260 / 0.5);
+    --border-subtle: oklch(25% 0.01 260 / 0.35);
+    --accent-primary-hover: var(--accent-glow);
+
+    /* ═══════════════════════════════════════════════════════════
+       AMBIENT PARTICLES
+       ═══════════════════════════════════════════════════════════ */
+    --particle-count: 50;
+    --particle-size-min: 1px;
+    --particle-size-max: 3px;
+    --particle-opacity-min: 0.1;
+    --particle-opacity-max: 0.4;
+    --particle-drift-speed: 0.03;
+
+    /* Ambient layer colors - derived from foundation palette */
+    --ambient-star: var(--text-primary);
+    --ambient-star-glow: oklch(75% 0.08 200 / 0.4);
+    --ambient-gradient-1: oklch(14% 0.02 260);
+    --ambient-gradient-2: oklch(12% 0.02 280);
+    --ambient-nebula-cyan: oklch(75% 0.18 160 / 0.05);
+    --ambient-nebula-gold: oklch(78% 0.12 65 / 0.03);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   COMPONENT TOKENS - Semantic tokens for specific components
+   ═══════════════════════════════════════════════════════════════ */
+
+@layer tokens {
+  :root {
+    /* Panel */
+    --panel-bg: var(--abyss);
+    --panel-border: var(--slate);
+    --panel-header-bg: var(--obsidian);
+
+    /* Cards */
+    --card-bg: var(--obsidian);
+    --card-border: var(--slate);
+    --card-hover-bg: oklch(20% 0.015 260);
+    --card-selected-bg: oklch(22% 0.04 65);
+    --card-selected-border: var(--accent-primary);
+
+    /* Inputs */
+    --input-bg: oklch(10% 0.02 260);
+    --input-border: var(--slate);
+    --input-focus-border: var(--accent-primary);
+    --input-placeholder: var(--text-tertiary);
+
+    /* Buttons */
+    --btn-ghost-hover: oklch(25% 0.01 260);
+    --btn-primary-bg: var(--accent-primary);
+    --btn-primary-text: var(--void);
+    --btn-primary-hover: var(--accent-glow);
+
+    /* Status Badge Colors */
+    --badge-success-bg: oklch(72% 0.16 145 / 0.12);
+    --badge-success-border: oklch(72% 0.16 145 / 0.35);
+    --badge-error-bg: oklch(65% 0.22 25 / 0.12);
+    --badge-error-border: oklch(65% 0.22 25 / 0.35);
+    --badge-warning-bg: oklch(78% 0.16 85 / 0.12);
+    --badge-warning-border: oklch(78% 0.16 85 / 0.35);
+    --badge-running-bg: oklch(75% 0.18 160 / 0.12);
+    --badge-running-border: oklch(75% 0.18 160 / 0.35);
+
+    /* Workcell Progress */
+    --workcell-idle: var(--slate);
+    --workcell-active: var(--signal-active);
+    --workcell-complete: var(--signal-success);
+    --workcell-failed: var(--signal-error);
+
+    /* Scrollbar */
+    --scrollbar-track: transparent;
+    --scrollbar-thumb: var(--slate);
+    --scrollbar-thumb-hover: oklch(35% 0.01 260);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   UTILITY CLASSES
+   ═══════════════════════════════════════════════════════════════ */
+
+@layer utilities {
+  /* Text utilities */
+  .text-primary { color: var(--text-primary); }
+  .text-secondary { color: var(--text-secondary); }
+  .text-tertiary { color: var(--text-tertiary); }
+
+  /* Signal colors */
+  .text-active { color: var(--signal-active); }
+  .text-success { color: var(--signal-success); }
+  .text-warning { color: var(--signal-warning); }
+  .text-error { color: var(--signal-error); }
+  .text-info { color: var(--signal-info); }
+
+  /* Agent colors */
+  .text-claude { color: var(--agent-claude); }
+  .text-codex { color: var(--agent-codex); }
+  .text-opencode { color: var(--agent-opencode); }
+  .text-crush { color: var(--agent-crush); }
+
+  /* Background utilities */
+  .bg-void { background-color: var(--void); }
+  .bg-abyss { background-color: var(--abyss); }
+  .bg-obsidian { background-color: var(--obsidian); }
+
+  /* Font utilities */
+  .font-mono { font-family: var(--font-mono); }
+  .font-sans { font-family: var(--font-sans); }
+
+  /* Tracking */
+  .tracking-tight { letter-spacing: var(--tracking-tight); }
+  .tracking-wide { letter-spacing: var(--tracking-wide); }
+  .tracking-wider { letter-spacing: var(--tracking-wider); }
+
+  /* All-caps label style */
+  .label-caps {
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    letter-spacing: var(--tracking-wider);
+    text-transform: uppercase;
+    color: var(--text-secondary);
+  }
+
+  /* Evolution biomorphic colors */
+  .text-evo-low { color: var(--evo-low); }
+  .text-evo-mid { color: var(--evo-mid); }
+  .text-evo-high { color: var(--evo-high); }
+  .text-evo-frontier { color: var(--evo-frontier); }
+  .text-evo-membrane { color: var(--evo-cell-membrane); }
+  .text-evo-nucleus { color: var(--evo-nucleus); }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   EVOLUTION BIOMORPHIC TOKENS
+   Organic aesthetics for evolution visualization
+   ═══════════════════════════════════════════════════════════════ */
+
+@layer tokens {
+  :root {
+    /* ═══════════════════════════════════════════════════════════
+       BIOMORPHIC PALETTE - Cellular/organic color system
+       ═══════════════════════════════════════════════════════════ */
+    --evo-cell-membrane: oklch(50% 0.12 180);    /* Teal cellular outline */
+    --evo-cytoplasm: oklch(25% 0.08 200);        /* Dark organic interior */
+    --evo-nucleus: oklch(70% 0.20 65);           /* Golden nucleus/hotspot */
+    --evo-mitosis: oklch(75% 0.22 160);          /* Cyan division glow */
+    --evo-dna-helix: oklch(65% 0.18 280);        /* Purple DNA accent */
+    --evo-organelle: oklch(55% 0.14 320);        /* Magenta sub-structure */
+
+    /* ═══════════════════════════════════════════════════════════
+       ORGANIC GRADIENTS
+       ═══════════════════════════════════════════════════════════ */
+    --evo-gradient-membrane: linear-gradient(
+      135deg,
+      oklch(40% 0.10 180),
+      oklch(30% 0.12 200)
+    );
+    --evo-gradient-nucleus: radial-gradient(
+      circle,
+      oklch(80% 0.20 65),
+      oklch(60% 0.15 70)
+    );
+    --evo-gradient-fitness: linear-gradient(
+      90deg,
+      var(--evo-low),
+      var(--evo-mid),
+      var(--evo-high)
+    );
+
+    /* ═══════════════════════════════════════════════════════════
+       ORGANIC SHAPES - Border radii for biomorphic forms
+       ═══════════════════════════════════════════════════════════ */
+    --evo-border-organic: 38% 62% 63% 37% / 41% 44% 56% 59%;
+    --evo-border-cell: 30% 70% 70% 30% / 30% 30% 70% 70%;
+    --evo-border-nucleus: 45% 55% 60% 40% / 50% 45% 55% 50%;
+    --evo-border-blob: 60% 40% 30% 70% / 60% 30% 70% 40%;
+
+    /* ═══════════════════════════════════════════════════════════
+       ANIMATION TIMINGS
+       ═══════════════════════════════════════════════════════════ */
+    --evo-pulse-duration: 3s;
+    --evo-breathe-duration: 5s;
+    --evo-flow-duration: 8s;
+    --evo-mitosis-duration: 2s;
+
+    /* ═══════════════════════════════════════════════════════════
+       GLOWS - Organic light effects
+       ═══════════════════════════════════════════════════════════ */
+    --evo-glow-nucleus: 0 0 30px oklch(70% 0.20 65 / 0.5);
+    --evo-glow-membrane: 0 0 20px oklch(50% 0.12 180 / 0.4);
+    --evo-glow-mitosis: 0 0 40px oklch(75% 0.22 160 / 0.6);
+    --evo-glow-dna: 0 0 25px oklch(65% 0.18 280 / 0.4);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   EVOLUTION ANIMATIONS
+   ═══════════════════════════════════════════════════════════════ */
+
+@layer utilities {
+  @keyframes cellular-pulse {
+    0%, 100% {
+      transform: scale(1);
+      opacity: 0.9;
+    }
+    50% {
+      transform: scale(1.02);
+      opacity: 1;
+    }
+  }
+
+  @keyframes membrane-flow {
+    0% { border-radius: 38% 62% 63% 37% / 41% 44% 56% 59%; }
+    25% { border-radius: 45% 55% 50% 50% / 35% 50% 50% 65%; }
+    50% { border-radius: 62% 38% 37% 63% / 56% 59% 41% 44%; }
+    75% { border-radius: 50% 50% 55% 45% / 50% 65% 35% 50%; }
+    100% { border-radius: 38% 62% 63% 37% / 41% 44% 56% 59%; }
+  }
+
+  @keyframes nucleus-glow {
+    0%, 100% {
+      box-shadow: 0 0 20px oklch(70% 0.20 65 / 0.4);
+    }
+    50% {
+      box-shadow: 0 0 40px oklch(70% 0.20 65 / 0.6),
+                  0 0 60px oklch(75% 0.22 160 / 0.3);
+    }
+  }
+
+  @keyframes organic-breathe {
+    0%, 100% {
+      transform: scale(1) rotate(0deg);
+    }
+    33% {
+      transform: scale(1.01) rotate(0.5deg);
+    }
+    66% {
+      transform: scale(0.99) rotate(-0.5deg);
+    }
+  }
+
+  @keyframes dna-helix-rotate {
+    from { transform: rotateY(0deg); }
+    to { transform: rotateY(360deg); }
+  }
+
+  @keyframes mitosis-split {
+    0% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(1.2);
+      opacity: 0.8;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  @keyframes liquid-fill {
+    0% { transform: translateY(100%); }
+    100% { transform: translateY(0%); }
+  }
+
+  /* Animation utility classes */
+  .animate-cellular-pulse {
+    animation: cellular-pulse var(--evo-pulse-duration) ease-in-out infinite;
+  }
+
+  .animate-membrane-flow {
+    animation: membrane-flow var(--evo-flow-duration) ease-in-out infinite;
+  }
+
+  .animate-nucleus-glow {
+    animation: nucleus-glow var(--evo-pulse-duration) ease-in-out infinite;
+  }
+
+  .animate-organic-breathe {
+    animation: organic-breathe var(--evo-breathe-duration) ease-in-out infinite;
+  }
+
+  .animate-dna-helix {
+    animation: dna-helix-rotate 10s linear infinite;
+  }
+
+  .animate-mitosis {
+    animation: mitosis-split var(--evo-mitosis-duration) ease-in-out;
+  }
+
+  /* Organic shape utilities */
+  .shape-organic {
+    border-radius: var(--evo-border-organic);
+  }
+
+  .shape-cell {
+    border-radius: var(--evo-border-cell);
+  }
+
+  .shape-nucleus {
+    border-radius: var(--evo-border-nucleus);
+  }
+
+  .shape-blob {
+    border-radius: var(--evo-border-blob);
+  }
+
+  /* Glow utilities */
+  .glow-nucleus {
+    box-shadow: var(--evo-glow-nucleus);
+  }
+
+  .glow-membrane {
+    box-shadow: var(--evo-glow-membrane);
+  }
+
+  .glow-mitosis {
+    box-shadow: var(--evo-glow-mitosis);
+  }
+
+  .glow-dna {
+    box-shadow: var(--evo-glow-dna);
+  }
+}

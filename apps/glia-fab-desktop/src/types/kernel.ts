@@ -51,6 +51,21 @@ export interface KernelWorkcell {
   speculateTag?: string | null;
   toolchain?: string | null;
   proofStatus?: string | null;
+  progress: number;
+  progressStage: string;
+}
+
+/**
+ * UI-focused workcell representation with derived state for display
+ */
+export interface WorkcellInfo {
+  id: string;
+  issueId: string;
+  state: "idle" | "running" | "complete" | "failed" | "done" | "error";
+  toolchain?: string | null;
+  path?: string;
+  speculateTag?: string | null;
+  progress?: number;
 }
 
 export interface KernelEvent {

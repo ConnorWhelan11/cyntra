@@ -3,6 +3,7 @@ import { mockTauriInvoke, clearTauriMocks } from '@/test/mockTauri';
 import {
   listRuns,
   getArtifacts,
+  getRunDetails,
   startJob,
   killJob,
   listActiveJobs,
@@ -40,6 +41,66 @@ describe('runService', () => {
       });
 
       expect(result).toEqual(artifacts);
+    });
+  });
+
+  describe('getRunDetails', () => {
+    it('should get run details', async () => {
+      const runDetails = {
+        id: 'run-abc123',
+        projectRoot: '/path/to/project',
+        runDir: '/path/to/project/.cyntra/runs/run-abc123',
+        command: 'cyntra run --once',
+        label: 'test-run',
+        startedMs: 1700000000000,
+        endedMs: 1700000060000,
+        exitCode: 0,
+        durationMs: 60000,
+        artifactsCount: 5,
+        terminalLogLines: 150,
+        issuesProcessed: ['issue-1', 'issue-2'],
+        workcellsSpawned: 3,
+        gatesPassed: 2,
+        gatesFailed: 1,
+      };
+      mockTauriInvoke({ run_details: runDetails });
+
+      const result = await getRunDetails({
+        projectRoot: '/path/to/project',
+        runId: 'run-abc123',
+      });
+
+      expect(result).toEqual(runDetails);
+    });
+
+    it('should handle null optional fields', async () => {
+      const runDetails = {
+        id: 'run-xyz',
+        projectRoot: '/path/to/project',
+        runDir: '/path/to/project/.cyntra/runs/run-xyz',
+        command: 'cyntra run --watch',
+        label: null,
+        startedMs: 1700000000000,
+        endedMs: null,
+        exitCode: null,
+        durationMs: null,
+        artifactsCount: 0,
+        terminalLogLines: 0,
+        issuesProcessed: [],
+        workcellsSpawned: 0,
+        gatesPassed: 0,
+        gatesFailed: 0,
+      };
+      mockTauriInvoke({ run_details: runDetails });
+
+      const result = await getRunDetails({
+        projectRoot: '/path/to/project',
+        runId: 'run-xyz',
+      });
+
+      expect(result).toEqual(runDetails);
+      expect(result.exitCode).toBeNull();
+      expect(result.endedMs).toBeNull();
     });
   });
 

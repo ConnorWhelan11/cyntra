@@ -1,0 +1,48 @@
+name: deterministic-world-builder
+version: 1.0.0
+description: |
+  Run fab-world with SHA manifest generation for full reproducibility.
+  High-level wrapper for deterministic world pipeline execution.
+category: fab
+priority: critical
+phase: fab
+
+inputs:
+  - name: world_recipe_path
+    type: string
+    description: Path to world.yaml recipe
+    required: true
+  - name: output_dir
+    type: string
+    description: Output directory for run
+    required: true
+  - name: seed
+    type: integer
+    description: Master seed
+    required: false
+    default: 42
+  - name: validate
+    type: boolean
+    description: Run validation gates after build
+    required: false
+    default: true
+
+outputs:
+  - name: manifest_path
+    type: string
+    description: Path to manifest.json with SHA tracking
+  - name: glb_path
+    type: string
+    description: Path to exported world GLB
+  - name: validation_results
+    type: object
+    description: Gate validation results (if requested)
+  - name: sha256
+    type: string
+    description: Overall content SHA256
+
+examples: []
+
+implementation:
+  type: python
+  path: deterministic-world-builder.py

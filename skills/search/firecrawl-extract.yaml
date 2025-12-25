@@ -1,0 +1,35 @@
+name: firecrawl-extract
+version: 1.0.0
+description: |
+  Extract structured data from URLs using AI.
+  Define a schema and let Firecrawl extract matching data.
+category: search
+priority: medium
+
+inputs:
+  - name: urls
+    type: array
+    description: URLs to extract from (can include wildcards)
+    required: true
+  - name: schema
+    type: object
+    description: JSON schema defining data to extract
+    required: false
+  - name: prompt
+    type: string
+    description: Natural language extraction instructions
+    required: false
+  - name: cache_ttl
+    type: integer
+    description: Cache TTL in seconds (0 to disable)
+    required: false
+    default: 3600
+
+outputs:
+  - name: data
+    type: object
+    description: Extracted structured data
+
+implementation:
+  type: python
+  path: firecrawl-extract.py

@@ -1,0 +1,43 @@
+name: cyntra-schema-validator
+version: 1.0.0
+description: |
+  Validate JSON artifacts against Cyntra schemas. Ensures rollouts, proofs, manifests,
+  and other artifacts conform to their schema definitions in cyntra-kernel/schemas/cyntra/.
+category: development
+priority: critical
+phase: 1-2
+
+inputs:
+  - name: artifact_path
+    type: string
+    description: Path to JSON artifact to validate
+    required: true
+  - name: schema_name
+    type: string
+    description: Schema name (e.g., 'rollout', 'proof', 'manifest', 'state_t1')
+    required: true
+  - name: strict
+    type: boolean
+    description: Fail on warnings, not just errors
+    required: false
+    default: false
+
+outputs:
+  - name: valid
+    type: boolean
+    description: True if artifact passes validation
+  - name: errors
+    type: array
+    description: List of validation errors (if any)
+  - name: warnings
+    type: array
+    description: List of validation warnings (if any)
+  - name: schema_version
+    type: string
+    description: Schema version used for validation
+
+examples: []
+
+implementation:
+  type: python
+  path: cyntra-schema-validator.py

@@ -1,0 +1,1 @@
+../../../../skills/fab/blender-deterministic-render.py

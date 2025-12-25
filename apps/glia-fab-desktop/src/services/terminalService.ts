@@ -2,7 +2,7 @@
  * Terminal/PTY-related Tauri IPC service
  */
 
-import { invoke } from '@tauri-apps/api/tauri';
+import { invoke } from '@tauri-apps/api/core';
 import type { PtySessionInfo } from '@/types';
 
 export async function createPty(params: {

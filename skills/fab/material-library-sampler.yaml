@@ -1,0 +1,44 @@
+name: material-library-sampler
+version: 1.0.0
+description: |
+  Apply materials from library with deterministic selection based on seed.
+  Ensures reproducible material assignment.
+category: fab
+priority: medium
+phase: fab
+
+inputs:
+  - name: asset_path
+    type: string
+    description: Path to asset (.blend or .glb)
+    required: true
+  - name: material_tags
+    type: array
+    description: Tags to filter materials (e.g., ['pbr', 'interior'])
+    required: false
+  - name: seed
+    type: integer
+    description: Random seed for selection
+    required: false
+    default: 42
+  - name: output_path
+    type: string
+    description: Output path for asset with materials
+    required: true
+
+outputs:
+  - name: asset_path
+    type: string
+    description: Path to asset with materials applied
+  - name: materials_used
+    type: array
+    description: List of materials assigned
+  - name: mapping
+    type: object
+    description: Mesh → material mapping
+
+examples: []
+
+implementation:
+  type: python
+  path: material-library-sampler.py

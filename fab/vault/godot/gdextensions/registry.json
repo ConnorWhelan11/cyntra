@@ -1,0 +1,37 @@
+{
+  "schema_version": "1.0",
+  "registry_id": "godot-gdextensions",
+  "description": "GDExtension addons requiring platform-specific binaries",
+  "entries": [
+    {
+      "id": "terrain3d",
+      "kind": "terrain",
+      "manifest": "terrain3d/manifest.json",
+      "requires_binary": true
+    },
+    {
+      "id": "godot_jolt",
+      "kind": "physics",
+      "manifest": "godot_jolt/manifest.json",
+      "requires_binary": true
+    },
+    {
+      "id": "limboai",
+      "kind": "ai",
+      "manifest": "limboai/manifest.json",
+      "requires_binary": true
+    },
+    {
+      "id": "godot_steam",
+      "kind": "platform",
+      "manifest": "godot_steam/manifest.json",
+      "requires_binary": true
+    },
+    {
+      "id": "godot_sqlite",
+      "kind": "database",
+      "manifest": "godot_sqlite/manifest.json",
+      "requires_binary": true
+    }
+  ]
+}

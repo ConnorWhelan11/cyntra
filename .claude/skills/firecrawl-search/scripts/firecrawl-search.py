@@ -1,0 +1,1 @@
+../../../../skills/search/firecrawl-search.py

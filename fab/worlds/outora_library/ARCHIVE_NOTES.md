@@ -75,7 +75,7 @@ After archiving:
 # Verify world still builds
 fab-world build \
   --world fab/worlds/outora_library \
-  --output .glia-fab/runs/verify_after_archive \
+  --output .cyntra/runs/verify_after_archive \
   --until prepare
 
 # Check template exists

@@ -25,7 +25,7 @@ interface RunsViewProps {
 }
 
 /**
- * Runs feature - manage dev-kernel runs and artifacts
+ * Runs feature - manage Cyntra runs and artifacts
  */
 export function RunsView({
   activeProject,
@@ -82,7 +82,7 @@ export function RunsView({
           )}
           {activeProject && runs.length === 0 && (
             <div className="list-item muted">
-              No runs yet. Output is expected under <code>.glia-fab/runs/</code>.
+              No runs yet. Output is expected under <code>.cyntra/runs/</code>.
             </div>
           )}
           {runs.map((r) => (
