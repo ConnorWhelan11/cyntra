@@ -2,19 +2,19 @@
   "packageManager": "bun@1.1.24",
   "scripts": {
     "prepare": "husky",
-    "skills:generate": "python skills/generate.py",
-    "skills:clean": "python skills/generate.py --clean",
+    "skills:generate": "python kernel/src/cyntra/skills/generate.py",
+    "skills:clean": "python kernel/src/cyntra/skills/generate.py --clean",
     "dev:immersa": "cd apps/immersa && npm run watch",
     "build:immersa": "cd apps/immersa && npm run release",
-    "dev:desktop": "cd apps/glia-fab-desktop && bun run tauri dev",
-    "build:desktop": "cd apps/glia-fab-desktop && bun run tauri build",
+    "dev:desktop": "cd apps/desktop && bun run tauri dev",
+    "build:desktop": "cd apps/desktop && bun run tauri build",
     "build:all": "bun run build:immersa && bun run build:desktop",
     "lint": "bun run lint:ts && bun run lint:py",
     "lint:ts": "eslint apps/*/src packages/*/src --max-warnings=0",
-    "lint:py": "cd cyntra-kernel && ruff check src/",
+    "lint:py": "cd kernel && ruff check src/",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "typecheck": "tsc --noEmit -p apps/glia-fab-desktop && tsc --noEmit -p packages/ui"
+    "typecheck": "tsc --noEmit -p apps/desktop && tsc --noEmit -p packages/ag-ui-ext"
   },
   "devDependencies": {
     "@storybook/react-vite": "10.1.4",
