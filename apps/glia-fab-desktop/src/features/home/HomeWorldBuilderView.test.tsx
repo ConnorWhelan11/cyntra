@@ -139,7 +139,7 @@ describe("HomeWorldBuilderView", () => {
 
     it("should enable create button when prompt is entered", async () => {
       const user = userEvent.setup();
-      render(<HomeWorldBuilderView />);
+      render(<HomeWorldBuilderView projectRoot="/test/project" />);
 
       const input = screen.getByTestId("prompt-input");
       const button = screen.getByTestId("create-world-btn");

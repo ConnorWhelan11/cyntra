@@ -2,15 +2,18 @@
 Stage Execution - Invoke Blender stages and track outputs.
 
 Handles running Blender stage scripts in isolated, deterministic environments.
+Also supports ComfyUI stages for image/texture generation.
 """
 
 from pathlib import Path
 from typing import Any, Dict, Mapping
+import asyncio
 import subprocess
 import tempfile
 import time
 import os
 import sys
+import shutil
 
 
 class StageExecutor:
@@ -20,6 +23,59 @@ class StageExecutor:
         """Initialize executor."""
         self.world_config = world_config
         self.manifest = manifest
+
+    def _disk_usage_hint(self, path: Path) -> str:
+        try:
+            usage = shutil.disk_usage(path)
+        except Exception:
+            return ""
+        return f"free={usage.free} bytes, total={usage.total} bytes"
+
+    def _ensure_writable_dir(self, path: Path, label: str) -> list[str] | None:
+        try:
+            path.mkdir(parents=True, exist_ok=True)
+        except Exception as exc:
+            return [
+                f"{label} directory create failed: {path}",
+                f"Error: {exc}",
+            ]
+
+        probe = path / ".cyntra_write_probe"
+        try:
+            probe.write_text("ok", encoding="utf-8")
+            probe.unlink()
+        except Exception as exc:
+            errors = [
+                f"{label} directory not writable: {path}",
+                f"Error: {exc}",
+            ]
+            usage = self._disk_usage_hint(path)
+            if usage:
+                errors.append(f"Disk usage for {path}: {usage}")
+            return errors
+
+        return None
+
+    def _tail_log(self, path: Path, lines: int = 40) -> str | None:
+        try:
+            with path.open("rb") as handle:
+                handle.seek(0, os.SEEK_END)
+                remaining = handle.tell()
+                data = b""
+                chunk_size = 8192
+                while remaining > 0 and data.count(b"\n") <= lines:
+                    read_size = min(chunk_size, remaining)
+                    remaining -= read_size
+                    handle.seek(remaining)
+                    data = handle.read(read_size) + data
+        except Exception:
+            return None
+
+        text = data.decode("utf-8", errors="replace")
+        tail_lines = text.splitlines()[-lines:]
+        if not tail_lines:
+            return None
+        return "\n".join(tail_lines)
 
     def execute_blender_stage(
         self,
@@ -58,8 +114,23 @@ class StageExecutor:
         print(f"Script: {script_path}")
         print(f"{'='*60}\n")
 
-        # Create stage directory
-        stage_dir.mkdir(parents=True, exist_ok=True)
+        dir_errors = self._ensure_writable_dir(run_dir, "Run")
+        if dir_errors:
+            return {
+                "success": False,
+                "outputs": [],
+                "metadata": {},
+                "errors": dir_errors,
+            }
+
+        dir_errors = self._ensure_writable_dir(stage_dir, "Stage")
+        if dir_errors:
+            return {
+                "success": False,
+                "outputs": [],
+                "metadata": {},
+                "errors": dir_errors,
+            }
 
         # Get template blend file
         template_blend = self.world_config.get_template_blend_path()
@@ -118,7 +189,14 @@ class StageExecutor:
 
             # Setup logging
             log_dir = run_dir / "logs"
-            log_dir.mkdir(parents=True, exist_ok=True)
+            log_errors = self._ensure_writable_dir(log_dir, "Log")
+            if log_errors:
+                return {
+                    "success": False,
+                    "outputs": [],
+                    "metadata": {},
+                    "errors": log_errors,
+                }
             log_file = log_dir / f"{stage_id}.log"
 
             print(f"Running Blender with stage script...")
@@ -141,26 +219,35 @@ class StageExecutor:
 
             # Check result
             if result.returncode != 0:
+                log_tail = self._tail_log(log_file)
+                errors = [
+                    f"Blender exited with code {result.returncode}",
+                    f"See log: {log_file}",
+                ]
+                if log_tail:
+                    errors.append("Log tail:\n" + log_tail)
                 return {
                     "success": False,
                     "outputs": [],
                     "metadata": {"duration_ms": duration_ms},
-                    "errors": [
-                        f"Blender exited with code {result.returncode}",
-                        f"See log: {log_file}",
-                    ],
+                    "errors": errors,
                 }
 
             # Read result from JSON file
             if not result_file.exists():
+                log_tail = self._tail_log(log_file)
+                errors = [
+                    "Stage script did not produce result file",
+                    f"Expected: {result_file}",
+                    f"See log: {log_file}",
+                ]
+                if log_tail:
+                    errors.append("Log tail:\n" + log_tail)
                 return {
                     "success": False,
                     "outputs": [],
                     "metadata": {"duration_ms": duration_ms},
-                    "errors": [
-                        "Stage script did not produce result file",
-                        f"Expected: {result_file}",
-                    ],
+                    "errors": errors,
                 }
 
             import json
@@ -240,26 +327,60 @@ params = {repr(params)}
 
 manifest = {repr(manifest_data)}
 
-# Execute the stage
-try:
-    result = stage_module.execute(
-        run_dir=run_dir,
-        stage_dir=stage_dir,
-        inputs=inputs,
-        params=params,
-        manifest=manifest,
-    )
-except Exception as e:
-    import traceback
+def _ensure_writable_dir(path: Path, label: str) -> str | None:
+    try:
+        path.mkdir(parents=True, exist_ok=True)
+    except Exception as exc:
+        return f"{{label}} directory create failed: {{path}} ({{exc}})"
+
+    probe = path / ".cyntra_write_probe"
+    try:
+        probe.write_text("ok", encoding="utf-8")
+        probe.unlink()
+    except Exception as exc:
+        try:
+            import shutil
+            usage = shutil.disk_usage(path)
+            hint = f" free={{usage.free}} bytes, total={{usage.total}} bytes"
+        except Exception:
+            hint = ""
+        return f"{{label}} directory not writable: {{path}} ({{exc}}){{hint}}"
+
+    return None
+
+
+dir_error = _ensure_writable_dir(run_dir, "Run")
+if not dir_error:
+    dir_error = _ensure_writable_dir(stage_dir, "Stage")
+
+if dir_error:
     result = {{
         "success": False,
         "outputs": [],
         "metadata": {{}},
-        "errors": [
-            f"Stage execution raised exception: {{e}}",
-            traceback.format_exc(),
-        ],
+        "errors": [dir_error],
     }}
+else:
+    # Execute the stage
+    try:
+        result = stage_module.execute(
+            run_dir=run_dir,
+            stage_dir=stage_dir,
+            inputs=inputs,
+            params=params,
+            manifest=manifest,
+        )
+    except Exception as e:
+        import traceback
+        result = {{
+            "success": False,
+            "outputs": [],
+            "metadata": {{}},
+            "errors": [
+                f"Stage execution raised exception: {{e}}",
+                traceback.format_exc(),
+            ],
+        }}
 
 # Write result to file
 result_file = Path(r"{result_file}")
@@ -850,6 +971,287 @@ def execute_gate_stage(
     }
 
 
+def execute_comfyui_stage(
+    stage: Dict[str, Any],
+    world_config,
+    run_dir: Path,
+    stage_dir: Path,
+    inputs: Mapping[str, Path],
+    params: Dict[str, Any],
+    manifest,
+) -> Dict[str, Any]:
+    """
+    Execute a ComfyUI image generation stage.
+
+    Runs a ComfyUI workflow for texture/image generation with deterministic seed
+    injection and parameter customization.
+
+    Args:
+        stage: Stage configuration dict. Expected keys:
+            - id: Stage identifier
+            - workflow: Path to ComfyUI workflow JSON (relative to world or repo)
+            - comfyui_params: Optional dict of parameters to inject into workflow
+            - settings: Optional dict with host/port overrides
+        world_config: World configuration object
+        run_dir: Root run directory
+        stage_dir: This stage's output directory
+        inputs: Map of {stage_id: stage_dir} for dependencies
+        params: Resolved parameters from world config
+        manifest: World manifest with determinism settings
+
+    Returns:
+        Stage execution result with success, outputs, metadata, errors
+    """
+    from cyntra.fab.comfyui_client import (
+        ComfyUIClient,
+        ComfyUIConfig,
+        ComfyUIConnectionError,
+        ComfyUIExecutionError,
+        ComfyUITimeoutError,
+    )
+
+    errors: list[str] = []
+    metadata: dict[str, Any] = {}
+    outputs: list[str] = []
+
+    stage_id = stage.get("id", "comfyui")
+    workflow_ref = stage.get("workflow") or stage.get("script")
+    comfyui_params = stage.get("comfyui_params") or {}
+    settings = stage.get("settings") or {}
+
+    # Get deterministic seed from manifest
+    determinism = manifest.data.get("determinism") if hasattr(manifest, "data") else {}
+    if isinstance(determinism, dict):
+        seed = int(determinism.get("seed", 42))
+    else:
+        seed = 42
+
+    # Get ComfyUI server settings
+    host = str(settings.get("host", "localhost"))
+    port = int(settings.get("port", 8188))
+    timeout_seconds = float(settings.get("timeout_seconds", 600))
+
+    if not workflow_ref:
+        return {
+            "success": False,
+            "outputs": [],
+            "metadata": {},
+            "errors": ["No workflow specified for ComfyUI stage"],
+        }
+
+    # Resolve workflow path
+    workflow_path = _resolve_comfyui_workflow_path(workflow_ref, world_config, run_dir)
+    if workflow_path is None or not workflow_path.exists():
+        return {
+            "success": False,
+            "outputs": [],
+            "metadata": {},
+            "errors": [f"Workflow not found: {workflow_ref}"],
+        }
+
+    print(f"\n{'='*60}")
+    print(f"Executing ComfyUI stage: {stage_id}")
+    print(f"Workflow: {workflow_path}")
+    print(f"Seed: {seed}")
+    print(f"Server: {host}:{port}")
+    print(f"{'='*60}\n")
+
+    # Ensure stage directory exists
+    stage_dir.mkdir(parents=True, exist_ok=True)
+
+    # Create ComfyUI client
+    config = ComfyUIConfig(
+        host=host,
+        port=port,
+        timeout_seconds=timeout_seconds,
+    )
+    client = ComfyUIClient(config)
+
+    async def _run_workflow() -> Dict[str, Any]:
+        """Async workflow execution."""
+        nonlocal metadata, outputs, errors
+
+        # Health check
+        try:
+            healthy = await client.health_check()
+            if not healthy:
+                return {
+                    "success": False,
+                    "outputs": [],
+                    "metadata": {},
+                    "errors": [f"ComfyUI server not available at {host}:{port}"],
+                }
+        except ComfyUIConnectionError as e:
+            return {
+                "success": False,
+                "outputs": [],
+                "metadata": {},
+                "errors": [f"Cannot connect to ComfyUI: {e}"],
+            }
+
+        # Load and prepare workflow
+        try:
+            workflow = ComfyUIClient.load_workflow(workflow_path)
+        except Exception as e:
+            return {
+                "success": False,
+                "outputs": [],
+                "metadata": {},
+                "errors": [f"Failed to load workflow: {e}"],
+            }
+
+        # Inject seed for determinism
+        workflow = ComfyUIClient.inject_seed(workflow, seed)
+
+        # Inject custom parameters
+        merged_params = {**params, **comfyui_params}
+        if merged_params:
+            workflow = ComfyUIClient.inject_params(workflow, merged_params)
+
+        # Queue the workflow
+        start_time = time.time()
+        try:
+            prompt_id = await client.queue_prompt(workflow)
+            metadata["prompt_id"] = prompt_id
+        except ComfyUIExecutionError as e:
+            return {
+                "success": False,
+                "outputs": [],
+                "metadata": {},
+                "errors": [f"Failed to queue workflow: {e}"],
+            }
+
+        # Wait for completion
+        try:
+            result = await client.wait_for_completion(prompt_id, timeout_seconds)
+        except ComfyUITimeoutError:
+            duration_ms = int((time.time() - start_time) * 1000)
+            return {
+                "success": False,
+                "outputs": [],
+                "metadata": {"duration_ms": duration_ms},
+                "errors": [f"ComfyUI execution timed out after {timeout_seconds}s"],
+            }
+        except ComfyUIExecutionError as e:
+            duration_ms = int((time.time() - start_time) * 1000)
+            return {
+                "success": False,
+                "outputs": [],
+                "metadata": {"duration_ms": duration_ms},
+                "errors": [f"ComfyUI execution failed: {e}"],
+            }
+
+        duration_ms = int((time.time() - start_time) * 1000)
+        metadata["duration_ms"] = duration_ms
+        metadata["execution_time_ms"] = result.execution_time_ms
+
+        # Check result status
+        if result.status != "completed":
+            error_msg = result.error or f"Workflow ended with status: {result.status}"
+            if result.node_errors:
+                error_msg += f" | Node errors: {result.node_errors}"
+            return {
+                "success": False,
+                "outputs": [],
+                "metadata": metadata,
+                "errors": [error_msg],
+            }
+
+        # Download outputs
+        try:
+            downloaded = await client.download_outputs(result, stage_dir)
+            for node_id, paths in downloaded.items():
+                for path in paths:
+                    outputs.append(str(path))
+            metadata["downloaded_files"] = {
+                node_id: [str(p) for p in paths]
+                for node_id, paths in downloaded.items()
+            }
+        except Exception as e:
+            # Partial success - workflow completed but download failed
+            metadata["download_error"] = str(e)
+            errors.append(f"Failed to download outputs: {e}")
+
+        print(f"✓ ComfyUI stage complete: {len(outputs)} outputs in {duration_ms}ms")
+
+        return {
+            "success": len(errors) == 0,
+            "outputs": outputs,
+            "metadata": metadata,
+            "errors": errors,
+        }
+
+    # Run async workflow synchronously
+    try:
+        return asyncio.run(_run_workflow())
+    except Exception as e:
+        return {
+            "success": False,
+            "outputs": [],
+            "metadata": {},
+            "errors": [f"ComfyUI stage error: {e}"],
+        }
+
+
+def _resolve_comfyui_workflow_path(
+    workflow_ref: str,
+    world_config,
+    run_dir: Path,
+) -> Path | None:
+    """
+    Resolve a ComfyUI workflow path.
+
+    Tries in order:
+    1. Absolute path
+    2. Relative to world directory
+    3. Relative to repo root
+    4. Relative to fab/workflows/comfyui/
+
+    Args:
+        workflow_ref: Workflow path from stage config
+        world_config: World configuration
+        run_dir: Run directory
+
+    Returns:
+        Resolved Path or None if not found
+    """
+    if not workflow_ref:
+        return None
+
+    path = Path(workflow_ref)
+
+    # Absolute path
+    if path.is_absolute() and path.exists():
+        return path
+
+    # Relative to world directory
+    world_dir = getattr(world_config, "world_dir", None)
+    if isinstance(world_dir, Path):
+        candidate = world_dir / path
+        if candidate.exists():
+            return candidate
+
+    # Find repo root
+    repo_root: Path | None = None
+    for candidate_dir in [run_dir.resolve(), *run_dir.resolve().parents]:
+        if (candidate_dir / ".git").exists():
+            repo_root = candidate_dir
+            break
+
+    if repo_root is not None:
+        # Relative to repo root
+        candidate = repo_root / path
+        if candidate.exists():
+            return candidate
+
+        # Relative to fab/workflows/comfyui/
+        candidate = repo_root / "fab" / "workflows" / "comfyui" / path.name
+        if candidate.exists():
+            return candidate
+
+    return None
+
+
 def execute_stage(
     stage: Dict[str, Any],
     world_config,
@@ -903,6 +1305,18 @@ def execute_stage(
             stage_dir=stage_dir,
             inputs=inputs,
             params=params,
+        )
+
+    elif stage_type == "comfyui":
+        # ComfyUI image generation stage
+        return execute_comfyui_stage(
+            stage=stage,
+            world_config=world_config,
+            run_dir=run_dir,
+            stage_dir=stage_dir,
+            inputs=inputs,
+            params=params,
+            manifest=manifest,
         )
 
     else:

@@ -17,7 +17,7 @@ from pathlib import Path
 import structlog
 
 from cyntra.adapters.base import CostEstimate, PatchProof, ToolchainAdapter
-from cyntra.adapters.telemetry import TelemetryWriter
+from cyntra.adapters.telemetry import TelemetryWriter, resolve_kernel_events_path
 
 logger = structlog.get_logger()
 
@@ -44,6 +44,21 @@ class ClaudeAdapter(ToolchainAdapter):
     name = "claude"
     supports_mcp = True
     supports_streaming = True
+    _mirror_event_types = {
+        "started",
+        "prompt_sent",
+        "response_chunk",
+        "response_complete",
+        "tool_call",
+        "tool_result",
+        "file_read",
+        "file_write",
+        "bash_command",
+        "bash_output",
+        "thinking",
+        "completed",
+        "error",
+    }
 
     def __init__(self, config: dict | None = None) -> None:
         self.config = config or {}
@@ -176,10 +191,6 @@ class ClaudeAdapter(ToolchainAdapter):
         logs_dir = workcell_path / "logs"
         logs_dir.mkdir(parents=True, exist_ok=True)
 
-        # Initialize telemetry
-        telemetry_path = workcell_path / "telemetry.jsonl"
-        telemetry = TelemetryWriter(telemetry_path)
-
         # Build and write prompt
         prompt = self._build_prompt(manifest, workcell_path)
         prompt_file = workcell_path / "prompt.md"
@@ -188,6 +199,20 @@ class ClaudeAdapter(ToolchainAdapter):
         # Get configuration
         toolchain_config = manifest.get("toolchain_config", {}) or {}
         model = toolchain_config.get("model", self.default_model)
+
+        # Initialize telemetry
+        telemetry_path = workcell_path / "telemetry.jsonl"
+        telemetry = TelemetryWriter(
+            telemetry_path,
+            context={
+                "issue_id": issue_id,
+                "workcell_id": workcell_id,
+                "toolchain": self.name,
+                "model": model,
+            },
+            mirror_path=resolve_kernel_events_path(workcell_path),
+            mirror_event_types=self._mirror_event_types,
+        )
 
         # Build command
         cmd = self._build_command(prompt_file, model)

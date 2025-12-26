@@ -618,6 +618,8 @@ class StateManager:
         issue_id: str | None,
         event_type: str,
         data: dict[str, Any] | None = None,
+        *,
+        workcell_id: str | None = None,
     ) -> None:
         """Add an event to the event log."""
         self.logs_dir.mkdir(parents=True, exist_ok=True)
@@ -629,6 +631,8 @@ class StateManager:
             "issue_id": issue_id,
             "data": data or {},
         }
+        if workcell_id:
+            event["workcell_id"] = workcell_id
 
         with open(events_file, "a") as f:
             f.write(json.dumps(event) + "\n")

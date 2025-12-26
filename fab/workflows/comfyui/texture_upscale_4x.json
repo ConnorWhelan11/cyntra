@@ -1,0 +1,93 @@
+{
+  "id": "6d2aa48f-bd80-4710-9b44-cb0dfe3f2ec2",
+  "revision": 0,
+  "last_node_id": 16,
+  "last_link_id": 13,
+  "nodes": [
+    {
+      "id": 13,
+      "type": "ImageUpscaleWithModel",
+      "pos": [430, 130],
+      "size": [241.79998779296875, 46],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {"name": "upscale_model", "type": "UPSCALE_MODEL", "link": 11},
+        {"name": "image", "type": "IMAGE", "link": 10}
+      ],
+      "outputs": [{"name": "IMAGE", "type": "IMAGE", "links": [12]}],
+      "properties": {"Node name for S&R": "ImageUpscaleWithModel"},
+      "widgets_values": []
+    },
+    {
+      "id": 14,
+      "type": "SaveImage",
+      "pos": [720, 130],
+      "size": [387.97869873046875, 434.94384765625],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [{"name": "images", "type": "IMAGE", "link": 12}],
+      "outputs": [],
+      "properties": {"Node name for S&R": "SaveImage"},
+      "widgets_values": ["upscaled"]
+    },
+    {
+      "id": 10,
+      "type": "LoadImage",
+      "pos": [10, 130],
+      "size": [315, 314],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {"name": "IMAGE", "type": "IMAGE", "links": [10]},
+        {"name": "MASK", "type": "MASK", "links": null}
+      ],
+      "properties": {"Node name for S&R": "LoadImage"},
+      "widgets_values": ["input.png", "image"]
+    },
+    {
+      "id": 11,
+      "type": "UpscaleModelLoader",
+      "pos": [430, 230],
+      "size": [315, 58],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [{"name": "UPSCALE_MODEL", "type": "UPSCALE_MODEL", "links": [11]}],
+      "properties": {
+        "Node name for S&R": "UpscaleModelLoader",
+        "models": [{"name": "4x-UltraSharp.pth", "url": "https://huggingface.co/philz1337x/upscaler/resolve/main/4x-UltraSharp.pth", "directory": "upscale_models"}]
+      },
+      "widgets_values": ["4x-UltraSharp.pth"]
+    }
+  ],
+  "links": [
+    [10, 10, 0, 13, 1, "IMAGE"],
+    [11, 11, 0, 13, 0, "UPSCALE_MODEL"],
+    [12, 13, 0, 14, 0, "IMAGE"]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {"scale": 0.45, "offset": [942.5086805555558, 565.6006944444443]}
+  },
+  "version": 0.4,
+  "_fab_meta": {
+    "name": "Texture Upscale 4x",
+    "description": "Upscale textures 4x using UltraSharp model. Preserves material detail without AI hallucination.",
+    "source": "https://github.com/greenzorro/comfyui-workflow-upscaler",
+    "required_models": [
+      {"name": "4x-UltraSharp.pth", "type": "upscale_model", "url": "https://huggingface.co/philz1337x/upscaler/resolve/main/4x-UltraSharp.pth"}
+    ],
+    "required_custom_nodes": [],
+    "outputs": ["upscaled"],
+    "parameters": {
+      "input_image": "node:10"
+    }
+  }
+}

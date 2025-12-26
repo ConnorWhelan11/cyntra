@@ -12,6 +12,7 @@ from __future__ import annotations
 import asyncio
 import json
 import os
+import shutil
 import subprocess
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
@@ -167,6 +168,9 @@ class FabWorldAdapter(ToolchainAdapter):
             artifacts["world_id"] = build_result.manifest.get("world_id")
             artifacts["run_id"] = build_result.manifest.get("run_id")
             artifacts["final_outputs"] = build_result.manifest.get("final_outputs", [])
+            publish_info = self._maybe_publish_to_viewer(build_result, repo_root, status=status)
+            if publish_info:
+                artifacts["viewer_publish"] = publish_info
 
         return PatchProof(
             schema_version="1.0.0",
@@ -196,6 +200,98 @@ class FabWorldAdapter(ToolchainAdapter):
             confidence=0.9 if status == "success" else 0.2,
             risk_classification="low",
         )
+
+    def _maybe_publish_to_viewer(
+        self,
+        build_result: WorldBuildResult,
+        repo_root: Path,
+        *,
+        status: str,
+    ) -> dict[str, Any] | None:
+        auto_publish = self.config.get("auto_publish_viewer", True)
+        if isinstance(auto_publish, bool) and not auto_publish:
+            return None
+
+        if status != "success":
+            return None
+
+        viewer_dir = self._resolve_viewer_dir(repo_root)
+        if not viewer_dir:
+            return None
+
+        if not build_result.manifest:
+            return None
+
+        world_id = str(build_result.manifest.get("world_id") or "")
+        if not world_id or world_id == "unknown":
+            return None
+
+        try:
+            publish_info = self._publish_to_viewer(build_result, viewer_dir, world_id)
+            if publish_info:
+                logger.info(
+                    "fab-world published to viewer",
+                    world_id=world_id,
+                    viewer_dir=str(viewer_dir),
+                )
+            return publish_info
+        except Exception as exc:
+            logger.warning(
+                "fab-world publish failed",
+                world_id=world_id,
+                viewer_dir=str(viewer_dir),
+                error=str(exc),
+            )
+            return {"error": str(exc), "viewer_dir": str(viewer_dir)}
+
+    def _resolve_viewer_dir(self, repo_root: Path) -> Path | None:
+        configured = self.config.get("viewer_dir") or os.environ.get("CYNTRA_VIEWER_DIR")
+        if configured:
+            viewer_path = Path(str(configured))
+            if not viewer_path.is_absolute():
+                viewer_path = repo_root / viewer_path
+            if viewer_path.exists():
+                return viewer_path
+            logger.warning("viewer dir not found", viewer_dir=str(viewer_path))
+            return None
+
+        default_viewer = repo_root / "fab" / "outora-library" / "viewer"
+        if default_viewer.exists():
+            return default_viewer
+        return None
+
+    def _publish_to_viewer(
+        self,
+        build_result: WorldBuildResult,
+        viewer_dir: Path,
+        world_id: str,
+    ) -> dict[str, Any] | None:
+        main_glb = build_result.run_dir / "world" / f"{world_id}.glb"
+        if not main_glb.exists():
+            raise FileNotFoundError(f"GLB not found: {main_glb}")
+
+        viewer_glb_dir = viewer_dir / "assets" / "exports"
+        viewer_glb_dir.mkdir(parents=True, exist_ok=True)
+        dest_glb = viewer_glb_dir / f"{world_id}.glb"
+        shutil.copy2(main_glb, dest_glb)
+
+        publish_info: dict[str, Any] = {
+            "viewer_dir": str(viewer_dir),
+            "glb_path": str(dest_glb),
+        }
+
+        godot_index = build_result.run_dir / "godot" / "index.html"
+        if godot_index.exists():
+            viewer_game_dir = viewer_dir / "assets" / "games" / world_id
+            viewer_game_dir.mkdir(parents=True, exist_ok=True)
+            for item in (build_result.run_dir / "godot").iterdir():
+                if item.is_file():
+                    shutil.copy2(item, viewer_game_dir / item.name)
+                elif item.is_dir():
+                    shutil.copytree(item, viewer_game_dir / item.name, dirs_exist_ok=True)
+            publish_info["godot_dir"] = str(viewer_game_dir)
+
+        return publish_info
 
     def _build_verification(self, *, status: str, build_result: WorldBuildResult) -> dict[str, Any]:
         verification: dict[str, Any] = {

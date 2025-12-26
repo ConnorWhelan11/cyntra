@@ -114,6 +114,62 @@ function eventToBuildStatus(eventType: string): WorldBuildStatus | null {
   return mapping[eventType] ?? null;
 }
 
+function formatKernelEventMessage(event: KernelEvent): string | null {
+  const data =
+    event.data && typeof event.data === "object"
+      ? (event.data as Record<string, unknown>)
+      : null;
+  if (!data) return null;
+
+  const trim = (value: unknown): string | null => {
+    if (typeof value !== "string") return null;
+    const cleaned = value.trim();
+    if (!cleaned) return null;
+    return cleaned.length > 300 ? `${cleaned.slice(0, 300)}…` : cleaned;
+  };
+
+  if (event.type.startsWith("telemetry.")) {
+    const kind = event.type.replace("telemetry.", "");
+    if (kind === "response_chunk" || kind === "response_complete" || kind === "thinking") {
+      return (
+        trim(data.content) ||
+        trim(data.output) ||
+        trim(data.prompt) ||
+        trim(data.message)
+      );
+    }
+    if (kind === "tool_call") {
+      return `tool call: ${trim(data.tool) ?? "unknown"}`;
+    }
+    if (kind === "tool_result") {
+      return `tool result: ${trim(data.tool) ?? "unknown"}`;
+    }
+    if (kind === "bash_command") {
+      return trim(data.command) ? `$ ${trim(data.command)}` : "bash command";
+    }
+    if (kind === "bash_output") {
+      return trim(data.output) ?? "bash output";
+    }
+    if (kind === "file_read") {
+      return trim(data.path) ? `read ${trim(data.path)}` : "file read";
+    }
+    if (kind === "file_write") {
+      return trim(data.path) ? `write ${trim(data.path)}` : "file write";
+    }
+    if (kind === "error") {
+      return trim(data.error) ?? "error";
+    }
+    if (kind === "started") {
+      return "started";
+    }
+    if (kind === "completed") {
+      return trim(data.status) ? `completed (${trim(data.status)})` : "completed";
+    }
+  }
+
+  return null;
+}
+
 /** Load recent worlds from localStorage */
 function loadRecentWorlds(): RecentWorld[] {
   if (typeof localStorage === "undefined") return [];
@@ -676,7 +732,7 @@ export function useWorldBuilder(config: UseWorldBuilderConfig = {}): WorldBuilde
             type: event.type.includes("error") ? "error" :
                   event.type.includes("critic") ? "critic" :
                   event.type.includes("vote") ? "vote" : "agent",
-            message: event.type,
+            message: formatKernelEventMessage(event) ?? event.type,
             timestamp: event.timestamp ? new Date(event.timestamp).getTime() : Date.now(),
             metadata: event.data as Record<string, unknown>,
           };

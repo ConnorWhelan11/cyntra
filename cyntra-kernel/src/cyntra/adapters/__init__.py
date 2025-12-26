@@ -20,6 +20,7 @@ if TYPE_CHECKING:
     )
     from cyntra.adapters.claude import ClaudeAdapter
     from cyntra.adapters.codex import CodexAdapter
+    from cyntra.adapters.comfyui import ComfyUIAdapter
     from cyntra.adapters.crush import CrushAdapter
     from cyntra.adapters.fab_world import FabWorldAdapter
     from cyntra.adapters.opencode import OpenCodeAdapter
@@ -56,6 +57,8 @@ __all__ = [
     "create_outora_adapter",
     # Fab World adapter
     "FabWorldAdapter",
+    # ComfyUI adapter
+    "ComfyUIAdapter",
     # Test Architect adapter
     "TestArchitectAdapter",
     # Registry helpers
@@ -75,6 +78,7 @@ _LAZY_EXPORTS: dict[str, tuple[str, str]] = {
     "CrushAdapter": ("cyntra.adapters.crush", "CrushAdapter"),
     "OpenCodeAdapter": ("cyntra.adapters.opencode", "OpenCodeAdapter"),
     "FabWorldAdapter": ("cyntra.adapters.fab_world", "FabWorldAdapter"),
+    "ComfyUIAdapter": ("cyntra.adapters.comfyui", "ComfyUIAdapter"),
     "TestArchitectAdapter": ("cyntra.adapters.test_architect", "TestArchitectAdapter"),
     # router
     "ToolchainRouter": ("cyntra.adapters.router", "ToolchainRouter"),
@@ -124,6 +128,7 @@ def get_adapter(name: str, config: dict | None = None):  # -> ToolchainAdapter |
         "opencode": ("cyntra.adapters.opencode", "OpenCodeAdapter"),
         "crush": ("cyntra.adapters.crush", "CrushAdapter"),
         "fab-world": ("cyntra.adapters.fab_world", "FabWorldAdapter"),
+        "comfyui": ("cyntra.adapters.comfyui", "ComfyUIAdapter"),
         "test-architect": ("cyntra.adapters.test_architect", "TestArchitectAdapter"),
     }
 

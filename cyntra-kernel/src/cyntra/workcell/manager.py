@@ -11,8 +11,10 @@ Responsibilities:
 from __future__ import annotations
 
 import json
+import re
 import shutil
 import subprocess
+import uuid
 from datetime import datetime
 from pathlib import Path
 from typing import TYPE_CHECKING
@@ -51,9 +53,26 @@ class WorkcellManager:
         Returns the path to the workcell directory.
         """
         timestamp = datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
-        workcell_name = f"wc-{issue_id}-{timestamp}"
-        branch_name = f"wc/{issue_id}/{timestamp}"
-        workcell_path = self.workcells_dir / workcell_name
+        tag_slug = self._slugify_speculate_tag(speculate_tag)
+        suffix = ""
+        workcell_name = ""
+        branch_name = ""
+        workcell_path = self.workcells_dir
+
+        for _ in range(6):
+            extra_parts = [part for part in (tag_slug, suffix) if part]
+            name_suffix = "-".join([str(issue_id), timestamp, *extra_parts])
+            workcell_name = f"wc-{name_suffix}"
+            branch_tail = "-".join([timestamp, *extra_parts])
+            branch_name = f"wc/{issue_id}/{branch_tail}"
+            workcell_path = self.workcells_dir / workcell_name
+
+            if not workcell_path.exists() and not self._branch_exists(branch_name):
+                break
+
+            suffix = uuid.uuid4().hex[:6]
+        else:
+            raise RuntimeError("Failed to allocate unique workcell name")
 
         logger.info(
             "Creating workcell",
@@ -79,6 +98,7 @@ class WorkcellManager:
         )
 
         if result.returncode != 0:
+            self._cleanup_failed_worktree(workcell_path, branch_name)
             raise RuntimeError(f"Failed to create worktree: {result.stderr}")
 
         # Remove .beads from workcell (kernel owns it)
@@ -106,6 +126,7 @@ class WorkcellManager:
             "created": timestamp,
             "parent_commit": self._get_main_head(),
             "speculate_tag": speculate_tag,
+            "branch_name": branch_name,
         }
         (workcell_path / ".workcell").write_text(json.dumps(marker, indent=2))
 
@@ -199,6 +220,10 @@ class WorkcellManager:
         if not info:
             return None
 
+        branch_name = info.get("branch_name")
+        if isinstance(branch_name, str) and branch_name:
+            return branch_name
+
         issue_id = info.get("issue_id")
         created = info.get("created")
 
@@ -206,6 +231,50 @@ class WorkcellManager:
             return f"wc/{issue_id}/{created}"
 
         return None
+
+    def _slugify_speculate_tag(self, speculate_tag: str | None) -> str | None:
+        if not speculate_tag:
+            return None
+        safe = re.sub(r"[^a-zA-Z0-9_-]+", "-", speculate_tag).strip("-").lower()
+        return safe[:24] if safe else None
+
+    def _branch_exists(self, branch_name: str) -> bool:
+        result = subprocess.run(
+            ["git", "show-ref", "--verify", f"refs/heads/{branch_name}"],
+            cwd=self.repo_root,
+            capture_output=True,
+            text=True,
+        )
+        return result.returncode == 0
+
+    def _cleanup_failed_worktree(self, workcell_path: Path, branch_name: str) -> None:
+        if workcell_path.exists():
+            result = subprocess.run(
+                ["git", "worktree", "remove", "--force", str(workcell_path)],
+                cwd=self.repo_root,
+                capture_output=True,
+                text=True,
+            )
+            if result.returncode != 0:
+                logger.warning(
+                    "Failed to remove partial worktree",
+                    workcell_id=workcell_path.name,
+                    error=result.stderr,
+                )
+
+        if branch_name and self._branch_exists(branch_name):
+            result = subprocess.run(
+                ["git", "branch", "-D", branch_name],
+                cwd=self.repo_root,
+                capture_output=True,
+                text=True,
+            )
+            if result.returncode != 0:
+                logger.warning(
+                    "Failed to delete partial worktree branch",
+                    branch_name=branch_name,
+                    error=result.stderr,
+                )
 
     def _archive_logs(self, workcell_path: Path) -> None:
         """

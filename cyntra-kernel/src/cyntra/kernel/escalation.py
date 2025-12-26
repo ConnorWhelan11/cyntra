@@ -25,7 +25,7 @@ def manual_escalate(config_path: Path, issue_id: str, reason: str) -> None:
 
     # Log escalation
     state_manager.add_event(
-        event_type="escalation",
+        event_type="issue.escalated",
         issue_id=issue_id,
         data={
             "reason": reason,
@@ -47,7 +47,7 @@ def auto_escalate(
     state_manager.update_issue_status(issue_id, "escalated")
 
     state_manager.add_event(
-        event_type="escalation",
+        event_type="issue.escalated",
         issue_id=issue_id,
         data={
             "reason": reason,
@@ -57,4 +57,3 @@ def auto_escalate(
     )
 
     logger.warning("Issue auto-escalated", issue_id=issue_id, reason=reason)
-

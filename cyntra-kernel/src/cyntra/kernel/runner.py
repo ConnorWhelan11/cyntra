@@ -320,11 +320,21 @@ class KernelRunner:
 
         try:
             # Create workcell
-            workcell_path = self.workcell_manager.create(issue.id)
+            try:
+                workcell_path = self.workcell_manager.create(issue.id)
+            except Exception as exc:
+                self._handle_workcell_create_failure(issue, exc)
+                return
             workcell_id = workcell_path.name
 
             # Update issue status
             self.state_manager.update_issue_status(issue.id, "running")
+
+            self.state_manager.add_event(
+                issue.id,
+                "issue.started",
+                {"speculate": False},
+            )
 
             # Determine toolchain for this dispatch
             toolchain = self.dispatcher._route_toolchain(issue)
@@ -373,6 +383,22 @@ class KernelRunner:
             # Dynamics: capture from_state before execution
             from_state = self._build_from_state(issue, workcell_id, toolchain)
             self._workcell_from_states[workcell_id] = from_state
+
+            self.state_manager.add_event(
+                issue.id,
+                "workcell.created",
+                {
+                    "toolchain": toolchain,
+                    "speculate_tag": None,
+                },
+                workcell_id=workcell_id,
+            )
+            self.state_manager.add_event(
+                issue.id,
+                "workcell.started",
+                {"toolchain": toolchain},
+                workcell_id=workcell_id,
+            )
 
             # Memory: start session and get context for injection
             manifest_base = self.dispatcher._build_manifest(
@@ -527,7 +553,22 @@ class KernelRunner:
             workcells: list[tuple[str, str, Path]] = []
             for toolchain in candidates:
                 tag = f"spec-{toolchain}"
-                path = self.workcell_manager.create(issue.id, speculate_tag=tag)
+                try:
+                    path = self.workcell_manager.create(issue.id, speculate_tag=tag)
+                except Exception as exc:
+                    self.state_manager.add_event(
+                        issue.id,
+                        "workcell.create_failed",
+                        {
+                            "toolchain": toolchain,
+                            "speculate_tag": tag,
+                            "error": str(exc),
+                        },
+                    )
+                    console.print(
+                        f"  [red]✗[/red] Workcell create failed for {toolchain}: {exc}"
+                    )
+                    continue
                 workcells.append((toolchain, tag, path))
 
                 # Dynamics: capture from_state for each workcell
@@ -535,12 +576,41 @@ class KernelRunner:
                 from_state = self._build_from_state(issue, workcell_id, toolchain)
                 self._workcell_from_states[workcell_id] = from_state
 
+            if not workcells:
+                self._handle_workcell_create_failure(
+                    issue, RuntimeError("All speculate workcell creations failed")
+                )
+                return
+
             # Update issue status
             self.state_manager.update_issue_status(issue.id, "running")
+            self.state_manager.add_event(
+                issue.id,
+                "issue.started",
+                {"speculate": True},
+            )
 
             # Dispatch all candidates in parallel (one per toolchain).
             dispatch_tasks = []
             for toolchain, tag, path in workcells:
+                self.state_manager.add_event(
+                    issue.id,
+                    "workcell.created",
+                    {
+                        "toolchain": toolchain,
+                        "speculate_tag": tag,
+                    },
+                    workcell_id=path.name,
+                )
+                self.state_manager.add_event(
+                    issue.id,
+                    "workcell.started",
+                    {
+                        "toolchain": toolchain,
+                        "speculate_tag": tag,
+                    },
+                    workcell_id=path.name,
+                )
                 toolchain_cfg = self.config.toolchains.get(toolchain)
                 timeout_seconds = (
                     int(getattr(toolchain_cfg, "timeout_seconds", 1800))
@@ -574,6 +644,14 @@ class KernelRunner:
                         self.verifier.verify(r.proof, path)
 
             proofs = [r.proof for r in results if r.proof]
+            self.state_manager.add_event(
+                issue.id,
+                "speculate.voting",
+                {
+                    "candidates": candidates,
+                    "count": len(candidates),
+                },
+            )
             winner_proof = self.verifier.vote(proofs) if proofs else None
 
             winner_result: DispatchResult | None = None
@@ -703,7 +781,17 @@ class KernelRunner:
         # Log event
         self.state_manager.add_event(
             issue.id,
-            "completed",
+            "workcell.completed",
+            {
+                "toolchain": result.toolchain,
+                "duration_ms": result.duration_ms,
+                "speculate_tag": result.speculate_tag,
+            },
+            workcell_id=workcell_id,
+        )
+        self.state_manager.add_event(
+            issue.id,
+            "issue.completed",
             {
                 "toolchain": result.toolchain,
                 "duration_ms": result.duration_ms,
@@ -713,6 +801,30 @@ class KernelRunner:
 
         # Cleanup workcell
         self.workcell_manager.cleanup(workcell_path, keep_logs=True)
+
+    def _handle_workcell_create_failure(self, issue: Issue, error: Exception) -> None:
+        """Handle failures that occur before a workcell is created."""
+        error_summary = str(error)
+        console.print(f"  [red]✗[/red] #{issue.id} workcell create failed: {error_summary}")
+
+        current_attempts = self.state_manager.increment_attempts(issue.id)
+        self.state_manager.add_event(
+            issue.id,
+            "workcell.create_failed",
+            {
+                "toolchain": getattr(issue, "dk_tool_hint", None),
+                "error": error_summary,
+                "attempt": current_attempts,
+            },
+        )
+
+        if current_attempts >= issue.dk_max_attempts:
+            self.state_manager.update_issue_status(issue.id, "escalated")
+            console.print(f"  [yellow]⚠[/yellow] #{issue.id} escalated (max attempts reached)")
+            self._create_escalation_issue(issue, None, error_summary=error_summary)
+        else:
+            self.state_manager.update_issue_status(issue.id, "ready")
+            console.print(f"  [dim]Attempt {current_attempts}/{issue.dk_max_attempts}[/dim]")
 
     async def _handle_failure(
         self,
@@ -746,7 +858,17 @@ class KernelRunner:
         # Log event
         self.state_manager.add_event(
             issue.id,
-            "failed",
+            "workcell.failed",
+            {
+                "toolchain": result.toolchain if result else "unknown",
+                "error": error_summary or "Unknown error",
+                "attempt": current_attempts,
+            },
+            workcell_id=workcell_id,
+        )
+        self.state_manager.add_event(
+            issue.id,
+            "issue.failed",
             {
                 "toolchain": result.toolchain if result else "unknown",
                 "error": error_summary or "Unknown error",

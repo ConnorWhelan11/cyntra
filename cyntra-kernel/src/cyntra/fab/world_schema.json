@@ -179,7 +179,7 @@
           "type": {
             "type": "string",
             "description": "Stage type",
-            "enum": ["blender", "gate", "godot", "custom"]
+            "enum": ["blender", "gate", "godot", "comfyui", "custom"]
           },
           "script": {
             "type": "string",

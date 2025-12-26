@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { startJob } from "@/services/runService";
@@ -21,7 +21,7 @@ export function UniverseSessionView() {
 
   const session = useSession(sessionId);
 
-  const projectRoot = useMemo(() => {
+  const resolveProjectRoot = useCallback(() => {
     try {
       if (typeof localStorage === "undefined") return null;
       const raw = localStorage.getItem(STORAGE_KEYS.ACTIVE_PROJECT);
@@ -33,8 +33,13 @@ export function UniverseSessionView() {
 
   const handleResumeBuild = useCallback(async () => {
     if (!sessionId) return;
+    const projectRoot = resolveProjectRoot();
     if (!projectRoot) {
       setError("Select an active project before starting a build.");
+      return;
+    }
+    if (!/^\d+$/.test(sessionId)) {
+      setError("This session was created without kernel integration. Create a new world after selecting a project.");
       return;
     }
     setError(null);
@@ -53,7 +58,7 @@ export function UniverseSessionView() {
     } finally {
       setIsStarting(false);
     }
-  }, [projectRoot, sessionId, updateSession]);
+  }, [resolveProjectRoot, sessionId, updateSession]);
 
   if (!sessionId) {
     return (

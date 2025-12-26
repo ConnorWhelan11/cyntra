@@ -71,6 +71,15 @@ toolchains:
     enabled: true
     timeout_minutes: 120
 
+  # ComfyUI image/texture generation (non-LLM)
+  comfyui:
+    enabled: true
+    timeout_minutes: 10
+    config:
+      host: localhost
+      port: 8188
+      workflow_dir: fab/workflows/comfyui
+
 # ============================================
 # ROUTING
 # ============================================
@@ -89,6 +98,10 @@ routing:
     # Deterministic world builds run via fab-world toolchain
     - match: { tags_any: ["asset:world"] }
       use: [fab-world]
+
+    # Image/texture generation via ComfyUI
+    - match: { tags_any: ["asset:image", "asset:texture", "comfyui"] }
+      use: [comfyui]
 
     # High-risk work: speculate across best+workhorse (and optionally a cheap 3rd)
     - match: { dk_risk: ["critical"] }

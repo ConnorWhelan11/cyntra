@@ -11,7 +11,7 @@ import json
 import threading
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Literal
+from typing import Any, Literal, Iterable
 
 import structlog
 
@@ -39,6 +39,18 @@ def _utc_now() -> str:
     return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
 
 
+def resolve_kernel_events_path(workcell_path: Path) -> Path | None:
+    """
+    Best-effort lookup of the kernel events.jsonl path for a workcell.
+
+    Walks parents until a repo root ('.git') or '.cyntra' directory is found.
+    """
+    for candidate in [workcell_path.resolve(), *workcell_path.resolve().parents]:
+        if (candidate / ".cyntra").exists() or (candidate / ".git").exists():
+            return candidate / ".cyntra" / "logs" / "events.jsonl"
+    return None
+
+
 class TelemetryWriter:
     """
     Thread-safe JSONL writer for adapter telemetry events.
@@ -47,7 +59,16 @@ class TelemetryWriter:
     from the desktop app.
     """
 
-    def __init__(self, telemetry_path: Path) -> None:
+    def __init__(
+        self,
+        telemetry_path: Path,
+        *,
+        context: dict[str, Any] | None = None,
+        mirror_path: Path | None = None,
+        mirror_event_types: Iterable[EventType] | None = None,
+        mirror_prefix: str = "telemetry",
+        mirror_max_chars: int = 2000,
+    ) -> None:
         """
         Initialize telemetry writer.
 
@@ -55,9 +76,15 @@ class TelemetryWriter:
             telemetry_path: Path to telemetry.jsonl file
         """
         self.path = telemetry_path
+        self._context = dict(context or {})
+        self._mirror_path = mirror_path
+        self._mirror_event_types = set(mirror_event_types) if mirror_event_types else None
+        self._mirror_prefix = mirror_prefix.strip(".") or "telemetry"
+        self._mirror_max_chars = int(mirror_max_chars)
         self.path.parent.mkdir(parents=True, exist_ok=True)
         self._lock = threading.Lock()
         self._file: Any = None
+        self._mirror_file: Any = None
         self._open()
 
     def _open(self) -> None:
@@ -66,6 +93,60 @@ class TelemetryWriter:
             self._file = open(self.path, "a", encoding="utf-8", buffering=1)
         except Exception as e:
             logger.error("Failed to open telemetry file", path=str(self.path), error=str(e))
+        if not self._mirror_path:
+            return
+        try:
+            self._mirror_path.parent.mkdir(parents=True, exist_ok=True)
+            self._mirror_file = open(self._mirror_path, "a", encoding="utf-8", buffering=1)
+        except Exception as e:
+            logger.error(
+                "Failed to open mirror telemetry file",
+                path=str(self._mirror_path),
+                error=str(e),
+            )
+
+    def _should_mirror(self, event_type: EventType) -> bool:
+        if not self._mirror_path:
+            return False
+        if not self._mirror_event_types:
+            return True
+        return event_type in self._mirror_event_types
+
+    def _truncate_payload(self, payload: dict[str, Any]) -> dict[str, Any]:
+        if self._mirror_max_chars <= 0:
+            return payload
+        truncated: dict[str, Any] = {}
+        for key, value in payload.items():
+            if isinstance(value, str) and len(value) > self._mirror_max_chars:
+                truncated[key] = value[: self._mirror_max_chars] + "…"
+            else:
+                truncated[key] = value
+        return truncated
+
+    def _emit_mirror(self, event_type: EventType, event: dict[str, Any]) -> None:
+        if not self._mirror_file or self._mirror_file.closed:
+            return
+        mirror_type = f"{self._mirror_prefix}.{event_type}"
+        mirror_event = {
+            "type": mirror_type,
+            "timestamp": event.get("timestamp"),
+            "issue_id": event.get("issue_id"),
+            "workcell_id": event.get("workcell_id"),
+            "data": self._truncate_payload({
+                k: v
+                for k, v in event.items()
+                if k not in {"type", "timestamp", "issue_id", "workcell_id"}
+            }),
+        }
+        try:
+            self._mirror_file.write(json.dumps(mirror_event) + "\n")
+            self._mirror_file.flush()
+        except Exception as e:
+            logger.error(
+                "Failed to write mirror telemetry event",
+                event_type=event_type,
+                error=str(e),
+            )
 
     def emit(self, event_type: EventType, data: dict[str, Any] | None = None) -> None:
         """
@@ -78,6 +159,7 @@ class TelemetryWriter:
         event = {
             "type": event_type,
             "timestamp": _utc_now(),
+            **self._context,
             **(data or {}),
         }
 
@@ -92,6 +174,8 @@ class TelemetryWriter:
                         event_type=event_type,
                         error=str(e),
                     )
+            if self._should_mirror(event_type):
+                self._emit_mirror(event_type, event)
 
     def started(self, toolchain: str, model: str, issue_id: str, **extra: Any) -> None:
         """Emit execution started event."""
@@ -153,6 +237,11 @@ class TelemetryWriter:
                     self._file.close()
                 except Exception as e:
                     logger.error("Failed to close telemetry file", error=str(e))
+            if self._mirror_file and not self._mirror_file.closed:
+                try:
+                    self._mirror_file.close()
+                except Exception as e:
+                    logger.error("Failed to close mirror telemetry file", error=str(e))
 
     def __enter__(self) -> TelemetryWriter:
         """Context manager entry."""
