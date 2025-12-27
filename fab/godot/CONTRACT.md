@@ -82,5 +82,4 @@ Recommended keys (all optional):
 
 The Outora Library includes a reference exporter/validator:
 
-- `fab/outora-library/blender/export_fab_game_glb.py`
-
+- `fab/assets/blender/export_fab_game_glb.py`

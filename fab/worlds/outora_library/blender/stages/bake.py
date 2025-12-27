@@ -71,6 +71,7 @@ def execute(
 
     seed = manifest.get("determinism", {}).get("seed", 42)
     import random
+
     random.seed(seed)
 
     if hasattr(bpy.context.scene, "cycles"):
@@ -92,7 +93,7 @@ def execute(
 
     # Add the original blender scripts directory to path
     repo_root = Path(__file__).resolve().parents[5]
-    original_blender_dir = repo_root / "fab" / "outora-library" / "blender"
+    original_blender_dir = repo_root / "fab" / "assets" / "blender"
 
     if str(original_blender_dir) not in sys.path:
         sys.path.insert(0, str(original_blender_dir))
@@ -101,6 +102,7 @@ def execute(
         # Import the bake module
         import bake_gothic_v2 as bake
         import importlib
+
         importlib.reload(bake)
 
         # Run the baking process
@@ -125,6 +127,7 @@ def execute(
     except Exception as e:
         errors.append(f"Failed to bake layout: {e}")
         import traceback
+
         errors.append(traceback.format_exc())
         return {
             "success": False,
@@ -178,7 +181,9 @@ def execute(
     }
 
     if success:
-        print(f"✓ Bake stage complete: {total_objects} objects, {total_vertices:,} vertices")
+        print(
+            f"✓ Bake stage complete: {total_objects} objects, {total_vertices:,} vertices"
+        )
     else:
         print(f"✗ Bake stage failed with {len(errors)} error(s)")
 

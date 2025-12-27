@@ -13,9 +13,9 @@ from pathlib import Path
 from typing import Any
 
 repo_root = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(repo_root / "cyntra-kernel" / "src"))
-
-from cyntra.cyntra.dynamics.state_t1 import build_state_t1
+kernel_src = repo_root / "kernel" / "src"
+if kernel_src.exists():
+    sys.path.insert(0, str(kernel_src))
 
 
 def execute(
@@ -39,6 +39,8 @@ def execute(
         }
     """
     try:
+        from cyntra.dynamics.state_t1 import build_state_t1
+
         features = snapshot.get("features", {})
         policy_key = snapshot.get("policy_key")
         artifact_digests = snapshot.get("artifact_digests")
@@ -85,7 +87,10 @@ def main():
         if snapshot_path.exists():
             snapshot = json.loads(snapshot_path.read_text())
         else:
-            print(f"Error: Invalid JSON and file not found: {args.snapshot_json}", file=sys.stderr)
+            print(
+                f"Error: Invalid JSON and file not found: {args.snapshot_json}",
+                file=sys.stderr,
+            )
             sys.exit(1)
 
     result = execute(snapshot, args.domain, args.job_type)

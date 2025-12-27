@@ -8,16 +8,14 @@ Run fab-world with SHA manifest generation for full reproducibility.
 from __future__ import annotations
 
 import json
-import subprocess
 import sys
 from pathlib import Path
 from typing import Any
 
 repo_root = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(repo_root / "cyntra-kernel" / "src"))
-
-from cyntra.fab.world_runner import WorldRunner
-from cyntra.fab.world_config import load_world_config
+kernel_src = repo_root / "kernel" / "src"
+if kernel_src.exists():
+    sys.path.insert(0, str(kernel_src))
 
 
 def execute(
@@ -54,6 +52,8 @@ def execute(
 
     # Load world config
     try:
+        from cyntra.fab.world_config import load_world_config
+
         world_config = load_world_config(world_recipe_path)
     except Exception as e:
         return {
@@ -65,6 +65,8 @@ def execute(
     output_dir.mkdir(parents=True, exist_ok=True)
 
     try:
+        from cyntra.fab.world_runner import WorldRunner
+
         # Run world builder
         runner = WorldRunner(
             world_config=world_config,
@@ -80,6 +82,7 @@ def execute(
 
         # Compute overall SHA256
         import hashlib
+
         sha256_hash = hashlib.sha256()
 
         if glb_path and Path(glb_path).exists():

@@ -14,7 +14,7 @@ env:
 
 jobs:
   # ============================================
-  # Python (cyntra-kernel)
+  # Python (kernel)
   # ============================================
   python-lint:
     name: Python Lint & Type Check
@@ -28,19 +28,19 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Install dependencies
-        working-directory: cyntra-kernel
+        working-directory: kernel
         run: pip install -e ".[dev]"
 
       - name: Ruff lint
-        working-directory: cyntra-kernel
+        working-directory: kernel
         run: ruff check src/
 
       - name: Ruff format check
-        working-directory: cyntra-kernel
+        working-directory: kernel
         run: ruff format --check src/
 
       - name: Mypy type check
-        working-directory: cyntra-kernel
+        working-directory: kernel
         run: mypy src/cyntra
 
   python-test:
@@ -55,19 +55,54 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
 
       - name: Install dependencies
-        working-directory: cyntra-kernel
+        working-directory: kernel
         run: pip install -e ".[dev]"
 
       - name: Run tests with coverage
-        working-directory: cyntra-kernel
+        working-directory: kernel
         run: pytest --cov=src/cyntra --cov-report=xml --cov-report=term-missing
 
       - name: Upload coverage
         uses: codecov/codecov-action@v4
         with:
-          files: cyntra-kernel/coverage.xml
+          files: kernel/coverage.xml
           flags: python
           fail_ci_if_error: false
+
+  python-indexing-test:
+    name: CocoIndex Integration Tests
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_USER: cocoindex
+          POSTGRES_PASSWORD: cocoindex
+          POSTGRES_DB: cocoindex
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U cocoindex -d cocoindex"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 30
+    env:
+      COCOINDEX_DATABASE_URL: postgresql://cocoindex:cocoindex@localhost:5432/cocoindex
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install dependencies (with indexing)
+        working-directory: kernel
+        run: pip install -e ".[dev,indexing]"
+
+      - name: Run CocoIndex integration tests
+        working-directory: kernel
+        run: pytest -v tests/integration/test_cocoindex_integration.py
 
   # ============================================
   # TypeScript/React (apps + packages)
@@ -87,19 +122,19 @@ jobs:
         run: bun install
 
       - name: TypeScript check (desktop)
-        working-directory: apps/glia-fab-desktop
+        working-directory: apps/desktop
         run: bunx tsc --noEmit
 
       - name: TypeScript check (ui)
-        working-directory: packages/ui
+        working-directory: packages/ag-ui-ext
         run: bunx tsc --noEmit
 
       - name: ESLint (desktop)
-        working-directory: apps/glia-fab-desktop
+        working-directory: apps/desktop
         run: bunx eslint src/ --max-warnings=0
 
       - name: ESLint (ui)
-        working-directory: packages/ui
+        working-directory: packages/ag-ui-ext
         run: bunx eslint src/ --max-warnings=0
 
   typescript-test:
@@ -117,13 +152,13 @@ jobs:
         run: bun install
 
       - name: Run tests (desktop)
-        working-directory: apps/glia-fab-desktop
-        run: bun test --coverage
+        working-directory: apps/desktop
+        run: bun run test:coverage
 
       - name: Upload coverage
         uses: codecov/codecov-action@v4
         with:
-          files: apps/glia-fab-desktop/coverage/lcov.info
+          files: apps/desktop/coverage/lcov.info
           flags: typescript
           fail_ci_if_error: false
 
@@ -149,14 +184,14 @@ jobs:
       - name: Cache cargo
         uses: Swatinem/rust-cache@v2
         with:
-          workspaces: apps/glia-fab-desktop/src-tauri
+          workspaces: apps/desktop/src-tauri
 
       - name: Cargo check
-        working-directory: apps/glia-fab-desktop/src-tauri
+        working-directory: apps/desktop/src-tauri
         run: cargo check
 
       - name: Cargo clippy
-        working-directory: apps/glia-fab-desktop/src-tauri
+        working-directory: apps/desktop/src-tauri
         run: cargo clippy -- -D warnings
 
   # ============================================
@@ -185,17 +220,21 @@ jobs:
       - name: Cache cargo
         uses: Swatinem/rust-cache@v2
         with:
-          workspaces: apps/glia-fab-desktop/src-tauri
+          workspaces: apps/desktop/src-tauri
 
       - name: Install dependencies
         run: bun install
 
+      - name: Build ag-ui-ext
+        working-directory: packages/ag-ui-ext
+        run: bun run build
+
       - name: Build frontend
-        working-directory: apps/glia-fab-desktop
+        working-directory: apps/desktop
         run: bun run build
 
       - name: Build Tauri (dry run)
-        working-directory: apps/glia-fab-desktop
+        working-directory: apps/desktop
         run: bunx tauri build --ci
         env:
           TAURI_SIGNING_PRIVATE_KEY: ""

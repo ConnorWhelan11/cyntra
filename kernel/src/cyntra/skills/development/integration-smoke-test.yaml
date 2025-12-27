@@ -1,0 +1,36 @@
+name: integration-smoke-test
+version: 1.0.0
+description: |
+  Quick end-to-end validation of kernel → workcell → proof pipeline.
+  Verifies the full workflow completes successfully.
+category: development
+priority: medium
+phase: 2
+
+inputs:
+  - name: issue_id
+    type: string
+    description: Test issue ID to run
+    required: false
+  - name: timeout
+    type: integer
+    description: Timeout in seconds
+    required: false
+    default: 300
+
+outputs:
+  - name: passed
+    type: boolean
+    description: True if smoke test passed
+  - name: stages
+    type: object
+    description: Status of each pipeline stage
+  - name: artifacts
+    type: array
+    description: Generated artifacts (manifest, proof, telemetry)
+
+examples: []
+
+implementation:
+  type: python
+  path: integration-smoke-test.py

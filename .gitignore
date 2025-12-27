@@ -18,6 +18,15 @@ Thumbs.db
 *.bak
 *.tmp
 
+# Local environment files (secrets)
+.env
+.env.local
+.env.*.local
+
+# Claude/Codex local settings (may contain credentials)
+.claude/settings.json
+.claude/settings.local.json
+
 ###############################################################################
 # Python
 ###############################################################################
@@ -143,5 +152,5 @@ tmp/
 
 # Embedded repos
 apps/immersa/
-train/URM/ git add .gitignore git status --short
+train/URM/
 crates/target/

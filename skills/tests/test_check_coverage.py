@@ -14,7 +14,6 @@ import sys
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
-import pytest
 
 # Add skills directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent / "development"))

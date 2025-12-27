@@ -1,0 +1,183 @@
+# fab/worlds/dark_dungeon/world.yaml
+schema_version: "1.0"
+
+world_id: dark_dungeon
+world_config_id: dark_dungeon_v001
+world_type: interior_underground
+version: "0.1.0"
+
+generator:
+  name: Dark Dungeon Catacombs
+  description: |
+    A dark, atmospheric dungeon with winding corridors and chambers.
+    Features:
+    - Procedural room and corridor generation
+    - Stone brick walls with decay and damage
+    - Torch and brazier lighting with flicker
+    - Bones, chains, crates, barrels as props
+    - Water puddles and dripping effects
+    - Secret alcoves and treasure rooms
+    - Traps and hazard markers
+  author: Fab Pipeline
+  required_addons: []
+
+build:
+  template_blend: blender/template.blend
+  blender_version_min: "4.0.0"
+  determinism:
+    seed: 42
+    pythonhashseed: 0
+    cycles_seed: 42
+  blender:
+    args: ["--background", "--factory-startup"]
+    env:
+      CYCLES_DEVICE: "CPU"
+      PYTHONHASHSEED: "0"
+
+parameters:
+  defaults:
+    layout:
+      room_count: 8
+      corridor_width_m: 3.0
+      ceiling_height_m: 4.0
+      complexity: medium  # simple | medium | labyrinth
+      dead_ends: true
+    architecture:
+      wall_style: stone_brick  # stone_brick | rough_carved | ancient_ruin
+      floor_style: flagstone   # flagstone | dirt | flooded
+      decay_level: 0.4         # 0.0 = pristine, 1.0 = crumbling
+      cobwebs: true
+    lighting:
+      primary_source: torches  # torches | braziers | bioluminescent | magical
+      torch_spacing_m: 8.0
+      ambient_darkness: 0.85   # Higher = darker
+      flicker_intensity: 0.3
+    props:
+      barrels: 12
+      crates: 8
+      bone_piles: 6
+      chains: 4
+      treasure_chests: 2
+    hazards:
+      spike_traps: 2
+      pit_traps: 1
+      pressure_plates: 3
+      marked_with_triggers: true
+
+  schema:
+    layout.complexity:
+      type: enum
+      values: [simple, medium, labyrinth]
+    architecture.wall_style:
+      type: enum
+      values: [stone_brick, rough_carved, ancient_ruin]
+    architecture.floor_style:
+      type: enum
+      values: [flagstone, dirt, flooded]
+    lighting.primary_source:
+      type: enum
+      values: [torches, braziers, bioluminescent, magical]
+
+stages:
+  - id: prepare
+    type: blender
+    script: blender/stages/prepare.py
+    outputs: ["stages/prepare/"]
+
+  - id: layout
+    type: blender
+    script: blender/stages/layout.py
+    requires: [prepare]
+    params: ["layout.room_count", "layout.complexity"]
+    outputs: ["stages/layout/"]
+
+  - id: architecture
+    type: blender
+    script: blender/stages/architecture.py
+    requires: [layout]
+    params: ["architecture.wall_style", "architecture.decay_level"]
+    outputs: ["stages/architecture/"]
+
+  - id: props
+    type: blender
+    script: blender/stages/props.py
+    requires: [architecture]
+    params: ["props.barrels", "props.crates"]
+    outputs: ["stages/props/"]
+
+  - id: hazards
+    type: blender
+    script: blender/stages/hazards.py
+    requires: [layout]
+    params: ["hazards.spike_traps", "hazards.marked_with_triggers"]
+    outputs: ["stages/hazards/"]
+
+  - id: lighting
+    type: blender
+    script: blender/stages/lighting.py
+    requires: [architecture, props]
+    params: ["lighting.primary_source", "lighting.ambient_darkness"]
+    outputs: ["stages/lighting/"]
+
+  - id: navmesh
+    type: blender
+    script: blender/stages/navmesh.py
+    requires: [architecture, hazards]
+    outputs: ["stages/navmesh/"]
+
+  - id: export
+    type: blender
+    script: blender/stages/export.py
+    requires: [lighting, navmesh]
+    outputs: ["world/dark_dungeon.glb", "world/navmesh.glb"]
+    settings:
+      draco_compression: true
+
+  - id: render
+    type: blender
+    script: blender/stages/render.py
+    requires: [lighting]
+    outputs: ["render/beauty/*.png", "render/depth/*.png"]
+
+  - id: validate
+    type: gate
+    requires: [export]
+    gates:
+      - fab/gates/dungeon_environment_v001.yaml
+      - fab/gates/godot_integration_v001.yaml
+
+  - id: godot
+    type: godot
+    requires: [validate]
+    optional: true
+    outputs: ["godot/project/", "godot/index.html"]
+
+  - id: playtest
+    type: gate
+    requires: [godot]
+    optional: true
+    gates:
+      - fab/gates/gameplay_playability_dungeon_v001.yaml
+    config:
+      nitrogen:
+        host: localhost
+        port: 5555
+      playtest:
+        duration_seconds: 120
+        exploration_mode: guided  # Reset if stuck (maze navigation)
+
+budgets:
+  blender:
+    max_objects: 5000
+    max_vertices: 2000000
+  godot:
+    max_glb_size_mb: 50
+    max_materials: 32
+    max_draw_calls_est: 1500
+
+publish:
+  viewer:
+    enabled: true
+    paths:
+      glb: fab/assets/viewer/assets/exports/dark_dungeon.glb
+      game: fab/assets/viewer/assets/games/dark_dungeon/

@@ -44,7 +44,7 @@ mise run test     # Run all tests
 ### Desktop App
 
 ```bash
-cd apps/glia-fab-desktop
+cd apps/desktop
 bun install
 bun run tauri dev          # Development
 bun run tauri build        # Production build
@@ -70,7 +70,7 @@ cd crates && cargo build --release
 Some features require Python (fab critics with CLIP/torch, prompt evolution):
 
 ```bash
-cd cyntra-kernel
+cd kernel
 pip install -e ".[dev]"     # With dev dependencies
 pip install -e ".[dev,fab]" # With fab/ML dependencies
 
@@ -81,7 +81,7 @@ python -m cyntra run --once
 ### Testing & Quality
 
 ```bash
-cd cyntra-kernel
+cd kernel
 pytest -v                   # All tests
 pytest tests/unit/ -v       # Unit tests only
 pytest -k "test_name"       # Single test
@@ -100,7 +100,7 @@ fab-critics --config <critic-config> --renders <dir>
 
 ### Fab Pipeline Documentation
 
-- **Marker Contract**: See `docs/fab-godot-marker-contract.md` for the Blender → Godot marker naming conventions (SPAWN_PLAYER, COLLIDER_, TRIGGER_, NAV_, NPC_SPAWN_, etc.)
+- **Marker Contract**: See `docs/fab-godot-marker-contract.md` for the Blender → Godot marker naming conventions (SPAWN*PLAYER, COLLIDER*, TRIGGER*, NAV*, NPC*SPAWN*, etc.)
 - **Gate Configs**: YAML files in `fab/gates/` define quality thresholds
 - **World Configs**: YAML files in `fab/worlds/*/world.yaml` define pipeline stages
 
@@ -140,8 +140,8 @@ Fab Pipeline: Generate → Render (Blender) → Critics → Verdict → Repair l
 ## Project Structure
 
 ```
-apps/glia-fab-desktop/    # Tauri desktop app (React frontend, Rust backend)
-cyntra-kernel/            # Python orchestrator
+apps/desktop/    # Tauri desktop app (React frontend, Rust backend)
+kernel/                  # Python orchestrator
   src/cyntra/
     kernel/               # scheduler, dispatcher, runner, verifier
     adapters/             # Codex, Claude, OpenCode, Crush integrations

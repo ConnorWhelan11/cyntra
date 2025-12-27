@@ -79,6 +79,19 @@ toolchains:
       host: localhost
       port: 8188
       workflow_dir: fab/workflows/comfyui
+      registry_path: fab/workflows/comfyui/registry.yaml
+
+  # RunPod GPU cloud (for remote ComfyUI)
+  # Set RUNPOD_API_KEY environment variable to enable
+  runpod:
+    enabled: true
+    config:
+      default_gpu_type: "NVIDIA GeForce RTX 4090"
+      default_volume_gb: 100
+      ssh_key_path: ~/.ssh/id_ed25519
+      comfyui_port: 8188
+      # Auto-stop pod after idle period (saves money)
+      idle_timeout_minutes: 30
 
 # ============================================
 # ROUTING
@@ -163,9 +176,9 @@ control:
 # QUALITY GATES
 # ============================================
 gates:
-  test_command: "cd cyntra-kernel && pytest -q"
-  typecheck_command: "cd cyntra-kernel && mypy src/cyntra"
-  lint_command: "cd cyntra-kernel && ruff check ."
+  test_command: "cd kernel && pytest -q"
+  typecheck_command: "cd kernel && mypy src/cyntra"
+  lint_command: "cd kernel && ruff check ."
   build_command: null
   timeout_seconds: 900
   retry_flaky: 1

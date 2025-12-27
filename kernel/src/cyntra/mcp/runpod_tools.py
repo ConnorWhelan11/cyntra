@@ -7,15 +7,15 @@ for ComfyUI workflow execution.
 
 from __future__ import annotations
 
-import os
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any
 
 import structlog
 
 from cyntra.fab.runpod_manager import (
-    RunPodManager,
     RunPodConfig,
     RunPodError,
+    RunPodManager,
 )
 
 logger = structlog.get_logger()

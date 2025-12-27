@@ -32,6 +32,7 @@ The planner training pipeline requires knowing **what the kernel actually execut
 ### 1.4 Critical Path Impact
 
 **This track is on the critical path.** Without proper executed_plan recording:
+
 - Dataset builder extracts inaccurate labels from heuristics in `run_summaries.py`
 - Training data quality is compromised
 - Best-of-K bench cannot attribute outcomes to actions correctly
@@ -43,8 +44,9 @@ The planner training pipeline requires knowing **what the kernel actually execut
 ### 2.1 What Exists
 
 **Schema (COMPLETE):**
+
 ```json
-// cyntra-kernel/schemas/cyntra/executed_plan.schema.json
+// kernel/schemas/cyntra/executed_plan.schema.json
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Executed Plan",
@@ -63,8 +65,9 @@ The planner training pipeline requires knowing **what the kernel actually execut
 ```
 
 **Extraction Logic (PARTIAL):**
+
 ```python
-# cyntra-kernel/src/cyntra/planner/run_summaries.py:223-256
+# kernel/src/cyntra/planner/run_summaries.py:223-256
 def _action_executed_from_manifest(manifest: dict[str, Any]) -> dict[str, Any]:
     # Prefer explicit executed plan when available.
     planner = manifest.get("planner") if isinstance(manifest.get("planner"), dict) else {}
@@ -85,11 +88,13 @@ def _action_executed_from_manifest(manifest: dict[str, Any]) -> dict[str, Any]:
 ### 2.2 What's Missing
 
 **Recording at execution time:**
+
 - `dispatcher.py` does not populate `manifest["planner"]["executed_plan"]`
 - `runner.py` does not record the actual swarm/parallelism used
 - No tracking of when fallbacks are applied
 
 **Propagation:**
+
 - `rollout.json` doesn't include executed_plan
 - Archive extraction relies on inference from legacy fields
 
@@ -199,7 +204,7 @@ class ExecutedPlan:
 ### 4.1 Dispatcher Changes
 
 ```python
-# cyntra-kernel/src/cyntra/kernel/dispatcher.py
+# kernel/src/cyntra/kernel/dispatcher.py
 
 from cyntra.planner.executed_plan import ExecutedPlan
 
@@ -278,7 +283,7 @@ def build_manifest(
 ### 4.2 Runner Changes
 
 ```python
-# cyntra-kernel/src/cyntra/kernel/runner.py
+# kernel/src/cyntra/kernel/runner.py
 
 async def _dispatch_speculate_async(
     issue: Issue,
@@ -313,7 +318,7 @@ async def _dispatch_speculate_async(
 ### 4.3 Rollout Builder Changes
 
 ```python
-# cyntra-kernel/src/cyntra/rollouts/builder.py
+# kernel/src/cyntra/rollouts/builder.py
 
 def build_rollout(
     manifest: Manifest,
@@ -343,7 +348,7 @@ def build_rollout(
 ### 4.4 World Run Recording
 
 ```python
-# cyntra-kernel/src/cyntra/universe/evolve_world.py
+# kernel/src/cyntra/universe/evolve_world.py
 
 def build_world_manifest(
     world_id: str,
@@ -385,7 +390,7 @@ def build_world_manifest(
 The existing extraction logic already handles executed_plan when present. Verify it works:
 
 ```python
-# cyntra-kernel/src/cyntra/planner/run_summaries.py
+# kernel/src/cyntra/planner/run_summaries.py
 
 def _action_executed_from_manifest(manifest: dict[str, Any]) -> dict[str, Any]:
     """
@@ -424,7 +429,7 @@ def _action_executed_from_manifest(manifest: dict[str, Any]) -> dict[str, Any]:
 ### 6.1 Manifest Schema Update
 
 ```json
-// cyntra-kernel/schemas/cyntra/manifest.schema.json (additions)
+// kernel/schemas/cyntra/manifest.schema.json (additions)
 {
   "properties": {
     "planner": {
@@ -446,7 +451,7 @@ def _action_executed_from_manifest(manifest: dict[str, Any]) -> dict[str, Any]:
 ### 6.2 Rollout Schema Update
 
 ```json
-// cyntra-kernel/schemas/cyntra/rollout.schema.json (additions)
+// kernel/schemas/cyntra/rollout.schema.json (additions)
 {
   "properties": {
     "planner": {
@@ -467,37 +472,37 @@ def _action_executed_from_manifest(manifest: dict[str, Any]) -> dict[str, Any]:
 
 ### 7.1 Task Breakdown
 
-| Task ID | Description | Est. Hours | Dependencies |
-|---------|-------------|------------|--------------|
-| T4.1 | Create `ExecutedPlan` dataclass | 1 | None |
-| T4.2 | Update `build_manifest()` in dispatcher.py | 3 | T4.1 |
-| T4.3 | Update `_dispatch_speculate_async()` in runner.py | 2 | T4.2 |
-| T4.4 | Update `_dispatch_serial()` in runner.py | 1 | T4.2 |
-| T4.5 | Update `build_rollout()` in rollouts/builder.py | 2 | T4.2 |
-| T4.6 | Update world manifest building | 2 | T4.1 |
-| T4.7 | Update manifest.schema.json | 1 | T4.2 |
-| T4.8 | Update rollout.schema.json | 1 | T4.5 |
-| T4.9 | Verify run_summaries.py extraction | 1 | T4.2-T4.5 |
-| T4.10 | Unit tests for ExecutedPlan | 2 | T4.1 |
-| T4.11 | Integration test: dispatch with recording | 3 | T4.2-T4.5 |
-| T4.12 | Integration test: extraction roundtrip | 2 | T4.9 |
-| T4.13 | Migration: backfill existing archives (optional) | 4 | T4.9 |
+| Task ID | Description                                       | Est. Hours | Dependencies |
+| ------- | ------------------------------------------------- | ---------- | ------------ |
+| T4.1    | Create `ExecutedPlan` dataclass                   | 1          | None         |
+| T4.2    | Update `build_manifest()` in dispatcher.py        | 3          | T4.1         |
+| T4.3    | Update `_dispatch_speculate_async()` in runner.py | 2          | T4.2         |
+| T4.4    | Update `_dispatch_serial()` in runner.py          | 1          | T4.2         |
+| T4.5    | Update `build_rollout()` in rollouts/builder.py   | 2          | T4.2         |
+| T4.6    | Update world manifest building                    | 2          | T4.1         |
+| T4.7    | Update manifest.schema.json                       | 1          | T4.2         |
+| T4.8    | Update rollout.schema.json                        | 1          | T4.5         |
+| T4.9    | Verify run_summaries.py extraction                | 1          | T4.2-T4.5    |
+| T4.10   | Unit tests for ExecutedPlan                       | 2          | T4.1         |
+| T4.11   | Integration test: dispatch with recording         | 3          | T4.2-T4.5    |
+| T4.12   | Integration test: extraction roundtrip            | 2          | T4.9         |
+| T4.13   | Migration: backfill existing archives (optional)  | 4          | T4.9         |
 
 **Total estimated hours:** 25
 
 ### 7.2 File Deliverables
 
-| File | Description | Status |
-|------|-------------|--------|
-| `cyntra-kernel/src/cyntra/planner/executed_plan.py` | ExecutedPlan dataclass | NEW |
-| `cyntra-kernel/src/cyntra/kernel/dispatcher.py` | Add executed_plan recording | MODIFY |
-| `cyntra-kernel/src/cyntra/kernel/runner.py` | Record actual values used | MODIFY |
-| `cyntra-kernel/src/cyntra/rollouts/builder.py` | Propagate planner section | MODIFY |
-| `cyntra-kernel/src/cyntra/universe/evolve_world.py` | Add planner to world manifests | MODIFY |
-| `cyntra-kernel/schemas/cyntra/manifest.schema.json` | Add planner property | MODIFY |
-| `cyntra-kernel/schemas/cyntra/rollout.schema.json` | Add planner property | MODIFY |
-| `cyntra-kernel/tests/kernel/test_executed_plan.py` | Unit tests | NEW |
-| `cyntra-kernel/tests/kernel/test_dispatch_recording.py` | Integration tests | NEW |
+| File                                             | Description                    | Status |
+| ------------------------------------------------ | ------------------------------ | ------ |
+| `kernel/src/cyntra/planner/executed_plan.py`     | ExecutedPlan dataclass         | NEW    |
+| `kernel/src/cyntra/kernel/dispatcher.py`         | Add executed_plan recording    | MODIFY |
+| `kernel/src/cyntra/kernel/runner.py`             | Record actual values used      | MODIFY |
+| `kernel/src/cyntra/rollouts/builder.py`          | Propagate planner section      | MODIFY |
+| `kernel/src/cyntra/universe/evolve_world.py`     | Add planner to world manifests | MODIFY |
+| `kernel/schemas/cyntra/manifest.schema.json`     | Add planner property           | MODIFY |
+| `kernel/schemas/cyntra/rollout.schema.json`      | Add planner property           | MODIFY |
+| `kernel/tests/kernel/test_executed_plan.py`      | Unit tests                     | NEW    |
+| `kernel/tests/kernel/test_dispatch_recording.py` | Integration tests              | NEW    |
 
 ---
 
@@ -670,16 +675,19 @@ def test_extraction_falls_back_for_legacy_archives():
 ### 10.1 Phased Rollout
 
 **Phase 1: Recording Only**
+
 - Deploy executed_plan recording to dispatcher/runner
 - New runs get accurate labels
 - Old archives continue to work with fallback extraction
 
 **Phase 2: Verification**
+
 - Run dataset extraction on new archives
 - Verify labels match expected values
 - Compare new vs legacy extraction for same issues
 
 **Phase 3: Optional Backfill**
+
 - For critical archives, manually add executed_plan based on logs
 - Not required for training (time-based splits will exclude old data)
 
@@ -728,18 +736,18 @@ def backfill_archive(archive_dir: Path) -> bool:
 
 ### 11.1 Upstream Dependencies
 
-| Dependency | Location | Status |
-|------------|----------|--------|
-| `executed_plan.schema.json` | `schemas/cyntra/` | COMPLETE |
-| `run_summaries.py` | `cyntra/planner/` | COMPLETE (handles extraction) |
+| Dependency                  | Location          | Status                        |
+| --------------------------- | ----------------- | ----------------------------- |
+| `executed_plan.schema.json` | `schemas/cyntra/` | COMPLETE                      |
+| `run_summaries.py`          | `cyntra/planner/` | COMPLETE (handles extraction) |
 
 ### 11.2 Downstream Dependents
 
-| Dependent | Description |
-|-----------|-------------|
-| Track 3 (Best-of-K) | Needs accurate action labels |
-| Track 5 (Integration) | Needs recording infrastructure |
-| Dataset builder | Uses extracted labels for training |
+| Dependent             | Description                        |
+| --------------------- | ---------------------------------- |
+| Track 3 (Best-of-K)   | Needs accurate action labels       |
+| Track 5 (Integration) | Needs recording infrastructure     |
+| Dataset builder       | Uses extracted labels for training |
 
 ---
 
@@ -758,6 +766,6 @@ def backfill_archive(archive_dir: Path) -> bool:
 
 ## 13. Revision History
 
-| Version | Date | Author | Changes |
-|---------|------|--------|---------|
-| 1.0 | 2025-12 | Planner Agent | Initial specification |
+| Version | Date    | Author        | Changes               |
+| ------- | ------- | ------------- | --------------------- |
+| 1.0     | 2025-12 | Planner Agent | Initial specification |

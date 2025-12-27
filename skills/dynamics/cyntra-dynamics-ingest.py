@@ -13,15 +13,21 @@ from pathlib import Path
 from typing import Any
 
 repo_root = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(repo_root / "cyntra-kernel" / "src"))
-
-from cyntra.cyntra.dynamics.state_t1 import build_state_t1, bucket_diff_lines, bucket_files_touched
-from cyntra.cyntra.dynamics.transition_logger import TransitionLogger
-from cyntra.cyntra.dynamics.transition_db import TransitionDB
+kernel_src = repo_root / "kernel" / "src"
+if kernel_src.exists():
+    sys.path.insert(0, str(kernel_src))
 
 
-def extract_states_from_rollout(rollout: dict[str, Any], domain: str) -> list[dict[str, Any]]:
+def extract_states_from_rollout(
+    rollout: dict[str, Any], domain: str
+) -> list[dict[str, Any]]:
     """Extract T1 states from rollout."""
+    from cyntra.dynamics.state_t1 import (
+        build_state_t1,
+        bucket_diff_lines,
+        bucket_files_touched,
+    )
+
     job_type = rollout.get("job_type", "code")
     policy = rollout.get("policy", {})
     scores = rollout.get("scores", {})
@@ -48,12 +54,14 @@ def extract_states_from_rollout(rollout: dict[str, Any], domain: str) -> list[di
         "files_touched_bucket": "0",
     }
 
-    states.append(build_state_t1(
-        domain=domain,
-        job_type=job_type,
-        features=initial_features,
-        policy_key=policy_key,
-    ))
+    states.append(
+        build_state_t1(
+            domain=domain,
+            job_type=job_type,
+            features=initial_features,
+            policy_key=policy_key,
+        )
+    )
 
     # Final state
     final_features = {
@@ -67,12 +75,14 @@ def extract_states_from_rollout(rollout: dict[str, Any], domain: str) -> list[di
         if blocking_failures:
             final_features["failing_gate"] = blocking_failures[0]
 
-    states.append(build_state_t1(
-        domain=domain,
-        job_type=job_type,
-        features=final_features,
-        policy_key=policy_key,
-    ))
+    states.append(
+        build_state_t1(
+            domain=domain,
+            job_type=job_type,
+            features=final_features,
+            policy_key=policy_key,
+        )
+    )
 
     return states
 
@@ -125,6 +135,8 @@ def execute(
 
     # Initialize DB
     try:
+        from cyntra.dynamics.transition_db import TransitionDB
+
         db = TransitionDB(db_path)
     except Exception as e:
         return {
@@ -178,7 +190,9 @@ def main():
     parser = argparse.ArgumentParser(description="Ingest rollout into dynamics DB")
     parser.add_argument("rollout_path", help="Path to rollout.json")
     parser.add_argument("db_path", help="Path to dynamics SQLite DB")
-    parser.add_argument("domain", choices=["code", "fab_asset", "fab_world"], help="Domain")
+    parser.add_argument(
+        "domain", choices=["code", "fab_asset", "fab_world"], help="Domain"
+    )
 
     args = parser.parse_args()
 

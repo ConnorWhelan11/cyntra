@@ -1,2 +1,0 @@
-export { ExternalSidecarLayout } from "./ExternalSidecarLayout";
-

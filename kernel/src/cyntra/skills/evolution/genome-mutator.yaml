@@ -1,0 +1,47 @@
+name: genome-mutator
+version: 1.0.0
+description: |
+  Apply structured deltas to prompt YAML, track lineage.
+  Mutates prompt genomes for evolution experiments.
+category: evolution
+priority: critical
+phase: 5
+
+inputs:
+  - name: genome_path
+    type: string
+    description: Path to parent genome YAML
+    required: true
+  - name: mutation_type
+    type: string
+    description: Type of mutation (random, targeted, patch)
+    required: true
+    enum: [random, targeted, patch]
+  - name: mutation_spec
+    type: object
+    description: Mutation parameters or patch definition
+    required: true
+  - name: output_path
+    type: string
+    description: Path for mutated genome
+    required: true
+
+outputs:
+  - name: genome_id
+    type: string
+    description: ID of new genome
+  - name: genome_path
+    type: string
+    description: Path to mutated genome YAML
+  - name: delta
+    type: object
+    description: Structured diff from parent
+  - name: lineage
+    type: array
+    description: Parent genome IDs
+
+examples: []
+
+implementation:
+  type: python
+  path: genome-mutator.py

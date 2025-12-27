@@ -27,12 +27,12 @@ If you have Godot installed, you can build a Web export (and emit a `godot_repor
 with:
 
 - If `cyntra` is installed: `fab-godot --asset path/to/level.glb --config godot_integration_v001 --out /tmp/fab-game`
-- Or from source: `cd cyntra-kernel && PYTHONPATH=src python -m cyntra.fab.godot --asset ../path/to/level.glb --config godot_integration_v001 --out /tmp/fab-game`
+- Or from source: `cd kernel && PYTHONPATH=src python -m cyntra.fab.godot --asset ../path/to/level.glb --config godot_integration_v001 --out /tmp/fab-game`
 
 To place the build where the Three.js viewer can “Play” it:
 
-- If `cyntra` is installed: `fab-godot --asset fab/outora-library/viewer/assets/exports/gothic_library_full.glb --config godot_integration_v001 --out fab/outora-library/viewer/assets/games/gothic_library_full`
-- Or from source: `cd cyntra-kernel && PYTHONPATH=src python -m cyntra.fab.godot --asset ../fab/outora-library/viewer/assets/exports/gothic_library_full.glb --config godot_integration_v001 --out ../fab/outora-library/viewer/assets/games/gothic_library_full`
+- If `cyntra` is installed: `fab-godot --asset fab/assets/viewer/assets/exports/gothic_library_full.glb --config godot_integration_v001 --out fab/assets/viewer/assets/games/gothic_library_full`
+- Or from source: `cd kernel && PYTHONPATH=src python -m cyntra.fab.godot --asset ../fab/assets/viewer/assets/exports/gothic_library_full.glb --config godot_integration_v001 --out ../fab/assets/viewer/assets/games/gothic_library_full`
 
 Note: Godot 4.x does not support the `KHR_draco_mesh_compression` glTF extension. If your
 viewer export is Draco-compressed, `fab-godot` will attempt to decode it via Blender
@@ -48,5 +48,68 @@ The Web export uses Godot’s Compatibility renderer (WebGL). To adjust the look
 
 ## Web export preset
 
-`fab/godot/template/export_presets.cfg` includes a starter “Web” preset meant for CI
+`fab/godot/template/export_presets.cfg` includes a starter "Web" preset meant for CI
 automation. You may still need to configure export templates locally in the Godot editor.
+
+## Dojo/Starknet Integration
+
+The template includes autoloads for onchain gameplay state via Dojo:
+
+### Autoloads
+
+- **FabDojoConfig**: Configuration (Torii URL, RPC URL, world address)
+- **FabDojoClient**: GraphQL client for querying state from Torii indexer
+- **FabController**: Cartridge Controller integration for wallet/sessions
+
+### Quick Start
+
+1. Deploy Dojo contracts (see `fab/dojo/README.md`)
+2. Configure endpoints in `FabDojoConfig`:
+   ```gdscript
+   FabDojoConfig.torii_url = "http://localhost:8080/graphql"
+   FabDojoConfig.rpc_url = "http://localhost:5050"
+   FabDojoConfig.world_address = "0x..."
+   ```
+3. Connect wallet and join world:
+   ```gdscript
+   FabController.connect_wallet()
+   await FabController.session_created
+   FabController.join_world("world_1", "PlayerName", "character_asset_id")
+   ```
+
+### Querying State
+
+```gdscript
+# Get all asset instances in a world
+FabDojoClient.get_world_instances("world_1", func(instances):
+    for inst in instances:
+        var pos = FabDojoClient.vec3_from_fixed(inst["position"])
+        print("Instance at: ", pos)
+)
+
+# Subscribe to real-time updates
+FabDojoClient.connect_realtime()
+FabDojoClient.subscribe_assets("world_1")
+FabDojoClient.asset_spawned.connect(func(data):
+    print("Asset spawned: ", data)
+)
+```
+
+### Transactions
+
+```gdscript
+# Update player position (uses session key, no wallet popup)
+FabController.update_position("world_1", player.global_position, player.quaternion)
+
+# Spawn an asset
+FabController.spawn_asset(
+    "world_1",
+    "asset_id",
+    "instance_id",
+    Vector3(10, 0, 5),
+    Quaternion.IDENTITY,
+    Vector3.ONE
+)
+```
+
+See `fab/dojo/README.md` for contract details and deployment instructions.

@@ -13,9 +13,9 @@ from pathlib import Path
 from typing import Any
 
 repo_root = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(repo_root / "cyntra-kernel" / "src"))
-
-from cyntra.fab.gate import run_gate
+kernel_src = repo_root / "kernel" / "src"
+if kernel_src.exists():
+    sys.path.insert(0, str(kernel_src))
 
 
 def execute(
@@ -45,6 +45,14 @@ def execute(
     gate_config_path = Path(gate_config_path)
     asset_path = Path(asset_path)
     output_dir = Path(output_dir)
+
+    try:
+        from cyntra.fab.gate import run_gate
+    except Exception as e:
+        return {
+            "success": False,
+            "error": f"Failed to import cyntra fab gate runner: {e}",
+        }
 
     if not gate_config_path.exists():
         return {
@@ -78,10 +86,12 @@ def execute(
         for critic_name, critic_result in verdict.get("critics", {}).items():
             if isinstance(critic_result, dict):
                 if critic_result.get("hard_fail"):
-                    blocking_failures.append({
-                        "critic": critic_name,
-                        "reason": critic_result.get("reason", "unknown"),
-                    })
+                    blocking_failures.append(
+                        {
+                            "critic": critic_name,
+                            "reason": critic_result.get("reason", "unknown"),
+                        }
+                    )
 
         # Verdict path
         verdict_path = output_dir / "verdict.json"

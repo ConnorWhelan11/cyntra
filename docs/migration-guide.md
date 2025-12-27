@@ -5,6 +5,7 @@
 This guide helps you migrate from the legacy `fab/outora-library/` pipeline to the new Fab World system at `fab/worlds/outora_library/`.
 
 **Why Migrate?**
+
 - ✓ Deterministic builds (reproducible outputs)
 - ✓ Portable (runs in isolated workcells)
 - ✓ Integrated quality gates
@@ -19,10 +20,12 @@ This guide helps you migrate from the legacy `fab/outora-library/` pipeline to t
 **Status**: ✓ Complete
 
 Both systems coexist:
+
 - **Old**: `fab/outora-library/` - Legacy scripts, manual invocation
 - **New**: `fab/worlds/outora_library/` - World system, automated
 
 **What Works**:
+
 - New world system builds use old scripts via imports
 - Original `fab/outora-library/` remains intact
 - No breaking changes to existing workflows
@@ -32,13 +35,15 @@ Both systems coexist:
 **Action Items**:
 
 1. **Install fab-world CLI**:
+
    ```bash
-   cd cyntra-kernel
+   cd kernel
    pip install -e .
    fab-world --help
    ```
 
 2. **Test new system**:
+
    ```bash
    # Quick test (prepare stage only)
    fab-world build \
@@ -53,6 +58,7 @@ Both systems coexist:
    ```
 
 3. **Compare outputs**:
+
    ```bash
    # Old way (manual script execution)
    cd fab/outora-library/blender
@@ -72,6 +78,7 @@ Both systems coexist:
 ### Phase 3: Full Migration (Future)
 
 **When to Complete**:
+
 - After testing world system in production
 - After validating determinism works
 - After team is comfortable with new CLI
@@ -79,6 +86,7 @@ Both systems coexist:
 **Final Steps**:
 
 1. **Archive old blend files**:
+
    ```bash
    # See fab/worlds/outora_library/ARCHIVE_NOTES.md
    mkdir ~/Archives/outora-library-archive
@@ -97,38 +105,39 @@ Both systems coexist:
 
 ### Old Scripts → New Stages
 
-| Old Script | New Stage | Notes |
-|------------|-----------|-------|
-| `gothic_kit_generator.py` | `stages/generate.py` | Imported by generate stage |
-| `bake_gothic_v2.py` | `stages/bake.py` | Imports and calls bake module |
-| `gothic_materials.py` | `stages/materials.py` | Material application |
-| `gothic_lighting.py` | `stages/lighting.py` | Lighting setup |
-| `export_fab_game_glb.py` | `stages/export.py` | GLB export with Godot markers |
-| `run_pipeline.py` | `fab-world build` | Replaced by CLI orchestration |
-| `gate_validation.py` | Quality gates | Replaced by gate YAML + critics |
+| Old Script                | New Stage             | Notes                           |
+| ------------------------- | --------------------- | ------------------------------- |
+| `gothic_kit_generator.py` | `stages/generate.py`  | Imported by generate stage      |
+| `bake_gothic_v2.py`       | `stages/bake.py`      | Imports and calls bake module   |
+| `gothic_materials.py`     | `stages/materials.py` | Material application            |
+| `gothic_lighting.py`      | `stages/lighting.py`  | Lighting setup                  |
+| `export_fab_game_glb.py`  | `stages/export.py`    | GLB export with Godot markers   |
+| `run_pipeline.py`         | `fab-world build`     | Replaced by CLI orchestration   |
+| `gate_validation.py`      | Quality gates         | Replaced by gate YAML + critics |
 
 ### Parameter Changes
 
-| Old Approach | New Approach |
-|--------------|--------------|
-| Hard-coded in Python | `world.yaml` defaults |
-| Edit script, re-run | `--param` CLI overrides |
-| No validation | Schema validation in `world.yaml` |
+| Old Approach         | New Approach                      |
+| -------------------- | --------------------------------- |
+| Hard-coded in Python | `world.yaml` defaults             |
+| Edit script, re-run  | `--param` CLI overrides           |
+| No validation        | Schema validation in `world.yaml` |
 
 ### Output Locations
 
-| Old Location | New Location |
-|--------------|--------------|
-| `fab/outora-library/blender/*.blend1` | Gitignored |
-| `fab/outora-library/exports/*.glb` | `.cyntra/runs/<run_id>/world/` (gitignored) |
-| Manual `/tmp/` usage | `FAB_RUN_DIR`, `FAB_STAGE_DIR` env vars |
-| `fab/outora-library/viewer/assets/` | Published via `fab-world publish --viewer` |
+| Old Location                          | New Location                                |
+| ------------------------------------- | ------------------------------------------- |
+| `fab/outora-library/blender/*.blend1` | Gitignored                                  |
+| `fab/outora-library/exports/*.glb`    | `.cyntra/runs/<run_id>/world/` (gitignored) |
+| Manual `/tmp/` usage                  | `FAB_RUN_DIR`, `FAB_STAGE_DIR` env vars     |
+| `fab/outora-library/viewer/assets/`   | Published via `fab-world publish --viewer`  |
 
 ## Common Migration Issues
 
 ### Issue 1: Import Errors
 
 **Symptom**:
+
 ```
 ModuleNotFoundError: No module named 'gothic_kit_generator'
 ```
@@ -151,11 +160,13 @@ import gothic_kit_generator  # Now works
 ### Issue 2: Hard-coded Paths
 
 **Old Code**:
+
 ```python
 output_dir = "/tmp/outora_renders"
 ```
 
 **New Code**:
+
 ```python
 import os
 from pathlib import Path
@@ -170,12 +181,14 @@ output_dir = run_dir / "renders"
 ### Issue 3: Random Seed Not Set
 
 **Old Code**:
+
 ```python
 import random
 random.shuffle(objects)  # Non-deterministic!
 ```
 
 **New Code**:
+
 ```python
 def execute(*, run_dir, stage_dir, inputs, params, manifest):
     # Seed is in manifest
@@ -190,11 +203,13 @@ def execute(*, run_dir, stage_dir, inputs, params, manifest):
 ### Issue 4: exec(open(...).read())
 
 **Old Code**:
+
 ```python
 exec(open("gothic_lighting.py").read())
 ```
 
 **New Code**:
+
 ```python
 import importlib
 import gothic_lighting
@@ -206,12 +221,14 @@ gothic_lighting.setup_lighting()  # Call function
 ### Issue 5: Missing Godot Markers
 
 **Old Export**:
+
 ```python
 # Just export mesh
 bpy.ops.export_scene.gltf(filepath="output.glb")
 ```
 
 **New Export**:
+
 ```python
 # Add Godot contract markers first
 spawn_marker = bpy.data.objects.get("SPAWN_PLAYER")
@@ -280,6 +297,7 @@ After migration, verify:
 If migration causes issues:
 
 1. **Immediate rollback**:
+
    ```bash
    # Old scripts still work
    cd fab/outora-library/blender
@@ -287,6 +305,7 @@ If migration causes issues:
    ```
 
 2. **Preserve old artifacts**:
+
    ```bash
    # Backup before cleanup
    tar -czf outora-library-backup-$(date +%Y%m%d).tar.gz fab/outora-library/
@@ -309,15 +328,12 @@ If migration causes issues:
 ### New Approach (Automated)
 
 1. Create Beads issue with tags:
+
    ```json
    {
      "id": 123,
      "title": "Generate Outora Library v0.6.0",
-     "tags": [
-       "asset:world",
-       "world:outora_library",
-       "seed:42"
-     ]
+     "tags": ["asset:world", "world:outora_library", "seed:42"]
    }
    ```
 

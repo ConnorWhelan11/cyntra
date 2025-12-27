@@ -1,0 +1,43 @@
+name: asset-proof-packager
+version: 1.0.0
+description: |
+  Bundle render outputs + critic reports + verdict into asset-proof.json schema.
+  Creates complete asset evaluation package.
+category: fab
+priority: high
+phase: fab
+
+inputs:
+  - name: asset_path
+    type: string
+    description: Path to evaluated asset
+    required: true
+  - name: verdict_path
+    type: string
+    description: Path to gate verdict JSON
+    required: true
+  - name: renders_dir
+    type: string
+    description: Directory containing renders
+    required: true
+  - name: output_path
+    type: string
+    description: Path for asset-proof.json
+    required: true
+
+outputs:
+  - name: proof_path
+    type: string
+    description: Path to generated asset-proof.json
+  - name: valid
+    type: boolean
+    description: True if proof validates against schema
+  - name: bundle_size_mb
+    type: number
+    description: Total size of bundled artifacts
+
+examples: []
+
+implementation:
+  type: python
+  path: asset-proof-packager.py

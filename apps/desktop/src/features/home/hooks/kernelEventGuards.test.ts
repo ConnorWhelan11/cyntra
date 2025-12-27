@@ -20,7 +20,6 @@ import {
 } from "./kernelEventGuards";
 
 const createMockEvent = (data: unknown): KernelEvent => ({
-  id: "event-1",
   type: "test.event",
   timestamp: new Date().toISOString(),
   issueId: "issue-1",

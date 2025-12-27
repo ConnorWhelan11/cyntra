@@ -1,0 +1,12 @@
+{
+  "name": "Tiles Terracotta",
+  "description": "Procedural: terracotta roof tiles, warm orange red, overlapping pattern, Mediterranean, seamless tileable",
+  "category": "architecture",
+  "tags": ["tiles", "roof", "terracotta", "mediterranean"],
+  "prompt": "terracotta roof tiles, warm orange red, overlapping pattern, Mediterranean, seamless tileable",
+  "seed": 3265,
+  "workflow": "blender_procedural",
+  "resolution": [2048, 2048],
+  "created_at": "2025-12-27T00:39:02.793809+00:00",
+  "source": "blender"
+}

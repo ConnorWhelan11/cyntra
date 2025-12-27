@@ -4,11 +4,11 @@ Autonomous development kernel with deterministic 3D asset pipeline.
 
 ## Stack
 
-| Component | Tech |
-|-----------|------|
-| Kernel | Python (orchestrator, workcells, quality gates) |
-| Desktop | Tauri + React (Mission Control) |
-| Fab Pipeline | Blender + Godot (3D assets) |
+| Component    | Tech                                            |
+| ------------ | ----------------------------------------------- |
+| Kernel       | Python (orchestrator, workcells, quality gates) |
+| Desktop      | Tauri + React (Mission Control)                 |
+| Fab Pipeline | Blender + Godot (3D assets)                     |
 
 ## Quick Start
 
@@ -30,8 +30,8 @@ mise run test     # All tests
 ## Project Structure
 
 ```
-apps/glia-fab-desktop/    # Tauri desktop app
-cyntra-kernel/            # Python orchestrator
+apps/desktop/    # Tauri desktop app
+kernel/                  # Python orchestrator
 fab/                      # 3D asset pipeline
   gates/                  # Quality gate configs
   worlds/                 # World definitions

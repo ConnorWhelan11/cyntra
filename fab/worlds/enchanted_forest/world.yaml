@@ -1,0 +1,181 @@
+# fab/worlds/enchanted_forest/world.yaml
+schema_version: "1.0"
+
+world_id: enchanted_forest
+world_config_id: enchanted_forest_v001
+world_type: exterior_nature
+version: "0.1.0"
+
+generator:
+  name: Enchanted Forest Clearing
+  description: |
+    A mystical forest clearing with ancient trees, dappled sunlight,
+    and magical atmosphere. Features:
+    - Procedural tree placement with varied species
+    - Ground cover (grass, ferns, mushrooms, flowers)
+    - Volumetric fog and god rays
+    - Stream with rocks and stepping stones
+    - Ancient stone ruins/markers
+    - Firefly particle systems (night variant)
+  author: Fab Pipeline
+  required_addons:
+    - id: scatter
+      required: false
+
+build:
+  template_blend: blender/template.blend
+  blender_version_min: "4.0.0"
+  determinism:
+    seed: 42
+    pythonhashseed: 0
+    cycles_seed: 42
+  blender:
+    args: ["--background", "--factory-startup"]
+    env:
+      CYCLES_DEVICE: "CPU"
+      PYTHONHASHSEED: "0"
+
+parameters:
+  defaults:
+    terrain:
+      clearing_radius_m: 25.0
+      terrain_variation: 0.3
+      ground_type: forest_floor  # forest_floor | moss_covered | leaf_litter
+    trees:
+      density: medium  # sparse | medium | dense
+      species_mix: [oak, birch, pine]
+      max_height_m: 20.0
+      undergrowth_density: 0.6
+    atmosphere:
+      time_of_day: golden_hour  # dawn | morning | midday | golden_hour | dusk | night
+      fog_density: 0.15
+      god_rays: true
+      particle_fireflies: false
+    water:
+      stream_enabled: true
+      stream_width_m: 2.5
+      waterfall: false
+    props:
+      ruins_enabled: true
+      ruins_type: standing_stones  # standing_stones | arch | altar
+      mushroom_clusters: 5
+      flower_patches: 8
+
+  schema:
+    terrain.ground_type:
+      type: enum
+      values: [forest_floor, moss_covered, leaf_litter]
+    trees.density:
+      type: enum
+      values: [sparse, medium, dense]
+    atmosphere.time_of_day:
+      type: enum
+      values: [dawn, morning, midday, golden_hour, dusk, night]
+    props.ruins_type:
+      type: enum
+      values: [standing_stones, arch, altar]
+
+stages:
+  - id: prepare
+    type: blender
+    script: blender/stages/prepare.py
+    outputs: ["stages/prepare/"]
+
+  - id: terrain
+    type: blender
+    script: blender/stages/terrain.py
+    requires: [prepare]
+    params: ["terrain.clearing_radius_m", "terrain.variation"]
+    outputs: ["stages/terrain/"]
+
+  - id: vegetation
+    type: blender
+    script: blender/stages/vegetation.py
+    requires: [terrain]
+    params: ["trees.density", "trees.undergrowth_density"]
+    outputs: ["stages/vegetation/"]
+
+  - id: props
+    type: blender
+    script: blender/stages/props.py
+    requires: [terrain]
+    params: ["props.ruins_enabled", "props.ruins_type"]
+    outputs: ["stages/props/"]
+
+  - id: water
+    type: blender
+    script: blender/stages/water.py
+    requires: [terrain]
+    params: ["water.stream_enabled"]
+    outputs: ["stages/water/"]
+    optional: true
+
+  - id: lighting
+    type: blender
+    script: blender/stages/lighting.py
+    requires: [vegetation, props, water]
+    params: ["atmosphere.time_of_day", "atmosphere.fog_density"]
+    outputs: ["stages/lighting/"]
+
+  - id: navmesh
+    type: blender
+    script: blender/stages/navmesh.py
+    requires: [terrain, props]
+    outputs: ["stages/navmesh/"]
+
+  - id: export
+    type: blender
+    script: blender/stages/export.py
+    requires: [lighting, navmesh]
+    outputs: ["world/enchanted_forest.glb", "world/navmesh.glb"]
+    settings:
+      draco_compression: true
+
+  - id: render
+    type: blender
+    script: blender/stages/render.py
+    requires: [lighting]
+    outputs: ["render/beauty/*.png", "render/depth/*.png"]
+
+  - id: validate
+    type: gate
+    requires: [export]
+    gates:
+      - fab/gates/nature_environment_v001.yaml
+      - fab/gates/godot_integration_v001.yaml
+
+  - id: godot
+    type: godot
+    requires: [validate]
+    optional: true
+    outputs: ["godot/project/", "godot/index.html"]
+
+  - id: playtest
+    type: gate
+    requires: [godot]
+    optional: true
+    gates:
+      - fab/gates/gameplay_playability_forest_v001.yaml
+    config:
+      nitrogen:
+        host: localhost
+        port: 5555
+      playtest:
+        duration_seconds: 90
+        exploration_mode: free
+
+budgets:
+  blender:
+    max_objects: 10000
+    max_vertices: 5000000
+  godot:
+    max_glb_size_mb: 75
+    max_materials: 48
+    max_draw_calls_est: 2000
+
+publish:
+  viewer:
+    enabled: true
+    paths:
+      glb: fab/assets/viewer/assets/exports/enchanted_forest.glb
+      game: fab/assets/viewer/assets/games/enchanted_forest/

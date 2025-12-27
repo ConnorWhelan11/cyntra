@@ -51,8 +51,9 @@ This track implements the policy models that predict swarm topology and budget a
 ### 2.2 HeuristicBaseline Architecture
 
 The heuristic baseline reproduces the current kernel decision logic from:
-- `cyntra-kernel/src/cyntra/kernel/scheduler.py:should_speculate()`
-- `cyntra-kernel/src/cyntra/control/exploration_controller.py:decide()`
+
+- `kernel/src/cyntra/kernel/scheduler.py:should_speculate()`
+- `kernel/src/cyntra/control/exploration_controller.py:decide()`
 
 ```
 Input: planner_input.v1
@@ -80,6 +81,7 @@ Output: planner_action.v1
 ```
 
 **Key Properties:**
+
 - Deterministic: same input always produces same output
 - No training required
 - Serves as evaluation baseline for all trained models
@@ -128,12 +130,12 @@ Input Tensor (d_in = 3779)
 
 **Head Details:**
 
-| Head | Output Dim | Classes |
-|------|------------|---------|
-| swarm_head | 2 | serial_handoff, speculate_vote |
-| candidates_head | 4 | 1, 2, 3, NA |
-| minutes_head | 6 | 15, 30, 45, 60, 120, NA |
-| iterations_head | 5 | 1, 2, 3, 5, NA |
+| Head            | Output Dim | Classes                        |
+| --------------- | ---------- | ------------------------------ |
+| swarm_head      | 2          | serial_handoff, speculate_vote |
+| candidates_head | 4          | 1, 2, 3, NA                    |
+| minutes_head    | 6          | 15, 30, 45, 60, 120, NA        |
+| iterations_head | 5          | 1, 2, 3, 5, NA                 |
 
 ### 2.4 Shared Trunk + Multi-Head Design
 
@@ -258,7 +260,7 @@ optimizer:
 
 scheduler:
   type: CosineAnnealingLR
-  T_max: 100  # epochs
+  T_max: 100 # epochs
   eta_min: 1e-6
 
 training:
@@ -318,29 +320,29 @@ class PlannerDataset(torch.utils.data.Dataset):
 
 ### 4.1 Diagnostic Metrics (Always Computed)
 
-| Metric | Description | Formula |
-|--------|-------------|---------|
-| `per_head_accuracy` | Accuracy per action component | `correct_head / total` |
-| `exact_match_accuracy` | All 4 components correct | `all_correct / total` |
-| `swarm_accuracy` | Swarm head accuracy | `correct_swarm / total` |
-| `candidates_accuracy` | Candidates head accuracy | `correct_cand / total` |
-| `minutes_accuracy` | Minutes head accuracy | `correct_min / total` |
-| `iterations_accuracy` | Iterations head accuracy | `correct_iter / total` |
+| Metric                 | Description                   | Formula                 |
+| ---------------------- | ----------------------------- | ----------------------- |
+| `per_head_accuracy`    | Accuracy per action component | `correct_head / total`  |
+| `exact_match_accuracy` | All 4 components correct      | `all_correct / total`   |
+| `swarm_accuracy`       | Swarm head accuracy           | `correct_swarm / total` |
+| `candidates_accuracy`  | Candidates head accuracy      | `correct_cand / total`  |
+| `minutes_accuracy`     | Minutes head accuracy         | `correct_min / total`   |
+| `iterations_accuracy`  | Iterations head accuracy      | `correct_iter / total`  |
 
 ### 4.2 Collapse Metrics
 
-| Metric | Description | Formula |
-|--------|-------------|---------|
-| `action_entropy` | Entropy of predicted action distribution | `-Σ p(a) log p(a)` |
-| `top1_frequency` | Frequency of most common prediction | `max(counts) / total` |
-| `unique_actions` | Number of unique actions predicted | `len(set(predictions))` |
+| Metric           | Description                              | Formula                 |
+| ---------------- | ---------------------------------------- | ----------------------- |
+| `action_entropy` | Entropy of predicted action distribution | `-Σ p(a) log p(a)`      |
+| `top1_frequency` | Frequency of most common prediction      | `max(counts) / total`   |
+| `unique_actions` | Number of unique actions predicted       | `len(set(predictions))` |
 
 ### 4.3 Calibration Metrics
 
-| Metric | Description | Target |
-|--------|-------------|--------|
-| `ECE` | Expected Calibration Error | < 0.05 |
-| `MCE` | Maximum Calibration Error | < 0.15 |
+| Metric         | Description                            | Target  |
+| -------------- | -------------------------------------- | ------- |
+| `ECE`          | Expected Calibration Error             | < 0.05  |
+| `MCE`          | Maximum Calibration Error              | < 0.15  |
 | `abstain_rate` | Fraction of low-confidence predictions | Monitor |
 
 ### 4.4 Evaluation Implementation
@@ -638,39 +640,39 @@ if __name__ == "__main__":
 
 ### 6.1 Task Breakdown
 
-| Task ID | Description | Est. Hours | Dependencies |
-|---------|-------------|------------|--------------|
-| T2.1 | Implement `BasePolicy` abstract class | 1 | Track 1 |
-| T2.2 | Implement `HeuristicBaseline` class | 4 | T2.1 |
-| T2.3 | Extract heuristics from scheduler.py | 2 | T2.2 |
-| T2.4 | Extract heuristics from exploration_controller.py | 2 | T2.2 |
-| T2.5 | Implement `MLPPolicy` class | 3 | T2.1, Track 1 |
-| T2.6 | Implement `PlannerLoss` class | 2 | T2.5 |
-| T2.7 | Implement `PlannerDataset` class | 2 | Track 1 |
-| T2.8 | Implement evaluation metrics | 3 | T2.5 |
-| T2.9 | Implement calibration (ECE/MCE) | 2 | T2.8 |
-| T2.10 | Implement training loop | 4 | T2.5-T2.9 |
-| T2.11 | Add CLI for training script | 2 | T2.10 |
-| T2.12 | Unit tests for models | 4 | T2.2, T2.5 |
-| T2.13 | Integration test: train on sample data | 3 | T2.10 |
-| T2.14 | Ablation infrastructure | 3 | T2.10 |
+| Task ID | Description                                       | Est. Hours | Dependencies  |
+| ------- | ------------------------------------------------- | ---------- | ------------- |
+| T2.1    | Implement `BasePolicy` abstract class             | 1          | Track 1       |
+| T2.2    | Implement `HeuristicBaseline` class               | 4          | T2.1          |
+| T2.3    | Extract heuristics from scheduler.py              | 2          | T2.2          |
+| T2.4    | Extract heuristics from exploration_controller.py | 2          | T2.2          |
+| T2.5    | Implement `MLPPolicy` class                       | 3          | T2.1, Track 1 |
+| T2.6    | Implement `PlannerLoss` class                     | 2          | T2.5          |
+| T2.7    | Implement `PlannerDataset` class                  | 2          | Track 1       |
+| T2.8    | Implement evaluation metrics                      | 3          | T2.5          |
+| T2.9    | Implement calibration (ECE/MCE)                   | 2          | T2.8          |
+| T2.10   | Implement training loop                           | 4          | T2.5-T2.9     |
+| T2.11   | Add CLI for training script                       | 2          | T2.10         |
+| T2.12   | Unit tests for models                             | 4          | T2.2, T2.5    |
+| T2.13   | Integration test: train on sample data            | 3          | T2.10         |
+| T2.14   | Ablation infrastructure                           | 3          | T2.10         |
 
 **Total estimated hours:** 37
 
 ### 6.2 File Deliverables
 
-| File | Description | Status |
-|------|-------------|--------|
-| `cyntra-kernel/src/cyntra/planner/models/__init__.py` | Package init | NEW |
-| `cyntra-kernel/src/cyntra/planner/models/base.py` | BasePolicy abstract class | NEW |
-| `cyntra-kernel/src/cyntra/planner/models/baseline.py` | HeuristicBaseline | NEW |
-| `cyntra-kernel/src/cyntra/planner/models/mlp.py` | MLPPolicy | NEW |
-| `cyntra-kernel/src/cyntra/planner/models/loss.py` | PlannerLoss | NEW |
-| `cyntra-kernel/src/cyntra/planner/eval.py` | Evaluation metrics | NEW |
-| `train/planner/train.py` | Training script | NEW |
-| `train/planner/config/default.yaml` | Default training config | NEW |
-| `cyntra-kernel/tests/planner/test_models.py` | Model unit tests | NEW |
-| `cyntra-kernel/tests/planner/test_training.py` | Training integration tests | NEW |
+| File                                           | Description                | Status |
+| ---------------------------------------------- | -------------------------- | ------ |
+| `kernel/src/cyntra/planner/models/__init__.py` | Package init               | NEW    |
+| `kernel/src/cyntra/planner/models/base.py`     | BasePolicy abstract class  | NEW    |
+| `kernel/src/cyntra/planner/models/baseline.py` | HeuristicBaseline          | NEW    |
+| `kernel/src/cyntra/planner/models/mlp.py`      | MLPPolicy                  | NEW    |
+| `kernel/src/cyntra/planner/models/loss.py`     | PlannerLoss                | NEW    |
+| `kernel/src/cyntra/planner/eval.py`            | Evaluation metrics         | NEW    |
+| `train/planner/train.py`                       | Training script            | NEW    |
+| `train/planner/config/default.yaml`            | Default training config    | NEW    |
+| `kernel/tests/planner/test_models.py`          | Model unit tests           | NEW    |
+| `kernel/tests/planner/test_training.py`        | Training integration tests | NEW    |
 
 ---
 
@@ -797,12 +799,12 @@ def test_evaluation_metrics():
 
 ### 9.1 Required Ablations (per Spec §8.3)
 
-| Ablation | Variable | Values to Test |
-|----------|----------|----------------|
-| History size | `n_similar_runs` | 0, 1, 4, 8, 16 |
-| Model depth | `n_layers` | 1, 2, 3, 4 |
-| Hidden size | `d_hidden` | 128, 256, 512, 1024 |
-| Dropout | `dropout` | 0.0, 0.1, 0.2, 0.3 |
+| Ablation        | Variable          | Values to Test      |
+| --------------- | ----------------- | ------------------- |
+| History size    | `n_similar_runs`  | 0, 1, 4, 8, 16      |
+| Model depth     | `n_layers`        | 1, 2, 3, 4          |
+| Hidden size     | `d_hidden`        | 128, 256, 512, 1024 |
+| Dropout         | `dropout`         | 0.0, 0.1, 0.2, 0.3  |
 | Label smoothing | `label_smoothing` | 0.0, 0.05, 0.1, 0.2 |
 
 ### 9.2 Ablation Script
@@ -853,19 +855,19 @@ def run_ablation(base_config: dict, ablation_configs: list[dict], output_dir: Pa
 
 ### 10.1 Upstream Dependencies
 
-| Dependency | Location | Status |
-|------------|----------|--------|
+| Dependency             | Location                      | Status   |
+| ---------------------- | ----------------------------- | -------- |
 | Track 1 (Tokenization) | `cyntra/planner/tokenizer.py` | REQUIRED |
-| `action_space.py` | `cyntra/planner/` | COMPLETE |
-| `dataset.py` | `cyntra/planner/` | COMPLETE |
-| PyTorch | `requirements.txt` | EXTERNAL |
+| `action_space.py`      | `cyntra/planner/`             | COMPLETE |
+| `dataset.py`           | `cyntra/planner/`             | COMPLETE |
+| PyTorch                | `requirements.txt`            | EXTERNAL |
 
 ### 10.2 Downstream Dependents
 
-| Dependent | Description |
-|-----------|-------------|
+| Dependent             | Description                       |
+| --------------------- | --------------------------------- |
 | Track 5 (Integration) | Uses trained models for inference |
-| Track 6 (ONNX) | Exports models to ONNX format |
+| Track 6 (ONNX)        | Exports models to ONNX format     |
 
 ---
 
@@ -884,6 +886,6 @@ def run_ablation(base_config: dict, ablation_configs: list[dict], output_dir: Pa
 
 ## 12. Revision History
 
-| Version | Date | Author | Changes |
-|---------|------|--------|---------|
-| 1.0 | 2025-12 | Planner Agent | Initial specification |
+| Version | Date    | Author        | Changes               |
+| ------- | ------- | ------------- | --------------------- |
+| 1.0     | 2025-12 | Planner Agent | Initial specification |

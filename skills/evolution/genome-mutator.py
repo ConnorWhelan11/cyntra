@@ -7,21 +7,20 @@ Apply structured deltas to prompt YAML, track lineage.
 
 from __future__ import annotations
 
-from copy import deepcopy
 import hashlib
 import json
 import random
 import sys
+from copy import deepcopy
 from pathlib import Path
 from typing import Any
 
-repo_root = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(repo_root / "cyntra-kernel" / "src"))
-
 import yaml
 
-from cyntra.evolve.genome import genome_id_from_data, load_genome
-from cyntra.evolve.mutation import mutate_genome as _mutate_genome
+repo_root = Path(__file__).resolve().parents[2]
+kernel_src = repo_root / "kernel" / "src"
+if kernel_src.exists():
+    sys.path.insert(0, str(kernel_src))
 
 
 def execute(
@@ -57,6 +56,9 @@ def execute(
         }
 
     try:
+        from cyntra.evolve.genome import genome_id_from_data, load_genome
+        from cyntra.evolve.mutation import mutate_genome as _mutate_genome
+
         parent_genome = load_genome(genome_path)
 
         def ensure_mapping(value: object) -> dict[str, Any]:
@@ -114,7 +116,9 @@ def execute(
             current: Any = root
             for part in parts[:-1]:
                 if isinstance(current, dict):
-                    if part not in current or not isinstance(current.get(part), (dict, list)):
+                    if part not in current or not isinstance(
+                        current.get(part), (dict, list)
+                    ):
                         current[part] = {}
                     current = current[part]
                     continue
@@ -163,7 +167,9 @@ def execute(
                 if 0 <= idx < len(current):
                     current.pop(idx)
 
-        def diff_parent_child(parent: dict[str, Any], child: dict[str, Any]) -> dict[str, Any]:
+        def diff_parent_child(
+            parent: dict[str, Any], child: dict[str, Any]
+        ) -> dict[str, Any]:
             changed: dict[str, Any] = {}
             for key in ("system_prompt", "instruction_blocks", "tool_use_rules"):
                 if parent.get(key) != child.get(key):
@@ -173,7 +179,10 @@ def execute(
             new_sampling = ensure_mapping(child.get("sampling"))
             for skey in sorted(set(old_sampling.keys()) | set(new_sampling.keys())):
                 if old_sampling.get(skey) != new_sampling.get(skey):
-                    changed[f"sampling.{skey}"] = {"from": old_sampling.get(skey), "to": new_sampling.get(skey)}
+                    changed[f"sampling.{skey}"] = {
+                        "from": old_sampling.get(skey),
+                        "to": new_sampling.get(skey),
+                    }
             return changed
 
         spec = ensure_mapping(mutation_spec)
@@ -194,7 +203,9 @@ def execute(
                 strength_f = float(strength)
             except (TypeError, ValueError):
                 strength_f = 1.0
-            mutated_genome = _mutate_genome(parent_genome, random.Random(rng_seed), mutation_strength=strength_f)
+            mutated_genome = _mutate_genome(
+                parent_genome, random.Random(rng_seed), mutation_strength=strength_f
+            )
             delta = {
                 "mutation_type": "random",
                 "seed": rng_seed,
@@ -208,7 +219,11 @@ def execute(
 
             set_map = spec.get("set")
             if not isinstance(set_map, dict):
-                set_map = {k: v for k, v in spec.items() if k not in {"append", "remove", "seed"}}
+                set_map = {
+                    k: v
+                    for k, v in spec.items()
+                    if k not in {"append", "remove", "seed"}
+                }
 
             for key, value in set_map.items():
                 apply_dotpath_set(mutated_genome, str(key), value)
@@ -231,7 +246,10 @@ def execute(
                     apply_dotpath_set(mutated_genome, str(key), filtered)
 
             mutated_genome["genome_id"] = genome_id_from_data(mutated_genome)
-            delta = {"mutation_type": "targeted", "changed": diff_parent_child(parent_genome, mutated_genome)}
+            delta = {
+                "mutation_type": "targeted",
+                "changed": diff_parent_child(parent_genome, mutated_genome),
+            }
 
         elif mutation_type_norm == "patch":
             mutated_genome = deepcopy(parent_genome)
@@ -241,7 +259,9 @@ def execute(
             if isinstance(ops, dict):
                 ops = ops.get("ops")
             if not isinstance(ops, list):
-                raise ValueError("patch mutation requires `mutation_spec.ops` (or a list spec)")
+                raise ValueError(
+                    "patch mutation requires `mutation_spec.ops` (or a list spec)"
+                )
 
             touched: list[str] = []
             for op in ops:
@@ -268,7 +288,9 @@ def execute(
         else:
             raise ValueError(f"Unknown mutation_type: {mutation_type_norm}")
 
-        genome_id = str(mutated_genome.get("genome_id") or genome_id_from_data(mutated_genome))
+        genome_id = str(
+            mutated_genome.get("genome_id") or genome_id_from_data(mutated_genome)
+        )
         mutated_genome["genome_id"] = genome_id
 
         out_path = output_path
@@ -278,7 +300,9 @@ def execute(
             out_path = out_path.with_suffix(".yaml")
 
         out_path.parent.mkdir(parents=True, exist_ok=True)
-        out_path.write_text(yaml.safe_dump(mutated_genome, sort_keys=False), encoding="utf-8")
+        out_path.write_text(
+            yaml.safe_dump(mutated_genome, sort_keys=False), encoding="utf-8"
+        )
 
         return {
             "success": True,

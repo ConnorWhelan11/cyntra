@@ -1,0 +1,196 @@
+# Gameplay Playability Gate v001
+#
+# Purpose:
+# - Validate gameplay quality using NitroGen vision-to-action model
+# - Detect stuck states, exploration coverage, and interaction success
+# - Automated QA for 3D game worlds before release
+#
+# Usage:
+# This gate runs a headless Godot session with FabPlaytest.gd that streams
+# frames to a NitroGen inference server and executes the predicted actions.
+# Metrics are collected and evaluated against configured thresholds.
+#
+# Prerequisites:
+# - NitroGen server running (local or via SSH tunnel from RunPod)
+# - Godot project with FabPlaytest.gd and player controller
+
+gate_config_id: gameplay_playability_v001
+category: gameplay_quality
+schema_version: "1.0"
+
+nitrogen:
+  # Connection to NitroGen inference server
+  host: localhost
+  port: 5555
+  timeout_ms: 30000
+
+  # Frame streaming settings
+  frame_width: 256
+  frame_height: 256
+  frame_rate: 10         # Frames per second to NitroGen (lower = cheaper)
+
+  # Action execution
+  action_timestep: 0     # Which timestep from prediction to execute (0 = immediate)
+  action_scale: 1.0      # Multiply joystick values (for sensitivity tuning)
+
+playtest:
+  # Test configuration
+  duration_seconds: 60           # Total playtest duration
+  warmup_seconds: 5              # Ignore first N seconds (player loading)
+  spawn_point: SPAWN_PLAYER      # Marker name for spawn (from marker contract)
+  max_retries: 3                 # Retry on crash
+
+  # Exploration settings
+  exploration_mode: free         # free | guided | stress
+  # free: NitroGen explores naturally
+  # guided: Reset position every 30s if stuck
+  # stress: Force random respawns to test all spawn points
+
+godot:
+  test_scene: res://scenes/playtest.tscn
+  headless: true
+  args: ["--headless", "--fixed-fps", "30"]
+  # Render settings for frame capture
+  viewport_width: 256
+  viewport_height: 256
+
+thresholds:
+  # Hard limits - fail below these
+  stuck_ratio_max: 0.3           # Max 30% of frames with no movement
+  coverage_min: 0.4              # Min 40% of navigable area explored
+  crash_count_max: 0             # Zero tolerance for crashes
+  interaction_rate_min: 0.05     # At least 5% of frames attempt interaction
+
+  # Soft limits - warn but don't fail
+  stuck_ratio_warn: 0.15         # Warn above 15% stuck
+  coverage_warn: 0.6             # Warn below 60% coverage
+
+metrics:
+  collect:
+    - frames_processed
+    - total_playtime_seconds
+    - stuck_frames
+    - stuck_ratio
+    - interaction_attempts
+    - jump_attempts
+    - movement_distance
+    - coverage_estimate
+    - positions_visited
+    - unique_areas_explored
+    - crash_count
+    - respawn_count
+
+  output_file: playability_results.json
+
+hard_fail_codes:
+  - PLAY_STUCK_TOO_LONG
+  - PLAY_NO_EXPLORATION
+  - PLAY_CRASH
+  - PLAY_NITROGEN_TIMEOUT
+  - PLAY_GODOT_MISSING
+  - PLAY_SCENE_NOT_FOUND
+  - PLAY_NO_SPAWN_POINT
+
+warning_codes:
+  - PLAY_LOW_COVERAGE
+  - PLAY_HIGH_STUCK_RATIO
+  - PLAY_NO_INTERACTIONS
+  - PLAY_NITROGEN_SLOW
+
+repair_playbook:
+  PLAY_STUCK_TOO_LONG:
+    priority: 1
+    instructions: |
+      Player got stuck too often (>30% of time).
+
+      Common causes:
+      - Invisible collision geometry blocking paths
+      - NavMesh holes or disconnected regions
+      - Doorways too narrow for player controller
+      - Furniture placed in walkways
+
+      Fixes:
+      - Review collision meshes (COLLIDER_ markers)
+      - Regenerate NavMesh (NAV_ markers)
+      - Check player capsule size vs door widths
+      - Run NavMesh connectivity validation
+
+  PLAY_NO_EXPLORATION:
+    priority: 1
+    instructions: |
+      Player explored less than 40% of the navigable area.
+
+      This indicates:
+      - Major navigation blockers
+      - Player spawn in dead end
+      - Invisible walls creating traps
+
+      Fixes:
+      - Verify SPAWN_PLAYER marker is in open area
+      - Check for one-way doors or drops
+      - Ensure all wings/rooms are reachable
+      - Add NAV_LINK markers for jumps/drops
+
+  PLAY_CRASH:
+    priority: 1
+    instructions: |
+      Game crashed during playtest.
+
+      Debug steps:
+      1. Run with --verbose to get crash log
+      2. Check for null reference in player controller
+      3. Verify all required assets are loaded
+      4. Test physics bodies for overlap issues
+
+  PLAY_NITROGEN_TIMEOUT:
+    priority: 1
+    instructions: |
+      NitroGen inference server didn't respond.
+
+      Fixes:
+      - Verify server is running on RunPod
+      - Check SSH tunnel: ssh -L 5555:localhost:5555 root@<runpod-ip>
+      - Test connection: python -c "from cyntra.fab.nitrogen_client import NitroGenClient; c = NitroGenClient(); print(c.info())"
+
+  PLAY_NO_SPAWN_POINT:
+    priority: 1
+    instructions: |
+      No spawn point found in scene.
+
+      Ensure the Godot project has a marker named SPAWN_PLAYER
+      at the player start position. See docs/specs/fab-godot-marker-contract.md
+
+  PLAY_LOW_COVERAGE:
+    priority: 2
+    instructions: |
+      Coverage is below ideal (40-60%).
+
+      Player is exploring but not reaching all areas.
+
+      Consider:
+      - Adding visual waypoints (lights, interesting objects)
+      - Improving sightlines to distant areas
+      - Adding TRIGGER_ zones that encourage exploration
+
+  PLAY_HIGH_STUCK_RATIO:
+    priority: 2
+    instructions: |
+      Player getting stuck often (15-30% of time).
+
+      Minor navigation issues but not critical.
+
+      Review:
+      - Corners and tight spaces
+      - Furniture placement
+      - Small geometry details that catch the player
+
+  PLAY_NO_INTERACTIONS:
+    priority: 3
+    instructions: |
+      Player never attempted to interact with anything.
+
+      This is usually fine for pure exploration tests,
+      but consider adding interactive elements:
+      - Doors with INTERACT_DOOR markers
+      - Items with pickup collision
+      - Levers and buttons

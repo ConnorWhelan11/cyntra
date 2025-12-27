@@ -1,0 +1,12 @@
+{
+  "name": "Brick Red",
+  "description": "Procedural: classic red brick wall, white mortar lines, slightly weathered, seamless tileable",
+  "category": "architecture",
+  "tags": ["brick", "wall", "building", "urban"],
+  "prompt": "classic red brick wall, white mortar lines, slightly weathered, seamless tileable",
+  "seed": 7867,
+  "workflow": "blender_procedural",
+  "resolution": [2048, 2048],
+  "created_at": "2025-12-27T00:35:56.783153+00:00",
+  "source": "blender"
+}

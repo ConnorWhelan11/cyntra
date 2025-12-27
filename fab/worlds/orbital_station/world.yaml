@@ -1,0 +1,195 @@
+# fab/worlds/orbital_station/world.yaml
+schema_version: "1.0"
+
+world_id: orbital_station
+world_config_id: orbital_station_v001
+world_type: interior_scifi
+version: "0.1.0"
+
+generator:
+  name: Orbital Research Station
+  description: |
+    A sleek sci-fi space station with modular sections and panoramic views.
+    Features:
+    - Modular corridor and room system
+    - Large viewport windows with starfield/planet view
+    - Holographic displays and control panels
+    - Clean geometric architecture with accent lighting
+    - Zero-gravity cargo areas (optional)
+    - Airlocks and bulkhead doors
+    - Emergency lighting mode variant
+  author: Fab Pipeline
+  required_addons: []
+
+build:
+  template_blend: blender/template.blend
+  blender_version_min: "4.0.0"
+  determinism:
+    seed: 42
+    pythonhashseed: 0
+    cycles_seed: 42
+  blender:
+    args: ["--background", "--factory-startup"]
+    env:
+      CYCLES_DEVICE: "CPU"
+      PYTHONHASHSEED: "0"
+
+parameters:
+  defaults:
+    layout:
+      module_count: 6
+      corridor_style: hexagonal  # rectangular | hexagonal | circular
+      ceiling_height_m: 3.5
+      module_types: [command, research, habitation, cargo, medical]
+    architecture:
+      hull_material: brushed_metal  # brushed_metal | white_polymer | carbon_composite
+      accent_material: glass_blue   # glass_blue | orange_warning | green_medical
+      panel_style: modular          # modular | seamless | industrial
+      wear_level: 0.1               # 0.0 = brand new, 1.0 = heavily used
+    windows:
+      viewport_count: 4
+      viewport_size: large          # small | medium | large | panoramic
+      exterior_view: planet         # starfield | planet | nebula | station_exterior
+    lighting:
+      mode: normal                  # normal | emergency | night_cycle | dramatic
+      accent_color: [0.2, 0.5, 1.0] # Blue accent
+      panel_glow: true
+      strip_lighting: true
+    props:
+      control_consoles: 6
+      cargo_containers: 8
+      crew_quarters_beds: 4
+      medical_equipment: 2
+      holographic_displays: 4
+    interactive:
+      doors_automatic: true
+      airlocks: 2
+      elevator_shafts: 1
+
+  schema:
+    layout.corridor_style:
+      type: enum
+      values: [rectangular, hexagonal, circular]
+    architecture.hull_material:
+      type: enum
+      values: [brushed_metal, white_polymer, carbon_composite]
+    windows.viewport_size:
+      type: enum
+      values: [small, medium, large, panoramic]
+    windows.exterior_view:
+      type: enum
+      values: [starfield, planet, nebula, station_exterior]
+    lighting.mode:
+      type: enum
+      values: [normal, emergency, night_cycle, dramatic]
+
+stages:
+  - id: prepare
+    type: blender
+    script: blender/stages/prepare.py
+    outputs: ["stages/prepare/"]
+
+  - id: layout
+    type: blender
+    script: blender/stages/layout.py
+    requires: [prepare]
+    params: ["layout.module_count", "layout.corridor_style"]
+    outputs: ["stages/layout/"]
+
+  - id: hull
+    type: blender
+    script: blender/stages/hull.py
+    requires: [layout]
+    params: ["architecture.hull_material", "architecture.panel_style"]
+    outputs: ["stages/hull/"]
+
+  - id: windows
+    type: blender
+    script: blender/stages/windows.py
+    requires: [hull]
+    params: ["windows.viewport_count", "windows.exterior_view"]
+    outputs: ["stages/windows/"]
+
+  - id: props
+    type: blender
+    script: blender/stages/props.py
+    requires: [hull]
+    params: ["props.control_consoles", "props.cargo_containers"]
+    outputs: ["stages/props/"]
+
+  - id: interactive
+    type: blender
+    script: blender/stages/interactive.py
+    requires: [hull]
+    params: ["interactive.doors_automatic", "interactive.airlocks"]
+    outputs: ["stages/interactive/"]
+
+  - id: lighting
+    type: blender
+    script: blender/stages/lighting.py
+    requires: [hull, windows, props]
+    params: ["lighting.mode", "lighting.accent_color"]
+    outputs: ["stages/lighting/"]
+
+  - id: navmesh
+    type: blender
+    script: blender/stages/navmesh.py
+    requires: [hull, props]
+    outputs: ["stages/navmesh/"]
+
+  - id: export
+    type: blender
+    script: blender/stages/export.py
+    requires: [lighting, navmesh]
+    outputs: ["world/orbital_station.glb", "world/navmesh.glb"]
+    settings:
+      draco_compression: true
+
+  - id: render
+    type: blender
+    script: blender/stages/render.py
+    requires: [lighting]
+    outputs: ["render/beauty/*.png", "render/depth/*.png"]
+
+  - id: validate
+    type: gate
+    requires: [export]
+    gates:
+      - fab/gates/scifi_environment_v001.yaml
+      - fab/gates/godot_integration_v001.yaml
+
+  - id: godot
+    type: godot
+    requires: [validate]
+    optional: true
+    outputs: ["godot/project/", "godot/index.html"]
+
+  - id: playtest
+    type: gate
+    requires: [godot]
+    optional: true
+    gates:
+      - fab/gates/gameplay_playability_scifi_v001.yaml
+    config:
+      nitrogen:
+        host: localhost
+        port: 5555
+      playtest:
+        duration_seconds: 90
+        exploration_mode: free
+
+budgets:
+  blender:
+    max_objects: 8000
+    max_vertices: 3000000
+  godot:
+    max_glb_size_mb: 60
+    max_materials: 40
+    max_draw_calls_est: 2500
+
+publish:
+  viewer:
+    enabled: true
+    paths:
+      glb: fab/assets/viewer/assets/exports/orbital_station.glb
+      game: fab/assets/viewer/assets/games/orbital_station/

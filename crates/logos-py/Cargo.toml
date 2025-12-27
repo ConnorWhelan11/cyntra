@@ -1,0 +1,24 @@
+[package]
+name = "logos-py"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "Python bindings for Logos formal reasoning system"
+
+[lib]
+name = "logos_py"
+crate-type = ["cdylib"]
+
+[dependencies]
+logos-ffi = { path = "../logos-ffi" }
+
+# Python bindings
+pyo3 = { version = "0.22", features = ["extension-module"] }
+
+# Serialization for Python dict conversion
+serde = { workspace = true }
+serde_json = { workspace = true }
+
+[features]
+default = []

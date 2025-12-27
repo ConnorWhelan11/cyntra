@@ -1,0 +1,39 @@
+name: godot-integration-validator
+version: 1.0.0
+description: |
+  Check GLB against CONTRACT.md requirements (spawn points, colliders, budgets).
+  Validates Godot 4 integration compliance.
+category: fab
+priority: critical
+phase: fab
+
+inputs:
+  - name: glb_path
+    type: string
+    description: Path to GLB file
+    required: true
+  - name: contract_path
+    type: string
+    description: Path to CONTRACT.md
+    required: false
+    default: "fab/godot/CONTRACT.md"
+
+outputs:
+  - name: passed
+    type: boolean
+    description: True if GLB meets all contract requirements
+  - name: violations
+    type: array
+    description: Contract violations found
+  - name: warnings
+    type: array
+    description: Non-blocking warnings
+  - name: metadata
+    type: object
+    description: Extracted metadata (spawn count, colliders, etc.)
+
+examples: []
+
+implementation:
+  type: python
+  path: godot-integration-validator.py

@@ -22,5 +22,8 @@ tracing-subscriber.workspace = true
 anyhow.workspace = true
 chrono.workspace = true
 
+# HTTP client for membrane integration
+reqwest = { version = "0.12", features = ["json"] }
+
 # For desktop mode (optional, feature-gated later)
 # tauri integration would go here

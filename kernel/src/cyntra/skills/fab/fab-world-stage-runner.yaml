@@ -1,0 +1,49 @@
+name: fab-world-stage-runner
+version: 1.0.0
+description: |
+  Execute world pipeline stages (prepare → generate → bake → export) with manifest tracking.
+  Orchestrates deterministic world building.
+category: fab
+priority: critical
+phase: fab
+
+inputs:
+  - name: world_path
+    type: string
+    description: Path to world recipe directory
+    required: true
+  - name: stages
+    type: array
+    description: Stages to run (or 'all')
+    required: false
+    default: ["all"]
+  - name: output_dir
+    type: string
+    description: Output directory for run artifacts
+    required: true
+  - name: seed
+    type: integer
+    description: Master seed for deterministic generation
+    required: false
+    default: 42
+  - name: param_overrides
+    type: object
+    description: Override world.yaml parameters
+    required: false
+
+outputs:
+  - name: manifest_path
+    type: string
+    description: Path to world run manifest with SHA tracking
+  - name: stages_completed
+    type: array
+    description: Successfully completed stages
+  - name: artifacts
+    type: object
+    description: Paths to generated artifacts per stage
+
+examples: []
+
+implementation:
+  type: python
+  path: fab-world-stage-runner.py

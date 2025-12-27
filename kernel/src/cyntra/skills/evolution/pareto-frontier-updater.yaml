@@ -1,0 +1,43 @@
+name: pareto-frontier-updater
+version: 1.0.0
+description: |
+  Maintain non-dominated set across quality/cost/determinism objectives.
+  Manages Pareto frontier for prompt evolution.
+category: evolution
+priority: critical
+phase: 5
+
+inputs:
+  - name: frontier_path
+    type: string
+    description: Path to current frontier.json
+    required: true
+  - name: new_genomes
+    type: array
+    description: New genome evaluation results to consider
+    required: true
+  - name: objectives
+    type: array
+    description: Objectives to optimize (quality, cost, determinism, etc.)
+    required: false
+    default: ["quality", "cost", "determinism"]
+
+outputs:
+  - name: frontier_path
+    type: string
+    description: Path to updated frontier.json
+  - name: added
+    type: array
+    description: Genomes added to frontier
+  - name: removed
+    type: array
+    description: Genomes dominated and removed
+  - name: frontier_size
+    type: integer
+    description: Current frontier size
+
+examples: []
+
+implementation:
+  type: python
+  path: pareto-frontier-updater.py

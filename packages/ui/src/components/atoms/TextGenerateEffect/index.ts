@@ -1,2 +1,0 @@
-export { TextGenerateEffect } from "./TextGenerateEffect";
-

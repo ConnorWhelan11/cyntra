@@ -1,0 +1,64 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://cyntra/schemas/cyntra/dynamics_report.schema.json",
+  "title": "Cyntra Dynamics Report",
+  "description": "Potential and action summary for Cyntra dynamics",
+  "type": "object",
+  "required": ["schema_version", "generated_at", "estimation", "potential", "action_summary"],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "cyntra.dynamics_report.v1"
+    },
+    "generated_at": { "type": "string", "format": "date-time" },
+    "estimation": {
+      "type": "object",
+      "required": ["window", "smoothing_alpha", "fit"],
+      "properties": {
+        "window": {
+          "type": "object",
+          "properties": {
+            "since": { "type": ["string", "null"] },
+            "until": { "type": ["string", "null"] }
+          },
+          "additionalProperties": false
+        },
+        "smoothing_alpha": { "type": "number" },
+        "fit": {
+          "type": "object",
+          "properties": {
+            "rmse_logratio": { "type": ["number", "null"] },
+            "edges_used": { "type": "integer" }
+          },
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": false
+    },
+    "potential": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["state_id", "V", "stderr"],
+        "properties": {
+          "state_id": { "type": "string" },
+          "V": { "type": "number" },
+          "stderr": { "type": "number" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "action_summary": {
+      "type": "object",
+      "required": ["global_action_rate", "by_domain", "traps"],
+      "properties": {
+        "global_action_rate": { "type": "number" },
+        "by_domain": { "type": "object" },
+        "traps": { "type": "array" }
+      },
+      "additionalProperties": true
+    },
+    "controller_recommendations": { "type": "object" }
+  },
+  "additionalProperties": false
+}

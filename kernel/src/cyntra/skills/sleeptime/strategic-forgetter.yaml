@@ -1,0 +1,43 @@
+name: strategic-forgetter
+version: 1.0.0
+description: |
+  Prune outdated and low-value memories to maintain efficiency.
+  Uses decay rates, usage stats, and recency.
+category: sleeptime
+priority: medium
+
+inputs:
+  - name: memory_path
+    type: string
+    description: Path to memory store directory
+    required: true
+  - name: decay_rate
+    type: number
+    description: Daily decay rate for unused blocks
+    required: false
+    default: 0.1
+  - name: min_usage
+    type: integer
+    description: Minimum usage count for retention
+    required: false
+    default: 2
+  - name: max_age_days
+    type: integer
+    description: Maximum age before mandatory review
+    required: false
+    default: 30
+
+outputs:
+  - name: pruned_blocks
+    type: array
+    description: IDs of pruned blocks
+  - name: archived_blocks
+    type: array
+    description: IDs of archived (not deleted) blocks
+  - name: space_freed_kb
+    type: number
+    description: Storage space freed
+
+implementation:
+  type: python
+  path: strategic-forgetter.py

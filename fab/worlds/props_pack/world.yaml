@@ -1,0 +1,100 @@
+# Props Pack - 3D Game Props
+# Generated using Hunyuan3D via ComfyUI
+
+name: Props Pack
+description: Collection of 3D game props for indie game development
+version: "1.0"
+
+# Mesh definitions for 3D generation
+meshes:
+  # === Furniture ===
+  - id: wooden_chair
+    prompt: simple wooden chair, medieval style, game asset, clean geometry
+    category: furniture
+    tags: [furniture, wood, medieval, seating]
+
+  - id: wooden_table
+    prompt: rustic wooden table, rectangular, game asset, clean topology
+    category: furniture
+    tags: [furniture, wood, rustic, surface]
+
+  - id: wooden_barrel
+    prompt: wooden barrel, medieval storage, iron bands, game asset
+    category: furniture
+    tags: [furniture, wood, storage, medieval]
+
+  - id: treasure_chest
+    prompt: treasure chest, wooden with metal trim, closed, game asset
+    category: furniture
+    tags: [furniture, storage, treasure, fantasy]
+
+  # === Props ===
+  - id: ceramic_vase
+    prompt: ceramic vase, simple elegant shape, white porcelain, game asset
+    category: props
+    tags: [props, ceramic, decoration, indoor]
+
+  - id: lantern
+    prompt: metal lantern, medieval style, hanging lantern, game asset
+    category: props
+    tags: [props, metal, lighting, medieval]
+
+  - id: potion_bottle
+    prompt: glass potion bottle, round flask, cork stopper, game asset
+    category: props
+    tags: [props, glass, fantasy, alchemy]
+
+  - id: book_stack
+    prompt: stack of old books, leather bound, game asset
+    category: props
+    tags: [props, books, library, decoration]
+
+  # === Weapons ===
+  - id: sword_basic
+    prompt: medieval sword, steel blade, leather wrapped handle, game asset
+    category: weapons
+    tags: [weapons, sword, medieval, combat]
+
+  - id: shield_round
+    prompt: round wooden shield, metal boss center, game asset
+    category: weapons
+    tags: [weapons, shield, defense, medieval]
+
+  - id: bow_simple
+    prompt: wooden longbow, simple design, game asset
+    category: weapons
+    tags: [weapons, bow, archery, wood]
+
+  # === Nature ===
+  - id: rock_medium
+    prompt: natural rock, medium size boulder, mossy, game asset
+    category: nature
+    tags: [nature, rock, outdoor, terrain]
+
+  - id: tree_stump
+    prompt: cut tree stump, old weathered wood, game asset
+    category: nature
+    tags: [nature, wood, outdoor, forest]
+
+  - id: mushroom_cluster
+    prompt: cluster of mushrooms, fantasy style, glowing caps, game asset
+    category: nature
+    tags: [nature, mushroom, fantasy, forest]
+
+  # === Food ===
+  - id: apple
+    prompt: red apple, fresh fruit, game asset, clean
+    category: food
+    tags: [food, fruit, consumable]
+
+  - id: bread_loaf
+    prompt: loaf of bread, rustic baked, game asset
+    category: food
+    tags: [food, bread, consumable, bakery]
+
+# Generation settings
+settings:
+  default_workflow: hunyuan3d_v2
+  image_gen_model: sdxl
+  guidance_scale: 5.5
+  steps: 50

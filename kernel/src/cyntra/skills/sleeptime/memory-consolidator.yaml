@@ -1,0 +1,37 @@
+name: memory-consolidator
+version: 1.0.0
+description: |
+  Compress observations and patterns into memory blocks.
+  Maintains the shared memory store with consolidated knowledge.
+category: sleeptime
+priority: critical
+
+inputs:
+  - name: memory_path
+    type: string
+    description: Path to memory store directory
+    required: true
+  - name: patterns
+    type: array
+    description: Patterns from pattern-extractor
+    required: true
+  - name: confidence_threshold
+    type: number
+    description: Minimum confidence for block creation
+    required: false
+    default: 0.7
+
+outputs:
+  - name: blocks_created
+    type: array
+    description: IDs of new memory blocks
+  - name: blocks_updated
+    type: array
+    description: IDs of updated blocks
+  - name: blocks_pruned
+    type: array
+    description: IDs of pruned low-value blocks
+
+implementation:
+  type: python
+  path: memory-consolidator.py

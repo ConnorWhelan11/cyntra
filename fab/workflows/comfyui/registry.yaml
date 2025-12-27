@@ -1,0 +1,431 @@
+# ComfyUI Workflow Registry
+# This file defines all available workflows with metadata for MCP tool generation.
+#
+# Each workflow entry includes:
+# - id: Unique identifier (used for tool naming: comfyui_{id})
+# - file: Path to workflow JSON relative to this directory
+# - name: Human-readable name
+# - description: What the workflow does
+# - when_to_use: Guidance for agents on when to select this workflow
+# - tags: Categorization for routing and search
+# - inputs: Parameter definitions with types and node mappings
+# - outputs: Output file definitions with descriptions
+# - performance: Estimated execution time and resource requirements
+# - required_models: Models that must be installed
+# - required_custom_nodes: Custom nodes that must be installed
+
+version: 1
+
+workflows:
+  # ============================================
+  # PBR Material Generation
+  # ============================================
+  - id: chord_pbr
+    file: chord_image_to_material.json
+    name: "CHORD PBR Material Generator"
+    description: "Generate complete PBR material set (basecolor, normal, roughness, metalness, height) from a text description using Ubisoft's CHORD model."
+    when_to_use: |
+      - Creating tileable PBR materials from text descriptions
+      - Converting concept art ideas to game-ready materials
+      - Generating realistic surface textures (wood, stone, metal, fabric, etc.)
+      - When you need all PBR maps in one workflow
+    tags: [texture, pbr, materials, game-assets, generation]
+    category: material_generation
+
+    inputs:
+      - name: prompt
+        type: string
+        required: true
+        description: "Description of the texture (e.g., 'weathered cobblestone, top down view, seamless tileable')"
+        node: "2"
+        field: text
+        examples:
+          - "worn leather texture, seamless tileable"
+          - "aged oak wood planks, top down view"
+          - "rusty corroded metal, industrial"
+          - "mossy stone bricks, fantasy castle"
+
+      - name: negative_prompt
+        type: string
+        required: false
+        default: "blurry, watermark, text, low quality"
+        description: "Things to avoid in the generated texture"
+        node: "3"
+        field: text
+
+      - name: steps
+        type: int
+        required: false
+        default: 30
+        min: 10
+        max: 50
+        description: "Sampling steps (more = higher quality, slower)"
+        node: "4"
+        field: steps
+
+      - name: cfg
+        type: float
+        required: false
+        default: 7.0
+        min: 1.0
+        max: 15.0
+        description: "Classifier-free guidance scale"
+        node: "4"
+        field: cfg
+
+      - name: seed
+        type: int
+        required: false
+        default: random
+        description: "Random seed for reproducibility"
+        node: "4"
+        field: seed
+
+    outputs:
+      - name: basecolor
+        node: "15"
+        description: "Diffuse/albedo color map"
+        format: png
+      - name: normal
+        node: "11"
+        description: "Normal map for surface detail (OpenGL format)"
+        format: png
+      - name: roughness
+        node: "16"
+        description: "Roughness map (white = rough, black = smooth)"
+        format: png
+      - name: metalness
+        node: "12"
+        description: "Metalness map (white = metal, black = dielectric)"
+        format: png
+      - name: height
+        node: "14"
+        description: "Height/displacement map derived from normal"
+        format: png
+
+    performance:
+      rtx_4090: "~8 seconds"
+      rtx_3090: "~12 seconds"
+      a100: "~6 seconds"
+      vram_required: "8GB"
+      output_resolution: "1024x1024"
+
+    required_models:
+      - name: sd_xl_base_1.0.safetensors
+        type: checkpoint
+        url: "https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0"
+        size: "6.5GB"
+      - name: chord_v1.safetensors
+        type: checkpoint
+        url: "https://huggingface.co/Ubisoft/ubisoft-laforge-chord"
+        size: "2.6GB"
+        gated: true
+        license: "CHORD License (free for research, commercial requires approval)"
+
+    required_custom_nodes:
+      - name: ComfyUI-Chord
+        url: "https://github.com/ubisoft/ComfyUI-Chord"
+      - name: comfyui-seamless-tiling
+        url: "https://github.com/spinagon/comfyui-seamless-tiling"
+
+  # ============================================
+  # Texture Upscaling
+  # ============================================
+  - id: upscale_4x
+    file: texture_upscale_4x.json
+    name: "Texture Upscale 4x"
+    description: "Upscale textures 4x using UltraSharp ESRGAN. Preserves material detail without AI hallucination."
+    when_to_use: |
+      - Upscaling low-resolution textures to higher resolution
+      - Preserving sharp edges and material detail
+      - When you need faithful upscaling without style changes
+      - Post-processing after material generation
+    tags: [upscale, texture, enhancement]
+    category: post_processing
+
+    inputs:
+      - name: input_image
+        type: image
+        required: true
+        description: "Image to upscale"
+        node: "10"
+        upload: true
+
+    outputs:
+      - name: upscaled
+        node: "14"
+        description: "4x upscaled image"
+        format: png
+
+    performance:
+      rtx_4090: "~2 seconds"
+      rtx_3090: "~4 seconds"
+      vram_required: "4GB"
+      scale_factor: 4
+
+    required_models:
+      - name: 4x-UltraSharp.pth
+        type: upscale_model
+        url: "https://huggingface.co/philz1337x/upscaler/resolve/main/4x-UltraSharp.pth"
+        size: "64MB"
+
+    required_custom_nodes: []
+
+  # ============================================
+  # Inpainting / Repair
+  # ============================================
+  - id: flux_inpaint
+    file: flux_inpainting.json
+    name: "FLUX Inpainting"
+    description: "Inpaint and repair textures using FLUX model. Use for fixing artifacts, filling gaps, or blending seams."
+    when_to_use: |
+      - Repairing artifacts or defects in textures
+      - Filling gaps or missing areas
+      - Blending seams in tiled textures
+      - Modifying specific regions while preserving surrounding areas
+    tags: [inpaint, repair, texture, flux]
+    category: repair
+
+    inputs:
+      - name: input_image
+        type: image
+        required: true
+        description: "Image with alpha mask (transparent = inpaint area)"
+        node: "11"
+        upload: true
+
+      - name: prompt
+        type: string
+        required: true
+        description: "What to generate in the masked area"
+        node: "21"
+        field: widgets_values[0]
+        examples:
+          - "seamless texture, detailed surface"
+          - "matching stone pattern"
+          - "smooth transition, no seams"
+
+      - name: steps
+        type: int
+        required: false
+        default: 30
+        min: 10
+        max: 50
+        node: "29"
+        field: widgets_values[2]
+
+      - name: denoise
+        type: int
+        required: false
+        default: 50
+        min: 0
+        max: 100
+        description: "Denoise strength (higher = more change)"
+        node: "29"
+        field: widgets_values[0]
+
+    outputs:
+      - name: inpainted
+        node: "13"
+        description: "Repaired image"
+        format: png
+
+    performance:
+      rtx_4090: "~15 seconds"
+      rtx_3090: "~25 seconds"
+      vram_required: "16GB"
+
+    required_models:
+      - name: clip_l.safetensors
+        type: text_encoder
+        url: "https://huggingface.co/Comfy-Org/stable-diffusion-3.5-fp8/resolve/main/text_encoders/clip_l.safetensors"
+        size: "234MB"
+      - name: t5xxl_fp16.safetensors
+        type: text_encoder
+        url: "https://huggingface.co/comfyanonymous/flux_text_encoders/resolve/main/t5xxl_fp16.safetensors"
+        size: "9.4GB"
+      - name: flux1-fill-dev.safetensors
+        type: diffusion_model
+        url: "https://huggingface.co/black-forest-labs/FLUX.1-Fill-dev"
+        size: "23GB"
+        gated: true
+
+    required_custom_nodes:
+      - name: ComfyUI-Flux-Inpainting
+        url: "https://github.com/rubi-du/ComfyUI-Flux-Inpainting"
+
+  # ============================================
+  # Basic Text-to-Image
+  # ============================================
+  - id: txt2img_sdxl
+    file: txt2img_sdxl.json
+    name: "SDXL Text-to-Image"
+    description: "Generate images from text prompts using Stable Diffusion XL."
+    when_to_use: |
+      - Creating concept art from text descriptions
+      - Generating reference images for world design
+      - Quick visualization of ideas
+      - When you need a general-purpose image from text
+    tags: [generation, text-to-image, sdxl, concept]
+    category: generation
+
+    inputs:
+      - name: prompt
+        type: string
+        required: true
+        description: "Description of the image to generate"
+        node: "2"
+        field: text
+        examples:
+          - "a fantasy castle on a cliff, dramatic lighting, 4k"
+          - "futuristic city street at night, cyberpunk, neon lights"
+          - "medieval blacksmith workshop, warm lighting, detailed"
+
+      - name: negative_prompt
+        type: string
+        required: false
+        default: "blurry, watermark, text, low quality"
+        node: "3"
+        field: text
+
+      - name: steps
+        type: int
+        required: false
+        default: 30
+        min: 10
+        max: 50
+        node: "5"
+        field: steps
+
+      - name: cfg
+        type: float
+        required: false
+        default: 7.5
+        min: 1.0
+        max: 15.0
+        node: "5"
+        field: cfg
+
+      - name: width
+        type: int
+        required: false
+        default: 1024
+        min: 512
+        max: 2048
+        node: "4"
+        field: width
+
+      - name: height
+        type: int
+        required: false
+        default: 1024
+        min: 512
+        max: 2048
+        node: "4"
+        field: height
+
+      - name: seed
+        type: int
+        required: false
+        default: random
+        node: "5"
+        field: seed
+
+    outputs:
+      - name: image
+        node: "7"
+        description: "Generated image"
+        format: png
+
+    performance:
+      rtx_4090: "~6 seconds"
+      rtx_3090: "~10 seconds"
+      vram_required: "8GB"
+
+    required_models:
+      - name: sd_xl_base_1.0.safetensors
+        type: checkpoint
+        url: "https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0"
+        size: "6.5GB"
+
+    required_custom_nodes: []
+
+  # ============================================
+  # Fast Material Generation (Turbo)
+  # ============================================
+  - id: chord_turbo
+    file: chord_turbo_image_to_material.json
+    name: "CHORD Turbo PBR (Fast)"
+    description: "Fast PBR material generation using Z-Image Turbo (9 steps). Lower quality but 3x faster."
+    when_to_use: |
+      - Rapid prototyping of materials
+      - When speed is more important than maximum quality
+      - Generating many material variants quickly
+      - Testing prompts before committing to full quality
+    tags: [texture, pbr, materials, fast, turbo]
+    category: material_generation
+
+    inputs:
+      - name: prompt
+        type: string
+        required: true
+        description: "Description of the texture"
+        node: "2"
+        field: text
+
+      - name: seed
+        type: int
+        required: false
+        default: random
+        node: "4"
+        field: seed
+
+    outputs:
+      - name: basecolor
+        node: "15"
+        description: "Diffuse/albedo color map"
+        format: png
+      - name: normal
+        node: "11"
+        description: "Normal map"
+        format: png
+      - name: roughness
+        node: "16"
+        description: "Roughness map"
+        format: png
+      - name: metalness
+        node: "12"
+        description: "Metalness map"
+        format: png
+      - name: height
+        node: "14"
+        description: "Height map"
+        format: png
+
+    performance:
+      rtx_4090: "~3 seconds"
+      vram_required: "12GB"
+      output_resolution: "2048x2048"
+
+    required_models:
+      - name: z_image_turbo_bf16.safetensors
+        type: diffusion_model
+        url: "https://huggingface.co/Comfy-Org/z_image_turbo"
+        size: "12GB"
+      - name: qwen_3_4b.safetensors
+        type: text_encoder
+        url: "https://huggingface.co/Comfy-Org/z_image_turbo"
+        size: "8GB"
+      - name: ae.safetensors
+        type: vae
+        url: "https://huggingface.co/Comfy-Org/z_image_turbo"
+        size: "300MB"
+      - name: chord_v1.safetensors
+        type: checkpoint
+        url: "https://huggingface.co/Ubisoft/ubisoft-laforge-chord"
+        size: "2.6GB"
+        gated: true
+
+    required_custom_nodes:
+      - name: ComfyUI-Chord
+        url: "https://github.com/ubisoft/ComfyUI-Chord"

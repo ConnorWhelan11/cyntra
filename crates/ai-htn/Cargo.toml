@@ -1,0 +1,23 @@
+[package]
+name = "ai-htn"
+description = "Deterministic HTN planner producing ai-core PlanSpec"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[features]
+bt = ["dep:ai-bt"]
+
+[dependencies]
+ai-core = { path = "../ai-core" }
+ai-tools = { path = "../ai-tools" }
+ai-bt = { path = "../ai-bt", optional = true }
+
+[dev-dependencies]
+criterion = { workspace = true }
+
+[[bench]]
+name = "planner"
+harness = false
+

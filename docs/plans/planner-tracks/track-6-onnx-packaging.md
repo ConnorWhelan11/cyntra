@@ -118,21 +118,21 @@ The Cyntra kernel should run planner inference without importing PyTorch. This t
   "n_layers": 3,
   "dropout": 0.0,
   "heads": {
-    "swarm": {"n_classes": 2},
-    "candidates": {"n_classes": 4},
-    "minutes": {"n_classes": 6},
-    "iterations": {"n_classes": 5}
+    "swarm": { "n_classes": 2 },
+    "candidates": { "n_classes": 4 },
+    "minutes": { "n_classes": 6 },
+    "iterations": { "n_classes": 5 }
   },
   "onnx": {
     "opset_version": 14,
     "input_names": ["input"],
     "output_names": ["swarm", "candidates", "minutes", "iterations"],
     "dynamic_axes": {
-      "input": {0: "batch_size"},
-      "swarm": {0: "batch_size"},
-      "candidates": {0: "batch_size"},
-      "minutes": {0: "batch_size"},
-      "iterations": {0: "batch_size"}
+      "input": { "0": "batch_size" },
+      "swarm": { "0": "batch_size" },
+      "candidates": { "0": "batch_size" },
+      "minutes": { "0": "batch_size" },
+      "iterations": { "0": "batch_size" }
     }
   }
 }
@@ -149,13 +149,13 @@ The Cyntra kernel should run planner inference without importing PyTorch. This t
   "validity_rules": [
     {
       "description": "If swarm_id=serial_handoff, then max_candidates_bin=1.",
-      "if": {"swarm_id": "serial_handoff"},
-      "then": {"max_candidates_bin": 1}
+      "if": { "swarm_id": "serial_handoff" },
+      "then": { "max_candidates_bin": 1 }
     },
     {
       "description": "If job_type=\"code\", then max_iterations_bin=\"NA\".",
-      "if": {"job_type": "code"},
-      "then": {"max_iterations_bin": "NA"}
+      "if": { "job_type": "code" },
+      "then": { "max_iterations_bin": "NA" }
     }
   ]
 }
@@ -196,7 +196,7 @@ The Cyntra kernel should run planner inference without importing PyTorch. This t
       "per_head_accuracy": {
         "swarm": 0.85,
         "candidates": 0.75,
-        "minutes": 0.70,
+        "minutes": 0.7,
         "iterations": 0.95
       }
     }
@@ -548,7 +548,7 @@ if __name__ == "__main__":
 ### 4.2 ONNX Model Wrapper for Inference
 
 ```python
-# cyntra-kernel/src/cyntra/planner/onnx_model.py
+# kernel/src/cyntra/planner/onnx_model.py
 
 from __future__ import annotations
 
@@ -661,30 +661,30 @@ class ONNXPlannerModel:
 
 ### 5.1 Task Breakdown
 
-| Task ID | Description | Est. Hours | Dependencies |
-|---------|-------------|------------|--------------|
-| T6.1 | Implement export_to_onnx() function | 3 | Track 2 |
-| T6.2 | Implement validate_onnx_model() function | 3 | T6.1 |
-| T6.3 | Implement create_model_bundle() function | 2 | T6.1-T6.2 |
-| T6.4 | Implement ONNXPlannerModel class | 2 | T6.3 |
-| T6.5 | Define bundle file schemas | 1 | None |
-| T6.6 | Add CLI for export script | 1 | T6.3 |
-| T6.7 | Unit tests for export | 3 | T6.1-T6.3 |
-| T6.8 | Unit tests for ONNX inference | 2 | T6.4 |
-| T6.9 | Integration test: full export + load | 2 | T6.3-T6.4 |
-| T6.10 | Documentation for bundle structure | 1 | T6.5 |
+| Task ID | Description                              | Est. Hours | Dependencies |
+| ------- | ---------------------------------------- | ---------- | ------------ |
+| T6.1    | Implement export_to_onnx() function      | 3          | Track 2      |
+| T6.2    | Implement validate_onnx_model() function | 3          | T6.1         |
+| T6.3    | Implement create_model_bundle() function | 2          | T6.1-T6.2    |
+| T6.4    | Implement ONNXPlannerModel class         | 2          | T6.3         |
+| T6.5    | Define bundle file schemas               | 1          | None         |
+| T6.6    | Add CLI for export script                | 1          | T6.3         |
+| T6.7    | Unit tests for export                    | 3          | T6.1-T6.3    |
+| T6.8    | Unit tests for ONNX inference            | 2          | T6.4         |
+| T6.9    | Integration test: full export + load     | 2          | T6.3-T6.4    |
+| T6.10   | Documentation for bundle structure       | 1          | T6.5         |
 
 **Total estimated hours:** 20
 
 ### 5.2 File Deliverables
 
-| File | Description | Status |
-|------|-------------|--------|
-| `train/planner/export_onnx.py` | Export script | NEW |
-| `cyntra-kernel/src/cyntra/planner/onnx_model.py` | ONNX model wrapper | NEW |
-| `cyntra-kernel/tests/planner/test_onnx_export.py` | Export tests | NEW |
-| `cyntra-kernel/tests/planner/test_onnx_inference.py` | Inference tests | NEW |
-| `docs/models/model-bundle-format.md` | Bundle documentation | NEW |
+| File                                          | Description          | Status |
+| --------------------------------------------- | -------------------- | ------ |
+| `train/planner/export_onnx.py`                | Export script        | NEW    |
+| `kernel/src/cyntra/planner/onnx_model.py`     | ONNX model wrapper   | NEW    |
+| `kernel/tests/planner/test_onnx_export.py`    | Export tests         | NEW    |
+| `kernel/tests/planner/test_onnx_inference.py` | Inference tests      | NEW    |
+| `docs/models/model-bundle-format.md`          | Bundle documentation | NEW    |
 
 ---
 
@@ -818,16 +818,16 @@ def test_onnx_model_calibration():
 
 ### 8.1 Upstream Dependencies
 
-| Dependency | Location | Status |
-|------------|----------|--------|
+| Dependency       | Location                 | Status   |
+| ---------------- | ------------------------ | -------- |
 | Track 2 (Models) | `cyntra/planner/models/` | REQUIRED |
-| onnx | `requirements.txt` | EXTERNAL |
-| onnxruntime | `requirements.txt` | EXTERNAL |
+| onnx             | `requirements.txt`       | EXTERNAL |
+| onnxruntime      | `requirements.txt`       | EXTERNAL |
 
 ### 8.2 Downstream Dependents
 
-| Dependent | Description |
-|-----------|-------------|
+| Dependent             | Description                   |
+| --------------------- | ----------------------------- |
 | Track 5 (Integration) | Uses ONNX model for inference |
 
 ---
@@ -847,6 +847,6 @@ def test_onnx_model_calibration():
 
 ## 10. Revision History
 
-| Version | Date | Author | Changes |
-|---------|------|--------|---------|
-| 1.0 | 2025-12 | Planner Agent | Initial specification |
+| Version | Date    | Author        | Changes               |
+| ------- | ------- | ------------- | --------------------- |
+| 1.0     | 2025-12 | Planner Agent | Initial specification |

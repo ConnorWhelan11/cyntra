@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="PackedScene" path="wooden_chair_lod0.glb" id="1"]
+[ext_resource type="PackedScene" path="wooden_chair_lod1.glb" id="2"]
+[ext_resource type="PackedScene" path="wooden_chair_lod2.glb" id="3"]
+
+[node name="wooden_chair" type="Node3D"]
+
+[node name="lod0" parent="." instance=ExtResource("1")]
+visibility_range_begin = 0.0
+visibility_range_end = 10.0
+
+[node name="lod1" parent="." instance=ExtResource("2")]
+visibility_range_begin = 10.0
+visibility_range_end = 25.0
+
+[node name="lod2" parent="." instance=ExtResource("3")]
+visibility_range_begin = 25.0
+visibility_range_end = 100.0

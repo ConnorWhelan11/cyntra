@@ -1,0 +1,49 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://cyntra/schemas/cyntra/universe_world_frontiers.schema.json",
+  "title": "Cyntra Universe World Frontiers",
+  "description": "Universe-scoped Pareto frontiers for a single world (supports multiple objectives).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "universe_id", "world_id", "frontiers"],
+  "properties": {
+    "schema_version": { "type": "string", "const": "1.0" },
+    "universe_id": { "type": "string" },
+    "world_id": { "type": "string" },
+    "generated_at": { "type": ["string", "null"], "format": "date-time" },
+    "frontiers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["objective_id", "metrics", "objectives", "points"],
+        "properties": {
+          "objective_id": { "type": "string" },
+          "metrics": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "objectives": {
+            "type": "object",
+            "additionalProperties": { "type": "string", "enum": ["max", "min"] }
+          },
+          "points": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["run_id", "values"],
+              "properties": {
+                "run_id": { "type": "string" },
+                "values": {
+                  "type": "object",
+                  "additionalProperties": { "type": "number" }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,55 @@
+name: check-coverage
+version: 1.0.0
+description: |
+  Analyze test coverage and identify gaps.
+  Integrates with pytest-cov, coverage.py.
+category: development
+priority: medium
+phase: 2
+
+inputs:
+  - name: repo_path
+    type: string
+    description: Path to repository
+    required: true
+  - name: source_paths
+    type: array
+    description: Source paths to check coverage for
+    required: false
+  - name: min_coverage
+    type: number
+    description: Minimum coverage threshold (0-100)
+    required: false
+    default: 80
+
+outputs:
+  - name: overall_coverage
+    type: number
+    description: Overall coverage percentage
+  - name: file_coverage
+    type: object
+    description: Per-file coverage breakdown
+  - name: uncovered_lines
+    type: object
+    description: Map of file to uncovered line numbers
+  - name: meets_threshold
+    type: boolean
+    description: Whether coverage meets minimum threshold
+
+examples:
+  - description: Check coverage for a Python project
+    inputs:
+      repo_path: "/path/to/repo"
+      min_coverage: 80
+    outputs:
+      overall_coverage: 85.5
+      file_coverage:
+        "src/main.py": 92.0
+        "src/utils.py": 78.0
+      uncovered_lines:
+        "src/utils.py": [45, 46, 78, 79]
+      meets_threshold: true
+
+implementation:
+  type: python
+  path: check-coverage.py

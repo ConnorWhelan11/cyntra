@@ -13,10 +13,9 @@ from pathlib import Path
 from typing import Any
 
 repo_root = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(repo_root / "cyntra-kernel" / "src"))
-
-from cyntra.state.manager import StateManager
-from cyntra.state.models import Issue
+kernel_src = repo_root / "kernel" / "src"
+if kernel_src.exists():
+    sys.path.insert(0, str(kernel_src))
 
 
 def execute(
@@ -42,7 +41,10 @@ def execute(
         }
     """
     try:
-        state_mgr = StateManager(repo_root)
+        from cyntra.state.manager import StateManager
+        from cyntra.state.models import Issue
+
+        state_mgr = StateManager(repo_root=repo_root)
     except Exception as e:
         return {
             "success": False,
@@ -107,7 +109,13 @@ def execute(
             # Validate status transition if status changed
             if "status" in updates and updates["status"] != issue.status:
                 # Basic validation - could be more sophisticated
-                valid_statuses = ["open", "in_progress", "completed", "blocked", "archived"]
+                valid_statuses = [
+                    "open",
+                    "in_progress",
+                    "completed",
+                    "blocked",
+                    "archived",
+                ]
                 if updates["status"] not in valid_statuses:
                     return {
                         "success": False,
@@ -184,10 +192,12 @@ def execute(
 
                 for dep_id in issue.depends_on:
                     if dep_id not in issue_ids:
-                        validation_errors.append({
-                            "issue_id": issue.id,
-                            "error": f"Dependency not found: {dep_id}",
-                        })
+                        validation_errors.append(
+                            {
+                                "issue_id": issue.id,
+                                "error": f"Dependency not found: {dep_id}",
+                            }
+                        )
 
             return {
                 "success": True,

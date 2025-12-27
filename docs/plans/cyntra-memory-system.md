@@ -7,6 +7,7 @@ Implement an agent memory system for Cyntra, adapted from Mira OS's battle-teste
 **Source Reference**: `/tmp/mira-oss/` (cloned repository)
 
 **Key Mira Files to Study**:
+
 - `lt_memory/models.py` - Memory data models
 - `lt_memory/scoring_formula.sql` - Importance calculation
 - `lt_memory/db_access.py` - Database operations
@@ -27,7 +28,8 @@ Implement an agent memory system for Cyntra, adapted from Mira OS's battle-teste
 **Goal**: Establish the foundational data structures for agent memory.
 
 ### Task 1.1: Create Memory Models
-**File**: `cyntra-kernel/src/cyntra/memory/models.py`
+
+**File**: `kernel/src/cyntra/memory/models.py`
 
 ```python
 # Models to implement:
@@ -44,7 +46,8 @@ Implement an agent memory system for Cyntra, adapted from Mira OS's battle-teste
 **Reference**: `/tmp/mira-oss/lt_memory/models.py`
 
 ### Task 1.2: Create Memory Events
-**File**: `cyntra-kernel/src/cyntra/memory/events.py`
+
+**File**: `kernel/src/cyntra/memory/events.py`
 
 ```python
 # Events to implement:
@@ -61,7 +64,8 @@ Implement an agent memory system for Cyntra, adapted from Mira OS's battle-teste
 **Reference**: `/tmp/mira-oss/cns/core/events.py`
 
 ### Task 1.3: Create Database Schema
-**File**: `cyntra-kernel/migrations/001_memory_system.sql`
+
+**File**: `kernel/migrations/001_memory_system.sql`
 
 ```sql
 -- Tables:
@@ -84,7 +88,8 @@ Implement an agent memory system for Cyntra, adapted from Mira OS's battle-teste
 **Goal**: Implement database operations for memory CRUD.
 
 ### Task 2.1: Create Memory Store
-**File**: `cyntra-kernel/src/cyntra/memory/store.py`
+
+**File**: `kernel/src/cyntra/memory/store.py`
 
 ```python
 class MemoryStore:
@@ -111,7 +116,8 @@ class MemoryStore:
 **Reference**: `/tmp/mira-oss/lt_memory/db_access.py`
 
 ### Task 2.2: Create Vector Operations
-**File**: `cyntra-kernel/src/cyntra/memory/vector_ops.py`
+
+**File**: `kernel/src/cyntra/memory/vector_ops.py`
 
 ```python
 class VectorOps:
@@ -129,7 +135,8 @@ class VectorOps:
 **Goal**: Implement Mira's decay-based importance calculation.
 
 ### Task 3.1: Create Scoring Module
-**File**: `cyntra-kernel/src/cyntra/memory/scoring.py`
+
+**File**: `kernel/src/cyntra/memory/scoring.py`
 
 ```python
 def calculate_importance(memory: AgentMemory, current_runs: int) -> float:
@@ -154,7 +161,8 @@ async def get_archival_candidates(store: MemoryStore, threshold: float = 0.001) 
 **Reference**: `/tmp/mira-oss/lt_memory/scoring_formula.sql`
 
 ### Task 3.2: Create SQL Scoring Function
-**File**: `cyntra-kernel/migrations/002_scoring_function.sql`
+
+**File**: `kernel/migrations/002_scoring_function.sql`
 
 Port Mira's `scoring_formula.sql` to work with `agent_memories` table, replacing `activity_days` with `runs_at_creation` / `runs_at_last_access`.
 
@@ -165,11 +173,14 @@ Port Mira's `scoring_formula.sql` to work with `agent_memories` table, replacing
 **Goal**: Extract discrete memories from completed agent runs.
 
 ### Task 4.1: Create Extraction Prompts
+
 **Files**:
-- `cyntra-kernel/src/cyntra/memory/prompts/extraction_system.txt`
-- `cyntra-kernel/src/cyntra/memory/prompts/extraction_user.txt`
+
+- `kernel/src/cyntra/memory/prompts/extraction_system.txt`
+- `kernel/src/cyntra/memory/prompts/extraction_user.txt`
 
 Adapt Mira's prompts for agent context:
+
 - Extract patterns (what worked)
 - Extract failures (what didn't work and why)
 - Extract context (codebase understanding)
@@ -178,7 +189,8 @@ Adapt Mira's prompts for agent context:
 **Reference**: `/tmp/mira-oss/config/prompts/memory_extraction_*.txt`
 
 ### Task 4.2: Create Extraction Engine
-**File**: `cyntra-kernel/src/cyntra/memory/extraction.py`
+
+**File**: `kernel/src/cyntra/memory/extraction.py`
 
 ```python
 class MemoryExtractor:
@@ -190,9 +202,11 @@ class MemoryExtractor:
 **Reference**: `/tmp/mira-oss/lt_memory/extraction.py`
 
 ### Task 4.3: Create Batch Processing
-**File**: `cyntra-kernel/src/cyntra/memory/batching.py`
+
+**File**: `kernel/src/cyntra/memory/batching.py`
 
 For handling multiple extractions efficiently:
+
 ```python
 class ExtractionBatchService:
     async def submit_batch(runs: List[RunCompletedEvent]) -> str
@@ -209,9 +223,11 @@ class ExtractionBatchService:
 **Goal**: Classify relationships between memories.
 
 ### Task 5.1: Create Linking Prompts
-**File**: `cyntra-kernel/src/cyntra/memory/prompts/linking_system.txt`
+
+**File**: `kernel/src/cyntra/memory/prompts/linking_system.txt`
 
 Prompt for classifying relationship types:
+
 - conflicts, supersedes, causes, instance_of
 - invalidated_by, motivated_by
 - Agent-specific: improves_on, requires, repairs
@@ -219,7 +235,8 @@ Prompt for classifying relationship types:
 **Reference**: `/tmp/mira-oss/config/prompts/memory_relationship_classification.txt`
 
 ### Task 5.2: Create Linking Service
-**File**: `cyntra-kernel/src/cyntra/memory/linking.py`
+
+**File**: `kernel/src/cyntra/memory/linking.py`
 
 ```python
 class LinkingService:
@@ -239,7 +256,8 @@ class LinkingService:
 **Goal**: Dynamic context injection for agent prompts.
 
 ### Task 6.1: Create Trinket Base
-**File**: `cyntra-kernel/src/cyntra/memory/trinkets/base.py`
+
+**File**: `kernel/src/cyntra/memory/trinkets/base.py`
 
 ```python
 class AgentTrinket(ABC):
@@ -265,28 +283,35 @@ class RunContext:
 
 ### Task 6.2: Implement Core Trinkets
 
-**File**: `cyntra-kernel/src/cyntra/memory/trinkets/task_context.py`
+**File**: `kernel/src/cyntra/memory/trinkets/task_context.py`
+
 - Injects task-specific context (issue, tags, previous attempts)
 
-**File**: `cyntra-kernel/src/cyntra/memory/trinkets/patterns.py`
+**File**: `kernel/src/cyntra/memory/trinkets/patterns.py`
+
 - Surfaces relevant successful patterns via semantic search
 
-**File**: `cyntra-kernel/src/cyntra/memory/trinkets/dynamics.py`
+**File**: `kernel/src/cyntra/memory/trinkets/dynamics.py`
+
 - Injects learned behavioral dynamics
 
-**File**: `cyntra-kernel/src/cyntra/memory/trinkets/failures.py`
+**File**: `kernel/src/cyntra/memory/trinkets/failures.py`
+
 - Surfaces relevant failure patterns to avoid
 
-**File**: `cyntra-kernel/src/cyntra/memory/trinkets/codebase.py`
+**File**: `kernel/src/cyntra/memory/trinkets/codebase.py`
+
 - Injects codebase understanding
 
-**File**: `cyntra-kernel/src/cyntra/memory/trinkets/playbook.py`
+**File**: `kernel/src/cyntra/memory/trinkets/playbook.py`
+
 - Injects repair instructions for retries
 
 **Reference**: `/tmp/mira-oss/working_memory/trinkets/*.py`
 
 ### Task 6.3: Create Prompt Composer
-**File**: `cyntra-kernel/src/cyntra/memory/composer.py`
+
+**File**: `kernel/src/cyntra/memory/composer.py`
 
 ```python
 class AgentPromptComposer:
@@ -308,7 +333,8 @@ class ComposedPrompt:
 **Goal**: Retrieve relevant memories for agent runs.
 
 ### Task 7.1: Create Surfacing Service
-**File**: `cyntra-kernel/src/cyntra/memory/surfacing.py`
+
+**File**: `kernel/src/cyntra/memory/surfacing.py`
 
 ```python
 class MemorySurfacingService:
@@ -341,7 +367,8 @@ class MemorySurfacingService:
 **Goal**: Cross-agent knowledge sharing.
 
 ### Task 8.1: Create Collective Memory Service
-**File**: `cyntra-kernel/src/cyntra/memory/collective.py`
+
+**File**: `kernel/src/cyntra/memory/collective.py`
 
 ```python
 class CollectiveMemoryService:
@@ -367,7 +394,8 @@ class CollectiveMemoryService:
 **Goal**: Background maintenance during kernel idle.
 
 ### Task 9.1: Create Sleeptime Processor
-**File**: `cyntra-kernel/src/cyntra/memory/sleeptime.py`
+
+**File**: `kernel/src/cyntra/memory/sleeptime.py`
 
 ```python
 class SleeptimeProcessor:
@@ -390,7 +418,8 @@ class SleeptimeProcessor:
 **Reference**: `/tmp/mira-oss/lt_memory/refinement.py`
 
 ### Task 9.2: Create Consolidation Handler
-**File**: `cyntra-kernel/src/cyntra/memory/consolidation.py`
+
+**File**: `kernel/src/cyntra/memory/consolidation.py`
 
 ```python
 class ConsolidationHandler:
@@ -402,9 +431,11 @@ class ConsolidationHandler:
 **Reference**: `/tmp/mira-oss/lt_memory/processing/consolidation_handler.py`
 
 ### Task 9.3: Update Sleeptime Skill
+
 **File**: `skills/sleeptime-processor.md`
 
 Update the existing skill to trigger memory processing:
+
 ```yaml
 # Add to skill steps:
 - Trigger memory consolidation
@@ -421,9 +452,11 @@ Update the existing skill to trigger memory processing:
 **Goal**: Wire memory system into kernel lifecycle.
 
 ### Task 10.1: Update Kernel Runner
-**File**: `cyntra-kernel/src/cyntra/kernel/runner.py`
+
+**File**: `kernel/src/cyntra/kernel/runner.py`
 
 Add memory integration:
+
 ```python
 # Before run:
 prompt = await self.memory.compose_agent_prompt(agent_id, issue)
@@ -433,7 +466,8 @@ await self.event_bus.publish(RunCompletedEvent(...))
 ```
 
 ### Task 10.2: Create Event Handlers
-**File**: `cyntra-kernel/src/cyntra/memory/handlers.py`
+
+**File**: `kernel/src/cyntra/memory/handlers.py`
 
 ```python
 class MemoryEventHandler:
@@ -445,7 +479,9 @@ class MemoryEventHandler:
 ```
 
 ### Task 10.3: Update pyproject.toml
+
 Add memory dependencies:
+
 ```toml
 [project.optional-dependencies]
 memory = [
@@ -461,19 +497,23 @@ memory = [
 **Goal**: Comprehensive test coverage.
 
 ### Task 11.1: Unit Tests
+
 **Files**:
-- `cyntra-kernel/tests/memory/test_models.py`
-- `cyntra-kernel/tests/memory/test_scoring.py`
-- `cyntra-kernel/tests/memory/test_store.py`
-- `cyntra-kernel/tests/memory/test_extraction.py`
-- `cyntra-kernel/tests/memory/test_linking.py`
-- `cyntra-kernel/tests/memory/test_trinkets.py`
+
+- `kernel/tests/memory/test_models.py`
+- `kernel/tests/memory/test_scoring.py`
+- `kernel/tests/memory/test_store.py`
+- `kernel/tests/memory/test_extraction.py`
+- `kernel/tests/memory/test_linking.py`
+- `kernel/tests/memory/test_trinkets.py`
 
 ### Task 11.2: Integration Tests
+
 **Files**:
-- `cyntra-kernel/tests/memory/test_extraction_pipeline.py`
-- `cyntra-kernel/tests/memory/test_surfacing.py`
-- `cyntra-kernel/tests/memory/test_sleeptime.py`
+
+- `kernel/tests/memory/test_extraction_pipeline.py`
+- `kernel/tests/memory/test_surfacing.py`
+- `kernel/tests/memory/test_sleeptime.py`
 
 **Reference**: `/tmp/mira-oss/tests/lt_memory/`
 
@@ -482,9 +522,11 @@ memory = [
 ## Phase 12: Documentation
 
 ### Task 12.1: Architecture Doc
+
 **File**: `docs/memory-system.md`
 
 Document:
+
 - Memory model and types
 - Scoring formula
 - Extraction pipeline
@@ -493,9 +535,11 @@ Document:
 - Sleeptime processing
 
 ### Task 12.2: Integration Guide
+
 **File**: `docs/memory-integration.md`
 
 How to:
+
 - Configure memory system
 - Add custom trinkets
 - Tune scoring parameters
@@ -567,7 +611,7 @@ Phase 12: Documentation            [0.5 day]
 ### New Files to Create
 
 ```
-cyntra-kernel/src/cyntra/memory/
+kernel/src/cyntra/memory/
 ├── __init__.py
 ├── models.py              # Phase 1.1
 ├── events.py              # Phase 1.2
@@ -598,11 +642,11 @@ cyntra-kernel/src/cyntra/memory/
     ├── linking_system.txt      # Phase 5.1
     └── consolidation_system.txt # Phase 9.2
 
-cyntra-kernel/migrations/
+kernel/migrations/
 ├── 001_memory_system.sql      # Phase 1.3
 └── 002_scoring_function.sql   # Phase 3.2
 
-cyntra-kernel/tests/memory/
+kernel/tests/memory/
 ├── __init__.py
 ├── test_models.py         # Phase 11.1
 ├── test_scoring.py        # Phase 11.1
@@ -622,8 +666,8 @@ docs/
 ### Files to Modify
 
 ```
-cyntra-kernel/src/cyntra/kernel/runner.py    # Phase 10.1
-cyntra-kernel/pyproject.toml                 # Phase 10.3
+kernel/src/cyntra/kernel/runner.py    # Phase 10.1
+kernel/pyproject.toml                 # Phase 10.3
 skills/sleeptime-processor.md                # Phase 9.3
 ```
 
@@ -632,26 +676,31 @@ skills/sleeptime-processor.md                # Phase 9.3
 ## Acceptance Criteria
 
 ### Phase 1-3: Foundation
+
 - [ ] AgentMemory model matches Mira's Memory structure
 - [ ] Database schema deployed with pgvector support
 - [ ] Scoring formula produces expected decay curves
 
 ### Phase 4-5: Extraction & Linking
+
 - [ ] Memories extracted from completed runs
 - [ ] Relationships classified between similar memories
 - [ ] Bidirectional links stored correctly
 
 ### Phase 6-7: Working Memory
+
 - [ ] Trinkets compose agent prompts dynamically
 - [ ] Relevant memories surfaced via semantic search
 - [ ] Prefix caching works for stable sections
 
 ### Phase 8-9: Collective & Sleeptime
+
 - [ ] Patterns promoted to collective scope
 - [ ] Consolidation merges similar memories
 - [ ] Sleeptime processor runs without errors
 
 ### Phase 10: Integration
+
 - [ ] Kernel uses memory system for runs
 - [ ] Events trigger extraction pipeline
 - [ ] End-to-end flow works

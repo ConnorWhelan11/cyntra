@@ -1,0 +1,36 @@
+name: cyntra-rollout-builder
+version: 1.0.0
+description: |
+  Build canonical rollout.json from telemetry + proof + fab manifests.
+  Creates normalized trajectory summary used by GEPA + dynamics layers.
+category: development
+priority: critical
+phase: 2
+
+inputs:
+  - name: workcell_path
+    type: string
+    description: Path to workcell directory containing manifest/proof/telemetry
+    required: true
+  - name: include_trajectory_details
+    type: boolean
+    description: Include full tool call details in trajectory
+    required: false
+    default: false
+
+outputs:
+  - name: rollout_path
+    type: string
+    description: Path to generated rollout.json
+  - name: rollout_id
+    type: string
+    description: Generated rollout ID
+  - name: summary
+    type: object
+    description: Quick summary (tool counts, duration, outcome)
+
+examples: []
+
+implementation:
+  type: python
+  path: cyntra-rollout-builder.py

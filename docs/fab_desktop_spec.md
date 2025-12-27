@@ -11,7 +11,7 @@ assets/Godot web builds) inside the app, reusing the existing Three.js viewer
   - Terminal UI: xterm.js panes (tabs + split)
   - Asset UI: embedded viewer (iframe) + run artifact explorer + report viewers
 - **Backend (Tauri/Rust)**: services exposed via Tauri commands + events
-  1. Project registry: tracks repo roots, labels, detected capabilities (`cyntra-kernel/`, `fab/`, etc.)
+  1. Project registry: tracks repo roots, labels, detected capabilities (`kernel/`, `fab/`, etc.)
   2. Session manager (PTY): interactive shells + command sessions; streams output; resize/input/kill
   3. Job runner: structured “run templates” (`fab-gate`, `fab-render`, `fab-godot`, `cyntra run`)
   4. Artifact indexer: filesystem watcher that catalogs outputs and emits UI events

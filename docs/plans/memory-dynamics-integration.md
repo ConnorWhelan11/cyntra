@@ -7,12 +7,14 @@ Wire the memory system into the kernel lifecycle so every workcell captures obse
 ## Current State
 
 **Infrastructure exists but not wired:**
+
 - `cyntra/memory/` - MemoryDB, MemoryHooks, Observation types
 - `cyntra/dynamics/` - TransitionDB, state_t1, potential estimation, action metrics
 - `cyntra/sleeptime/` - SleeptimeOrchestrator, consolidation pipeline
 - `cyntra/hooks/` - HookRunner, registry, POST_EXECUTION trigger
 
 **Missing:**
+
 - Memory hooks not called during workcell lifecycle
 - No telemetry parsing for tool_use observations
 - Routing doesn't query dynamics DB
@@ -25,7 +27,7 @@ Wire the memory system into the kernel lifecycle so every workcell captures obse
 
 ### A1. Memory Integration Layer
 
-**New file:** `cyntra-kernel/src/cyntra/kernel/memory_integration.py`
+**New file:** `kernel/src/cyntra/kernel/memory_integration.py`
 
 Purpose: Bridge between kernel lifecycle and MemoryHooks, handle telemetry parsing.
 
@@ -135,7 +137,7 @@ class KernelMemoryBridge:
 
 ### A2. Modify Runner
 
-**File:** `cyntra-kernel/src/cyntra/kernel/runner.py`
+**File:** `kernel/src/cyntra/kernel/runner.py`
 
 **Changes:**
 
@@ -207,7 +209,7 @@ async def _dispatch_with_memory(self, issue: Issue, workcell_path: Path) -> Disp
 
 ### A3. Modify Dispatcher
 
-**File:** `cyntra-kernel/src/cyntra/kernel/dispatcher.py`
+**File:** `kernel/src/cyntra/kernel/dispatcher.py`
 
 **Changes:**
 
@@ -230,7 +232,7 @@ async def dispatch_async(
 
 ### A4. Adapter Context Injection
 
-**File:** `cyntra-kernel/src/cyntra/adapters/claude.py` (example)
+**File:** `kernel/src/cyntra/adapters/claude.py` (example)
 
 **Changes:**
 
@@ -268,7 +270,7 @@ def _build_system_prompt(self, manifest: dict) -> str:
 
 ### D1. Dynamics Router
 
-**New file:** `cyntra-kernel/src/cyntra/kernel/dynamics_router.py`
+**New file:** `kernel/src/cyntra/kernel/dynamics_router.py`
 
 Purpose: Query transition DB to estimate toolchain success probability for current state.
 
@@ -421,7 +423,7 @@ class DynamicsRouter:
 
 ### D2. Modify Routing
 
-**File:** `cyntra-kernel/src/cyntra/kernel/routing.py`
+**File:** `kernel/src/cyntra/kernel/routing.py`
 
 **Changes:**
 
@@ -484,7 +486,7 @@ def ordered_toolchain_candidates(
 
 ### D3. Transition Persistence
 
-**File:** `cyntra-kernel/src/cyntra/kernel/runner.py`
+**File:** `kernel/src/cyntra/kernel/runner.py`
 
 **Changes:**
 
@@ -518,7 +520,7 @@ def _persist_transition(self, workcell_path: Path) -> None:
 
 ### D4. Sleeptime Dynamics Integration
 
-**File:** `cyntra-kernel/src/cyntra/sleeptime/orchestrator.py`
+**File:** `kernel/src/cyntra/sleeptime/orchestrator.py`
 
 **Changes:**
 
@@ -589,15 +591,15 @@ def _adjust_exploration(self, traps: list, action_summary: dict) -> None:
 
 ## Files Changed Summary
 
-| File | Change Type | Description |
-|------|-------------|-------------|
-| `kernel/memory_integration.py` | **NEW** | Bridge class for memory hooks |
-| `kernel/dynamics_router.py` | **NEW** | Probability-based routing |
-| `kernel/runner.py` | MODIFY | Add memory/dynamics calls |
-| `kernel/dispatcher.py` | MODIFY | Accept manifest with context |
-| `kernel/routing.py` | MODIFY | Blend static + dynamics |
-| `adapters/claude.py` | MODIFY | Inject memory context |
-| `sleeptime/orchestrator.py` | MODIFY | Exploration adjustment |
+| File                           | Change Type | Description                   |
+| ------------------------------ | ----------- | ----------------------------- |
+| `kernel/memory_integration.py` | **NEW**     | Bridge class for memory hooks |
+| `kernel/dynamics_router.py`    | **NEW**     | Probability-based routing     |
+| `kernel/runner.py`             | MODIFY      | Add memory/dynamics calls     |
+| `kernel/dispatcher.py`         | MODIFY      | Accept manifest with context  |
+| `kernel/routing.py`            | MODIFY      | Blend static + dynamics       |
+| `adapters/claude.py`           | MODIFY      | Inject memory context         |
+| `sleeptime/orchestrator.py`    | MODIFY      | Exploration adjustment        |
 
 ---
 

@@ -1,0 +1,19 @@
+[package]
+name = "ai-bt"
+description = "Behavior Tree runtime built on ai-core"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[dependencies]
+ai-core = { path = "../ai-core" }
+ai-tools = { path = "../ai-tools" }
+
+[dev-dependencies]
+ai-nav = { path = "../ai-nav" }
+criterion = { workspace = true }
+
+[[bench]]
+name = "tick"
+harness = false

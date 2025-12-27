@@ -5,6 +5,7 @@
 The Fab World system transforms 3D asset generation from ad-hoc scripts into a deterministic, portable, and testable pipeline. Worlds are self-contained recipes that can be built, validated, and iterated automatically by Cyntra.
 
 **Key Benefits**:
+
 - **Deterministic**: Same seed → same output (SHA256-verified)
 - **Portable**: Runs in isolated workcells with explicit dependencies
 - **Testable**: Quality gates validate geometry, materials, realism
@@ -129,6 +130,7 @@ stages:
 ### Complete Example
 
 See `fab/worlds/outora_library/world.yaml` for a full-featured example with:
+
 - Determinism configuration
 - Parameter schema
 - 9 stages with dependencies
@@ -293,6 +295,7 @@ repair_playbook:
 ### Guarantees
 
 When built with the same:
+
 - **Seed value**
 - **Blender version**
 - **Addon versions** (e.g., Sverchok)
@@ -327,12 +330,14 @@ diff \
 ### Available Critics
 
 **Core Critics** (apply to all assets):
+
 - `CategoryCritic` - Multi-view semantic classification
 - `AlignmentCritic` - CLIP text-to-image similarity
 - `RealismCritic` - Aesthetic score, NIQE, artifact detection
 - `GeometryCritic` - Mesh analysis, bounds, manifold checks
 
 **World-Specific Critics**:
+
 - `FurnitureCritic` - Furniture presence and distribution (libraries)
 - `StructuralRhythmCritic` - Gothic bay spacing validation (6m ± 30%)
 
@@ -364,7 +369,7 @@ library_checks:
   structural_rhythm:
     enabled: true
     column_spacing_tolerance: 0.3
-    expected_bay_size: 6.0  # meters
+    expected_bay_size: 6.0 # meters
 
   lighting_quality:
     enabled: true
@@ -401,10 +406,7 @@ fab-world build --world fab/worlds/outora_library \
 
 ```json
 {
-  "tags": [
-    "param:lighting.preset=warm_reading",
-    "param:layout.complexity=high"
-  ]
+  "tags": ["param:lighting.preset=warm_reading", "param:layout.complexity=high"]
 }
 ```
 
@@ -447,7 +449,7 @@ The `manifest.json` tracks all build metadata:
     "git_commit": "abc1234"
   },
   "parameters": {
-    "lighting": {"preset": "cosmic"}
+    "lighting": { "preset": "cosmic" }
   },
   "stages": [
     {
@@ -461,7 +463,7 @@ The `manifest.json` tracks all build metadata:
           "size_bytes": 1048576
         }
       ],
-      "metadata": {"random_seed": 42}
+      "metadata": { "random_seed": 42 }
     }
   ],
   "final_outputs": [
@@ -479,14 +481,16 @@ The `manifest.json` tracks all build metadata:
 ### Creating a New World
 
 1. **Copy template**:
+
    ```bash
    cp -r fab/worlds/outora_library fab/worlds/my_world
    ```
 
 2. **Update world.yaml**:
+
    ```yaml
    world_id: my_world
-   world_type: props  # or vehicle, character, etc.
+   world_type: props # or vehicle, character, etc.
    version: "1.0.0"
    ```
 
@@ -496,6 +500,7 @@ The `manifest.json` tracks all build metadata:
    - Define stage dependencies in `world.yaml`
 
 4. **Add parameters**:
+
    ```yaml
    parameters:
      defaults:
@@ -519,8 +524,9 @@ The `manifest.json` tracks all build metadata:
 ### Adding Custom Critics
 
 1. **Create critic class**:
+
    ```python
-   # cyntra-kernel/src/cyntra/fab/critics/my_critic.py
+   # kernel/src/cyntra/fab/critics/my_critic.py
    class MyCritic:
        def __init__(self, config):
            self.config = config
@@ -536,6 +542,7 @@ The `manifest.json` tracks all build metadata:
    ```
 
 2. **Register in `__init__.py`**:
+
    ```python
    from .my_critic import MyCritic
    __all__ = [..., "MyCritic"]

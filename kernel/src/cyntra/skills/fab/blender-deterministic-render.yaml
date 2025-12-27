@@ -1,0 +1,54 @@
+name: blender-deterministic-render
+version: 1.0.0
+description: |
+  Invoke Blender with fixed seeds, CPU-only, factory startup for reproducible renders.
+  Ensures deterministic 3D rendering output.
+category: fab
+priority: critical
+phase: fab
+
+inputs:
+  - name: blend_file
+    type: string
+    description: Path to .blend file
+    required: true
+  - name: output_dir
+    type: string
+    description: Directory for render outputs
+    required: true
+  - name: seed
+    type: integer
+    description: Random seed
+    required: false
+    default: 42
+  - name: camera_rig
+    type: string
+    description: Camera rig to use for multi-view renders
+    required: false
+  - name: resolution
+    type: array
+    description: "[width, height] in pixels"
+    required: false
+    default: [1920, 1080]
+  - name: samples
+    type: integer
+    description: Render samples
+    required: false
+    default: 128
+
+outputs:
+  - name: renders
+    type: array
+    description: Paths to rendered images
+  - name: manifest_path
+    type: string
+    description: Path to render manifest with parameters
+  - name: duration_ms
+    type: integer
+    description: Render duration in milliseconds
+
+examples: []
+
+implementation:
+  type: python
+  path: blender-deterministic-render.py

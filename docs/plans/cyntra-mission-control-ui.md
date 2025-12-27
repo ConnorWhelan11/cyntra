@@ -32,39 +32,39 @@ Built on OKLCH for perceptual uniformity. The palette evokes deep space observat
 
 ```css
 /* Foundation */
---void: oklch(8% 0.02 260);           /* Near-black, slight blue */
---abyss: oklch(12% 0.02 260);         /* Panel backgrounds */
---obsidian: oklch(18% 0.015 260);     /* Elevated surfaces */
---slate: oklch(25% 0.01 260);         /* Borders, dividers */
+--void: oklch(8% 0.02 260); /* Near-black, slight blue */
+--abyss: oklch(12% 0.02 260); /* Panel backgrounds */
+--obsidian: oklch(18% 0.015 260); /* Elevated surfaces */
+--slate: oklch(25% 0.01 260); /* Borders, dividers */
 
 /* Text Hierarchy */
---text-primary: oklch(92% 0.01 260);  /* Bright, high contrast */
+--text-primary: oklch(92% 0.01 260); /* Bright, high contrast */
 --text-secondary: oklch(65% 0.01 260); /* Muted, secondary info */
 --text-tertiary: oklch(45% 0.01 260); /* Timestamps, metadata */
 
 /* Signal Colors (semantic) */
---signal-active: oklch(75% 0.18 160);    /* Cyan - running, active */
---signal-success: oklch(72% 0.16 145);   /* Teal - passed, complete */
---signal-warning: oklch(78% 0.16 85);    /* Amber - attention, blocked */
---signal-error: oklch(65% 0.22 25);      /* Coral - failed, error */
---signal-info: oklch(70% 0.14 250);      /* Soft blue - info, neutral */
+--signal-active: oklch(75% 0.18 160); /* Cyan - running, active */
+--signal-success: oklch(72% 0.16 145); /* Teal - passed, complete */
+--signal-warning: oklch(78% 0.16 85); /* Amber - attention, blocked */
+--signal-error: oklch(65% 0.22 25); /* Coral - failed, error */
+--signal-info: oklch(70% 0.14 250); /* Soft blue - info, neutral */
 
 /* Accent - The Signature */
---accent-primary: oklch(78% 0.12 65);    /* Warm gold - primary actions */
---accent-glow: oklch(85% 0.15 65);       /* Brighter gold - hover states */
---accent-subtle: oklch(78% 0.06 65);     /* Desaturated - backgrounds */
+--accent-primary: oklch(78% 0.12 65); /* Warm gold - primary actions */
+--accent-glow: oklch(85% 0.15 65); /* Brighter gold - hover states */
+--accent-subtle: oklch(78% 0.06 65); /* Desaturated - backgrounds */
 
 /* Agent Colors (distinct per toolchain) */
---agent-claude: oklch(70% 0.16 30);      /* Terracotta */
---agent-codex: oklch(72% 0.14 145);      /* Emerald */
---agent-opencode: oklch(70% 0.15 280);   /* Violet */
---agent-crush: oklch(75% 0.18 200);      /* Electric blue */
+--agent-claude: oklch(70% 0.16 30); /* Terracotta */
+--agent-codex: oklch(72% 0.14 145); /* Emerald */
+--agent-opencode: oklch(70% 0.15 280); /* Violet */
+--agent-crush: oklch(75% 0.18 200); /* Electric blue */
 
 /* Evolution Spectrum (generation fitness) */
---evo-low: oklch(60% 0.15 25);           /* Red - low fitness */
---evo-mid: oklch(75% 0.15 85);           /* Yellow - medium */
---evo-high: oklch(75% 0.16 145);         /* Green - high fitness */
---evo-frontier: oklch(80% 0.18 65);      /* Gold - Pareto optimal */
+--evo-low: oklch(60% 0.15 25); /* Red - low fitness */
+--evo-mid: oklch(75% 0.15 85); /* Yellow - medium */
+--evo-high: oklch(75% 0.16 145); /* Green - high fitness */
+--evo-frontier: oklch(80% 0.18 65); /* Gold - Pareto optimal */
 ```
 
 ### Typography
@@ -75,13 +75,13 @@ Built on OKLCH for perceptual uniformity. The palette evokes deep space observat
 --font-sans: "Inter", "SF Pro", system-ui;
 
 /* Scale (modular, 1.2 ratio) */
---text-xs: 0.694rem;    /* 11px - timestamps, metadata */
---text-sm: 0.833rem;    /* 13px - secondary text */
---text-base: 1rem;      /* 16px - body text */
---text-lg: 1.2rem;      /* 19px - section headers */
---text-xl: 1.44rem;     /* 23px - panel titles */
---text-2xl: 1.728rem;   /* 28px - view titles */
---text-3xl: 2.074rem;   /* 33px - dramatic headers */
+--text-xs: 0.694rem; /* 11px - timestamps, metadata */
+--text-sm: 0.833rem; /* 13px - secondary text */
+--text-base: 1rem; /* 16px - body text */
+--text-lg: 1.2rem; /* 19px - section headers */
+--text-xl: 1.44rem; /* 23px - panel titles */
+--text-2xl: 1.728rem; /* 28px - view titles */
+--text-3xl: 2.074rem; /* 33px - dramatic headers */
 
 /* Weights */
 --font-normal: 400;
@@ -92,7 +92,7 @@ Built on OKLCH for perceptual uniformity. The palette evokes deep space observat
 --tracking-tight: -0.02em;
 --tracking-normal: 0;
 --tracking-wide: 0.05em;
---tracking-wider: 0.1em;   /* All-caps labels */
+--tracking-wider: 0.1em; /* All-caps labels */
 ```
 
 ### Ambient Layer
@@ -124,7 +124,7 @@ Particle properties:
 - Color: Varies by theme (cyan-white for Nebula, warm-gold for Solarpunk)
 ```
 
-Use `NebulaStarsLayer` from `@oos/ui/ambient` as base, tuned for subtlety.
+Use `NebulaStarsLayer` from `@oos/ag-ui-ext` as base, tuned for subtlety.
 
 ---
 
@@ -169,9 +169,10 @@ The nerve center—always visible, always responsive.
 
 ```
 
-**Logo Glyph**: A subtle 3D geometric shape that rotates slowly when idle, pulses when kernel is active, glows on hover. Use `GlyphScene` from `@oos/ui/three`.
+**Logo Glyph**: A subtle 3D geometric shape that rotates slowly when idle, pulses when kernel is active, glows on hover. Use `GlyphScene` from `@oos/ag-ui-ext`.
 
 **Command Palette**: Spotlight-style search that indexes:
+
 - Issues by title, ID, tags
 - Runs by ID, date
 - Worlds by name
@@ -179,6 +180,7 @@ The nerve center—always visible, always responsive.
 - Navigation (go to Kernel, go to Viewer, etc.)
 
 **Kernel Status Glyph**: Small animated indicator
+
 - ○ Idle (static, dim)
 - ◉ Running (pulsing, bright)
 - ◈ Processing (rotating)
@@ -275,19 +277,22 @@ The overview—see all worlds, their states, and relationships at a glance.
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**3D World Graph**: Interactive graph using `Graph3D` from `@oos/ui/three`:
+**3D World Graph**: Interactive graph using `Graph3D` from `@oos/ag-ui-ext`:
+
 - Projects as parent nodes (large, labeled)
 - Worlds as child nodes (medium, colored by status)
 - Current generation as orbiting particle
 - Click to select, double-click to navigate
 
 **World Cards**: Quick-glance cards for each world:
+
 - Progress bar (if building)
 - Status indicator (idle/building/failed)
 - Generation number and fitness score
 - Click to expand or navigate
 
 **Interactions**:
+
 - Hover world node → highlight card below
 - Click world → select, show in Context Strip
 - Double-click → navigate to world detail
@@ -344,6 +349,7 @@ The command center for orchestrating agents and issues.
 ```
 
 **Issue Board** (Kanban-style):
+
 - Columns: Open → Ready → Running → Blocked → Done
 - Cards show: ID, title snippet, toolchain indicator, tags
 - Drag-drop to change status
@@ -352,6 +358,7 @@ The command center for orchestrating agents and issues.
 - Toolchain indicator: colored dot with initial (◉ cla = claude)
 
 **Workcells** (Timeline view):
+
 - Horizontal bars showing workcell lifecycle
 - Progress indicator (filled portion)
 - Issue ID and toolchain assignment
@@ -359,12 +366,14 @@ The command center for orchestrating agents and issues.
 - Click to focus output
 
 **Live Output** (Terminal-style):
+
 - Streaming output from all workcells
 - Color-coded by source [workcell-01], [workcell-02]
 - Auto-scroll with scroll-lock on user scroll
 - Click line to jump to source workcell
 
 **Header Actions**:
+
 - ⟳ Refresh snapshot
 - ▶ Run kernel (process next issue)
 - ⏸ Pause kernel
@@ -429,6 +438,7 @@ Track generations, fitness trajectories, and Pareto frontiers.
 ```
 
 **Pareto Frontier** (Scatter plot):
+
 - X-axis: Speed (build time, performance)
 - Y-axis: Quality (gate scores, critic ratings)
 - Points colored by generation (older = dimmer)
@@ -437,6 +447,7 @@ Track generations, fitness trajectories, and Pareto frontiers.
 - Click to load that generation's config
 
 **Fitness Timeline** (Line chart):
+
 - X-axis: Generation number
 - Y-axis: Fitness score
 - Area fill for visual weight
@@ -444,6 +455,7 @@ Track generations, fitness trajectories, and Pareto frontiers.
 - Click to jump to generation
 
 **Genome Panel**:
+
 - Sliders for each evolvable parameter
 - Current value displayed
 - Range visualization
@@ -501,6 +513,7 @@ Explore agent memory: patterns, dynamics, failures.
 ```
 
 **Memory Graph**: Interactive 3D graph using `Graph3D`:
+
 - Nodes = memories (sized by importance, colored by type)
 - Edges = relationships (thickness = confidence)
 - Cluster by type or agent
@@ -508,12 +521,14 @@ Explore agent memory: patterns, dynamics, failures.
 - Click to select, drag to rotate
 
 **Filters Panel**:
+
 - Type checkboxes (pattern, failure, dynamic, context)
 - Scope radio (individual, collective, all)
 - Agent checkboxes
 - Importance slider (filter out low-importance)
 
 **Selected Memory Panel**:
+
 - Full memory text
 - Metadata badges (type, agent, scope, importance)
 - Source information (run, issue)
@@ -558,6 +573,7 @@ Unified terminal management for all PTY sessions.
 ```
 
 **Grid Mode** (≡ button):
+
 ```
 ┌──────────────────────────────┬──────────────────────────────┐
 │  ● main                      │  ● workcell-01               │
@@ -573,6 +589,7 @@ Unified terminal management for all PTY sessions.
 ```
 
 **Features**:
+
 - Tab bar with session indicators (● active, ○ idle)
 - Session activity indicator (last output time)
 - Grid view for monitoring multiple sessions
@@ -618,17 +635,20 @@ Unified terminal management for all PTY sessions.
 ```
 
 **3D Thumbnails**: Each card contains a live Three.js canvas:
+
 - Auto-rotating model preview
 - Pause on hover, resume on leave
 - Click to open full viewer
 - Lazy-load models as they scroll into view
 
 **Card Information**:
+
 - Asset name
 - Category/generation
 - Gate verdict (✓ passed, ✗ failed) with fitness score
 
 **Full Viewer** (modal or dedicated view):
+
 - Orbit controls, zoom, pan
 - Wireframe/solid/textured toggle
 - Metadata sidebar (vertices, materials, critic scores)
@@ -646,7 +666,7 @@ The fundamental container for all content sections.
 interface PanelProps {
   title: string;
   icon?: React.ReactNode;
-  actions?: React.ReactNode;  // Right-aligned header actions
+  actions?: React.ReactNode; // Right-aligned header actions
   collapsible?: boolean;
   defaultCollapsed?: boolean;
   className?: string;
@@ -655,6 +675,7 @@ interface PanelProps {
 ```
 
 **Visual spec**:
+
 ```css
 .panel {
   background: var(--abyss);
@@ -698,6 +719,7 @@ interface IssueCardProps {
 ```
 
 **Visual spec**:
+
 ```
 ┌─────────────────────────────┐
 │  #42                    ◉   │  ← ID + toolchain indicator
@@ -710,6 +732,7 @@ Height: 80px (min)
 ```
 
 **States**:
+
 - Default: `--obsidian` background
 - Hover: slight lift (translateY -2px), subtle glow
 - Selected: `--accent-subtle` background, gold border
@@ -727,6 +750,7 @@ interface WorkcellBarProps {
 ```
 
 **Visual spec**:
+
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
 │  workcell-01  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━░░░░░░░░░░  #41 codex       │
@@ -737,6 +761,7 @@ Progress bar: 4px height, rounded
 ```
 
 **States**:
+
 - Idle: dimmed, no progress bar
 - Active: toolchain-colored progress bar, pulsing edge
 - Complete: success color, checkmark
@@ -749,7 +774,7 @@ Interactive node for memory graph visualization.
 ```tsx
 interface MemoryNodeProps {
   memory: AgentMemory;
-  size: number;  // Based on importance
+  size: number; // Based on importance
   color: string; // Based on type
   selected?: boolean;
   onClick?: () => void;
@@ -757,6 +782,7 @@ interface MemoryNodeProps {
 ```
 
 **3D spec** (for Graph3D):
+
 - Sphere geometry
 - Size: 0.5 - 2.0 based on importance
 - Color: type-specific (pattern=gold, failure=coral, dynamic=cyan)
@@ -769,18 +795,19 @@ Animated 3D indicator for kernel state.
 
 ```tsx
 interface KernelGlyphProps {
-  state: 'idle' | 'running' | 'processing' | 'error';
-  size?: 'sm' | 'md' | 'lg';
+  state: "idle" | "running" | "processing" | "error";
+  size?: "sm" | "md" | "lg";
 }
 ```
 
 **Animation spec**:
+
 - Idle: Slow rotation (0.5 RPM), dim emission
 - Running: Medium rotation (2 RPM), pulsing emission
 - Processing: Fast rotation (5 RPM), bright emission
 - Error: Wobble animation, red emission, periodic flash
 
-Use `GlyphScene` from `@oos/ui/three` as base.
+Use `GlyphScene` from `@oos/ag-ui-ext` as base.
 
 ---
 
@@ -815,6 +842,7 @@ Spotlight-style command interface.
 ```
 
 **Behavior**:
+
 - Fuzzy search across all indexed items
 - Categories: Recent, Commands, Navigation, Issues, Worlds, Runs
 - Arrow keys to navigate, Enter to select
@@ -826,17 +854,20 @@ Spotlight-style command interface.
 For issue management on Kanban board.
 
 **Drag start**:
+
 - 150ms delay (prevent accidental drags)
 - Card lifts with shadow
 - Source column dims slightly
 - Ghost card follows cursor
 
 **During drag**:
+
 - Valid drop zones highlight
 - Invalid zones show "no drop" cursor
 - Auto-scroll near edges
 
 **Drop**:
+
 - Card animates to new position
 - Optimistic UI update
 - Backend sync (revert on failure)
@@ -845,19 +876,19 @@ For issue management on Kanban board.
 
 Global shortcuts (⌘ on Mac, Ctrl on Windows):
 
-| Shortcut | Action |
-|----------|--------|
-| ⌘K | Open command palette |
-| ⌘1-6 | Navigate to view (1=Universe, 2=Kernel, etc.) |
-| ⌘N | Create new issue |
-| ⌘R | Run kernel |
-| ⌘P | Pause kernel |
-| ⌘, | Open settings |
-| ⌘/ | Toggle help |
-| Esc | Close modal/deselect |
-| ↑↓←→ | Navigate lists/boards |
-| Enter | Open/select item |
-| Space | Toggle item state |
+| Shortcut | Action                                        |
+| -------- | --------------------------------------------- |
+| ⌘K       | Open command palette                          |
+| ⌘1-6     | Navigate to view (1=Universe, 2=Kernel, etc.) |
+| ⌘N       | Create new issue                              |
+| ⌘R       | Run kernel                                    |
+| ⌘P       | Pause kernel                                  |
+| ⌘,       | Open settings                                 |
+| ⌘/       | Toggle help                                   |
+| Esc      | Close modal/deselect                          |
+| ↑↓←→     | Navigate lists/boards                         |
+| Enter    | Open/select item                              |
+| Space    | Toggle item state                             |
 
 ---
 
@@ -866,6 +897,7 @@ Global shortcuts (⌘ on Mac, Ctrl on Windows):
 ### Micro-interactions
 
 **Button hover**:
+
 ```css
 .button:hover {
   transform: translateY(-1px);
@@ -875,17 +907,20 @@ Global shortcuts (⌘ on Mac, Ctrl on Windows):
 ```
 
 **Card selection**:
+
 ```css
 .card.selected {
   transform: scale(1.02);
   border-color: var(--accent-primary);
-  box-shadow: 0 0 0 1px var(--accent-primary),
-              0 0 20px -5px var(--accent-glow);
+  box-shadow:
+    0 0 0 1px var(--accent-primary),
+    0 0 20px -5px var(--accent-glow);
   transition: all 200ms ease-out;
 }
 ```
 
 **Panel collapse**:
+
 ```css
 .panel-content {
   max-height: var(--content-height);
@@ -903,6 +938,7 @@ Global shortcuts (⌘ on Mac, Ctrl on Windows):
 View changes should feel seamless but intentional.
 
 **Crossfade** (default):
+
 ```css
 .view-enter {
   opacity: 0;
@@ -921,6 +957,7 @@ View changes should feel seamless but intentional.
 ```
 
 **Slide** (for detail panels):
+
 ```css
 .panel-enter {
   transform: translateX(100%);
@@ -934,12 +971,22 @@ View changes should feel seamless but intentional.
 ### Ambient Animations
 
 **Particle drift**:
+
 ```css
 @keyframes drift {
-  0%, 100% { transform: translate(0, 0); }
-  25% { transform: translate(10px, -5px); }
-  50% { transform: translate(5px, 10px); }
-  75% { transform: translate(-5px, 5px); }
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  25% {
+    transform: translate(10px, -5px);
+  }
+  50% {
+    transform: translate(5px, 10px);
+  }
+  75% {
+    transform: translate(-5px, 5px);
+  }
 }
 
 .particle {
@@ -949,9 +996,11 @@ View changes should feel seamless but intentional.
 ```
 
 **Glyph pulse** (kernel running):
+
 ```css
 @keyframes pulse-glow {
-  0%, 100% {
+  0%,
+  100% {
     filter: drop-shadow(0 0 8px var(--signal-active));
     opacity: 0.8;
   }
@@ -984,7 +1033,7 @@ View changes should feel seamless but intentional.
    - Implement Status Bar
 
 3. **Component Migration**
-   - Replace local Button/Modal with `@oos/ui` components
+   - Replace local Button/Modal with `@oos/ag-ui-ext` components
    - Add `GlowButton` for primary actions
    - Add `Skeleton` for loading states
 
@@ -1046,7 +1095,7 @@ View changes should feel seamless but intentional.
 ## File Structure
 
 ```
-apps/glia-fab-desktop/src/
+apps/desktop/src/
 ├── components/
 │   ├── layout/
 │   │   ├── CommandBar.tsx
@@ -1117,6 +1166,7 @@ apps/glia-fab-desktop/src/
 ## Success Metrics
 
 ### Visual Quality
+
 - [ ] Consistent color usage across all views
 - [ ] Ambient particles render smoothly (60fps)
 - [ ] Animations feel responsive (<100ms feedback)
@@ -1124,6 +1174,7 @@ apps/glia-fab-desktop/src/
 - [ ] Dark theme is comfortable for extended use
 
 ### Usability
+
 - [ ] Any view reachable in 2 clicks or 1 shortcut
 - [ ] Issue status changeable via drag-drop
 - [ ] Command palette finds items in <100ms
@@ -1131,6 +1182,7 @@ apps/glia-fab-desktop/src/
 - [ ] Memory graph navigable with mouse and keyboard
 
 ### Technical
+
 - [ ] No UI package component duplication in desktop app
 - [ ] State management extracted to contexts
 - [ ] 3D components lazy-loaded
@@ -1141,9 +1193,10 @@ apps/glia-fab-desktop/src/
 
 ## Appendix: Component Inventory
 
-### From `@oos/ui` to Use
+### From `@oos/ag-ui-ext` to Use
 
 **Primitives** (high priority):
+
 - `button` - Replace local Button
 - `dialog` - Replace local Modal
 - `input` - Replace local TextInput
@@ -1156,16 +1209,19 @@ apps/glia-fab-desktop/src/
 - `tooltip` - For icon hints
 
 **Atoms** (medium priority):
+
 - `GlowButton` - Primary actions
 - `AuroraBackground` - Main container background
 - `HUDProgressRing` - Circular progress indicators
 - `StatBadge` - Metric displays
 
 **Ambient** (high priority):
+
 - `NebulaStarsLayer` - Background particles
 - `ThemedAmbientLayer` - Themed ambient effects
 
 **Three** (Phase 4):
+
 - `Graph3D` - Memory/world graphs
 - `GlyphScene` - Kernel status glyph
 - `GraphNode`, `GraphEdge` - Graph building blocks
@@ -1173,6 +1229,7 @@ apps/glia-fab-desktop/src/
 ### New Components to Build
 
 **Layout**:
+
 - `CommandBar` - Top navigation bar
 - `NavigationRail` - Vertical icon nav
 - `ContextStrip` - Selection context bar
@@ -1180,6 +1237,7 @@ apps/glia-fab-desktop/src/
 - `MainLayout` - Composition wrapper
 
 **Kernel**:
+
 - `IssueBoard` - Kanban board container
 - `IssueCard` - Draggable issue card
 - `IssueColumn` - Status column with drop zone
@@ -1188,22 +1246,26 @@ apps/glia-fab-desktop/src/
 - `LiveOutput` - Streaming output display
 
 **Evolution**:
+
 - `ParetoFrontier` - Scatter plot visualization
 - `FitnessTimeline` - Line chart visualization
 - `GenomePanel` - Parameter sliders
 
 **Memory**:
+
 - `MemoryGraph` - 3D relationship graph
 - `MemoryFilters` - Filter panel
 - `MemoryDetail` - Selected memory panel
 - `MemoryList` - Tabular memory list
 
 **Gallery**:
+
 - `AssetGrid` - Responsive asset grid
 - `AssetCard` - 3D preview card
 - `AssetViewer` - Full-screen 3D viewer
 
 **Shared**:
+
 - `CommandPalette` - Global command interface
 - `KernelGlyph` - Animated status indicator
 - `AgentIndicator` - Toolchain badge

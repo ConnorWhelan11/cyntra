@@ -111,4 +111,4 @@ publish:
   viewer:
     enabled: true
     paths:
-      glb: fab/outora-library/viewer/assets/exports/jhtsic.glb
+      glb: fab/assets/viewer/assets/exports/jhtsic.glb

@@ -6,8 +6,9 @@
     "skills:clean": "python kernel/src/cyntra/skills/generate.py --clean",
     "dev:immersa": "cd apps/immersa && npm run watch",
     "build:immersa": "cd apps/immersa && npm run release",
-    "dev:desktop": "cd apps/desktop && bun run tauri dev",
-    "build:desktop": "cd apps/desktop && bun run tauri build",
+    "build:ag-ui-ext": "cd packages/ag-ui-ext && bun run build",
+    "dev:desktop": "bun run build:ag-ui-ext && cd apps/desktop && bun run tauri dev",
+    "build:desktop": "bun run build:ag-ui-ext && cd apps/desktop && bun run tauri build",
     "build:all": "bun run build:immersa && bun run build:desktop",
     "lint": "bun run lint:ts && bun run lint:py",
     "lint:ts": "eslint apps/*/src packages/*/src --max-warnings=0",
@@ -29,15 +30,15 @@
     "vite": "^7.3.0"
   },
   "lint-staged": {
-    "*.{ts,tsx}": [
+    "apps/desktop/src/**/*.{ts,tsx,js,jsx}": [
       "eslint --fix --max-warnings=0",
       "prettier --write"
     ],
-    "*.{js,jsx}": [
-      "eslint --fix",
+    "packages/ag-ui-ext/src/**/*.{ts,tsx,js,jsx}": [
+      "eslint --fix --max-warnings=0",
       "prettier --write"
     ],
-    "*.{json,md,css}": [
+    "**/*.{json,md,css}": [
       "prettier --write"
     ],
     "*.py": [

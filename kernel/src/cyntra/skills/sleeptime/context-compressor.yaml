@@ -1,0 +1,82 @@
+name: context-compressor
+version: 1.0.0
+description: |
+  Compress verbose historical context into dense, actionable summaries.
+  Takes raw run logs, conversation histories, or telemetry and produces
+  compact representations suitable for injection into agent prompts.
+
+  Uses hierarchical summarization: detail -> summary -> headline.
+category: sleeptime
+priority: medium
+phase: 2
+
+inputs:
+  - name: source_type
+    type: string
+    description: Type of content to compress
+    required: true
+    enum: [run_logs, conversations, telemetry, rollouts]
+  - name: source_paths
+    type: array
+    description: Paths to source files/directories
+    required: true
+  - name: target_tokens
+    type: integer
+    description: Target compressed size in tokens
+    required: false
+    default: 500
+  - name: preserve_priority
+    type: array
+    description: Content types to preserve with higher fidelity
+    required: false
+    default: ["errors", "tool_calls", "outcomes"]
+    enum: [errors, tool_calls, outcomes, file_changes, decisions, timestamps]
+  - name: compression_level
+    type: string
+    description: How aggressively to compress
+    required: false
+    default: "medium"
+    enum: [light, medium, aggressive]
+
+outputs:
+  - name: compressed_context
+    type: string
+    description: Dense markdown summary
+  - name: compression_ratio
+    type: number
+    description: Original tokens / compressed tokens
+  - name: preserved_items
+    type: object
+    description: Counts of each preserved content type
+  - name: dropped_items
+    type: object
+    description: What was omitted and why
+
+examples:
+  - description: Compress 10 run logs into 500 token summary
+    inputs:
+      source_type: run_logs
+      source_paths: [".cyntra/runs/run_001/", ".cyntra/runs/run_002/"]
+      target_tokens: 500
+      compression_level: medium
+    outputs:
+      compressed_context: |
+        ## Recent Runs Summary (10 runs, 7 passed)
+
+        ### Failures
+        - run_003: pytest failed, missing fixture `db_session`
+        - run_007: mypy error in scheduler.py:142
+        - run_009: timeout after 120s in Bash(npm test)
+
+        ### Successful Patterns
+        - Read->Edit->pytest chain: 6/6 success
+        - Grep before Edit: 5/5 success
+
+        ### Files Most Modified
+        - src/kernel/scheduler.py (4 runs)
+        - tests/unit/test_routing.py (3 runs)
+      compression_ratio: 12.4
+
+implementation:
+  type: python
+  path: context-compressor.py

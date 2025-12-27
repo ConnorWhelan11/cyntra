@@ -1,0 +1,12 @@
+{
+  "name": "Leaves Autumn",
+  "description": "Procedural: fallen autumn leaves, red orange yellow, scattered on ground, seamless tileable, top down",
+  "category": "organic",
+  "tags": ["leaves", "autumn", "nature", "seasonal"],
+  "prompt": "fallen autumn leaves, red orange yellow, scattered on ground, seamless tileable, top down",
+  "seed": 6862,
+  "workflow": "blender_procedural",
+  "resolution": [2048, 2048],
+  "created_at": "2025-12-27T00:49:31.159520+00:00",
+  "source": "blender"
+}

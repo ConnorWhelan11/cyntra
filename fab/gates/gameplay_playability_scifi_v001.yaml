@@ -1,0 +1,140 @@
+# Gameplay Playability Gate - Sci-Fi Environment
+#
+# Tuned for clean geometric sci-fi environments based on NitroGen behavior analysis:
+# - Very low movement (2% moving observed) - MODEL LIMITATION
+# - High stuck ratio (98% observed) - Model confused by geometric patterns
+# - Some interactions (sees panels/displays)
+#
+# IMPORTANT: NitroGen performs poorly on clean geometric environments.
+# This gate has very lenient thresholds. Consider:
+# - Adding visual variety (plants, equipment, crew)
+# - Using more textured materials
+# - Adding depth cues (lighting gradients, shadows)
+#
+# Use for: Space stations, labs, modern interiors
+
+gate_config_id: gameplay_playability_scifi_v001
+category: gameplay_quality
+schema_version: "1.0"
+
+nitrogen:
+  host: localhost
+  port: 5555
+  timeout_ms: 30000
+  frame_width: 256
+  frame_height: 256
+  frame_rate: 10
+  action_timestep: 0
+
+playtest:
+  duration_seconds: 90
+  warmup_seconds: 5
+  spawn_point: SPAWN_PLAYER
+  max_retries: 3
+  exploration_mode: free
+
+godot:
+  test_scene: res://scenes/playtest.tscn
+  headless: true
+  args: ["--headless", "--fixed-fps", "30"]
+
+thresholds:
+  # Sci-Fi: VERY lenient due to known model limitations
+  stuck_ratio_max: 0.95           # Almost always stuck is "normal" for clean geometry
+  coverage_min: 0.05              # Very low expectation
+  crash_count_max: 0
+  interaction_rate_min: 0.02      # Expects some panel interactions
+
+  # Warnings - these are the real thresholds we care about
+  stuck_ratio_warn: 0.80          # Below 80% stuck is actually good
+  coverage_warn: 0.15             # 15% coverage is decent for sci-fi
+
+metrics:
+  collect:
+    - frames_processed
+    - stuck_ratio
+    - interaction_attempts
+    - movement_distance
+    - coverage_estimate
+  output_file: playability_results.json
+
+hard_fail_codes:
+  - PLAY_STUCK_TOO_LONG
+  - PLAY_NO_EXPLORATION
+  - PLAY_CRASH
+  - PLAY_NITROGEN_TIMEOUT
+  - PLAY_NO_INTERACTIONS       # Sci-fi should have interactive panels
+
+warning_codes:
+  - PLAY_LOW_COVERAGE
+  - PLAY_HIGH_STUCK_RATIO
+
+# Special notes for sci-fi environments
+notes: |
+  NitroGen struggles with clean geometric environments because:
+  1. Training data is mostly organic/textured game environments
+  2. Uniform lighting provides no depth cues
+  3. Repeating panel patterns look like static images
+
+  To improve exploration in sci-fi environments:
+  - Add clutter (cargo, equipment, plants)
+  - Use dramatic lighting with shadows
+  - Add moving elements (holographic displays)
+  - Include NPCs or crew members
+  - Add wear/damage to break up clean surfaces
+
+repair_playbook:
+  PLAY_STUCK_TOO_LONG:
+    priority: 2                   # Lower priority - expected behavior
+    instructions: |
+      Player stuck in sci-fi environment (>95%).
+
+      This is a KNOWN LIMITATION of NitroGen with clean geometric spaces.
+
+      Mitigation strategies:
+      - Add visual variety (equipment, cargo, plants)
+      - Use dramatic lighting with clear shadows
+      - Add moving elements (screens, holograms)
+      - Include wear/damage on surfaces
+      - Add crew NPCs for visual interest
+
+      If exploration is critical:
+      - Consider using a different playtest agent
+      - Add guided mode with waypoints
+      - Reduce geometric uniformity
+
+  PLAY_NO_INTERACTIONS:
+    priority: 1
+    instructions: |
+      Player not interacting with sci-fi elements.
+
+      Sci-fi environments should have interactive panels.
+
+      Check for:
+      - Control panels have INTERACT_ markers
+      - Panels are visible (not in dark corners)
+      - Interactive elements have visual distinction
+
+      Fixes:
+      - Add glow/highlight to interactive panels
+      - Place panels at eye level
+      - Use accent colors to highlight interaction points
+
+  PLAY_NO_EXPLORATION:
+    priority: 1
+    instructions: |
+      Player not exploring at all (coverage <5%).
+
+      Even with model limitations, some movement expected.
+
+      Check for:
+      - Complete uniformity (every direction looks same)
+      - No visual landmarks
+      - No lighting variation
+      - Player spawn in corner
+
+      Fixes:
+      - Add large viewport windows
+      - Create distinct module types (colors/shapes)
+      - Add equipment clusters as landmarks
+      - Move spawn to central location

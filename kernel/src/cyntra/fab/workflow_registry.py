@@ -11,8 +11,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-import yaml
 import structlog
+import yaml
 
 logger = structlog.get_logger()
 
@@ -181,7 +181,7 @@ class WorkflowRegistry:
         return self._parse_errors.copy()
 
     @classmethod
-    def load(cls, registry_path: Path | str) -> "WorkflowRegistry":
+    def load(cls, registry_path: Path | str) -> WorkflowRegistry:
         """
         Load workflow registry from YAML file.
 
@@ -397,7 +397,7 @@ class WorkflowRegistry:
 
     def list_categories(self) -> list[str]:
         """List all unique categories."""
-        return list(set(wf.category for wf in self.workflows))
+        return list({wf.category for wf in self.workflows})
 
     def list_tags(self) -> list[str]:
         """List all unique tags."""

@@ -28,4 +28,4 @@ Example:
 To build one (requires Godot installed):
 
 - If `cyntra` is installed: `fab-godot --asset fab/outora-library/viewer/assets/exports/gothic_library_full.glb --config godot_integration_v001 --out fab/outora-library/viewer/assets/games/gothic_library_full`
-- Or from source: `cd cyntra-kernel && PYTHONPATH=src python -m cyntra.fab.godot --asset ../fab/outora-library/viewer/assets/exports/gothic_library_full.glb --config godot_integration_v001 --out ../fab/outora-library/viewer/assets/games/gothic_library_full`
+- Or from source: `cd kernel && PYTHONPATH=src python -m cyntra.fab.godot --asset ../fab/outora-library/viewer/assets/exports/gothic_library_full.glb --config godot_integration_v001 --out ../fab/outora-library/viewer/assets/games/gothic_library_full`

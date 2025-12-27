@@ -7,6 +7,12 @@ config_version=5
 config/name="FabGameTemplate"
 run/main_scene="res://scenes/Main.tscn"
 
+[autoload]
+
+FabDojoConfig="*res://scripts/FabDojoConfig.gd"
+FabDojoClient="*res://scripts/FabDojoClient.gd"
+FabController="*res://scripts/FabController.gd"
+
 [display]
 
 window/size/viewport_width=1280

@@ -102,6 +102,7 @@ if analysis_result["success"]:
 ### Development Workflow
 
 **1. Create and Work in Workcell**
+
 ```bash
 # Create workcell
 skills/development/workcell-lifecycle.py create --issue-id 42
@@ -118,6 +119,7 @@ skills/development/quality-gate-runner.py \
 ```
 
 **2. Build and Validate Rollout**
+
 ```bash
 # Build rollout
 skills/development/cyntra-rollout-builder.py \
@@ -137,6 +139,7 @@ skills/development/trajectory-analyzer.py \
 ### Dynamics Workflow
 
 **1. Ingest Rollouts into DB**
+
 ```bash
 # Create dynamics DB
 mkdir -p .cyntra/dynamics
@@ -149,6 +152,7 @@ skills/dynamics/cyntra-dynamics-ingest.py \
 ```
 
 **2. Compute Potential and Action**
+
 ```bash
 # Fit potential (requires transition matrix from estimator)
 skills/dynamics/potential-fitter.py \
@@ -165,6 +169,7 @@ skills/dynamics/action-metric-calculator.py \
 ### Evolution Workflow
 
 **1. Mutate Genomes**
+
 ```bash
 # Create mutation
 skills/evolution/genome-mutator.py \
@@ -175,6 +180,7 @@ skills/evolution/genome-mutator.py \
 ```
 
 **2. Update Frontier**
+
 ```bash
 # Evaluate genomes and update frontier
 skills/evolution/pareto-frontier-updater.py \
@@ -184,6 +190,7 @@ skills/evolution/pareto-frontier-updater.py \
 ```
 
 **3. Adjust Exploration**
+
 ```bash
 # Get controller recommendations
 skills/evolution/exploration-controller.py \
@@ -195,6 +202,7 @@ skills/evolution/exploration-controller.py \
 ### Fab Workflow
 
 **1. Render Asset**
+
 ```bash
 # Deterministic render
 skills/fab/blender-deterministic-render.py \
@@ -205,6 +213,7 @@ skills/fab/blender-deterministic-render.py \
 ```
 
 **2. Evaluate with Gate**
+
 ```bash
 # Run gate
 skills/fab/fab-gate-evaluator.py \
@@ -214,6 +223,7 @@ skills/fab/fab-gate-evaluator.py \
 ```
 
 **3. Build World**
+
 ```bash
 # Build deterministic world
 skills/fab/deterministic-world-builder.py \
@@ -228,29 +238,35 @@ skills/fab/deterministic-world-builder.py \
 ### When you need to...
 
 **Validate artifacts:**
+
 - `cyntra-schema-validator` - Check JSON against schemas
 - `quality-gate-runner` - Run pytest/mypy/ruff/fab gates
 
 **Manage workcells:**
+
 - `workcell-lifecycle` - Create/verify/cleanup workcells
 
 **Analyze trajectories:**
+
 - `cyntra-rollout-builder` - Create rollout from workcell artifacts
 - `telemetry-parser` - Parse telemetry into normalized events
 - `trajectory-analyzer` - Compute tool usage and transitions
 
 **Track dynamics:**
+
 - `cyntra-dynamics-ingest` - Log states and transitions to DB
 - `state-hasher-t1` - Compute state IDs
 - `potential-fitter` - Estimate V(state) landscape
 - `action-metric-calculator` - Compute action and detect trapping
 
 **Evolve prompts:**
+
 - `genome-mutator` - Create prompt variants
 - `pareto-frontier-updater` - Maintain non-dominated set
 - `exploration-controller` - Tune exploration parameters
 
 **Generate 3D assets:**
+
 - `blender-deterministic-render` - Reproducible Blender renders
 - `fab-gate-evaluator` - Quality gate evaluation
 - `deterministic-world-builder` - World building with manifests
@@ -267,6 +283,7 @@ skills/fab/deterministic-world-builder.py \
 ## Troubleshooting
 
 **Skill not found error:**
+
 ```bash
 # Make sure you're running from repo root
 cd /Users/connor/Medica/glia-fab
@@ -276,26 +293,29 @@ cd /Users/connor/Medica/glia-fab
 ```
 
 **Import errors:**
+
 ```python
-# Add cyntra-kernel to path explicitly
+# Add kernel to path explicitly
 import sys
 from pathlib import Path
 repo_root = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(repo_root / "cyntra-kernel" / "src"))
+sys.path.insert(0, str(repo_root / "kernel" / "src"))
 ```
 
 **Schema validation fails:**
+
 ```bash
 # Check schema exists
-ls cyntra-kernel/schemas/cyntra/rollout.schema.json
+ls kernel/schemas/cyntra/rollout.schema.json
 
 # Install jsonschema if missing
-cd cyntra-kernel && pip install jsonschema
+cd kernel && pip install jsonschema
 ```
 
 ## Integration with Cyntra
 
 Skills are designed to be invoked by:
+
 1. **Codex/Claude agents** in workcells (via subprocess)
 2. **Cyntra kernel** for automation (import as library)
 3. **Desktop app** for UI-driven workflows (via CLI)

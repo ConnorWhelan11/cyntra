@@ -1,0 +1,27 @@
+[package]
+name = "logos-goap"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "Formally verified GOAP planning with proof receipts"
+
+[features]
+default = []
+# Enable Z3 verification (for counterexample generation)
+z3-verify = ["logos-z3"]
+
+[dependencies]
+logos-ffi = { path = "../logos-ffi" }
+logos-z3 = { path = "../logos-z3", optional = true }
+ai-goap = { path = "../ai-goap" }
+ai-core = { path = "../ai-core" }
+
+# Core types
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+chrono = { workspace = true }
+
+[dev-dependencies]
+proptest = "1"

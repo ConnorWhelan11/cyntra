@@ -13,15 +13,17 @@ from pathlib import Path
 from typing import Any
 
 try:
-    import jsonschema
     from jsonschema import Draft7Validator
 except ImportError:
-    print("Error: jsonschema package required. Install with: pip install jsonschema", file=sys.stderr)
+    print(
+        "Error: jsonschema package required. Install with: pip install jsonschema",
+        file=sys.stderr,
+    )
     sys.exit(1)
 
 # Schema directory
 repo_root = Path(__file__).resolve().parents[2]
-SCHEMA_DIR = repo_root / "cyntra-kernel" / "schemas" / "cyntra"
+SCHEMA_DIR = repo_root / "kernel" / "schemas" / "cyntra"
 
 # Schema name mapping
 SCHEMA_FILES = {
@@ -118,10 +120,14 @@ def execute(
 
     # Check schema version if present
     schema_version = artifact.get("schema_version")
-    expected_version = schema.get("properties", {}).get("schema_version", {}).get("const")
+    expected_version = (
+        schema.get("properties", {}).get("schema_version", {}).get("const")
+    )
 
     if schema_version != expected_version and expected_version:
-        warnings.append(f"Schema version mismatch: got {schema_version}, expected {expected_version}")
+        warnings.append(
+            f"Schema version mismatch: got {schema_version}, expected {expected_version}"
+        )
 
     valid = len(errors) == 0 and (not strict or len(warnings) == 0)
 

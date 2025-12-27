@@ -20,18 +20,22 @@ Each blueprint is a concrete instantiation of:
 For any Universe `<U>`:
 
 ### A) Registry
+
 - Worlds included (with paths)
 - Default objective + swarm
 
 ### B) Evidence contract (frontier eligibility)
+
 - Required artifacts per run (context/manifest/verdict + domain-specific proofs)
 - Schema validation rules
 
 ### C) Determinism policy
+
 - Seeds + environment requirements (CPU-only, pinned tools)
 - Replay probes (determinism score)
 
 ### D) Genome surfaces (what can change)
+
 - World genes
 - Gate genes
 - Policy genes
@@ -39,15 +43,18 @@ For any Universe `<U>`:
 - Memory genes
 
 ### E) Objectives + metrics
+
 - Metric list and `min/max` directions
 - Hard constraints (e.g., “must pass all gates”)
 
 ### F) Swarms
+
 - At least one “small + safe” swarm
 - One “high risk / speculate+vote” swarm
 - One “repair loop” swarm
 
 ### G) Promotion path (tangible value)
+
 - Shelf pointer (“best-known”)
 - Gallery/viewer publishing
 - Regression tracking
@@ -61,6 +68,7 @@ For any Universe `<U>`:
 Produce **shippable/viewable** 3D assets from Fab Worlds while accumulating an evidence-driven Pareto frontier.
 
 Primary user outcome:
+
 - “What’s the best-known `outora_library` build right now, and why?”
 
 ### 2) Worlds (registry)
@@ -73,12 +81,14 @@ Primary user outcome:
 ### 3) Evidence contract (frontier eligibility)
 
 Required per candidate run:
+
 - `context.json` (universe/world join keys)
 - `manifest.json` (stage provenance + hashes)
 - `verdict/gate_verdict.json` (canonical metrics + pass/fail)
 - `world/<world_id>.glb` (phenotype)
 
 Recommended:
+
 - `render/beauty/*.png`, `render/clay/*.png` (for review + critics)
 - `stages/validate/**` per-gate artifacts
 - optional `asset_proof.json` (bundle verdict + renders + critic reports)
@@ -86,6 +96,7 @@ Recommended:
 ### 4) Determinism policy
 
 Minimum:
+
 - CPU-only (Cycles CPU, no GPU in evaluation)
 - stable seeds wired into:
   - mutation RNG
@@ -94,24 +105,29 @@ Minimum:
 - pinned Blender path/version (Universe-level requirement)
 
 Replay probe (determinism score):
+
 - re-run gate evaluation `N=2..3` on the same exported GLB + render set
 - compare metric stability (within tolerance) and key artifact hashes
 
 ### 5) Genome surfaces (v1)
 
 **World genome**
+
 - enum knobs: layout/material/lighting presets, bake mode, template selection
 - promote “template choice” early (high leverage)
 
 **Gate genome (optional v1, recommended v2)**
+
 - critic weights, thresholds, subscore floors (only after you trust the critics)
 
 **Policy genome (optional)**
+
 - population size, phase budgets, pruning/retention toggles
 
 ### 6) Objectives (v1 examples)
 
 `ship_quality_v1` (recommended multi-objective):
+
 - `overall: max` (gate score)
 - `duration_ms: min` (time-to-build)
 - `artifact_size_mb: min` (GLB size / deployment cost)
@@ -119,19 +135,23 @@ Replay probe (determinism score):
 - `cost_usd: min` (if measured)
 
 Hard constraints:
+
 - `require_all_gates_pass: true` for frontier eligibility
 
 ### 7) Swarms (recommended set)
 
 **A) Multi-fidelity funnel (default)**
+
 - Phase 1 (cheap): schema + budgets + static checks
 - Phase 2 (medium): build until `export`, run lightweight critics
 - Phase 3 (full): run `validate` gates + determinism probe
 
 **B) Parallel compete + vote**
+
 - for high-risk mutations (template swaps, big layout changes)
 
 **C) Serial repair loop**
+
 - if gates fail, apply `verdict.next_actions` → regenerate → re-validate (bounded iterations)
 
 ### 8) Agent roles (how it runs)
@@ -148,6 +168,7 @@ Hard constraints:
 ### 9) Promotion (“best-known shelf”)
 
 Auto-promotion policy:
+
 - when a new frontier champion appears, publish to:
   - viewer “best-known” slot (overwrite) and/or
   - gallery (immutable directory per run)
@@ -156,6 +177,7 @@ Auto-promotion policy:
 ### 10) Minimal config sketch
 
 `universes/fabship/universe.yaml` (conceptual):
+
 ```yaml
 schema_version: "1.0"
 universe_id: fabship
@@ -193,10 +215,12 @@ Important nuance: the “phenotype” here is often **a patch + proof**, not a s
 You can model “code” in two layers:
 
 **Layer A — Project worlds (deterministic gates)**
-- `cyntra-kernel` world: gates = `pytest + mypy + ruff` (plus schema validators)
+
+- `kernel` world: gates = `pytest + mypy + ruff` (plus schema validators)
 - `glia-fab-desktop` world: gates = `npm test/build + typecheck + lint`
 
 **Layer B — Task worlds (issue-driven)**
+
 - “Issue world” that runs a bead/issue through a standardized pipeline:
   - create workcell
   - implement patch
@@ -206,6 +230,7 @@ You can model “code” in two layers:
 ### 3) Evidence contract (frontier eligibility)
 
 For a candidate run to be frontier-eligible:
+
 - `context.json` (universe/world/join keys + issue id if applicable)
 - Patch artifact:
   - `patch.diff` or structured patch json
@@ -219,32 +244,38 @@ For a candidate run to be frontier-eligible:
 ### 4) Determinism policy
 
 Minimum:
+
 - pinned dependency lockfiles respected (no network install during eval, or fully pinned)
 - deterministic test suite mode (fixed seeds, stable ordering)
 - stable workcell creation + patch application order
 
 Replay probe:
+
 - re-run the verifier step twice for the same patch to detect flakiness
 
 ### 5) Genome surfaces (v1)
 
 **Prompt/tool genome (primary)**
+
 - system prompt blocks per role (implementer/reviewer/repairer)
 - tool use rules (safe file ops, testing discipline)
 - sampling params (temperature, parallelism)
 - repair playbook templates keyed by failure types
 
 **Policy genome**
+
 - routing (which toolchains for which risks)
 - speculate thresholds (when to parallelize)
 - budget allocation (how much time to spend before escalating)
 
 **(Optional) Code config genome**
+
 - feature flags, perf knobs, build configs — only when changes are safe and reversible
 
 ### 6) Objectives (v1 examples)
 
 `patch_throughput_v1`:
+
 - `pass_rate: max` (fraction of tasks that pass gates)
 - `time_to_pass_ms: min`
 - `cost_usd: min`
@@ -252,24 +283,29 @@ Replay probe:
 - `flakiness_score: min` (replay stability)
 
 Hard constraints (recommended):
+
 - require gates pass for “shipping” points; allow “fail points” only for learning memory, not frontier
 
 ### 7) Swarms (recommended set)
 
 **A) Assembly line (serial handoff)**
+
 - Generator (plan) → Implementer (patch) → Reviewer (diff critique) → Repairer → Verifier
 - Great for consistent quality and interpretability
 
 **B) Speculate+vote (parallel compete)**
+
 - multiple implementers in parallel for high-risk tasks
 - select winner by gates pass + objective ranking
 
 **C) Multi-fidelity funnel**
+
 - Phase 1: static checks (format, ruff, mypy) before running tests
 - Phase 2: unit tests
 - Phase 3: integration tests (only for survivors)
 
 **D) RedTeam adversarial**
+
 - tries to induce regressions / flaky behavior; hardens policies and playbooks
 
 ### 8) What the frontier represents (key design choice)
@@ -277,10 +313,12 @@ Hard constraints (recommended):
 There are two viable interpretations:
 
 **Option 1 (recommended v1): frontier over “behavior genomes”**
+
 - points are prompt/policy genomes that produce better outcomes across many tasks
 - this avoids mixing “frontier points” with the repo’s mainline code state
 
 **Option 2: frontier over “patch candidates”**
+
 - points are patch+proof bundles for specific tasks
 - useful for “best-known fix for issue X”, but less reusable across tasks
 
@@ -294,16 +332,17 @@ There are two viable interpretations:
 ### 10) Minimal config sketch
 
 `universes/repoevo/universe.yaml` (conceptual):
+
 ```yaml
 schema_version: "1.0"
 universe_id: repoevo
 worlds:
   - world_id: cyntra_kernel_repo
     kind: code_project
-    path: cyntra-kernel/
+    path: kernel/
   - world_id: fab_desktop_repo
     kind: code_project
-    path: apps/glia-fab-desktop/
+    path: apps/desktop/
 defaults:
   objective_id: patch_throughput_v1
   swarm_id: assembly_line_v1
@@ -329,6 +368,7 @@ Run deterministic experiments, parameter sweeps, and dynamics-driven exploration
 ### 2) Worlds (registry)
 
 Typical worlds:
+
 - **Ingest world**: converts raw telemetry/rollouts into canonical artifacts (e.g., transition DB)
 - **Experiment world**: runs a simulation/rollout with fixed seeds
 - **Analysis world**: produces reports (dynamics_report, action metrics, trap warnings)
@@ -338,42 +378,50 @@ Outputs are almost entirely JSON/CSV + plots, not GLBs.
 ### 3) Evidence contract (frontier eligibility)
 
 Required:
+
 - `context.json`
 - experiment manifest (inputs, params, seeds, tool versions)
 - metric report (schema-validated)
 - determinism probe (replay stability) if used as an objective
 
 Recommended:
+
 - raw trajectories / rollouts (or hashes of them)
 - transition matrices / state ids
 
 ### 4) Determinism policy
 
 Minimum:
+
 - fixed seeds at every stage
 - pinned data versions (hash-addressed datasets)
 - pinned library versions (lockfile-based)
 
 Replay probe:
+
 - rerun the same experiment twice and compare key metrics + checksums
 
 ### 5) Genome surfaces (v1)
 
 **Experiment genome**
+
 - environment parameters (difficulty, stochasticity)
 - controller parameters (temperature, exploration settings)
 - batch sizes / horizon lengths
 
 **Analysis genome**
+
 - smoothing constants, thresholds for trap detection, objective weights
 
 **Memory genome**
+
 - retrieval rules for which historical runs influence new runs
 - decay rates and confidence thresholds
 
 ### 6) Objectives (examples)
 
 `exploration_quality_v1`:
+
 - `action_metric: max` (exploration / irreversibility metric)
 - `trap_rate: min` (how often stuck states occur)
 - `delta_v: max` (improvement proxy)
@@ -382,45 +430,52 @@ Replay probe:
 - `determinism_score: max`
 
 Hard constraints:
+
 - schema-valid reports only
 - “no trap catastrophes” as a hard fail threshold
 
 ### 7) Swarms (recommended set)
 
 **A) Explore/exploit split**
+
 - explorers: maximize novelty/diversity subject to basic sanity gates
 - exploiters: hill-climb from frontier parents
 
 **B) Tournament parents**
+
 - sample multiple parents from the frontier to avoid local minima
 
 **C) Multi-fidelity funnel**
+
 - short-horizon runs to filter bad configs
 - long-horizon runs for finalists only
 
 **D) Adversarial (trap finder)**
+
 - a “FailureFinder” role searches for trap-inducing configs
 - repairer adjusts controller/memory policies to reduce trap_rate
 
 ### 8) Promotion (“best-known controller / config”)
 
 Shelf output becomes:
+
 - a “best-known controller config” for the next rollout runs
 - plus an evidence pack showing why it’s best (metrics + stability)
 
 ### 9) Minimal config sketch
 
 `universes/simlab/universe.yaml` (conceptual):
+
 ```yaml
 schema_version: "1.0"
 universe_id: simlab
 worlds:
   - world_id: dynamics_ingest
     kind: pipeline
-    path: cyntra-kernel/   # or a dedicated world definition
+    path: kernel/ # or a dedicated world definition
   - world_id: experiment_rollout
     kind: pipeline
-    path: cyntra-kernel/
+    path: kernel/
 defaults:
   objective_id: exploration_quality_v1
   swarm_id: explore_exploit_v1
@@ -439,5 +494,4 @@ policies:
 2. **RepoEvo v1**: optimize the system’s own productivity (prompt/policy genomes).
 3. **SimLab v1**: deeper research loop once evidence + memory pipelines are stable.
 
-If you want, I can turn each blueprint into a concrete folder under `universes/` with starter `universe.yaml`, `objectives.yaml`, `swarms.yaml`, plus a minimal “world wrapper” for the code and sim universes. 
-
+If you want, I can turn each blueprint into a concrete folder under `universes/` with starter `universe.yaml`, `objectives.yaml`, `swarms.yaml`, plus a minimal “world wrapper” for the code and sim universes.

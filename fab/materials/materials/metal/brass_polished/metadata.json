@@ -1,0 +1,12 @@
+{
+  "name": "Brass Polished",
+  "description": "Procedural: polished brass metal surface, warm golden tone, slight scratches, seamless tileable",
+  "category": "metal",
+  "tags": ["brass", "metal", "gold", "polished"],
+  "prompt": "polished brass metal surface, warm golden tone, slight scratches, seamless tileable",
+  "seed": 7032,
+  "workflow": "blender_procedural",
+  "resolution": [2048, 2048],
+  "created_at": "2025-12-27T00:42:45.149642+00:00",
+  "source": "blender"
+}

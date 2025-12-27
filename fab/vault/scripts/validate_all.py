@@ -34,7 +34,7 @@ def main():
     args = parser.parse_args()
 
     vault_root = Path(__file__).parent.parent
-    kernel_root = vault_root.parent.parent / "cyntra-kernel"
+    kernel_root = vault_root.parent.parent / "kernel"
 
     results: dict[str, str] = {}
 
@@ -190,6 +190,7 @@ def main():
 
         # Verify manifest has required fields
         import json
+
         with open(manifest_path) as f:
             manifest = json.load(f)
 

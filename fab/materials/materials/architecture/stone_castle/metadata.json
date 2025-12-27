@@ -1,0 +1,12 @@
+{
+  "name": "Stone Castle",
+  "description": "Procedural: medieval castle stone wall, large cut blocks, weathered gray, fantasy, seamless tileable",
+  "category": "architecture",
+  "tags": ["stone", "castle", "medieval", "fantasy"],
+  "prompt": "medieval castle stone wall, large cut blocks, weathered gray, fantasy, seamless tileable",
+  "seed": 1290,
+  "workflow": "blender_procedural",
+  "resolution": [2048, 2048],
+  "created_at": "2025-12-27T00:38:31.013288+00:00",
+  "source": "blender"
+}

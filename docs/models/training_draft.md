@@ -23,23 +23,23 @@ directory. Any plan that reuses pretrain.py must either (a) restore utils.py or 
 
 - Universe spec + catalogs:
   - universes/medica/universe.yaml, universes/medica/swarms.yaml, universes/medica/objectives.yaml
-  - cyntra-kernel/src/cyntra/universe/config.py:load_universe() + schema checks in cyntra-kernel/schemas/cyntra/universe.schema.json, swarms.schema.json, objectives.schema.json
-  - cyntra-kernel/src/cyntra/universe/policy.py:apply_universe_policies() (budgets/env/routing overrides)
-  - cyntra-kernel/src/cyntra/universe/run_context.py + cyntra-kernel/schemas/cyntra/run_context.schema.json
+  - kernel/src/cyntra/universe/config.py:load_universe() + schema checks in kernel/schemas/cyntra/universe.schema.json, swarms.schema.json, objectives.schema.json
+  - kernel/src/cyntra/universe/policy.py:apply_universe_policies() (budgets/env/routing overrides)
+  - kernel/src/cyntra/universe/run_context.py + kernel/schemas/cyntra/run_context.schema.json
 - Kernel decision points to “plug in” a Swarm Planner:
-  - cyntra-kernel/src/cyntra/kernel/scheduler.py (schedule(), should_speculate())
-  - cyntra-kernel/src/cyntra/kernel/runner.py (\_dispatch_single_async(), \_dispatch_speculate_async(), \_dispatch_parallel())
-  - cyntra-kernel/src/cyntra/kernel/dispatcher.py (\_route_toolchain(), \_build_manifest())
-  - cyntra-kernel/src/cyntra/kernel/routing.py (ordered_toolchain_candidates(), speculate_toolchains(), speculate_parallelism())
-  - cyntra-kernel/src/cyntra/control/exploration_controller.py (decide(), speculate_parallelism()) — current heuristic controller to imitate initially
+  - kernel/src/cyntra/kernel/scheduler.py (schedule(), should_speculate())
+  - kernel/src/cyntra/kernel/runner.py (\_dispatch_single_async(), \_dispatch_speculate_async(), \_dispatch_parallel())
+  - kernel/src/cyntra/kernel/dispatcher.py (\_route_toolchain(), \_build_manifest())
+  - kernel/src/cyntra/kernel/routing.py (ordered_toolchain_candidates(), speculate_toolchains(), speculate_parallelism())
+  - kernel/src/cyntra/control/exploration_controller.py (decide(), speculate_parallelism()) — current heuristic controller to imitate initially
 - Artifacts + telemetry + summaries:
   - .cyntra/config.yaml (routing/speculation defaults)
-  - .beads/issues.jsonl and cyntra-kernel/src/cyntra/state/models.py:Issue
-  - Workcells and archives: cyntra-kernel/src/cyntra/workcell/manager.py (archives manifest.json, proof.json, telemetry.jsonl, optionally rollout.json)
-  - Telemetry contract: cyntra-kernel/src/cyntra/adapters/telemetry.py
-  - Rollout summary builder: cyntra-kernel/src/cyntra/rollouts/builder.py:build_rollout() + cyntra-kernel/schemas/cyntra/rollout.schema.json
-  - Dynamics DB ingest path: cyntra-kernel/src/cyntra/dynamics/transition_logger.py:build_transitions() + transition_db.py
-  - World-run indexing: cyntra-kernel/src/cyntra/universe/index.py:build_runs_index() (useful for “similar world runs”)
+  - .beads/issues.jsonl and kernel/src/cyntra/state/models.py:Issue
+  - Workcells and archives: kernel/src/cyntra/workcell/manager.py (archives manifest.json, proof.json, telemetry.jsonl, optionally rollout.json)
+  - Telemetry contract: kernel/src/cyntra/adapters/telemetry.py
+  - Rollout summary builder: kernel/src/cyntra/rollouts/builder.py:build_rollout() + kernel/schemas/cyntra/rollout.schema.json
+  - Dynamics DB ingest path: kernel/src/cyntra/dynamics/transition_logger.py:build_transitions() + transition_db.py
+  - World-run indexing: kernel/src/cyntra/universe/index.py:build_runs_index() (useful for “similar world runs”)
 
 ———
 
@@ -47,26 +47,26 @@ directory. Any plan that reuses pretrain.py must either (a) restore utils.py or 
 
 ### planner_input.v1 (canonical input record)
 
-Implement as a JSON-serializable dict and optionally validate via a new schema (recommended: cyntra-kernel/schemas/cyntra/planner_input.schema.json).
+Implement as a JSON-serializable dict and optionally validate via a new schema (recommended: kernel/schemas/cyntra/planner_input.schema.json).
 
 Required fields
 
 - schema_version: "cyntra.planner_input.v1"
-- universe_id: string (match RunContext shape in cyntra-kernel/src/cyntra/universe/run_context.py)
-- job_type: string (align with manifest["job_type"] in cyntra-kernel/src/cyntra/kernel/dispatcher.py:\_build_manifest())
+- universe_id: string (match RunContext shape in kernel/src/cyntra/universe/run_context.py)
+- job_type: string (align with manifest["job_type"] in kernel/src/cyntra/kernel/dispatcher.py:\_build_manifest())
 
 Optional/nullable universe fields
 
 - world_id: string|null (world evolution)
 - objective_id: string|null
-- universe_defaults: { swarm_id?: str, objective_id?: str } (from UniverseConfig.defaults in cyntra-kernel/src/cyntra/universe/config.py)
+- universe_defaults: { swarm_id?: str, objective_id?: str } (from UniverseConfig.defaults in kernel/src/cyntra/universe/config.py)
 - universe_policies: { budgets?: { max_concurrent_workcells?: int, max_run_minutes?: int }, determinism?: {...} } (from UniverseConfig.policies)
 
 Issue fields (from Beads + manifest)
 
 - issue: object
   - issue_id: string (from .beads/issues.jsonl or manifest["issue"]["id"])
-  - dk_priority: "P0"|"P1"|"P2"|"P3" (see cyntra-kernel/src/cyntra/state/models.py:Issue)
+  - dk_priority: "P0"|"P1"|"P2"|"P3" (see kernel/src/cyntra/state/models.py:Issue)
   - dk_risk: "low"|"medium"|"high"|"critical"
   - dk_size: "XS"|"S"|"M"|"L"|"XL"
   - dk_tool_hint: string|null
@@ -77,25 +77,25 @@ Issue fields (from Beads + manifest)
 History fields (bounded, no leakage)
 
 - last_N_similar_runs: list of run_summary.v1 (N fixed, e.g. 8)
-  - Prefer deriving these from cyntra.rollout.v1 produced by cyntra-kernel/src/cyntra/rollouts/builder.py, and from world run metadata indexed by cyntra-kernel/src/cyntra/universe/
+  - Prefer deriving these from cyntra.rollout.v1 produced by kernel/src/cyntra/rollouts/builder.py, and from world run metadata indexed by kernel/src/cyntra/universe/
     index.py.
 
 ———
 
 ### planner_action.v1 (finite action schema)
 
-Implement as a dict and validate via cyntra-kernel/schemas/cyntra/planner_action.schema.json (recommended).
+Implement as a dict and validate via kernel/schemas/cyntra/planner_action.schema.json (recommended).
 
 Action tuple (all finite)
 
 - schema_version: "cyntra.planner_action.v1"
 - swarm_id: enum of known swarm ids (start with universe swarms: speculate_vote, serial_handoff from universes/medica/swarms.yaml)
 - parallelism_bucket: enum {1,2,3}
-  - Maps to candidate toolchain count in cyntra-kernel/src/cyntra/kernel/runner.py:\_dispatch_speculate_async()
+  - Maps to candidate toolchain count in kernel/src/cyntra/kernel/runner.py:\_dispatch_speculate_async()
 - max_run_minutes_bucket: enum {15,30,60,120} (or whatever your ops envelope is)
-  - Maps to caps applied in cyntra-kernel/src/cyntra/universe/policy.py:apply_universe_policies()
+  - Maps to caps applied in kernel/src/cyntra/universe/policy.py:apply_universe_policies()
 - max_candidates_bucket: enum {1,2,3}
-  - For world evolution: maps to population_size in cyntra-kernel/src/cyntra/universe/evolve_world.py:evolve_world()
+  - For world evolution: maps to population_size in kernel/src/cyntra/universe/evolve_world.py:evolve_world()
   - For kernel speculate: same as parallelism_bucket initially
 
 Optional model metadata (not part of action space)
@@ -110,39 +110,39 @@ Optional model metadata (not part of action space)
 ### Label source (imitation baseline)
 
 - Kernel issues (code/fab_asset)
-  - Labels should reflect what actually ran in cyntra-kernel/src/cyntra/kernel/runner.py:
+  - Labels should reflect what actually ran in kernel/src/cyntra/kernel/runner.py:
     - Single dispatch path: \_dispatch_single_async() ⇒ swarm_id="serial_handoff", parallelism_bucket=1.
     - Speculate path: \_dispatch_speculate_async() ⇒ swarm_id="speculate_vote", parallelism_bucket = len(candidates) after truncation.
   - To extract “actual” parallelism/toolchains deterministically, add a small artifact going forward:
-    - Write a planner_plan.json or add manifest["planner"]["executed_plan"] at dispatch time (in cyntra-kernel/src/cyntra/kernel/runner.py) so you don’t have to infer from loose
+    - Write a planner_plan.json or add manifest["planner"]["executed_plan"] at dispatch time (in kernel/src/cyntra/kernel/runner.py) so you don’t have to infer from loose
       grouping.
 - World evolution runs
   - Labels are already explicit at the run level:
-    - context.json written by cyntra-kernel/src/cyntra/universe/run_context.py:write_run_context() inside cyntra-kernel/src/cyntra/universe/evolve_world.py:evolve_world() includes
+    - context.json written by kernel/src/cyntra/universe/run_context.py:write_run_context() inside kernel/src/cyntra/universe/evolve_world.py:evolve_world() includes
       swarm_id.
     - population_size is resolved in evolve_world() and recorded in evolve_world.json output (same module).
 
 ### “Similar runs” definition + query (local-first)
 
-Implement a deterministic scorer in a new module (suggested: cyntra-kernel/src/cyntra/planner/similar_runs.py):
+Implement a deterministic scorer in a new module (suggested: kernel/src/cyntra/planner/similar_runs.py):
 
 - Filter candidates by:
-  - same job_type / domain (see \_domain_for_issue() in cyntra-kernel/src/cyntra/control/exploration_controller.py)
+  - same job_type / domain (see \_domain_for_issue() in kernel/src/cyntra/control/exploration_controller.py)
   - (if world run) same world_id and objective_id
 - Score by:
-  - tag Jaccard overlap using manifest["issue"]["tags"] from archived workcells (.cyntra/archives/<wc>/manifest.json, produced in cyntra-kernel/src/cyntra/kernel/
+  - tag Jaccard overlap using manifest["issue"]["tags"] from archived workcells (.cyntra/archives/<wc>/manifest.json, produced in kernel/src/cyntra/kernel/
     dispatcher.py:\_build_manifest())
-  - recency bucket using proof["metadata"]["started_at"] (workcells) or UniverseRunIndexRecord.started_ms (world runs, from cyntra-kernel/src/cyntra/universe/index.py)
+  - recency bucket using proof["metadata"]["started_at"] (workcells) or UniverseRunIndexRecord.started_ms (world runs, from kernel/src/cyntra/universe/index.py)
 - Deterministic tie-break: (score desc, started_ms desc, run_id asc).
 
 ### run_summary.json (if you want a dedicated compact summary)
 
-You already have a compact-ish artifact for workcells: rollout.json from cyntra-kernel/src/cyntra/rollouts/builder.py. If you still want a uniform “planner-friendly” summary:
+You already have a compact-ish artifact for workcells: rollout.json from kernel/src/cyntra/rollouts/builder.py. If you still want a uniform “planner-friendly” summary:
 
-- Add cyntra-kernel/src/cyntra/planner/run_summary.py that:
+- Add kernel/src/cyntra/planner/run_summary.py that:
   - For workcells: reads rollout.json (or builds it on the fly via build_rollout())
-  - For world runs: reads .cyntra/runs/<run>/manifest.json + optional verdict/gate_verdict.json, mirroring the fields used in cyntra-kernel/src/cyntra/universe/index.py
-- Write run_summary.json next to each run/workcell (archive copy handled by cyntra-kernel/src/cyntra/workcell/manager.py:\_archive_logs()).
+  - For world runs: reads .cyntra/runs/<run>/manifest.json + optional verdict/gate_verdict.json, mirroring the fields used in kernel/src/cyntra/universe/index.py
+- Write run_summary.json next to each run/workcell (archive copy handled by kernel/src/cyntra/workcell/manager.py:\_archive_logs()).
 
 ### Splits + leakage control
 
@@ -228,11 +228,11 @@ Then add:
 ### Where inference runs
 
 - Kernel issues:
-  - Best insertion point is the dispatch decision boundary in cyntra-kernel/src/cyntra/kernel/runner.py:\_dispatch_parallel() before choosing \_dispatch_single_async() vs
+  - Best insertion point is the dispatch decision boundary in kernel/src/cyntra/kernel/runner.py:\_dispatch_parallel() before choosing \_dispatch_single_async() vs
     \_dispatch_speculate_async().
-  - Parallelism override happens in cyntra-kernel/src/cyntra/kernel/runner.py:\_dispatch_speculate_async() right before candidates = candidates[:parallelism].
+  - Parallelism override happens in kernel/src/cyntra/kernel/runner.py:\_dispatch_speculate_async() right before candidates = candidates[:parallelism].
 - World evolution:
-  - Add an optional “planner chooses swarm/population” path in cyntra-kernel/src/cyntra/cli.py inside evolve() (currently resolves resolved_swarm/population_size from universe defaults
+  - Add an optional “planner chooses swarm/population” path in kernel/src/cyntra/cli.py inside evolve() (currently resolves resolved_swarm/population_size from universe defaults
     and args).
 
 ### CLI surface (minimal)
@@ -240,17 +240,17 @@ Then add:
 - Add flags:
   - cyntra run --planner-checkpoint <path> --planner-enabled
   - cyntra evolve --planner-checkpoint <path> --planner-enabled
-  - Wire them in cyntra-kernel/src/cyntra/cli.py and store on KernelRunner (see cyntra-kernel/src/cyntra/kernel/runner.py:KernelRunner.**init**()).
+  - Wire them in kernel/src/cyntra/cli.py and store on KernelRunner (see kernel/src/cyntra/kernel/runner.py:KernelRunner.**init**()).
 
 ### Recording predictions
 
-- Add a manifest["planner"] block in cyntra-kernel/src/cyntra/kernel/dispatcher.py:\_build_manifest() via manifest_overrides (already supported by Dispatcher.dispatch_async(...,
+- Add a manifest["planner"] block in kernel/src/cyntra/kernel/dispatcher.py:\_build_manifest() via manifest_overrides (already supported by Dispatcher.dispatch_async(...,
   manifest_overrides=...)).
 - Persist into rollouts:
-  - Extend cyntra-kernel/src/cyntra/rollouts/builder.py:build_rollout() to copy manifest["planner"] into the rollout (top-level or under inputs).
-  - If you want strict validation, extend cyntra-kernel/schemas/cyntra/rollout.schema.json to include this field (today, policy is closed but top-level is permissive).
+  - Extend kernel/src/cyntra/rollouts/builder.py:build_rollout() to copy manifest["planner"] into the rollout (top-level or under inputs).
+  - If you want strict validation, extend kernel/schemas/cyntra/rollout.schema.json to include this field (today, policy is closed but top-level is permissive).
 - Optionally write context.json for workcells when --universe is set:
-  - Call write_run_context() from cyntra-kernel/src/cyntra/universe/run_context.py inside KernelRunner so issue runs become universe-indexable.
+  - Call write_run_context() from kernel/src/cyntra/universe/run_context.py inside KernelRunner so issue runs become universe-indexable.
 
 ———
 
@@ -259,9 +259,9 @@ Then add:
 ### P0 — Spike (prove end-to-end on tiny data)
 
 - [ ] Confirm/restore URM instantiation glue (train/URM/utils.py missing; blocks train/URM/pretrain.py).
-- [ ] Implement minimal planner_input.v1 builder in a scratch script (suggested: cyntra-kernel/src/cyntra/planner/spike.py) using:
+- [ ] Implement minimal planner_input.v1 builder in a scratch script (suggested: kernel/src/cyntra/planner/spike.py) using:
   - issues from .beads/issues.jsonl
-  - run summaries from cyntra-kernel/src/cyntra/rollouts/builder.py:build_rollout()
+  - run summaries from kernel/src/cyntra/rollouts/builder.py:build_rollout()
 - [ ] Implement a tiny baseline model (even linear) to validate dataset→train→eval plumbing.
 - Done when: you can train for ~100 steps and run eval without crashes.
 - Risks: URM checkout missing files; too little historical data to learn anything.
@@ -270,12 +270,12 @@ Then add:
 ### P1 — Dataset + schemas (make it reproducible)
 
 - [ ] Add JSON schemas:
-  - cyntra-kernel/schemas/cyntra/planner_input.schema.json
-  - cyntra-kernel/schemas/cyntra/planner_action.schema.json
+  - kernel/schemas/cyntra/planner_input.schema.json
+  - kernel/schemas/cyntra/planner_action.schema.json
 - [ ] Implement dataset builder:
   - train/URM/data/build_cyntra_planner_dataset.py (memmaps + dataset.json like train/URM/data/build_arc_dataset.py)
 - [ ] Implement “similar runs” query:
-  - cyntra-kernel/src/cyntra/planner/similar_runs.py
+  - kernel/src/cyntra/planner/similar_runs.py
 - [ ] Implement leakage-safe time splits (train/val/test) inside dataset builder.
 - Done when: dataset build is deterministic and schema-valid; split counts reported; last_N_similar_runs never includes the target run.
 - Risks: older workcells lack explicit universe context; need to start recording it going forward.
@@ -292,23 +292,23 @@ Then add:
 - [ ] Implement train/URM/evaluate_planner_model.py with:
   - swarm_id accuracy
   - full-tuple exact match
-  - (optional) cost-weighted regret proxy using duration_ms/cost_usd from rollouts (cyntra-kernel/src/cyntra/rollouts/builder.py)
+  - (optional) cost-weighted regret proxy using duration_ms/cost_usd from rollouts (kernel/src/cyntra/rollouts/builder.py)
 - [ ] Add a baseline predictor that emulates current heuristics:
-  - speculation triggers from cyntra-kernel/src/cyntra/kernel/scheduler.py:should_speculate() and cyntra-kernel/src/cyntra/control/exploration_controller.py:decide()
+  - speculation triggers from kernel/src/cyntra/kernel/scheduler.py:should_speculate() and kernel/src/cyntra/control/exploration_controller.py:decide()
 - Done when: model performance is quantified vs baseline on a held-out time slice.
 - Risks: dataset too small; need more runs or augment via P5.
 
 ### P4 — Wire into Cyntra (feature-flagged)
 
-- [ ] Add cyntra-kernel/src/cyntra/planner/ inference module:
+- [ ] Add kernel/src/cyntra/planner/ inference module:
   - loads checkpoint
   - builds planner_input.v1
   - outputs planner_action.v1
-- [ ] Add CLI flags in cyntra-kernel/src/cyntra/cli.py and plumb into KernelRunner.
-- [ ] Integrate in cyntra-kernel/src/cyntra/kernel/runner.py:
+- [ ] Add CLI flags in kernel/src/cyntra/cli.py and plumb into KernelRunner.
+- [ ] Integrate in kernel/src/cyntra/kernel/runner.py:
   - decide single vs speculate in \_dispatch_parallel()
   - override parallelism in \_dispatch_speculate_async()
-- [ ] Record predictions into manifest.json (cyntra-kernel/src/cyntra/kernel/dispatcher.py:\_build_manifest()) and into rollout.json (cyntra-kernel/src/cyntra/rollouts/
+- [ ] Record predictions into manifest.json (kernel/src/cyntra/kernel/dispatcher.py:\_build_manifest()) and into rollout.json (kernel/src/cyntra/rollouts/
       builder.py:build_rollout()).
 - Done when: cyntra run --once --planner-enabled --planner-checkpoint ... executes, and artifacts contain the predicted plan.
 - Risks: torch dependency in kernel (mitigate by optional import + fallback to current routing/controller).
@@ -317,7 +317,7 @@ Then add:
 
 - [ ] Implement a “plan proposal + evaluate + select” loop:
   - propose K plans (vary swarm_id/parallelism/budgets)
-  - execute them (reusing existing speculate infra in cyntra-kernel/src/cyntra/kernel/runner.py:\_dispatch_speculate_async() and vote logic in cyntra-kernel/src/cyntra/kernel/
+  - execute them (reusing existing speculate infra in kernel/src/cyntra/kernel/runner.py:\_dispatch_speculate_async() and vote logic in kernel/src/cyntra/kernel/
     verifier.py:vote())
   - select best by objective (pass gates first, then cost/duration)
 - [ ] Store improved labels alongside the run (e.g., planner_labels.json in archives/runs).
@@ -326,4 +326,4 @@ Then add:
 - Risks: cost explosion; enforce strict max_candidates_bucket and max_run_minutes_bucket.
 
 If you confirm whether Swarm Planner should (a) only choose swarm_id/parallelism/budgets or (b) also choose toolchain sets, I can tighten the action space and the exact logging/
-integration points in cyntra-kernel/src/cyntra/kernel/runner.py accordingly.
+integration points in kernel/src/cyntra/kernel/runner.py accordingly.

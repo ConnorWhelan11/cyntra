@@ -1,0 +1,176 @@
+# Fab Material Quality Gate Configuration
+# Category: PBR Materials
+# Version: v001
+# Created: 2024-12-26
+#
+# Validates PBR texture sets for game-ready quality.
+# Checks resolution, file integrity, PBR value ranges, and tileability.
+
+gate_config_id: material_quality_v001
+category: material
+version: "1.0.0"
+
+# Required PBR maps
+required_maps:
+  - basecolor
+  - normal
+  - roughness
+
+# Optional maps (bonus if present)
+optional_maps:
+  - metalness
+  - height
+  - ao
+  - emission
+
+# Texture validation
+texture:
+  # Resolution requirements
+  resolution:
+    min: [512, 512]
+    max: [4096, 4096]
+    require_square: true
+    require_power_of_two: true
+
+  # File format
+  format:
+    allowed: [png, jpg, jpeg, tga, exr]
+    preferred: png
+    color_depth_min: 8
+
+  # File size limits
+  size:
+    min_kb: 10        # Detect empty/corrupt files
+    max_mb: 50        # Prevent bloated textures
+
+# PBR value range validation
+pbr_values:
+  basecolor:
+    # Albedo should avoid pure black/white
+    min_brightness: 0.02
+    max_brightness: 0.95
+    variance_min: 0.01    # Detect solid colors
+
+  normal:
+    # Normal maps should have blue channel dominant
+    blue_channel_min: 0.4
+    # Check for flat normal (no detail)
+    variance_min: 0.001
+
+  roughness:
+    # Full range is valid for roughness
+    variance_min: 0.01    # Detect flat roughness
+
+  metalness:
+    # Metalness should be mostly 0 or 1
+    # Mid-values indicate error
+    mid_value_max_ratio: 0.3  # Max 30% pixels in 0.1-0.9 range
+
+# Tileability check
+tileability:
+  enabled: true
+  edge_continuity_min: 0.85   # How well edges match when tiled
+  repeat_artifact_max: 0.1     # Detect obvious repeating patterns
+
+# Visual quality
+quality:
+  # Detect generation artifacts
+  artifacts:
+    magenta_threshold: 0.005   # ComfyUI error color
+    black_patch_max: 0.1       # Large black areas
+    white_patch_max: 0.1       # Large white areas
+
+  # Blur detection
+  sharpness_min: 0.3
+
+  # Noise detection
+  noise_max: 0.2
+
+# Gate decision parameters
+decision:
+  weights:
+    resolution: 0.15
+    pbr_values: 0.30
+    tileability: 0.25
+    quality: 0.30
+
+  overall_pass_min: 0.70
+
+  subscore_floors:
+    resolution: 0.90      # Must meet resolution requirements
+    pbr_values: 0.60
+    tileability: 0.50
+    quality: 0.50
+
+# Hard fail codes (immediate rejection)
+hard_fail_codes:
+  - FILE_NOT_FOUND
+  - FILE_CORRUPT
+  - RESOLUTION_BELOW_MIN
+  - BASECOLOR_MISSING
+  - NORMAL_MISSING
+  - ROUGHNESS_MISSING
+  - MAGENTA_ARTIFACT_DETECTED
+  - COMPLETELY_FLAT
+
+# Repair playbook mappings
+repair_playbook:
+  FILE_NOT_FOUND:
+    priority: 1
+    instructions: |
+      One or more required texture files are missing.
+
+      Steps to fix:
+      1. Re-run the ComfyUI generation stage
+      2. Check ComfyUI server logs for errors
+      3. Verify workflow outputs are correct
+
+  MAGENTA_ARTIFACT_DETECTED:
+    priority: 1
+    instructions: |
+      Magenta (pink) pixels detected, indicating ComfyUI generation error.
+
+      Steps to fix:
+      1. Check ComfyUI server has sufficient VRAM
+      2. Reduce batch size or resolution
+      3. Verify all required models are loaded
+      4. Re-run generation with different seed
+
+  RESOLUTION_BELOW_MIN:
+    priority: 1
+    instructions: |
+      Texture resolution is below minimum (512x512).
+
+      Steps to fix:
+      1. Use texture_upscale_4x workflow to upscale
+      2. Or regenerate with higher resolution setting
+
+  NORMAL_MAP_INVALID:
+    priority: 2
+    instructions: |
+      Normal map doesn't have expected blue-dominant color.
+
+      Steps to fix:
+      1. Verify ComfyUI CHORD node is configured correctly
+      2. Check normal map is in OpenGL format (not DirectX)
+      3. Regenerate if normal appears flat or inverted
+
+  TILEABILITY_POOR:
+    priority: 3
+    instructions: |
+      Texture has visible seams when tiled.
+
+      Steps to fix:
+      1. Use FLUX inpainting workflow to blend seams
+      2. Add "seamless tileable" to generation prompt
+      3. Use comfyui-seamless-tiling node
+
+  LOW_VARIANCE:
+    priority: 3
+    instructions: |
+      Texture appears too uniform/flat.
+
+      Steps to fix:
+      1. Make prompt more descriptive with texture details
+      2. Increase CFG scale slightly
+      3. Try different seed values

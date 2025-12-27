@@ -12,11 +12,11 @@ import sys
 from pathlib import Path
 from typing import Any
 
-# Add cyntra-kernel to path
+# Add kernel to path
 repo_root = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(repo_root / "cyntra-kernel" / "src"))
-
-from cyntra.cyntra.rollouts.builder import build_rollout, write_rollout
+kernel_src = repo_root / "kernel" / "src"
+if kernel_src.exists():
+    sys.path.insert(0, str(kernel_src))
 
 
 def execute(
@@ -42,16 +42,18 @@ def execute(
     if not wc_path.exists():
         return {
             "success": False,
-            "error": f"Workcell path does not exist: {workcell_path}"
+            "error": f"Workcell path does not exist: {workcell_path}",
         }
 
     # Build and write rollout
+    from cyntra.rollouts.builder import write_rollout
+
     rollout_path = write_rollout(wc_path)
 
     if rollout_path is None:
         return {
             "success": False,
-            "error": "Failed to build rollout (missing proof.json or write error)"
+            "error": "Failed to build rollout (missing proof.json or write error)",
         }
 
     # Read back for summary
@@ -60,7 +62,9 @@ def execute(
     summary = {
         "job_type": rollout.get("job_type"),
         "toolchain": rollout.get("policy", {}).get("toolchain"),
-        "all_passed": rollout.get("outcomes", {}).get("verification", {}).get("all_passed"),
+        "all_passed": rollout.get("outcomes", {})
+        .get("verification", {})
+        .get("all_passed"),
         "tool_summary": rollout.get("trajectory", {}).get("tool_summary", {}),
         "diff_lines": rollout.get("scores", {}).get("diff_lines", 0),
     }
@@ -82,7 +86,9 @@ def main():
 
     parser = argparse.ArgumentParser(description="Build rollout.json from workcell")
     parser.add_argument("workcell_path", help="Path to workcell directory")
-    parser.add_argument("--details", action="store_true", help="Include trajectory details")
+    parser.add_argument(
+        "--details", action="store_true", help="Include trajectory details"
+    )
 
     args = parser.parse_args()
 

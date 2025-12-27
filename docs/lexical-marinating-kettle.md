@@ -3,6 +3,7 @@
 ## Overview
 
 Prepare the glia-fab pipeline for end-to-end testing by closing gaps in:
+
 1. Navigation mesh generation for NPC pathfinding
 2. Extended marker conventions for game entities
 3. Cogito template integration for full gameplay testing
@@ -15,11 +16,13 @@ Prepare the glia-fab pipeline for end-to-end testing by closing gaps in:
 ## Phase 1: Navigation Mesh Generation
 
 ### Goal
-Enable NPC pathfinding by generating NAV_ markers from walkable geometry in Blender.
+
+Enable NPC pathfinding by generating NAV\_ markers from walkable geometry in Blender.
 
 ### Implementation
 
 #### 1.1 Create Navigation Stage
+
 **File:** `fab/worlds/outora_library/blender/stages/navmesh.py`
 
 ```python
@@ -60,14 +63,17 @@ def execute(*, run_dir, stage_dir, inputs, params, manifest):
 ```
 
 **Walkable surfaces:**
+
 - `OL_GroundFloor` collection → NAV_GROUND
 - `OL_MezzanineFloor` collection → NAV_MEZZANINE
 - Stair geometry → NAV_STAIRS (vertical connections)
 
 #### 1.2 Update world.yaml
+
 **File:** `fab/worlds/outora_library/world.yaml`
 
 Add stage after `bake`, before `materials`:
+
 ```yaml
 stages:
   - id: bake
@@ -80,17 +86,20 @@ stages:
     outputs: ["stages/navmesh/"]
 
   - id: materials
-    requires: [navmesh]  # Update dependency
+    requires: [navmesh] # Update dependency
 ```
 
 #### 1.3 Navmesh Generation Approach
+
 **Using Blender's Built-in Navmesh Bake:**
+
 - Apply Blender's `bpy.ops.mesh.navmesh_make()` to floor geometry
 - More accurate navigation that respects actual walkable surfaces
 - Handles stairs and ramps correctly with vertical connections
 - Slower than simplified planes but better pathfinding quality
 
 ### Files to Create/Modify
+
 - `fab/worlds/outora_library/blender/stages/navmesh.py` (new)
 - `fab/worlds/outora_library/world.yaml` (add stage)
 - `fab/outora-library/blender/sverchok_layout_v2.py` (verify floor outputs)
@@ -100,20 +109,22 @@ stages:
 ## Phase 2: Extended Marker Conventions
 
 ### Goal
+
 Standardize markers for NPCs, items, audio zones, and other game entities.
 
 ### 2.1 New Marker Types
 
-| Marker Prefix | Purpose | Godot Conversion |
-|---------------|---------|------------------|
-| `NAV_` | Navigation mesh | NavigationRegion3D |
-| `NPC_SPAWN_<type>` | NPC spawn point | Marker3D + metadata |
-| `ITEM_SPAWN_<id>` | Item spawn | Marker3D + resource ref |
-| `AUDIO_ZONE_<name>` | Ambient audio area | Area3D + AudioStreamPlayer3D |
-| `LIGHT_PROBE_<n>` | Lightmap probe position | LightmapProbe |
-| `WAYPOINT_<n>` | Patrol path point | Path3D/PathFollow3D |
+| Marker Prefix       | Purpose                 | Godot Conversion             |
+| ------------------- | ----------------------- | ---------------------------- |
+| `NAV_`              | Navigation mesh         | NavigationRegion3D           |
+| `NPC_SPAWN_<type>`  | NPC spawn point         | Marker3D + metadata          |
+| `ITEM_SPAWN_<id>`   | Item spawn              | Marker3D + resource ref      |
+| `AUDIO_ZONE_<name>` | Ambient audio area      | Area3D + AudioStreamPlayer3D |
+| `LIGHT_PROBE_<n>`   | Lightmap probe position | LightmapProbe                |
+| `WAYPOINT_<n>`      | Patrol path point       | Path3D/PathFollow3D          |
 
 ### 2.2 Update Game Contract
+
 **File:** `fab/outora-library/src/outora_library/game_contract.py`
 
 ```python
@@ -140,14 +151,17 @@ _NAME_ALIASES: dict[FabRole, tuple[str, ...]] = {
 ```
 
 ### 2.3 Add Markers in Export Stage
+
 **File:** `fab/worlds/outora_library/blender/stages/export.py`
 
 Extend to emit NPC spawn points at strategic locations:
+
 - Library entrance (NPC_SPAWN_librarian)
 - Reading alcoves (NPC_SPAWN_scholar)
 - Near study pods (NPC_SPAWN_student)
 
 ### Files to Modify
+
 - `fab/outora-library/src/outora_library/game_contract.py`
 - `fab/worlds/outora_library/blender/stages/export.py`
 - `fab/gates/godot_integration_v001.yaml` (add new marker validation)
@@ -157,14 +171,18 @@ Extend to emit NPC spawn points at strategic locations:
 ## Phase 3: Cogito Integration (Toggle in Existing Template)
 
 ### Goal
+
 Enable full gameplay testing with Cogito's player controller, NPC system, and interactions via a toggle flag.
 
 ### 3.1 Integration Strategy
+
 Add `use_cogito: bool` export flag to FabLevelLoader that swaps between:
+
 - **Simple mode (default):** Lightweight FabPlayerController for asset validation
 - **Cogito mode:** Full CogitoPlayer with interactions, inventory, and NPC support
 
 ### 3.2 Update FabLevelLoader with Cogito Toggle
+
 **File:** `fab/vault/godot/templates/fab_game_template/project/scripts/FabLevelLoader.gd`
 
 ```gdscript
@@ -217,9 +235,11 @@ func _setup_cogito_systems(root: Node) -> void:
 ```
 
 ### 3.3 Add Cogito Addon to Template
+
 **File:** `fab/vault/godot/templates/fab_game_template/project/project.godot`
 
 Add Cogito as optional autoload:
+
 ```ini
 [autoload]
 # Only enabled when use_cogito=true
@@ -227,12 +247,14 @@ CogitoSceneManager="*res://addons/cogito/Singletons/cogito_scene_manager.gd"
 ```
 
 Copy Cogito addon to template:
+
 ```bash
 cp -r fab/vault/godot/templates/cogito/project/addons/cogito \
       fab/vault/godot/templates/fab_game_template/project/addons/
 ```
 
 ### 3.4 NPC Spawner Component
+
 **File:** `fab/vault/godot/templates/fab_game_template/project/scripts/FabNPCSpawner.gd`
 
 ```gdscript
@@ -273,15 +295,18 @@ static func _extract_type(name: String) -> String:
 ```
 
 ### 3.5 Template NPC Scene
+
 **File:** `fab/vault/godot/templates/fab_game_template/project/scenes/npcs/generic_npc.tscn`
 
 Create a CogitoNPC-based template with:
+
 - Basic patrol/idle state machine
 - Interaction component for dialogue
 - NavigationAgent3D for pathfinding
 - Beehave behavior tree (optional)
 
 ### Files to Modify/Create
+
 - `fab/vault/godot/templates/fab_game_template/project/scripts/FabLevelLoader.gd` (add toggle)
 - `fab/vault/godot/templates/fab_game_template/project/scripts/FabNPCSpawner.gd` (new)
 - `fab/vault/godot/templates/fab_game_template/project/scripts/FabItemSpawner.gd` (new)
@@ -293,9 +318,11 @@ Create a CogitoNPC-based template with:
 ## Phase 4: Performance Gate
 
 ### Goal
+
 Automated runtime performance validation in headless Godot.
 
 ### 4.1 Gate Configuration
+
 **File:** `fab/gates/godot_performance_v001.yaml`
 
 ```yaml
@@ -304,7 +331,7 @@ category: engine_performance
 schema_version: "1.0"
 
 performance:
-  target_fps: 30          # Minimum acceptable FPS
+  target_fps: 30 # Minimum acceptable FPS
   max_frame_time_ms: 33.3 # 30 FPS ceiling
   memory_budget_mb: 512
   startup_time_max_ms: 10000
@@ -315,7 +342,7 @@ godot:
   export_preset: Web
 
 thresholds:
-  fps_floor: 25           # Hard fail below this
+  fps_floor: 25 # Hard fail below this
   frame_spike_max_ms: 100 # Single frame spike limit
   memory_spike_max_mb: 768
 
@@ -344,6 +371,7 @@ repair_playbook:
 ```
 
 ### 4.2 Performance Test Script (Godot)
+
 **File:** `fab/vault/godot/templates/fab_game_template/project/scripts/FabPerfTest.gd`
 
 ```gdscript
@@ -381,7 +409,8 @@ func _write_results() -> void:
 ```
 
 ### 4.3 Performance Gate Runner
-**File:** `cyntra-kernel/src/cyntra/fab/performance_gate.py`
+
+**File:** `kernel/src/cyntra/fab/performance_gate.py`
 
 ```python
 def run_performance_gate(
@@ -400,6 +429,7 @@ def run_performance_gate(
 ```
 
 ### 4.4 Add to World Pipeline
+
 **File:** `fab/worlds/outora_library/world.yaml`
 
 ```yaml
@@ -422,8 +452,9 @@ stages:
 ```
 
 ### Files to Create
+
 - `fab/gates/godot_performance_v001.yaml` (new)
-- `cyntra-kernel/src/cyntra/fab/performance_gate.py` (new)
+- `kernel/src/cyntra/fab/performance_gate.py` (new)
 - `fab/vault/godot/templates/fab_game_template/project/scripts/FabPerfTest.gd` (new)
 
 ---
@@ -431,9 +462,11 @@ stages:
 ## Phase 5: Post-Import Automation
 
 ### Goal
+
 Extend Godot post_import.gd to handle all marker types automatically.
 
 ### 5.1 Extended Post-Import Script
+
 **File:** `fab/vault/godot/templates/fab_game_template/project/addons/fab_importer/post_import.gd`
 
 ```gdscript
@@ -481,6 +514,7 @@ func _process_physics_layers(root: Node) -> void:
 ```
 
 ### 5.2 Runtime FabTriggerArea Enhancement
+
 **File:** `fab/vault/godot/templates/fab_game_template/project/scripts/FabTriggerArea.gd`
 
 ```gdscript
@@ -517,6 +551,7 @@ func _on_body_exited(body: Node) -> void:
 ```
 
 ### Files to Modify
+
 - `fab/vault/godot/templates/fab_game_template/project/addons/fab_importer/post_import.gd`
 - `fab/vault/godot/templates/fab_game_template/project/scripts/FabTriggerArea.gd`
 - `fab/vault/godot/templates/fab_game_template/project/scripts/FabLevelLoader.gd`
@@ -526,26 +561,31 @@ func _on_body_exited(body: Node) -> void:
 ## Phase 6: Documentation
 
 ### Goal
+
 Document the complete marker contract for agents and developers.
 
 ### 6.1 Marker Contract Documentation
+
 **File:** `docs/fab-godot-marker-contract.md`
 
 ```markdown
 # Fab → Godot Marker Contract v1.1
 
 ## Overview
+
 Markers are empty objects in Blender that control Godot scene setup at import time.
 
 ## Required Markers
 
 ### SPAWN_PLAYER
+
 - **Names:** `SPAWN_PLAYER`, `OL_SPAWN_PLAYER`
 - **Count:** Exactly 1 per level
 - **Position:** ~1.6m above floor (eye height)
 - **Godot:** Player spawns here
 
-### COLLIDER_*
+### COLLIDER\_\*
+
 - **Names:** `COLLIDER_<name>`, `OL_COLLIDER_<name>`
 - **Count:** At least 1
 - **Geometry:** Simplified collision mesh
@@ -553,47 +593,57 @@ Markers are empty objects in Blender that control Godot scene setup at import ti
 
 ## Optional Markers
 
-### NAV_*
+### NAV\_\*
+
 - **Names:** `NAV_<zone>`, `OL_NAV_<zone>`
 - **Geometry:** Flat walkable surface
 - **Godot:** NavigationRegion3D for pathfinding
 
-### NPC_SPAWN_<type>
+### NPC*SPAWN*<type>
+
 - **Names:** `NPC_SPAWN_librarian`, `OL_NPC_SPAWN_scholar`
 - **Position:** Ground level
 - **Godot:** Spawns NPC of specified type
 
-### ITEM_SPAWN_<id>
+### ITEM*SPAWN*<id>
+
 - **Names:** `ITEM_SPAWN_book_01`
 - **Godot:** Spawns interactable item
 
-### TRIGGER_<name>
+### TRIGGER\_<name>
+
 - **Names:** `TRIGGER_entrance`, `OL_TRIGGER_secret`
 - **Geometry:** Volume mesh
 - **Godot:** Area3D with signals
 
-### AUDIO_ZONE_<name>
+### AUDIO*ZONE*<name>
+
 - **Names:** `AUDIO_ZONE_reading_room`
 - **Geometry:** Volume mesh
 - **Godot:** Area3D + AudioStreamPlayer3D
 
-### WAYPOINT_<n>
+### WAYPOINT\_<n>
+
 - **Names:** `WAYPOINT_01`, `WAYPOINT_02`
 - **Position:** Patrol path points
 - **Godot:** Path3D for NPC navigation
 
 ## Physics Layer Convention
+
 Append `_LAYER<n>` to set collision layer:
+
 - `COLLIDER_LAYER2_furniture` → collision_layer = 2
 - `TRIGGER_LAYER3_zone` → area collision_layer = 3
 
 ## Blender Export Requirements
+
 - All markers must be EMPTY objects (no geometry for spawns)
-- NAV_/COLLIDER_/TRIGGER_ markers have mesh children
+- NAV*/COLLIDER*/TRIGGER\_ markers have mesh children
 - Use world-space coordinates (apply transforms)
 ```
 
 ### Files to Create
+
 - `docs/fab-godot-marker-contract.md` (new)
 - Update `CLAUDE.md` with reference to marker contract
 
@@ -612,14 +662,14 @@ Phase 2: export.py markers      Phase 3: FabNPCSpawner.gd       Phase 4: FabPerf
                                 Phase 3: Copy Cogito addon
 ```
 
-| Phase | Files | Effort |
-|-------|-------|--------|
-| Phase 1: Navmesh | `navmesh.py`, `world.yaml` | 4h |
-| Phase 2: Markers | `game_contract.py`, `export.py`, `godot_integration_v001.yaml` | 2h |
-| Phase 3: Cogito | `FabLevelLoader.gd`, `FabNPCSpawner.gd`, `generic_npc.tscn`, copy addon | 5h |
-| Phase 4: Perf Gate | `godot_performance_v001.yaml`, `performance_gate.py`, `FabPerfTest.gd` | 4h |
-| Phase 5: Post-import | `post_import.gd`, `FabTriggerArea.gd` | 3h |
-| Phase 6: Docs | `fab-godot-marker-contract.md` | 1h |
+| Phase                | Files                                                                   | Effort |
+| -------------------- | ----------------------------------------------------------------------- | ------ |
+| Phase 1: Navmesh     | `navmesh.py`, `world.yaml`                                              | 4h     |
+| Phase 2: Markers     | `game_contract.py`, `export.py`, `godot_integration_v001.yaml`          | 2h     |
+| Phase 3: Cogito      | `FabLevelLoader.gd`, `FabNPCSpawner.gd`, `generic_npc.tscn`, copy addon | 5h     |
+| Phase 4: Perf Gate   | `godot_performance_v001.yaml`, `performance_gate.py`, `FabPerfTest.gd`  | 4h     |
+| Phase 5: Post-import | `post_import.gd`, `FabTriggerArea.gd`                                   | 3h     |
+| Phase 6: Docs        | `fab-godot-marker-contract.md`                                          | 1h     |
 
 **Total estimated effort: ~19 hours**
 
@@ -631,7 +681,7 @@ After implementation, validate with:
 
 ```bash
 # 1. Run full pipeline
-cd cyntra-kernel
+cd kernel
 cyntra fab-world --config outora_library --stage all
 
 # 2. Verify navmesh generation
@@ -663,29 +713,32 @@ cyntra fab-gate --config godot_performance_v001 --asset output/outora_library.gl
 ## Critical Files Summary
 
 ### New Files
-| File | Phase | Purpose |
-|------|-------|---------|
-| `fab/worlds/outora_library/blender/stages/navmesh.py` | 1 | Blender navmesh bake stage |
-| `fab/vault/godot/templates/fab_game_template/project/scripts/FabNPCSpawner.gd` | 3 | NPC spawning from markers |
-| `fab/vault/godot/templates/fab_game_template/project/scripts/FabItemSpawner.gd` | 3 | Item spawning from markers |
-| `fab/vault/godot/templates/fab_game_template/project/scenes/npcs/generic_npc.tscn` | 3 | Template NPC scene |
-| `fab/vault/godot/templates/fab_game_template/project/scripts/FabPerfTest.gd` | 4 | Performance test runner |
-| `fab/gates/godot_performance_v001.yaml` | 4 | Performance gate config |
-| `cyntra-kernel/src/cyntra/fab/performance_gate.py` | 4 | Performance gate runner |
-| `docs/fab-godot-marker-contract.md` | 6 | Marker documentation |
+
+| File                                                                               | Phase | Purpose                    |
+| ---------------------------------------------------------------------------------- | ----- | -------------------------- |
+| `fab/worlds/outora_library/blender/stages/navmesh.py`                              | 1     | Blender navmesh bake stage |
+| `fab/vault/godot/templates/fab_game_template/project/scripts/FabNPCSpawner.gd`     | 3     | NPC spawning from markers  |
+| `fab/vault/godot/templates/fab_game_template/project/scripts/FabItemSpawner.gd`    | 3     | Item spawning from markers |
+| `fab/vault/godot/templates/fab_game_template/project/scenes/npcs/generic_npc.tscn` | 3     | Template NPC scene         |
+| `fab/vault/godot/templates/fab_game_template/project/scripts/FabPerfTest.gd`       | 4     | Performance test runner    |
+| `fab/gates/godot_performance_v001.yaml`                                            | 4     | Performance gate config    |
+| `kernel/src/cyntra/fab/performance_gate.py`                                        | 4     | Performance gate runner    |
+| `docs/fab-godot-marker-contract.md`                                                | 6     | Marker documentation       |
 
 ### Modified Files
-| File | Phase | Changes |
-|------|-------|---------|
-| `fab/worlds/outora_library/world.yaml` | 1 | Add navmesh stage |
-| `fab/outora-library/src/outora_library/game_contract.py` | 2 | Add NAV_, NPC_SPAWN_, etc. roles |
-| `fab/worlds/outora_library/blender/stages/export.py` | 2 | Emit NPC spawn markers |
-| `fab/gates/godot_integration_v001.yaml` | 2 | Validate new marker types |
-| `fab/vault/godot/templates/fab_game_template/project/scripts/FabLevelLoader.gd` | 3 | Add use_cogito toggle, nav/NPC setup |
-| `fab/vault/godot/templates/fab_game_template/project/addons/fab_importer/post_import.gd` | 5 | Handle all marker types |
-| `fab/vault/godot/templates/fab_game_template/project/scripts/FabTriggerArea.gd` | 5 | Add signals, one-shot, player filter |
+
+| File                                                                                     | Phase | Changes                              |
+| ---------------------------------------------------------------------------------------- | ----- | ------------------------------------ |
+| `fab/worlds/outora_library/world.yaml`                                                   | 1     | Add navmesh stage                    |
+| `fab/outora-library/src/outora_library/game_contract.py`                                 | 2     | Add NAV*, NPC_SPAWN*, etc. roles     |
+| `fab/worlds/outora_library/blender/stages/export.py`                                     | 2     | Emit NPC spawn markers               |
+| `fab/gates/godot_integration_v001.yaml`                                                  | 2     | Validate new marker types            |
+| `fab/vault/godot/templates/fab_game_template/project/scripts/FabLevelLoader.gd`          | 3     | Add use_cogito toggle, nav/NPC setup |
+| `fab/vault/godot/templates/fab_game_template/project/addons/fab_importer/post_import.gd` | 5     | Handle all marker types              |
+| `fab/vault/godot/templates/fab_game_template/project/scripts/FabTriggerArea.gd`          | 5     | Add signals, one-shot, player filter |
 
 ### Copy Operations
-| Source | Destination | Phase |
-|--------|-------------|-------|
-| `fab/vault/godot/templates/cogito/project/addons/cogito/` | `fab/vault/godot/templates/fab_game_template/project/addons/cogito/` | 3 |
+
+| Source                                                    | Destination                                                          | Phase |
+| --------------------------------------------------------- | -------------------------------------------------------------------- | ----- |
+| `fab/vault/godot/templates/cogito/project/addons/cogito/` | `fab/vault/godot/templates/fab_game_template/project/addons/cogito/` | 3     |

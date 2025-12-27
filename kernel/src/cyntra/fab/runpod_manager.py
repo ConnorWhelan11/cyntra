@@ -37,7 +37,7 @@ class RunPodConfig:
     idle_timeout_minutes: int = 30
 
     @classmethod
-    def from_env(cls) -> "RunPodConfig":
+    def from_env(cls) -> RunPodConfig:
         """Create config from environment variables."""
         api_key = os.environ.get("RUNPOD_API_KEY", "")
         if not api_key:
@@ -146,7 +146,7 @@ class RunPodManager:
         self._client: httpx.AsyncClient | None = None
         self._tunnels: dict[str, TunnelInfo] = {}
 
-    async def __aenter__(self) -> "RunPodManager":
+    async def __aenter__(self) -> RunPodManager:
         await self._ensure_client()
         return self
 
@@ -467,9 +467,7 @@ class RunPodManager:
         while True:
             elapsed = asyncio.get_event_loop().time() - start
             if elapsed >= timeout:
-                raise RunPodAPIError(
-                    f"Timeout waiting for pod {pod_id} to reach {target_status}"
-                )
+                raise RunPodAPIError(f"Timeout waiting for pod {pod_id} to reach {target_status}")
 
             pod = await self.get_pod(pod_id)
             if pod and pod.status == target_status:
@@ -541,12 +539,18 @@ class RunPodManager:
             "ssh",
             "-f",  # Background
             "-N",  # No command
-            "-L", f"{local_port}:localhost:{remote_port}",
-            "-o", "StrictHostKeyChecking=no",
-            "-o", "UserKnownHostsFile=/dev/null",
-            "-o", "ServerAliveInterval=60",
-            "-i", str(ssh_key),
-            "-p", str(ssh_port.public_port),
+            "-L",
+            f"{local_port}:localhost:{remote_port}",
+            "-o",
+            "StrictHostKeyChecking=no",
+            "-o",
+            "UserKnownHostsFile=/dev/null",
+            "-o",
+            "ServerAliveInterval=60",
+            "-i",
+            str(ssh_key),
+            "-p",
+            str(ssh_port.public_port),
             f"root@{ssh_port.ip}",
         ]
 
@@ -590,8 +594,9 @@ class RunPodManager:
                 if has_error or exit_code != 0:
                     # Filter out non-error messages for error reporting
                     error_lines = [
-                        line for line in stderr_text.strip().split('\n')
-                        if line and not line.startswith('Warning:')
+                        line
+                        for line in stderr_text.strip().split("\n")
+                        if line and not line.startswith("Warning:")
                     ]
 
                     if error_lines:

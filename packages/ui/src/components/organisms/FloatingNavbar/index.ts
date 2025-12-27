@@ -1,2 +1,0 @@
-export { FloatingNav } from "./FloatingNavbar";
-

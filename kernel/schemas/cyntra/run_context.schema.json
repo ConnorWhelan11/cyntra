@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://cyntra/schemas/cyntra/run_context.schema.json",
+  "title": "Cyntra Run Context",
+  "description": "Universe-scoped run context join key (additive).",
+  "type": "object",
+  "required": ["schema_version", "universe_id"],
+  "properties": {
+    "schema_version": { "type": "string", "const": "1.0" },
+    "universe_id": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+    "world_id": { "type": ["string", "null"] },
+    "objective_id": { "type": ["string", "null"] },
+    "swarm_id": { "type": ["string", "null"] },
+    "issue_id": { "type": ["string", "null"] }
+  },
+  "additionalProperties": false
+}

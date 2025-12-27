@@ -13,12 +13,12 @@ import json
 import hashlib
 from collections import Counter, defaultdict
 from dataclasses import dataclass, asdict
-from typing import Literal
 
 
 @dataclass
 class Pattern:
     """A recurring pattern extracted from runs."""
+
     pattern_id: str
     pattern_type: str
     signature: str
@@ -34,6 +34,7 @@ class Pattern:
 @dataclass
 class AntiPattern:
     """A pattern strongly correlated with failure."""
+
     signature: str
     failure_rate: float
     frequency: int
@@ -58,7 +59,7 @@ class PatternDistiller:
         """Generate n-grams from tool sequence."""
         if len(sequence) < n:
             return []
-        return [tuple(sequence[i:i+n]) for i in range(len(sequence) - n + 1)]
+        return [tuple(sequence[i : i + n]) for i in range(len(sequence) - n + 1)]
 
     def _signature_hash(self, signature: str) -> str:
         """Generate short hash for pattern ID."""
@@ -87,15 +88,17 @@ class PatternDistiller:
             outcomes = Counter(r.get("outcome", "unknown") for r in runs)
             success_rate = outcomes.get("success", 0) / len(runs)
 
-            patterns.append(Pattern(
-                pattern_id=f"tc_{self._signature_hash(signature)}",
-                pattern_type="tool_chains",
-                signature=signature,
-                frequency=len(runs),
-                confidence=success_rate,
-                example_run_ids=[r["run_id"] for r in runs[:5]],
-                outcome_distribution=dict(outcomes),
-            ))
+            patterns.append(
+                Pattern(
+                    pattern_id=f"tc_{self._signature_hash(signature)}",
+                    pattern_type="tool_chains",
+                    signature=signature,
+                    frequency=len(runs),
+                    confidence=success_rate,
+                    example_run_ids=[r["run_id"] for r in runs[:5]],
+                    outcome_distribution=dict(outcomes),
+                )
+            )
 
         # Sort by frequency * confidence
         patterns.sort(key=lambda p: p.frequency * p.confidence, reverse=True)
@@ -118,15 +121,17 @@ class PatternDistiller:
             if len(runs) < self.min_frequency:
                 continue
 
-            patterns.append(Pattern(
-                pattern_id=f"err_{sig[:8]}",
-                pattern_type="error_signatures",
-                signature=sig,
-                frequency=len(runs),
-                confidence=1.0,  # All failures
-                example_run_ids=[r["run_id"] for r in runs[:5]],
-                outcome_distribution={"failure": len(runs)},
-            ))
+            patterns.append(
+                Pattern(
+                    pattern_id=f"err_{sig[:8]}",
+                    pattern_type="error_signatures",
+                    signature=sig,
+                    frequency=len(runs),
+                    confidence=1.0,  # All failures
+                    example_run_ids=[r["run_id"] for r in runs[:5]],
+                    outcome_distribution={"failure": len(runs)},
+                )
+            )
 
         patterns.sort(key=lambda p: p.frequency, reverse=True)
         return patterns[:30]
@@ -148,15 +153,17 @@ class PatternDistiller:
             if len(runs) < self.min_frequency:
                 continue
 
-            patterns.append(Pattern(
-                pattern_id=f"gate_{self._signature_hash(gate)}",
-                pattern_type="gate_failures",
-                signature=gate,
-                frequency=len(runs),
-                confidence=1.0,
-                example_run_ids=[r["run_id"] for r in runs[:5]],
-                outcome_distribution={"gate_failed": len(runs)},
-            ))
+            patterns.append(
+                Pattern(
+                    pattern_id=f"gate_{self._signature_hash(gate)}",
+                    pattern_type="gate_failures",
+                    signature=gate,
+                    frequency=len(runs),
+                    confidence=1.0,
+                    example_run_ids=[r["run_id"] for r in runs[:5]],
+                    outcome_distribution={"gate_failed": len(runs)},
+                )
+            )
 
         return patterns
 
@@ -180,17 +187,22 @@ class PatternDistiller:
                 # Generate avoidance suggestion
                 tools = p.signature.split(" -> ")
                 if len(tools) >= 2:
-                    suggestion = f"Consider adding Read before {tools[0]}" if tools[0] == "Edit" else \
-                                f"Verify output after {tools[-2]} before {tools[-1]}"
+                    suggestion = (
+                        f"Consider adding Read before {tools[0]}"
+                        if tools[0] == "Edit"
+                        else f"Verify output after {tools[-2]} before {tools[-1]}"
+                    )
                 else:
                     suggestion = "Review this tool sequence for alternatives"
 
-                anti_patterns.append(AntiPattern(
-                    signature=p.signature,
-                    failure_rate=failure_rate,
-                    frequency=p.frequency,
-                    suggested_avoidance=suggestion,
-                ))
+                anti_patterns.append(
+                    AntiPattern(
+                        signature=p.signature,
+                        failure_rate=failure_rate,
+                        frequency=p.frequency,
+                        suggested_avoidance=suggestion,
+                    )
+                )
 
         return anti_patterns
 
@@ -217,11 +229,13 @@ class PatternDistiller:
                     break
 
             if not matches_known and run.get("outcome") == "success":
-                novel.append({
-                    "run_id": run["run_id"],
-                    "sequence": seq,
-                    "outcome": run.get("outcome"),
-                })
+                novel.append(
+                    {
+                        "run_id": run["run_id"],
+                        "sequence": seq,
+                        "outcome": run.get("outcome"),
+                    }
+                )
 
         return novel[:20]
 
@@ -266,6 +280,7 @@ class PatternDistiller:
 
 if __name__ == "__main__":
     import sys
+
     # Read summaries from stdin or file
     if len(sys.argv) > 1:
         summaries = json.loads(open(sys.argv[1]).read())

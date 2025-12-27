@@ -1,0 +1,921 @@
+{
+  "version": "1.0",
+  "created_at": "2025-12-26T00:00:00Z",
+  "updated_at": "2025-12-27T00:51:32.882663+00:00",
+  "materials": {
+    "grass_meadow": {
+      "id": "grass_meadow",
+      "metadata": {
+        "name": "Grass Meadow",
+        "description": "Generated from: lush green grass meadow, natural color variation, seamless tileable, top down view, photorealistic",
+        "category": "terrain",
+        "tags": ["grass", "nature", "outdoor", "green"],
+        "prompt": "lush green grass meadow, natural color variation, seamless tileable, top down view, photorealistic",
+        "seed": 5495,
+        "workflow": "chord_pbr",
+        "resolution": [1024, 1024],
+        "created_at": "2025-12-26T21:06:07.033622+00:00",
+        "source": "comfyui"
+      },
+      "maps": {
+        "basecolor": "/Users/connor/Medica/glia-fab/fab/materials/materials/terrain/grass_meadow/basecolor.png",
+        "normal": "/Users/connor/Medica/glia-fab/fab/materials/materials/terrain/grass_meadow/normal.png",
+        "roughness": "/Users/connor/Medica/glia-fab/fab/materials/materials/terrain/grass_meadow/roughness.png",
+        "metalness": "/Users/connor/Medica/glia-fab/fab/materials/materials/terrain/grass_meadow/metalness.png",
+        "height": "/Users/connor/Medica/glia-fab/fab/materials/materials/terrain/grass_meadow/height.png",
+        "ao": null,
+        "emission": null
+      },
+      "library_path": "/Users/connor/Medica/glia-fab/fab/materials/materials/terrain/grass_meadow"
+    },
+    "grass_dry": {
+      "id": "grass_dry",
+      "metadata": {
+        "name": "Grass Dry",
+        "description": "Generated from: dry yellow brown grass, autumn meadow, dead patches, seamless tileable, top down view",
+        "category": "terrain",
+        "tags": ["grass", "nature", "outdoor", "dry", "autumn"],
+        "prompt": "dry yellow brown grass, autumn meadow, dead patches, seamless tileable, top down view",
+        "seed": 1431,
+        "workflow": "chord_pbr",
+        "resolution": [1024, 1024],
+        "created_at": "2025-12-26T21:06:15.574429+00:00",
+        "source": "comfyui"
+      },
+      "maps": {
+        "basecolor": "/Users/connor/Medica/glia-fab/fab/materials/materials/terrain/grass_dry/basecolor.png",
+        "normal": "/Users/connor/Medica/glia-fab/fab/materials/materials/terrain/grass_dry/normal.png",
+        "roughness": "/Users/connor/Medica/glia-fab/fab/materials/materials/terrain/grass_dry/roughness.png",
+        "metalness": "/Users/connor/Medica/glia-fab/fab/materials/materials/terrain/grass_dry/metalness.png",
+        "height": "/Users/connor/Medica/glia-fab/fab/materials/materials/terrain/grass_dry/height.png",
+        "ao": null,
+        "emission": null
+      },
+      "library_path": "/Users/connor/Medica/glia-fab/fab/materials/materials/terrain/grass_dry"
+    },
+    "dirt_forest": {
+      "id": "dirt_forest",
+      "metadata": {
+        "name": "Dirt Forest",
+        "description": "Generated from: forest floor dirt, scattered leaves and twigs, dark brown soil, seamless tileable, top down view",
+        "category": "terrain",
+        "tags": ["dirt", "soil", "forest", "outdoor"],
+        "prompt": "forest floor dirt, scattered leaves and twigs, dark brown soil, seamless tileable, top down view",
+        "seed": 729,
+        "workflow": "chord_pbr",
+        "resolution": [1024, 1024],
+        "created_at": "2025-12-26T21:06:23.105332+00:00",
+        "source": "comfyui"
+      },
+      "maps": {
+        "basecolor": "/Users/connor/Medica/glia-fab/fab/materials/materials/terrain/dirt_forest/basecolor.png",
+        "normal": "/Users/connor/Medica/glia-fab/fab/materials/materials/terrain/dirt_forest/normal.png",
+        "roughness": "/Users/connor/Medica/glia-fab/fab/materials/materials/terrain/dirt_forest/roughness.png",
+        "metalness": "/Users/connor/Medica/glia-fab/fab/materials/materials/terrain/dirt_forest/metalness.png",
+        "height": "/Users/connor/Medica/glia-fab/fab/materials/materials/terrain/dirt_forest/height.png",
+        "ao": null,
+        "emission": null
+      },
+      "library_path": "/Users/connor/Medica/glia-fab/fab/materials/materials/terrain/dirt_forest"
+    },
+    "sand_beach": {
+      "id": "sand_beach",
+      "metadata": {
+        "name": "Sand Beach",
+        "description": "Generated from: fine beach sand, golden yellow, subtle ripples, seamless tileable, top down view, photorealistic",
+        "category": "terrain",
+        "tags": ["sand", "beach", "outdoor", "desert"],
+        "prompt": "fine beach sand, golden yellow, subtle ripples, seamless tileable, top down view, photorealistic",
+        "seed": 9259,
+        "workflow": "chord_pbr",
+        "resolution": [1024, 1024],
+        "created_at": "2025-12-26T21:06:31.383015+00:00",
+        "source": "comfyui"
+      },
+      "maps": {
+        "basecolor": "/Users/connor/Medica/glia-fab/fab/materials/materials/terrain/sand_beach/basecolor.png",
+        "normal": "/Users/connor/Medica/glia-fab/fab/materials/materials/terrain/sand_beach/normal.png",
+        "roughness": "/Users/connor/Medica/glia-fab/fab/materials/materials/terrain/sand_beach/roughness.png",
+        "metalness": "/Users/connor/Medica/glia-fab/fab/materials/materials/terrain/sand_beach/metalness.png",
+        "height": "/Users/connor/Medica/glia-fab/fab/materials/materials/terrain/sand_beach/height.png",
+        "ao": null,
+        "emission": null
+      },
+      "library_path": "/Users/connor/Medica/glia-fab/fab/materials/materials/terrain/sand_beach"
+    },
+    "gravel_path": {
+      "id": "gravel_path",
+      "metadata": {
+        "name": "Gravel Path",
+        "description": "Generated from: gravel path, mixed size pebbles, gray and brown stones, seamless tileable, top down view",
+        "category": "terrain",
+        "tags": ["gravel", "stones", "path", "outdoor"],
+        "prompt": "gravel path, mixed size pebbles, gray and brown stones, seamless tileable, top down view",
+        "seed": 3973,
+        "workflow": "chord_pbr",
+        "resolution": [1024, 1024],
+        "created_at": "2025-12-26T21:06:40.395413+00:00",
+        "source": "comfyui"
+      },
+      "maps": {
+        "basecolor": "/Users/connor/Medica/glia-fab/fab/materials/materials/terrain/gravel_path/basecolor.png",
+        "normal": "/Users/connor/Medica/glia-fab/fab/materials/materials/terrain/gravel_path/normal.png",
+        "roughness": "/Users/connor/Medica/glia-fab/fab/materials/materials/terrain/gravel_path/roughness.png",
+        "metalness": "/Users/connor/Medica/glia-fab/fab/materials/materials/terrain/gravel_path/metalness.png",
+        "height": "/Users/connor/Medica/glia-fab/fab/materials/materials/terrain/gravel_path/height.png",
+        "ao": null,
+        "emission": null
+      },
+      "library_path": "/Users/connor/Medica/glia-fab/fab/materials/materials/terrain/gravel_path"
+    },
+    "rock_granite": {
+      "id": "rock_granite",
+      "metadata": {
+        "name": "Rock Granite",
+        "description": "Generated from: gray granite rock surface, natural cracks and veins, rough texture, seamless tileable",
+        "category": "terrain",
+        "tags": ["rock", "stone", "granite", "outdoor"],
+        "prompt": "gray granite rock surface, natural cracks and veins, rough texture, seamless tileable",
+        "seed": 4516,
+        "workflow": "chord_pbr",
+        "resolution": [1024, 1024],
+        "created_at": "2025-12-26T21:06:48.892307+00:00",
+        "source": "comfyui"
+      },
+      "maps": {
+        "basecolor": "/Users/connor/Medica/glia-fab/fab/materials/materials/terrain/rock_granite/basecolor.png",
+        "normal": "/Users/connor/Medica/glia-fab/fab/materials/materials/terrain/rock_granite/normal.png",
+        "roughness": "/Users/connor/Medica/glia-fab/fab/materials/materials/terrain/rock_granite/roughness.png",
+        "metalness": "/Users/connor/Medica/glia-fab/fab/materials/materials/terrain/rock_granite/metalness.png",
+        "height": "/Users/connor/Medica/glia-fab/fab/materials/materials/terrain/rock_granite/height.png",
+        "ao": null,
+        "emission": null
+      },
+      "library_path": "/Users/connor/Medica/glia-fab/fab/materials/materials/terrain/rock_granite"
+    },
+    "brick_red": {
+      "id": "brick_red",
+      "metadata": {
+        "name": "Brick Red",
+        "description": "Procedural: classic red brick wall, white mortar lines, slightly weathered, seamless tileable",
+        "category": "architecture",
+        "tags": ["brick", "wall", "building", "urban"],
+        "prompt": "classic red brick wall, white mortar lines, slightly weathered, seamless tileable",
+        "seed": 7867,
+        "workflow": "blender_procedural",
+        "resolution": [2048, 2048],
+        "created_at": "2025-12-27T00:35:56.783153+00:00",
+        "source": "blender"
+      },
+      "maps": {
+        "basecolor": "/Users/connor/Medica/glia-fab/fab/materials/materials/architecture/brick_red/basecolor.png",
+        "normal": "/Users/connor/Medica/glia-fab/fab/materials/materials/architecture/brick_red/normal.png",
+        "roughness": "/Users/connor/Medica/glia-fab/fab/materials/materials/architecture/brick_red/roughness.png",
+        "metalness": "/Users/connor/Medica/glia-fab/fab/materials/materials/architecture/brick_red/metalness.png",
+        "height": null,
+        "ao": null,
+        "emission": null
+      },
+      "library_path": "/Users/connor/Medica/glia-fab/fab/materials/materials/architecture/brick_red"
+    },
+    "brick_weathered": {
+      "id": "brick_weathered",
+      "metadata": {
+        "name": "Brick Weathered",
+        "description": "Procedural: old weathered brick wall, crumbling mortar, moss in cracks, urban decay, seamless tileable",
+        "category": "architecture",
+        "tags": ["brick", "wall", "weathered", "decay"],
+        "prompt": "old weathered brick wall, crumbling mortar, moss in cracks, urban decay, seamless tileable",
+        "seed": 2896,
+        "workflow": "blender_procedural",
+        "resolution": [2048, 2048],
+        "created_at": "2025-12-27T00:36:26.453187+00:00",
+        "source": "blender"
+      },
+      "maps": {
+        "basecolor": "/Users/connor/Medica/glia-fab/fab/materials/materials/architecture/brick_weathered/basecolor.png",
+        "normal": "/Users/connor/Medica/glia-fab/fab/materials/materials/architecture/brick_weathered/normal.png",
+        "roughness": "/Users/connor/Medica/glia-fab/fab/materials/materials/architecture/brick_weathered/roughness.png",
+        "metalness": "/Users/connor/Medica/glia-fab/fab/materials/materials/architecture/brick_weathered/metalness.png",
+        "height": null,
+        "ao": null,
+        "emission": null
+      },
+      "library_path": "/Users/connor/Medica/glia-fab/fab/materials/materials/architecture/brick_weathered"
+    },
+    "concrete_smooth": {
+      "id": "concrete_smooth",
+      "metadata": {
+        "name": "Concrete Smooth",
+        "description": "Procedural: smooth poured concrete, light gray, subtle surface variation, seamless tileable",
+        "category": "architecture",
+        "tags": ["concrete", "modern", "industrial"],
+        "prompt": "smooth poured concrete, light gray, subtle surface variation, seamless tileable",
+        "seed": 1500,
+        "workflow": "blender_procedural",
+        "resolution": [2048, 2048],
+        "created_at": "2025-12-27T00:37:01.063234+00:00",
+        "source": "blender"
+      },
+      "maps": {
+        "basecolor": "/Users/connor/Medica/glia-fab/fab/materials/materials/architecture/concrete_smooth/basecolor.png",
+        "normal": "/Users/connor/Medica/glia-fab/fab/materials/materials/architecture/concrete_smooth/normal.png",
+        "roughness": "/Users/connor/Medica/glia-fab/fab/materials/materials/architecture/concrete_smooth/roughness.png",
+        "metalness": "/Users/connor/Medica/glia-fab/fab/materials/materials/architecture/concrete_smooth/metalness.png",
+        "height": null,
+        "ao": null,
+        "emission": null
+      },
+      "library_path": "/Users/connor/Medica/glia-fab/fab/materials/materials/architecture/concrete_smooth"
+    },
+    "concrete_cracked": {
+      "id": "concrete_cracked",
+      "metadata": {
+        "name": "Concrete Cracked",
+        "description": "Procedural: cracked concrete sidewalk, weathered gray, visible cracks and chips, seamless tileable, top down",
+        "category": "architecture",
+        "tags": ["concrete", "cracked", "weathered", "urban"],
+        "prompt": "cracked concrete sidewalk, weathered gray, visible cracks and chips, seamless tileable, top down",
+        "seed": 9692,
+        "workflow": "blender_procedural",
+        "resolution": [2048, 2048],
+        "created_at": "2025-12-27T00:37:34.092152+00:00",
+        "source": "blender"
+      },
+      "maps": {
+        "basecolor": "/Users/connor/Medica/glia-fab/fab/materials/materials/architecture/concrete_cracked/basecolor.png",
+        "normal": "/Users/connor/Medica/glia-fab/fab/materials/materials/architecture/concrete_cracked/normal.png",
+        "roughness": "/Users/connor/Medica/glia-fab/fab/materials/materials/architecture/concrete_cracked/roughness.png",
+        "metalness": "/Users/connor/Medica/glia-fab/fab/materials/materials/architecture/concrete_cracked/metalness.png",
+        "height": null,
+        "ao": null,
+        "emission": null
+      },
+      "library_path": "/Users/connor/Medica/glia-fab/fab/materials/materials/architecture/concrete_cracked"
+    },
+    "plaster_white": {
+      "id": "plaster_white",
+      "metadata": {
+        "name": "Plaster White",
+        "description": "Procedural: white painted plaster wall, subtle texture, clean interior wall, seamless tileable",
+        "category": "architecture",
+        "tags": ["plaster", "wall", "interior", "white"],
+        "prompt": "white painted plaster wall, subtle texture, clean interior wall, seamless tileable",
+        "seed": 1027,
+        "workflow": "blender_procedural",
+        "resolution": [2048, 2048],
+        "created_at": "2025-12-27T00:38:02.921872+00:00",
+        "source": "blender"
+      },
+      "maps": {
+        "basecolor": "/Users/connor/Medica/glia-fab/fab/materials/materials/architecture/plaster_white/basecolor.png",
+        "normal": "/Users/connor/Medica/glia-fab/fab/materials/materials/architecture/plaster_white/normal.png",
+        "roughness": "/Users/connor/Medica/glia-fab/fab/materials/materials/architecture/plaster_white/roughness.png",
+        "metalness": "/Users/connor/Medica/glia-fab/fab/materials/materials/architecture/plaster_white/metalness.png",
+        "height": null,
+        "ao": null,
+        "emission": null
+      },
+      "library_path": "/Users/connor/Medica/glia-fab/fab/materials/materials/architecture/plaster_white"
+    },
+    "stone_castle": {
+      "id": "stone_castle",
+      "metadata": {
+        "name": "Stone Castle",
+        "description": "Procedural: medieval castle stone wall, large cut blocks, weathered gray, fantasy, seamless tileable",
+        "category": "architecture",
+        "tags": ["stone", "castle", "medieval", "fantasy"],
+        "prompt": "medieval castle stone wall, large cut blocks, weathered gray, fantasy, seamless tileable",
+        "seed": 1290,
+        "workflow": "blender_procedural",
+        "resolution": [2048, 2048],
+        "created_at": "2025-12-27T00:38:31.013288+00:00",
+        "source": "blender"
+      },
+      "maps": {
+        "basecolor": "/Users/connor/Medica/glia-fab/fab/materials/materials/architecture/stone_castle/basecolor.png",
+        "normal": "/Users/connor/Medica/glia-fab/fab/materials/materials/architecture/stone_castle/normal.png",
+        "roughness": "/Users/connor/Medica/glia-fab/fab/materials/materials/architecture/stone_castle/roughness.png",
+        "metalness": "/Users/connor/Medica/glia-fab/fab/materials/materials/architecture/stone_castle/metalness.png",
+        "height": null,
+        "ao": null,
+        "emission": null
+      },
+      "library_path": "/Users/connor/Medica/glia-fab/fab/materials/materials/architecture/stone_castle"
+    },
+    "tiles_terracotta": {
+      "id": "tiles_terracotta",
+      "metadata": {
+        "name": "Tiles Terracotta",
+        "description": "Procedural: terracotta roof tiles, warm orange red, overlapping pattern, Mediterranean, seamless tileable",
+        "category": "architecture",
+        "tags": ["tiles", "roof", "terracotta", "mediterranean"],
+        "prompt": "terracotta roof tiles, warm orange red, overlapping pattern, Mediterranean, seamless tileable",
+        "seed": 3265,
+        "workflow": "blender_procedural",
+        "resolution": [2048, 2048],
+        "created_at": "2025-12-27T00:39:02.793809+00:00",
+        "source": "blender"
+      },
+      "maps": {
+        "basecolor": "/Users/connor/Medica/glia-fab/fab/materials/materials/architecture/tiles_terracotta/basecolor.png",
+        "normal": "/Users/connor/Medica/glia-fab/fab/materials/materials/architecture/tiles_terracotta/normal.png",
+        "roughness": "/Users/connor/Medica/glia-fab/fab/materials/materials/architecture/tiles_terracotta/roughness.png",
+        "metalness": "/Users/connor/Medica/glia-fab/fab/materials/materials/architecture/tiles_terracotta/metalness.png",
+        "height": null,
+        "ao": null,
+        "emission": null
+      },
+      "library_path": "/Users/connor/Medica/glia-fab/fab/materials/materials/architecture/tiles_terracotta"
+    },
+    "stucco_beige": {
+      "id": "stucco_beige",
+      "metadata": {
+        "name": "Stucco Beige",
+        "description": "Procedural: beige stucco exterior wall, slightly rough texture, warm tone, seamless tileable",
+        "category": "architecture",
+        "tags": ["stucco", "wall", "exterior", "beige"],
+        "prompt": "beige stucco exterior wall, slightly rough texture, warm tone, seamless tileable",
+        "seed": 9169,
+        "workflow": "blender_procedural",
+        "resolution": [2048, 2048],
+        "created_at": "2025-12-27T00:39:30.676494+00:00",
+        "source": "blender"
+      },
+      "maps": {
+        "basecolor": "/Users/connor/Medica/glia-fab/fab/materials/materials/architecture/stucco_beige/basecolor.png",
+        "normal": "/Users/connor/Medica/glia-fab/fab/materials/materials/architecture/stucco_beige/normal.png",
+        "roughness": "/Users/connor/Medica/glia-fab/fab/materials/materials/architecture/stucco_beige/roughness.png",
+        "metalness": "/Users/connor/Medica/glia-fab/fab/materials/materials/architecture/stucco_beige/metalness.png",
+        "height": null,
+        "ao": null,
+        "emission": null
+      },
+      "library_path": "/Users/connor/Medica/glia-fab/fab/materials/materials/architecture/stucco_beige"
+    },
+    "steel_brushed": {
+      "id": "steel_brushed",
+      "metadata": {
+        "name": "Steel Brushed",
+        "description": "Procedural: brushed stainless steel, linear grain pattern, subtle reflections, seamless tileable",
+        "category": "metal",
+        "tags": ["steel", "metal", "modern", "industrial"],
+        "prompt": "brushed stainless steel, linear grain pattern, subtle reflections, seamless tileable",
+        "seed": 8146,
+        "workflow": "blender_procedural",
+        "resolution": [2048, 2048],
+        "created_at": "2025-12-27T00:40:18.641842+00:00",
+        "source": "blender"
+      },
+      "maps": {
+        "basecolor": "/Users/connor/Medica/glia-fab/fab/materials/materials/metal/steel_brushed/basecolor.png",
+        "normal": "/Users/connor/Medica/glia-fab/fab/materials/materials/metal/steel_brushed/normal.png",
+        "roughness": "/Users/connor/Medica/glia-fab/fab/materials/materials/metal/steel_brushed/roughness.png",
+        "metalness": "/Users/connor/Medica/glia-fab/fab/materials/materials/metal/steel_brushed/metalness.png",
+        "height": null,
+        "ao": null,
+        "emission": null
+      },
+      "library_path": "/Users/connor/Medica/glia-fab/fab/materials/materials/metal/steel_brushed"
+    },
+    "iron_rust": {
+      "id": "iron_rust",
+      "metadata": {
+        "name": "Iron Rust",
+        "description": "Procedural: rusty corroded iron plate, orange and brown patina, industrial decay, seamless tileable",
+        "category": "metal",
+        "tags": ["iron", "rust", "metal", "decay", "industrial"],
+        "prompt": "rusty corroded iron plate, orange and brown patina, industrial decay, seamless tileable",
+        "seed": 7707,
+        "workflow": "blender_procedural",
+        "resolution": [2048, 2048],
+        "created_at": "2025-12-27T00:41:09.035818+00:00",
+        "source": "blender"
+      },
+      "maps": {
+        "basecolor": "/Users/connor/Medica/glia-fab/fab/materials/materials/metal/iron_rust/basecolor.png",
+        "normal": "/Users/connor/Medica/glia-fab/fab/materials/materials/metal/iron_rust/normal.png",
+        "roughness": "/Users/connor/Medica/glia-fab/fab/materials/materials/metal/iron_rust/roughness.png",
+        "metalness": "/Users/connor/Medica/glia-fab/fab/materials/materials/metal/iron_rust/metalness.png",
+        "height": null,
+        "ao": null,
+        "emission": null
+      },
+      "library_path": "/Users/connor/Medica/glia-fab/fab/materials/materials/metal/iron_rust"
+    },
+    "copper_aged": {
+      "id": "copper_aged",
+      "metadata": {
+        "name": "Copper Aged",
+        "description": "Procedural: aged copper with green patina, verdigris oxidation, antique, seamless tileable",
+        "category": "metal",
+        "tags": ["copper", "patina", "aged", "antique"],
+        "prompt": "aged copper with green patina, verdigris oxidation, antique, seamless tileable",
+        "seed": 8850,
+        "workflow": "blender_procedural",
+        "resolution": [2048, 2048],
+        "created_at": "2025-12-27T00:41:56.383250+00:00",
+        "source": "blender"
+      },
+      "maps": {
+        "basecolor": "/Users/connor/Medica/glia-fab/fab/materials/materials/metal/copper_aged/basecolor.png",
+        "normal": "/Users/connor/Medica/glia-fab/fab/materials/materials/metal/copper_aged/normal.png",
+        "roughness": "/Users/connor/Medica/glia-fab/fab/materials/materials/metal/copper_aged/roughness.png",
+        "metalness": "/Users/connor/Medica/glia-fab/fab/materials/materials/metal/copper_aged/metalness.png",
+        "height": null,
+        "ao": null,
+        "emission": null
+      },
+      "library_path": "/Users/connor/Medica/glia-fab/fab/materials/materials/metal/copper_aged"
+    },
+    "brass_polished": {
+      "id": "brass_polished",
+      "metadata": {
+        "name": "Brass Polished",
+        "description": "Procedural: polished brass metal surface, warm golden tone, slight scratches, seamless tileable",
+        "category": "metal",
+        "tags": ["brass", "metal", "gold", "polished"],
+        "prompt": "polished brass metal surface, warm golden tone, slight scratches, seamless tileable",
+        "seed": 7032,
+        "workflow": "blender_procedural",
+        "resolution": [2048, 2048],
+        "created_at": "2025-12-27T00:42:45.149642+00:00",
+        "source": "blender"
+      },
+      "maps": {
+        "basecolor": "/Users/connor/Medica/glia-fab/fab/materials/materials/metal/brass_polished/basecolor.png",
+        "normal": "/Users/connor/Medica/glia-fab/fab/materials/materials/metal/brass_polished/normal.png",
+        "roughness": "/Users/connor/Medica/glia-fab/fab/materials/materials/metal/brass_polished/roughness.png",
+        "metalness": "/Users/connor/Medica/glia-fab/fab/materials/materials/metal/brass_polished/metalness.png",
+        "height": null,
+        "ao": null,
+        "emission": null
+      },
+      "library_path": "/Users/connor/Medica/glia-fab/fab/materials/materials/metal/brass_polished"
+    },
+    "metal_diamond_plate": {
+      "id": "metal_diamond_plate",
+      "metadata": {
+        "name": "Metal Diamond Plate",
+        "description": "Procedural: industrial diamond plate metal, raised pattern, steel gray, seamless tileable",
+        "category": "metal",
+        "tags": ["metal", "industrial", "floor", "steel"],
+        "prompt": "industrial diamond plate metal, raised pattern, steel gray, seamless tileable",
+        "seed": 8253,
+        "workflow": "blender_procedural",
+        "resolution": [2048, 2048],
+        "created_at": "2025-12-27T00:43:32.553345+00:00",
+        "source": "blender"
+      },
+      "maps": {
+        "basecolor": "/Users/connor/Medica/glia-fab/fab/materials/materials/metal/metal_diamond_plate/basecolor.png",
+        "normal": "/Users/connor/Medica/glia-fab/fab/materials/materials/metal/metal_diamond_plate/normal.png",
+        "roughness": "/Users/connor/Medica/glia-fab/fab/materials/materials/metal/metal_diamond_plate/roughness.png",
+        "metalness": "/Users/connor/Medica/glia-fab/fab/materials/materials/metal/metal_diamond_plate/metalness.png",
+        "height": null,
+        "ao": null,
+        "emission": null
+      },
+      "library_path": "/Users/connor/Medica/glia-fab/fab/materials/materials/metal/metal_diamond_plate"
+    },
+    "oak_planks": {
+      "id": "oak_planks",
+      "metadata": {
+        "name": "Oak Planks",
+        "description": "Procedural: oak wood floor planks, warm honey tone, visible grain, seamless tileable, top down view",
+        "category": "wood",
+        "tags": ["wood", "oak", "floor", "interior"],
+        "prompt": "oak wood floor planks, warm honey tone, visible grain, seamless tileable, top down view",
+        "seed": 6927,
+        "workflow": "blender_procedural",
+        "resolution": [2048, 2048],
+        "created_at": "2025-12-27T00:44:08.503585+00:00",
+        "source": "blender"
+      },
+      "maps": {
+        "basecolor": "/Users/connor/Medica/glia-fab/fab/materials/materials/wood/oak_planks/basecolor.png",
+        "normal": "/Users/connor/Medica/glia-fab/fab/materials/materials/wood/oak_planks/normal.png",
+        "roughness": "/Users/connor/Medica/glia-fab/fab/materials/materials/wood/oak_planks/roughness.png",
+        "metalness": "/Users/connor/Medica/glia-fab/fab/materials/materials/wood/oak_planks/metalness.png",
+        "height": null,
+        "ao": null,
+        "emission": null
+      },
+      "library_path": "/Users/connor/Medica/glia-fab/fab/materials/materials/wood/oak_planks"
+    },
+    "pine_fresh": {
+      "id": "pine_fresh",
+      "metadata": {
+        "name": "Pine Fresh",
+        "description": "Procedural: fresh pine wood boards, light blonde color, knots visible, seamless tileable",
+        "category": "wood",
+        "tags": ["wood", "pine", "light", "fresh"],
+        "prompt": "fresh pine wood boards, light blonde color, knots visible, seamless tileable",
+        "seed": 9694,
+        "workflow": "blender_procedural",
+        "resolution": [2048, 2048],
+        "created_at": "2025-12-27T00:44:44.661162+00:00",
+        "source": "blender"
+      },
+      "maps": {
+        "basecolor": "/Users/connor/Medica/glia-fab/fab/materials/materials/wood/pine_fresh/basecolor.png",
+        "normal": "/Users/connor/Medica/glia-fab/fab/materials/materials/wood/pine_fresh/normal.png",
+        "roughness": "/Users/connor/Medica/glia-fab/fab/materials/materials/wood/pine_fresh/roughness.png",
+        "metalness": "/Users/connor/Medica/glia-fab/fab/materials/materials/wood/pine_fresh/metalness.png",
+        "height": null,
+        "ao": null,
+        "emission": null
+      },
+      "library_path": "/Users/connor/Medica/glia-fab/fab/materials/materials/wood/pine_fresh"
+    },
+    "walnut_dark": {
+      "id": "walnut_dark",
+      "metadata": {
+        "name": "Walnut Dark",
+        "description": "Procedural: dark walnut wood, rich brown color, elegant grain pattern, seamless tileable",
+        "category": "wood",
+        "tags": ["wood", "walnut", "dark", "elegant"],
+        "prompt": "dark walnut wood, rich brown color, elegant grain pattern, seamless tileable",
+        "seed": 6856,
+        "workflow": "blender_procedural",
+        "resolution": [2048, 2048],
+        "created_at": "2025-12-27T00:45:23.328357+00:00",
+        "source": "blender"
+      },
+      "maps": {
+        "basecolor": "/Users/connor/Medica/glia-fab/fab/materials/materials/wood/walnut_dark/basecolor.png",
+        "normal": "/Users/connor/Medica/glia-fab/fab/materials/materials/wood/walnut_dark/normal.png",
+        "roughness": "/Users/connor/Medica/glia-fab/fab/materials/materials/wood/walnut_dark/roughness.png",
+        "metalness": "/Users/connor/Medica/glia-fab/fab/materials/materials/wood/walnut_dark/metalness.png",
+        "height": null,
+        "ao": null,
+        "emission": null
+      },
+      "library_path": "/Users/connor/Medica/glia-fab/fab/materials/materials/wood/walnut_dark"
+    },
+    "wood_weathered": {
+      "id": "wood_weathered",
+      "metadata": {
+        "name": "Wood Weathered",
+        "description": "Procedural: old weathered wood planks, gray patina, cracked and worn, rustic, seamless tileable",
+        "category": "wood",
+        "tags": ["wood", "weathered", "rustic", "aged"],
+        "prompt": "old weathered wood planks, gray patina, cracked and worn, rustic, seamless tileable",
+        "seed": 8380,
+        "workflow": "blender_procedural",
+        "resolution": [2048, 2048],
+        "created_at": "2025-12-27T00:45:56.545006+00:00",
+        "source": "blender"
+      },
+      "maps": {
+        "basecolor": "/Users/connor/Medica/glia-fab/fab/materials/materials/wood/wood_weathered/basecolor.png",
+        "normal": "/Users/connor/Medica/glia-fab/fab/materials/materials/wood/wood_weathered/normal.png",
+        "roughness": "/Users/connor/Medica/glia-fab/fab/materials/materials/wood/wood_weathered/roughness.png",
+        "metalness": "/Users/connor/Medica/glia-fab/fab/materials/materials/wood/wood_weathered/metalness.png",
+        "height": null,
+        "ao": null,
+        "emission": null
+      },
+      "library_path": "/Users/connor/Medica/glia-fab/fab/materials/materials/wood/wood_weathered"
+    },
+    "wood_painted_white": {
+      "id": "wood_painted_white",
+      "metadata": {
+        "name": "Wood Painted White",
+        "description": "Procedural: white painted wood boards, slightly chipped paint, farmhouse style, seamless tileable",
+        "category": "wood",
+        "tags": ["wood", "painted", "white", "farmhouse"],
+        "prompt": "white painted wood boards, slightly chipped paint, farmhouse style, seamless tileable",
+        "seed": 3952,
+        "workflow": "blender_procedural",
+        "resolution": [2048, 2048],
+        "created_at": "2025-12-27T00:46:29.437212+00:00",
+        "source": "blender"
+      },
+      "maps": {
+        "basecolor": "/Users/connor/Medica/glia-fab/fab/materials/materials/wood/wood_painted_white/basecolor.png",
+        "normal": "/Users/connor/Medica/glia-fab/fab/materials/materials/wood/wood_painted_white/normal.png",
+        "roughness": "/Users/connor/Medica/glia-fab/fab/materials/materials/wood/wood_painted_white/roughness.png",
+        "metalness": "/Users/connor/Medica/glia-fab/fab/materials/materials/wood/wood_painted_white/metalness.png",
+        "height": null,
+        "ao": null,
+        "emission": null
+      },
+      "library_path": "/Users/connor/Medica/glia-fab/fab/materials/materials/wood/wood_painted_white"
+    },
+    "bamboo_woven": {
+      "id": "bamboo_woven",
+      "metadata": {
+        "name": "Bamboo Woven",
+        "description": "Procedural: woven bamboo mat texture, natural tan color, tight weave pattern, seamless tileable",
+        "category": "wood",
+        "tags": ["bamboo", "woven", "natural", "asian"],
+        "prompt": "woven bamboo mat texture, natural tan color, tight weave pattern, seamless tileable",
+        "seed": 9130,
+        "workflow": "blender_procedural",
+        "resolution": [2048, 2048],
+        "created_at": "2025-12-27T00:47:08.416152+00:00",
+        "source": "blender"
+      },
+      "maps": {
+        "basecolor": "/Users/connor/Medica/glia-fab/fab/materials/materials/wood/bamboo_woven/basecolor.png",
+        "normal": "/Users/connor/Medica/glia-fab/fab/materials/materials/wood/bamboo_woven/normal.png",
+        "roughness": "/Users/connor/Medica/glia-fab/fab/materials/materials/wood/bamboo_woven/roughness.png",
+        "metalness": "/Users/connor/Medica/glia-fab/fab/materials/materials/wood/bamboo_woven/metalness.png",
+        "height": null,
+        "ao": null,
+        "emission": null
+      },
+      "library_path": "/Users/connor/Medica/glia-fab/fab/materials/materials/wood/bamboo_woven"
+    },
+    "bark_oak": {
+      "id": "bark_oak",
+      "metadata": {
+        "name": "Bark Oak",
+        "description": "Procedural: oak tree bark, deep ridges and furrows, brown gray, seamless tileable, close up",
+        "category": "organic",
+        "tags": ["bark", "tree", "nature", "organic"],
+        "prompt": "oak tree bark, deep ridges and furrows, brown gray, seamless tileable, close up",
+        "seed": 8900,
+        "workflow": "blender_procedural",
+        "resolution": [2048, 2048],
+        "created_at": "2025-12-27T00:47:59.779437+00:00",
+        "source": "blender"
+      },
+      "maps": {
+        "basecolor": "/Users/connor/Medica/glia-fab/fab/materials/materials/organic/bark_oak/basecolor.png",
+        "normal": "/Users/connor/Medica/glia-fab/fab/materials/materials/organic/bark_oak/normal.png",
+        "roughness": "/Users/connor/Medica/glia-fab/fab/materials/materials/organic/bark_oak/roughness.png",
+        "metalness": "/Users/connor/Medica/glia-fab/fab/materials/materials/organic/bark_oak/metalness.png",
+        "height": null,
+        "ao": null,
+        "emission": null
+      },
+      "library_path": "/Users/connor/Medica/glia-fab/fab/materials/materials/organic/bark_oak"
+    },
+    "moss_forest": {
+      "id": "moss_forest",
+      "metadata": {
+        "name": "Moss Forest",
+        "description": "Procedural: thick green moss, soft fuzzy texture, forest floor, seamless tileable, top down view",
+        "category": "organic",
+        "tags": ["moss", "green", "forest", "organic"],
+        "prompt": "thick green moss, soft fuzzy texture, forest floor, seamless tileable, top down view",
+        "seed": 5391,
+        "workflow": "blender_procedural",
+        "resolution": [2048, 2048],
+        "created_at": "2025-12-27T00:48:45.115827+00:00",
+        "source": "blender"
+      },
+      "maps": {
+        "basecolor": "/Users/connor/Medica/glia-fab/fab/materials/materials/organic/moss_forest/basecolor.png",
+        "normal": "/Users/connor/Medica/glia-fab/fab/materials/materials/organic/moss_forest/normal.png",
+        "roughness": "/Users/connor/Medica/glia-fab/fab/materials/materials/organic/moss_forest/roughness.png",
+        "metalness": "/Users/connor/Medica/glia-fab/fab/materials/materials/organic/moss_forest/metalness.png",
+        "height": null,
+        "ao": null,
+        "emission": null
+      },
+      "library_path": "/Users/connor/Medica/glia-fab/fab/materials/materials/organic/moss_forest"
+    },
+    "leaves_autumn": {
+      "id": "leaves_autumn",
+      "metadata": {
+        "name": "Leaves Autumn",
+        "description": "Procedural: fallen autumn leaves, red orange yellow, scattered on ground, seamless tileable, top down",
+        "category": "organic",
+        "tags": ["leaves", "autumn", "nature", "seasonal"],
+        "prompt": "fallen autumn leaves, red orange yellow, scattered on ground, seamless tileable, top down",
+        "seed": 6862,
+        "workflow": "blender_procedural",
+        "resolution": [2048, 2048],
+        "created_at": "2025-12-27T00:49:31.159520+00:00",
+        "source": "blender"
+      },
+      "maps": {
+        "basecolor": "/Users/connor/Medica/glia-fab/fab/materials/materials/organic/leaves_autumn/basecolor.png",
+        "normal": "/Users/connor/Medica/glia-fab/fab/materials/materials/organic/leaves_autumn/normal.png",
+        "roughness": "/Users/connor/Medica/glia-fab/fab/materials/materials/organic/leaves_autumn/roughness.png",
+        "metalness": "/Users/connor/Medica/glia-fab/fab/materials/materials/organic/leaves_autumn/metalness.png",
+        "height": null,
+        "ao": null,
+        "emission": null
+      },
+      "library_path": "/Users/connor/Medica/glia-fab/fab/materials/materials/organic/leaves_autumn"
+    },
+    "vine_ivy": {
+      "id": "vine_ivy",
+      "metadata": {
+        "name": "Vine Ivy",
+        "description": "Procedural: green ivy vines, overlapping leaves, wall covering, seamless tileable",
+        "category": "organic",
+        "tags": ["ivy", "vines", "green", "nature"],
+        "prompt": "green ivy vines, overlapping leaves, wall covering, seamless tileable",
+        "seed": 3188,
+        "workflow": "blender_procedural",
+        "resolution": [2048, 2048],
+        "created_at": "2025-12-27T00:50:16.486104+00:00",
+        "source": "blender"
+      },
+      "maps": {
+        "basecolor": "/Users/connor/Medica/glia-fab/fab/materials/materials/organic/vine_ivy/basecolor.png",
+        "normal": "/Users/connor/Medica/glia-fab/fab/materials/materials/organic/vine_ivy/normal.png",
+        "roughness": "/Users/connor/Medica/glia-fab/fab/materials/materials/organic/vine_ivy/roughness.png",
+        "metalness": "/Users/connor/Medica/glia-fab/fab/materials/materials/organic/vine_ivy/metalness.png",
+        "height": null,
+        "ao": null,
+        "emission": null
+      },
+      "library_path": "/Users/connor/Medica/glia-fab/fab/materials/materials/organic/vine_ivy"
+    },
+    "leather_brown": {
+      "id": "leather_brown",
+      "metadata": {
+        "name": "Leather Brown",
+        "description": "Procedural: brown leather texture, subtle grain, slightly worn, seamless tileable",
+        "category": "fabric",
+        "tags": ["leather", "brown", "fabric", "organic"],
+        "prompt": "brown leather texture, subtle grain, slightly worn, seamless tileable",
+        "seed": 6255,
+        "workflow": "blender_procedural",
+        "resolution": [2048, 2048],
+        "created_at": "2025-12-27T00:50:45.011710+00:00",
+        "source": "blender"
+      },
+      "maps": {
+        "basecolor": "/Users/connor/Medica/glia-fab/fab/materials/materials/fabric/leather_brown/basecolor.png",
+        "normal": "/Users/connor/Medica/glia-fab/fab/materials/materials/fabric/leather_brown/normal.png",
+        "roughness": "/Users/connor/Medica/glia-fab/fab/materials/materials/fabric/leather_brown/roughness.png",
+        "metalness": "/Users/connor/Medica/glia-fab/fab/materials/materials/fabric/leather_brown/metalness.png",
+        "height": null,
+        "ao": null,
+        "emission": null
+      },
+      "library_path": "/Users/connor/Medica/glia-fab/fab/materials/materials/fabric/leather_brown"
+    },
+    "canvas_rough": {
+      "id": "canvas_rough",
+      "metadata": {
+        "name": "Canvas Rough",
+        "description": "Procedural: rough canvas fabric, natural beige, visible weave, seamless tileable",
+        "category": "fabric",
+        "tags": ["canvas", "fabric", "rough", "natural"],
+        "prompt": "rough canvas fabric, natural beige, visible weave, seamless tileable",
+        "seed": 7616,
+        "workflow": "blender_procedural",
+        "resolution": [2048, 2048],
+        "created_at": "2025-12-27T00:51:00.401362+00:00",
+        "source": "blender"
+      },
+      "maps": {
+        "basecolor": "/Users/connor/Medica/glia-fab/fab/materials/materials/fabric/canvas_rough/basecolor.png",
+        "normal": "/Users/connor/Medica/glia-fab/fab/materials/materials/fabric/canvas_rough/normal.png",
+        "roughness": "/Users/connor/Medica/glia-fab/fab/materials/materials/fabric/canvas_rough/roughness.png",
+        "metalness": "/Users/connor/Medica/glia-fab/fab/materials/materials/fabric/canvas_rough/metalness.png",
+        "height": null,
+        "ao": null,
+        "emission": null
+      },
+      "library_path": "/Users/connor/Medica/glia-fab/fab/materials/materials/fabric/canvas_rough"
+    },
+    "linen_white": {
+      "id": "linen_white",
+      "metadata": {
+        "name": "Linen White",
+        "description": "Procedural: white linen fabric, fine weave texture, soft folds, seamless tileable",
+        "category": "fabric",
+        "tags": ["linen", "fabric", "white", "soft"],
+        "prompt": "white linen fabric, fine weave texture, soft folds, seamless tileable",
+        "seed": 6115,
+        "workflow": "blender_procedural",
+        "resolution": [2048, 2048],
+        "created_at": "2025-12-27T00:51:16.219438+00:00",
+        "source": "blender"
+      },
+      "maps": {
+        "basecolor": "/Users/connor/Medica/glia-fab/fab/materials/materials/fabric/linen_white/basecolor.png",
+        "normal": "/Users/connor/Medica/glia-fab/fab/materials/materials/fabric/linen_white/normal.png",
+        "roughness": "/Users/connor/Medica/glia-fab/fab/materials/materials/fabric/linen_white/roughness.png",
+        "metalness": "/Users/connor/Medica/glia-fab/fab/materials/materials/fabric/linen_white/metalness.png",
+        "height": null,
+        "ao": null,
+        "emission": null
+      },
+      "library_path": "/Users/connor/Medica/glia-fab/fab/materials/materials/fabric/linen_white"
+    },
+    "denim_blue": {
+      "id": "denim_blue",
+      "metadata": {
+        "name": "Denim Blue",
+        "description": "Procedural: blue denim jeans fabric, classic indigo, visible thread texture, seamless tileable",
+        "category": "fabric",
+        "tags": ["denim", "fabric", "blue", "jeans"],
+        "prompt": "blue denim jeans fabric, classic indigo, visible thread texture, seamless tileable",
+        "seed": 5638,
+        "workflow": "blender_procedural",
+        "resolution": [2048, 2048],
+        "created_at": "2025-12-27T00:51:32.878493+00:00",
+        "source": "blender"
+      },
+      "maps": {
+        "basecolor": "/Users/connor/Medica/glia-fab/fab/materials/materials/fabric/denim_blue/basecolor.png",
+        "normal": "/Users/connor/Medica/glia-fab/fab/materials/materials/fabric/denim_blue/normal.png",
+        "roughness": "/Users/connor/Medica/glia-fab/fab/materials/materials/fabric/denim_blue/roughness.png",
+        "metalness": "/Users/connor/Medica/glia-fab/fab/materials/materials/fabric/denim_blue/metalness.png",
+        "height": null,
+        "ao": null,
+        "emission": null
+      },
+      "library_path": "/Users/connor/Medica/glia-fab/fab/materials/materials/fabric/denim_blue"
+    }
+  },
+  "categories": ["architecture", "fabric", "metal", "organic", "terrain", "wood"],
+  "tags": [
+    "aged",
+    "antique",
+    "asian",
+    "autumn",
+    "bamboo",
+    "bark",
+    "beach",
+    "beige",
+    "blue",
+    "brass",
+    "brick",
+    "brown",
+    "building",
+    "canvas",
+    "castle",
+    "concrete",
+    "copper",
+    "cracked",
+    "dark",
+    "decay",
+    "denim",
+    "desert",
+    "dirt",
+    "dry",
+    "elegant",
+    "exterior",
+    "fabric",
+    "fantasy",
+    "farmhouse",
+    "floor",
+    "forest",
+    "fresh",
+    "gold",
+    "granite",
+    "grass",
+    "gravel",
+    "green",
+    "industrial",
+    "interior",
+    "iron",
+    "ivy",
+    "jeans",
+    "leather",
+    "leaves",
+    "light",
+    "linen",
+    "medieval",
+    "mediterranean",
+    "metal",
+    "modern",
+    "moss",
+    "natural",
+    "nature",
+    "oak",
+    "organic",
+    "outdoor",
+    "painted",
+    "path",
+    "patina",
+    "pine",
+    "plaster",
+    "polished",
+    "rock",
+    "roof",
+    "rough",
+    "rust",
+    "rustic",
+    "sand",
+    "seasonal",
+    "soft",
+    "soil",
+    "steel",
+    "stone",
+    "stones",
+    "stucco",
+    "terracotta",
+    "tiles",
+    "tree",
+    "urban",
+    "vines",
+    "wall",
+    "walnut",
+    "weathered",
+    "white",
+    "wood",
+    "woven"
+  ]
+}

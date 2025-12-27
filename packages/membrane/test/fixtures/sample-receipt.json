@@ -1,0 +1,33 @@
+{
+  "version": "0.1.0",
+  "universe": {
+    "id": "cyntra-fab",
+    "name": "Cyntra Fab"
+  },
+  "world": {
+    "id": "outora-library",
+    "name": "Outora Library",
+    "version": "0.4.0"
+  },
+  "run": {
+    "id": "20231215-abc123",
+    "timestamp": "2023-12-15T10:30:00Z",
+    "git_sha": "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2",
+    "toolchain": "blender"
+  },
+  "artifacts": {
+    "manifest_hash": "0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890",
+    "proof_hash": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+    "primary_asset_hash": "0xfedcba0987654321fedcba0987654321fedcba0987654321fedcba0987654321"
+  },
+  "verdict": {
+    "passed": true,
+    "gate_id": "car_realism_v001",
+    "scores": {
+      "geometry": 0.92,
+      "realism": 0.88,
+      "alignment": 0.95
+    },
+    "threshold": 0.85
+  }
+}

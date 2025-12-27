@@ -1,0 +1,37 @@
+name: firecrawl-search
+version: 1.0.0
+description: |
+  Web search with optional content scraping.
+  Returns search results with full page content if requested.
+category: search
+priority: high
+
+inputs:
+  - name: query
+    type: string
+    description: Search query
+    required: true
+  - name: limit
+    type: integer
+    description: Maximum number of results
+    required: false
+    default: 10
+  - name: scrape_results
+    type: boolean
+    description: Whether to scrape content from results
+    required: false
+    default: true
+  - name: cache_ttl
+    type: integer
+    description: Cache TTL in seconds (0 to disable)
+    required: false
+    default: 3600
+
+outputs:
+  - name: results
+    type: array
+    description: Search results with optional content
+
+implementation:
+  type: python
+  path: firecrawl-search.py

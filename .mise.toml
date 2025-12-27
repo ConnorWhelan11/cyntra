@@ -13,7 +13,10 @@ UV_PYTHON = "{{env.HOME}}/.local/share/mise/installs/python/3.12/bin/python"
 
 [tasks.dev]
 description = "Start desktop app in dev mode"
-run = "cd apps/glia-fab-desktop && bun run tauri dev"
+run = """
+cd packages/ag-ui-ext && bun run build
+cd apps/desktop && bun run tauri dev
+"""
 
 [tasks.kernel]
 description = "Run cyntra kernel once"
@@ -21,7 +24,7 @@ run = "crates/target/release/cyntra run --once"
 
 [tasks.kernel-py]
 description = "Run cyntra kernel (Python) once"
-run = "cd cyntra-kernel && python -m cyntra run --once"
+run = "cd kernel && python -m cyntra run --once"
 
 [tasks.build-cyntra]
 description = "Build Rust cyntra binary"
@@ -30,6 +33,38 @@ run = "cd crates && cargo build --release"
 [tasks.test]
 description = "Run all tests"
 run = """
-cd cyntra-kernel && pytest -v
-cd ../apps/glia-fab-desktop && bun test
+cd kernel && pytest -v
+cd ../apps/desktop && bun run test
 """
+
+[tasks.index-db-up]
+description = "Start CocoIndex Postgres (pgvector)"
+run = "docker compose -f services/cocoindex/compose.yaml up -d"
+
+[tasks.index-db-down]
+description = "Stop CocoIndex Postgres (pgvector)"
+run = "docker compose -f services/cocoindex/compose.yaml down"
+
+[tasks.index-neo4j-up]
+description = "Start Neo4j (optional graph export)"
+run = "docker compose -f services/cocoindex/compose.neo4j.yaml up -d"
+
+[tasks.index-neo4j-down]
+description = "Stop Neo4j (optional graph export)"
+run = "docker compose -f services/cocoindex/compose.neo4j.yaml down"
+
+[tasks.index-setup]
+description = "CocoIndex: setup internal schemas"
+run = "uv run --project kernel --extra indexing cyntra index setup --env-file .env --force"
+
+[tasks.index-update]
+description = "CocoIndex: incremental update"
+run = "uv run --project kernel --extra indexing cyntra index update --env-file .env"
+
+[tasks.index-serve]
+description = "CocoIndex: serve query API (reload + CORS for desktop dev)"
+run = "uv run --project kernel --extra indexing cyntra index serve --env-file .env --address 127.0.0.1:8020 --cors-local 1420 --live --reload"
+
+[tasks.index-serve-prod]
+description = "CocoIndex: serve query API (prod defaults; bind localhost)"
+run = "uv run --project kernel --extra indexing cyntra index serve --env-file .env --address 127.0.0.1:8020 --live"

@@ -1,0 +1,154 @@
+# Material Showcase World
+# Demonstrates ComfyUI integration for PBR material generation
+#
+# This world generates a set of PBR materials using the CHORD workflow,
+# organizes them into a material library, and exports Godot .tres resources.
+#
+# Usage:
+#   cyntra fab-world --world material_showcase --run-id test_001
+#
+# Requires:
+#   - ComfyUI server running with CHORD model installed
+#   - SSH tunnel to RunPod if using remote GPU
+
+schema_version: "1.0"
+world_id: material_showcase
+world_config_id: material_showcase_v001
+world_type: props
+version: "0.1.0"
+
+generator:
+  name: "Material Showcase Generator"
+  description: |
+    Generates a library of PBR materials from text prompts using ComfyUI CHORD.
+    Demonstrates the full material pipeline:
+    1. Generate PBR maps from text descriptions
+    2. Organize into material library with metadata
+    3. Export Godot-ready .tres resources
+  author: "Cyntra Fab"
+
+build:
+  # No template blend needed for pure material generation
+  template_blend: null
+
+  determinism:
+    seed: 42
+    pythonhashseed: 42
+
+  # ComfyUI settings (can be overridden per-stage)
+  comfyui:
+    host: localhost
+    port: 8188
+    timeout_seconds: 120
+
+# Parameters for customizing material generation
+parameters:
+  defaults:
+    material_category: "terrain"
+    material_resolution: 1024
+    generation_steps: 30
+    cfg_scale: 7.0
+
+  schema:
+    material_category:
+      type: enum
+      values: ["terrain", "architecture", "organic", "metal", "fabric"]
+      default: "terrain"
+    material_resolution:
+      type: integer
+      min: 512
+      max: 4096
+      default: 1024
+    generation_steps:
+      type: integer
+      min: 10
+      max: 50
+      default: 30
+    cfg_scale:
+      type: number
+      min: 1.0
+      max: 15.0
+      default: 7.0
+
+# Material definitions - each becomes a comfyui stage
+materials:
+  - id: grass_meadow
+    prompt: "lush green grass, meadow, seamless tileable, top down view, natural color variation"
+    category: terrain
+    tags: [nature, grass, green, outdoor]
+
+  - id: cobblestone_old
+    prompt: "worn cobblestone path, medieval, rounded stones with moss in cracks, seamless tileable, top down view"
+    category: terrain
+    tags: [stone, path, medieval, outdoor]
+
+  - id: brick_weathered
+    prompt: "old red brick wall, weathered mortar, urban decay, seamless tileable"
+    category: architecture
+    tags: [brick, wall, urban, weathered]
+
+  - id: wood_oak
+    prompt: "aged oak wood planks, natural grain, warm honey color, seamless tileable, top down view"
+    category: architecture
+    tags: [wood, floor, interior]
+
+  - id: metal_rust
+    prompt: "rusty corroded iron plates, industrial decay, orange patina, seamless tileable"
+    category: metal
+    tags: [metal, rust, industrial, decay]
+
+stages:
+  # Generate each material using ComfyUI CHORD
+  - id: generate_materials
+    type: comfyui
+    workflow: chord_image_to_material.json
+    settings:
+      host: localhost
+      port: 8188
+      timeout_seconds: 120
+    # This stage will be invoked once per material defined above
+    # The material library post-processor organizes outputs
+    comfyui_params:
+      steps: "${generation_steps}"
+      cfg: "${cfg_scale}"
+    outputs:
+      - "materials/*/basecolor.png"
+      - "materials/*/normal.png"
+      - "materials/*/roughness.png"
+      - "materials/*/metalness.png"
+      - "materials/*/height.png"
+
+  # Validate generated materials
+  - id: validate_materials
+    type: gate
+    requires: [generate_materials]
+    gates:
+      - fab/gates/material_quality_v001.yaml
+    optional: true  # Don't fail build if gate not found
+
+  # Organize into material library with Godot export
+  - id: build_library
+    type: custom
+    requires: [generate_materials]
+    script: blender/stages/build_library.py
+    outputs:
+      - "library/manifest.json"
+      - "library/materials/*/*.tres"
+      - "library/materials/*/metadata.json"
+
+# Resource budgets
+budgets:
+  comfyui:
+    max_materials: 20
+    max_resolution: 4096
+  godot:
+    max_materials: 50
+    max_glb_size_mb: 100
+
+# Publishing configuration
+publish:
+  viewer:
+    enabled: true
+    paths:
+      materials: "fab/assets/viewer/materials"
+      godot_resources: "fab/godot/templates/fab_game_template/project/materials"

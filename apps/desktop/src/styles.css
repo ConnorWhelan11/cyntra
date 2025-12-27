@@ -1,0 +1,71 @@
+/* Cyntra Mission Control UI
+   Deep Space Observatory Design System */
+
+/* Import shared base styles */
+@import "@oos/ag-ui-ext/styles";
+
+/* Import Mission Control design system */
+@import "./styles/tokens.css";
+@import "./styles/animations.css";
+@import "./styles/components.css";
+@import "./styles/home.css";
+@import "./styles/building.css";
+@import "./styles/nav-sigils.css";
+@import "./styles/stage.css";
+@import "./styles/gameplay.css";
+@import "./styles/shell.css";
+@import "./styles/workflows.css";
+
+/* Legacy styles for gradual migration */
+@import "./app.css" layer(legacy);
+
+@layer base {
+  :root {
+    color-scheme: dark;
+
+    /* Legacy CSS variable bridge for gradual migration */
+    --bg: var(--void);
+    --panel: var(--abyss);
+    --border: var(--slate);
+    --text: var(--text-primary);
+    --muted: var(--text-secondary);
+    --accent: var(--accent-primary);
+  }
+}
+
+@layer components {
+  /* Terminal styling */
+  .terminal {
+    height: 100%;
+    width: 100%;
+  }
+
+  /* iframe for viewer */
+  .iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    background: #000;
+  }
+
+  /* Status badge colors matching old design */
+  .badge-ready,
+  .badge-done,
+  .badge-success {
+    border-color: rgba(34, 197, 94, 0.35);
+    background-color: rgba(34, 197, 94, 0.12);
+  }
+
+  .badge-failed,
+  .badge-fail,
+  .badge-blocked,
+  .badge-escalated {
+    border-color: rgba(239, 68, 68, 0.35);
+    background-color: rgba(239, 68, 68, 0.12);
+  }
+
+  .badge-running {
+    border-color: rgba(212, 165, 116, 0.35);
+    background-color: rgba(212, 165, 116, 0.12);
+  }
+}

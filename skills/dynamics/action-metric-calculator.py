@@ -13,9 +13,9 @@ from pathlib import Path
 from typing import Any
 
 repo_root = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(repo_root / "cyntra-kernel" / "src"))
-
-from cyntra.cyntra.dynamics.action import compute_action
+kernel_src = repo_root / "kernel" / "src"
+if kernel_src.exists():
+    sys.path.insert(0, str(kernel_src))
 
 
 def execute(
@@ -54,6 +54,8 @@ def execute(
         }
 
     try:
+        from cyntra.dynamics.action import compute_action
+
         result = compute_action(
             rollout=rollout,
             transition_matrix=transition_matrix,

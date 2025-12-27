@@ -1,0 +1,12 @@
+{
+  "name": "Plaster White",
+  "description": "Procedural: white painted plaster wall, subtle texture, clean interior wall, seamless tileable",
+  "category": "architecture",
+  "tags": ["plaster", "wall", "interior", "white"],
+  "prompt": "white painted plaster wall, subtle texture, clean interior wall, seamless tileable",
+  "seed": 1027,
+  "workflow": "blender_procedural",
+  "resolution": [2048, 2048],
+  "created_at": "2025-12-27T00:38:02.921872+00:00",
+  "source": "blender"
+}

@@ -1,0 +1,314 @@
+# Starter Pack - Core Material Library
+# Generates a foundational set of PBR materials for game development.
+#
+# Uses CHORD Turbo for fast 2048x2048 generation (~3s/material on RTX 4090).
+# Total: ~30 materials across 6 categories.
+#
+# Usage:
+#   1. Ensure ComfyUI is running (via RunPod tunnel or locally)
+#   2. Run: python -m cyntra.fab.world --world starter_pack --run-id starter_v1
+#   3. Materials are organized into fab/materials/ with Godot .tres exports
+#
+# Prerequisites:
+#   - ComfyUI with CHORD model installed
+#   - SSH tunnel to RunPod (port 8188) or local ComfyUI
+
+schema_version: "1.0"
+world_id: starter_pack
+world_config_id: starter_pack_v001
+world_type: materials
+version: "1.0.0"
+
+generator:
+  name: "Starter Material Pack"
+  description: |
+    Core library of 30+ seamless PBR materials for game development.
+    Includes terrain, architecture, metal, wood, organic, and fabric categories.
+    All materials are 2048x2048 with full PBR maps (basecolor, normal, roughness, metalness, height).
+  author: "glia-fab"
+
+build:
+  template_blend: null
+
+  determinism:
+    seed: 42
+    pythonhashseed: 42
+
+  # ComfyUI settings (RunPod via SSH tunnel)
+  comfyui:
+    host: localhost
+    port: 8188
+    timeout_seconds: 120
+
+# Default generation parameters
+parameters:
+  defaults:
+    steps: 9          # Turbo mode
+    cfg: 3.5          # Lower CFG for turbo
+    resolution: 2048  # 2K output
+
+  schema:
+    steps:
+      type: integer
+      min: 6
+      max: 15
+      default: 9
+    cfg:
+      type: number
+      min: 1.0
+      max: 7.0
+      default: 3.5
+
+# Material definitions - each generates a complete PBR set
+materials:
+  # ============================================
+  # TERRAIN (6 materials)
+  # ============================================
+  - id: grass_meadow
+    prompt: "lush green grass meadow, natural color variation, seamless tileable, top down view, photorealistic"
+    category: terrain
+    tags: [grass, nature, outdoor, green]
+
+  - id: grass_dry
+    prompt: "dry yellow brown grass, autumn meadow, dead patches, seamless tileable, top down view"
+    category: terrain
+    tags: [grass, nature, outdoor, dry, autumn]
+
+  - id: dirt_forest
+    prompt: "forest floor dirt, scattered leaves and twigs, dark brown soil, seamless tileable, top down view"
+    category: terrain
+    tags: [dirt, soil, forest, outdoor]
+
+  - id: sand_beach
+    prompt: "fine beach sand, golden yellow, subtle ripples, seamless tileable, top down view, photorealistic"
+    category: terrain
+    tags: [sand, beach, outdoor, desert]
+
+  - id: gravel_path
+    prompt: "gravel path, mixed size pebbles, gray and brown stones, seamless tileable, top down view"
+    category: terrain
+    tags: [gravel, stones, path, outdoor]
+
+  - id: rock_granite
+    prompt: "gray granite rock surface, natural cracks and veins, rough texture, seamless tileable"
+    category: terrain
+    tags: [rock, stone, granite, outdoor]
+
+  # ============================================
+  # ARCHITECTURE (8 materials)
+  # ============================================
+  - id: brick_red
+    prompt: "classic red brick wall, white mortar lines, slightly weathered, seamless tileable"
+    category: architecture
+    tags: [brick, wall, building, urban]
+
+  - id: brick_weathered
+    prompt: "old weathered brick wall, crumbling mortar, moss in cracks, urban decay, seamless tileable"
+    category: architecture
+    tags: [brick, wall, weathered, decay]
+
+  - id: concrete_smooth
+    prompt: "smooth poured concrete, light gray, subtle surface variation, seamless tileable"
+    category: architecture
+    tags: [concrete, modern, industrial]
+
+  - id: concrete_cracked
+    prompt: "cracked concrete sidewalk, weathered gray, visible cracks and chips, seamless tileable, top down"
+    category: architecture
+    tags: [concrete, cracked, weathered, urban]
+
+  - id: plaster_white
+    prompt: "white painted plaster wall, subtle texture, clean interior wall, seamless tileable"
+    category: architecture
+    tags: [plaster, wall, interior, white]
+
+  - id: stone_castle
+    prompt: "medieval castle stone wall, large cut blocks, weathered gray, fantasy, seamless tileable"
+    category: architecture
+    tags: [stone, castle, medieval, fantasy]
+
+  - id: tiles_terracotta
+    prompt: "terracotta roof tiles, warm orange red, overlapping pattern, Mediterranean, seamless tileable"
+    category: architecture
+    tags: [tiles, roof, terracotta, mediterranean]
+
+  - id: stucco_beige
+    prompt: "beige stucco exterior wall, slightly rough texture, warm tone, seamless tileable"
+    category: architecture
+    tags: [stucco, wall, exterior, beige]
+
+  # ============================================
+  # METAL (5 materials)
+  # ============================================
+  - id: steel_brushed
+    prompt: "brushed stainless steel, linear grain pattern, subtle reflections, seamless tileable"
+    category: metal
+    tags: [steel, metal, modern, industrial]
+
+  - id: iron_rust
+    prompt: "rusty corroded iron plate, orange and brown patina, industrial decay, seamless tileable"
+    category: metal
+    tags: [iron, rust, metal, decay, industrial]
+
+  - id: copper_aged
+    prompt: "aged copper with green patina, verdigris oxidation, antique, seamless tileable"
+    category: metal
+    tags: [copper, patina, aged, antique]
+
+  - id: brass_polished
+    prompt: "polished brass metal surface, warm golden tone, slight scratches, seamless tileable"
+    category: metal
+    tags: [brass, metal, gold, polished]
+
+  - id: metal_diamond_plate
+    prompt: "industrial diamond plate metal, raised pattern, steel gray, seamless tileable"
+    category: metal
+    tags: [metal, industrial, floor, steel]
+
+  # ============================================
+  # WOOD (6 materials)
+  # ============================================
+  - id: oak_planks
+    prompt: "oak wood floor planks, warm honey tone, visible grain, seamless tileable, top down view"
+    category: wood
+    tags: [wood, oak, floor, interior]
+
+  - id: pine_fresh
+    prompt: "fresh pine wood boards, light blonde color, knots visible, seamless tileable"
+    category: wood
+    tags: [wood, pine, light, fresh]
+
+  - id: walnut_dark
+    prompt: "dark walnut wood, rich brown color, elegant grain pattern, seamless tileable"
+    category: wood
+    tags: [wood, walnut, dark, elegant]
+
+  - id: wood_weathered
+    prompt: "old weathered wood planks, gray patina, cracked and worn, rustic, seamless tileable"
+    category: wood
+    tags: [wood, weathered, rustic, aged]
+
+  - id: wood_painted_white
+    prompt: "white painted wood boards, slightly chipped paint, farmhouse style, seamless tileable"
+    category: wood
+    tags: [wood, painted, white, farmhouse]
+
+  - id: bamboo_woven
+    prompt: "woven bamboo mat texture, natural tan color, tight weave pattern, seamless tileable"
+    category: wood
+    tags: [bamboo, woven, natural, asian]
+
+  # ============================================
+  # ORGANIC (4 materials)
+  # ============================================
+  - id: bark_oak
+    prompt: "oak tree bark, deep ridges and furrows, brown gray, seamless tileable, close up"
+    category: organic
+    tags: [bark, tree, nature, organic]
+
+  - id: moss_forest
+    prompt: "thick green moss, soft fuzzy texture, forest floor, seamless tileable, top down view"
+    category: organic
+    tags: [moss, green, forest, organic]
+
+  - id: leaves_autumn
+    prompt: "fallen autumn leaves, red orange yellow, scattered on ground, seamless tileable, top down"
+    category: organic
+    tags: [leaves, autumn, nature, seasonal]
+
+  - id: vine_ivy
+    prompt: "green ivy vines, overlapping leaves, wall covering, seamless tileable"
+    category: organic
+    tags: [ivy, vines, green, nature]
+
+  # ============================================
+  # FABRIC (4 materials)
+  # ============================================
+  - id: leather_brown
+    prompt: "brown leather texture, subtle grain, slightly worn, seamless tileable"
+    category: fabric
+    tags: [leather, brown, fabric, organic]
+
+  - id: canvas_rough
+    prompt: "rough canvas fabric, natural beige, visible weave, seamless tileable"
+    category: fabric
+    tags: [canvas, fabric, rough, natural]
+
+  - id: linen_white
+    prompt: "white linen fabric, fine weave texture, soft folds, seamless tileable"
+    category: fabric
+    tags: [linen, fabric, white, soft]
+
+  - id: denim_blue
+    prompt: "blue denim jeans fabric, classic indigo, visible thread texture, seamless tileable"
+    category: fabric
+    tags: [denim, fabric, blue, jeans]
+
+# ============================================
+# PIPELINE STAGES
+# ============================================
+stages:
+  # Generate all materials using CHORD Turbo
+  # This stage iterates over all materials defined above
+  - id: generate_materials
+    type: comfyui_batch
+    workflow: fab/workflows/comfyui/chord_turbo_image_to_material.json
+    settings:
+      host: localhost
+      port: 8188
+      timeout_seconds: 120
+      batch_size: 5        # Process 5 in parallel
+      retry_on_failure: 2
+    comfyui_params:
+      steps: 9
+      cfg: 3.5
+    outputs_per_material:
+      - "basecolor.png"
+      - "normal.png"
+      - "roughness.png"
+      - "metalness.png"
+      - "height.png"
+
+  # Validate generated materials
+  - id: validate_materials
+    type: gate
+    requires: [generate_materials]
+    gates:
+      - fab/gates/material_quality_v001.yaml
+    on_failure: warn  # Continue even if some fail
+
+  # Organize into material library with Godot export
+  - id: build_library
+    type: python
+    requires: [generate_materials]
+    script: |
+      from pathlib import Path
+      from cyntra.fab.material_postprocess import process_comfyui_run
+
+      result = process_comfyui_run(
+          run_dir=Path("${run_dir}"),
+          library_root=Path("fab/materials"),
+          generate_godot=True,
+      )
+
+      print(f"Processed {len(result['processed'])} materials")
+      if result['errors']:
+          print(f"Errors: {result['errors']}")
+
+# Resource budgets
+budgets:
+  comfyui:
+    max_materials: 50
+    max_resolution: 2048
+    max_concurrent: 5
+  godot:
+    max_materials: 100
+
+# Publishing configuration
+publish:
+  library:
+    enabled: true
+    path: fab/materials
+  godot:
+    enabled: true
+    path: fab/godot/materials

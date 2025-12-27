@@ -115,33 +115,33 @@ issue_selection:
   source: ".beads/issues.jsonl"
   filters:
     - field: "status"
-      value: "closed"  # Only completed issues
+      value: "closed" # Only completed issues
     - field: "dk_size"
-      in: ["S", "M", "L"]  # Exclude trivial (XS) and huge (XL)
-  sample_size: 100  # Max issues to include
-  seed: 42  # For reproducible sampling
+      in: ["S", "M", "L"] # Exclude trivial (XS) and huge (XL)
+  sample_size: 100 # Max issues to include
+  seed: 42 # For reproducible sampling
 
 # Action sampling
 action_sampling:
-  K: 4  # Number of action variants per issue
-  strategy: "coverage"  # coverage | random | deterministic
-  include_baseline: true  # Always include heuristic baseline action
-  include_executed: true  # Always include originally executed action
+  K: 4 # Number of action variants per issue
+  strategy: "coverage" # coverage | random | deterministic
+  include_baseline: true # Always include heuristic baseline action
+  include_executed: true # Always include originally executed action
 
 # Execution limits
 execution_limits:
   max_minutes_per_candidate: 30
-  max_total_minutes_per_issue: 120  # K * max_minutes_per_candidate
+  max_total_minutes_per_issue: 120 # K * max_minutes_per_candidate
   max_retries: 1
-  timeout_behavior: "mark_timeout"  # mark_timeout | skip
+  timeout_behavior: "mark_timeout" # mark_timeout | skip
 
 # Winner selection
 winner_selection:
-  primary_objective: "minimize_duration"  # minimize_duration | minimize_cost | maximize_quality
+  primary_objective: "minimize_duration" # minimize_duration | minimize_cost | maximize_quality
   constraints:
     - all_required_gates_passed: true
   tie_break:
-    - "lower_max_candidates"  # Prefer simpler configuration
+    - "lower_max_candidates" # Prefer simpler configuration
     - "lower_max_minutes"
     - "action_tuple_lexicographic"
 
@@ -149,12 +149,13 @@ winner_selection:
 output:
   directory: ".cyntra/bench/planner_bench"
   include_all_outcomes: true
-  include_traces: false  # Full execution traces (expensive)
+  include_traces: false # Full execution traces (expensive)
 ```
 
 ### 3.2 Action Sampling Strategies
 
 **Coverage Strategy:**
+
 ```python
 def sample_coverage(valid_actions: list[ActionTuple], k: int, seed: int) -> list[ActionTuple]:
     """
@@ -190,6 +191,7 @@ def sample_coverage(valid_actions: list[ActionTuple], k: int, seed: int) -> list
 ```
 
 **Random Strategy:**
+
 ```python
 def sample_random(valid_actions: list[ActionTuple], k: int, seed: int) -> list[ActionTuple]:
     """Sample K random actions from valid set."""
@@ -198,6 +200,7 @@ def sample_random(valid_actions: list[ActionTuple], k: int, seed: int) -> list[A
 ```
 
 **Deterministic Strategy:**
+
 ```python
 def sample_deterministic(valid_actions: list[ActionTuple], k: int) -> list[ActionTuple]:
     """Select first K actions in lexicographic order."""
@@ -214,7 +217,7 @@ def sample_deterministic(valid_actions: list[ActionTuple], k: int) -> list[Actio
 The kernel must support executing issues with forced action configurations. This requires extending the runner with override capabilities.
 
 ```python
-# cyntra-kernel/src/cyntra/kernel/runner.py (modifications)
+# kernel/src/cyntra/kernel/runner.py (modifications)
 
 @dataclass
 class ActionOverride:
@@ -476,7 +479,7 @@ def _apply_tie_break(outcomes: list[CandidateOutcome], rule: str) -> list[Candid
     "issues_no_passing_candidate": 15,
     "total_candidates_executed": 400,
     "total_execution_time_minutes": 1200,
-    "total_cost_usd": 45.50
+    "total_cost_usd": 45.5
   },
 
   "winner_distribution": {
@@ -541,7 +544,7 @@ cyntra planner dataset merge-best-of-k \
 ### 6.2 CLI Implementation
 
 ```python
-# cyntra-kernel/src/cyntra/planner/bench_cli.py
+# kernel/src/cyntra/planner/bench_cli.py
 
 import click
 from pathlib import Path
@@ -600,41 +603,41 @@ def analyze(bench_id: str, output: Path | None):
 
 ### 7.1 Task Breakdown
 
-| Task ID | Description | Est. Hours | Dependencies |
-|---------|-------------|------------|--------------|
-| T3.1 | Define bench config schema | 2 | None |
-| T3.2 | Implement action sampling strategies | 3 | T3.1 |
-| T3.3 | Add ActionOverride to runner | 4 | Track 4 |
-| T3.4 | Implement dispatch_issue_with_override | 6 | T3.3 |
-| T3.5 | Implement outcome collector | 3 | T3.4 |
-| T3.6 | Implement winner selector | 3 | T3.5 |
-| T3.7 | Implement BenchRunner class | 6 | T3.2-T3.6 |
-| T3.8 | Implement resumption logic | 3 | T3.7 |
-| T3.9 | Implement BenchAnalyzer class | 4 | T3.7 |
-| T3.10 | Implement CLI commands | 3 | T3.7-T3.9 |
-| T3.11 | Implement dataset merger | 3 | T3.7 |
-| T3.12 | Unit tests for sampling | 2 | T3.2 |
-| T3.13 | Unit tests for winner selection | 2 | T3.6 |
-| T3.14 | Integration test: mini bench | 4 | T3.7 |
+| Task ID | Description                            | Est. Hours | Dependencies |
+| ------- | -------------------------------------- | ---------- | ------------ |
+| T3.1    | Define bench config schema             | 2          | None         |
+| T3.2    | Implement action sampling strategies   | 3          | T3.1         |
+| T3.3    | Add ActionOverride to runner           | 4          | Track 4      |
+| T3.4    | Implement dispatch_issue_with_override | 6          | T3.3         |
+| T3.5    | Implement outcome collector            | 3          | T3.4         |
+| T3.6    | Implement winner selector              | 3          | T3.5         |
+| T3.7    | Implement BenchRunner class            | 6          | T3.2-T3.6    |
+| T3.8    | Implement resumption logic             | 3          | T3.7         |
+| T3.9    | Implement BenchAnalyzer class          | 4          | T3.7         |
+| T3.10   | Implement CLI commands                 | 3          | T3.7-T3.9    |
+| T3.11   | Implement dataset merger               | 3          | T3.7         |
+| T3.12   | Unit tests for sampling                | 2          | T3.2         |
+| T3.13   | Unit tests for winner selection        | 2          | T3.6         |
+| T3.14   | Integration test: mini bench           | 4          | T3.7         |
 
 **Total estimated hours:** 48
 
 ### 7.2 File Deliverables
 
-| File | Description | Status |
-|------|-------------|--------|
-| `benches/planner_bench/bench_config.yaml` | Default bench config | NEW |
-| `cyntra-kernel/src/cyntra/planner/bench/__init__.py` | Package init | NEW |
-| `cyntra-kernel/src/cyntra/planner/bench/config.py` | BenchConfig class | NEW |
-| `cyntra-kernel/src/cyntra/planner/bench/sampler.py` | Action sampling | NEW |
-| `cyntra-kernel/src/cyntra/planner/bench/runner.py` | BenchRunner | NEW |
-| `cyntra-kernel/src/cyntra/planner/bench/outcome.py` | Outcome collection | NEW |
-| `cyntra-kernel/src/cyntra/planner/bench/winner.py` | Winner selection | NEW |
-| `cyntra-kernel/src/cyntra/planner/bench/analyzer.py` | BenchAnalyzer | NEW |
-| `cyntra-kernel/src/cyntra/planner/bench_cli.py` | CLI commands | NEW |
-| `cyntra-kernel/tests/planner/bench/test_sampler.py` | Sampler tests | NEW |
-| `cyntra-kernel/tests/planner/bench/test_winner.py` | Winner tests | NEW |
-| `cyntra-kernel/tests/planner/bench/test_runner.py` | Runner tests | NEW |
+| File                                          | Description          | Status |
+| --------------------------------------------- | -------------------- | ------ |
+| `benches/planner_bench/bench_config.yaml`     | Default bench config | NEW    |
+| `kernel/src/cyntra/planner/bench/__init__.py` | Package init         | NEW    |
+| `kernel/src/cyntra/planner/bench/config.py`   | BenchConfig class    | NEW    |
+| `kernel/src/cyntra/planner/bench/sampler.py`  | Action sampling      | NEW    |
+| `kernel/src/cyntra/planner/bench/runner.py`   | BenchRunner          | NEW    |
+| `kernel/src/cyntra/planner/bench/outcome.py`  | Outcome collection   | NEW    |
+| `kernel/src/cyntra/planner/bench/winner.py`   | Winner selection     | NEW    |
+| `kernel/src/cyntra/planner/bench/analyzer.py` | BenchAnalyzer        | NEW    |
+| `kernel/src/cyntra/planner/bench_cli.py`      | CLI commands         | NEW    |
+| `kernel/tests/planner/bench/test_sampler.py`  | Sampler tests        | NEW    |
+| `kernel/tests/planner/bench/test_winner.py`   | Winner tests         | NEW    |
+| `kernel/tests/planner/bench/test_runner.py`   | Runner tests         | NEW    |
 
 ---
 
@@ -839,17 +842,17 @@ def compute_regret(
 
 ### 11.1 Upstream Dependencies
 
-| Dependency | Location | Status |
-|------------|----------|--------|
-| Track 1 (Tokenization) | `cyntra/planner/tokenizer.py` | REQUIRED |
-| Track 4 (executed_plan) | `kernel/dispatcher.py` | REQUIRED (for proper labeling) |
-| `action_space.py` | `cyntra/planner/` | COMPLETE |
-| `dataset.py` | `cyntra/planner/` | COMPLETE |
+| Dependency              | Location                      | Status                         |
+| ----------------------- | ----------------------------- | ------------------------------ |
+| Track 1 (Tokenization)  | `cyntra/planner/tokenizer.py` | REQUIRED                       |
+| Track 4 (executed_plan) | `kernel/dispatcher.py`        | REQUIRED (for proper labeling) |
+| `action_space.py`       | `cyntra/planner/`             | COMPLETE                       |
+| `dataset.py`            | `cyntra/planner/`             | COMPLETE                       |
 
 ### 11.2 Downstream Dependents
 
-| Dependent | Description |
-|-----------|-------------|
+| Dependent        | Description                                |
+| ---------------- | ------------------------------------------ |
 | Track 2 (Models) | Uses best_of_k labels for Stage B training |
 
 ---
@@ -872,6 +875,6 @@ def compute_regret(
 
 ## 13. Revision History
 
-| Version | Date | Author | Changes |
-|---------|------|--------|---------|
-| 1.0 | 2025-12 | Planner Agent | Initial specification |
+| Version | Date    | Author        | Changes               |
+| ------- | ------- | ------------- | --------------------- |
+| 1.0     | 2025-12 | Planner Agent | Initial specification |

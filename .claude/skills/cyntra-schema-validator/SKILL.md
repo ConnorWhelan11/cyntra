@@ -2,7 +2,7 @@
 name: cyntra-schema-validator
 description: |
   Validate JSON artifacts against Cyntra schemas. Ensures rollouts, proofs, manifests,
-  and other artifacts conform to their schema definitions in cyntra-kernel/schemas/cyntra/.
+  and other artifacts conform to their schema definitions in kernel/schemas/cyntra/.
   
   Use when working on development tasks.
 metadata:

@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://cyntra/schemas/cyntra/frontier.schema.json",
+  "title": "Cyntra Frontier",
+  "description": "Pareto frontier for evolved genomes",
+  "type": "object",
+  "required": ["schema_version", "objectives", "items"],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "cyntra.frontier.v1"
+    },
+    "generated_at": { "type": ["string", "null"], "format": "date-time" },
+    "objectives": { "type": "object" },
+    "items": { "type": "array", "items": { "type": "object" } }
+  },
+  "additionalProperties": false
+}

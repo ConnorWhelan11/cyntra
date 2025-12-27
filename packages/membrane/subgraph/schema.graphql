@@ -1,0 +1,154 @@
+# Cyntra EAS Attestation Subgraph Schema
+# Indexes RunReceipt attestations for querying
+
+"""
+A run attestation on the Ethereum Attestation Service
+"""
+type RunAttestation @entity {
+  "Attestation UID"
+  id: ID!
+
+  "Schema UID this attestation belongs to"
+  schemaId: Bytes!
+
+  "Address that created the attestation"
+  attester: Bytes!
+
+  "Recipient address (usually the run author)"
+  recipient: Bytes!
+
+  "Timestamp when attestation was created"
+  timestamp: BigInt!
+
+  "Expiration timestamp (0 = never)"
+  expirationTime: BigInt!
+
+  "Whether this attestation can be revoked"
+  revocable: Boolean!
+
+  "Revocation timestamp (0 = not revoked)"
+  revocationTime: BigInt!
+
+  "Reference to another attestation"
+  refUID: Bytes
+
+  "Raw attestation data"
+  data: Bytes!
+
+  # Decoded RunReceipt fields
+  "Run ID from the decoded data"
+  runId: String
+
+  "World ID for this run"
+  worldId: String
+
+  "Git commit hash"
+  commitHash: String
+
+  "IPFS CID for artifacts"
+  artifactsCid: String
+
+  "Whether the run passed quality gates"
+  passed: Boolean
+
+  "Verdict hash"
+  verdictHash: Bytes
+
+  "Block number where attestation was created"
+  blockNumber: BigInt!
+
+  "Transaction hash"
+  txHash: Bytes!
+}
+
+"""
+Attestation schema registered with EAS
+"""
+type Schema @entity {
+  "Schema UID"
+  id: ID!
+
+  "Schema definition string"
+  schema: String!
+
+  "Schema resolver contract (if any)"
+  resolver: Bytes!
+
+  "Whether attestations can be revoked"
+  revocable: Boolean!
+
+  "Total attestation count"
+  attestationCount: BigInt!
+
+  "Timestamp when schema was registered"
+  timestamp: BigInt!
+}
+
+"""
+World aggregate statistics
+"""
+type WorldStats @entity {
+  "World ID"
+  id: ID!
+
+  "Total number of runs"
+  totalRuns: BigInt!
+
+  "Number of passing runs"
+  passedRuns: BigInt!
+
+  "Number of failed runs"
+  failedRuns: BigInt!
+
+  "Timestamp of first run"
+  firstRunAt: BigInt
+
+  "Timestamp of latest run"
+  lastRunAt: BigInt
+
+  "Latest passing attestation"
+  latestPassingAttestation: RunAttestation
+}
+
+"""
+Daily run statistics
+"""
+type DailyStats @entity {
+  "Date in format YYYY-MM-DD"
+  id: ID!
+
+  "Unix timestamp of day start"
+  date: BigInt!
+
+  "Total runs on this day"
+  totalRuns: BigInt!
+
+  "Passing runs on this day"
+  passedRuns: BigInt!
+
+  "Unique worlds with runs"
+  uniqueWorlds: BigInt!
+}
+
+"""
+Attester reputation tracking
+"""
+type Attester @entity {
+  "Attester address"
+  id: ID!
+
+  "Total attestations created"
+  attestationCount: BigInt!
+
+  "Passing attestations"
+  passedCount: BigInt!
+
+  "Pass rate (passedCount / attestationCount * 10000 for precision)"
+  passRate: BigInt!
+
+  "First attestation timestamp"
+  firstAttestationAt: BigInt!
+
+  "Latest attestation timestamp"
+  lastAttestationAt: BigInt!
+}

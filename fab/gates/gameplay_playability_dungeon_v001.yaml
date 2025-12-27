@@ -1,0 +1,105 @@
+# Gameplay Playability Gate - Dungeon Environment
+#
+# Tuned for dark underground environments based on NitroGen behavior analysis:
+# - Cautious movement (26% moving observed)
+# - High contemplation in darkness (66% stuck observed)
+# - Sprint attempts to escape dark areas
+# - Low interactions (less visible objects)
+#
+# Use for: Dungeons, caves, catacombs, underground areas
+
+gate_config_id: gameplay_playability_dungeon_v001
+category: gameplay_quality
+schema_version: "1.0"
+
+nitrogen:
+  host: localhost
+  port: 5555
+  timeout_ms: 30000
+  frame_width: 256
+  frame_height: 256
+  frame_rate: 10
+  action_timestep: 0
+
+playtest:
+  duration_seconds: 120          # Longer - maze navigation takes time
+  warmup_seconds: 5
+  spawn_point: SPAWN_PLAYER
+  max_retries: 3
+  exploration_mode: guided       # Reset if stuck (helps with maze)
+
+godot:
+  test_scene: res://scenes/playtest.tscn
+  headless: true
+  args: ["--headless", "--fixed-fps", "30"]
+
+thresholds:
+  # Dungeon: Expect cautious, slower exploration
+  stuck_ratio_max: 0.70           # High tolerance - darkness causes hesitation
+  coverage_min: 0.15              # Lower expectation in maze environments
+  crash_count_max: 0
+  interaction_rate_min: 0.01      # Low - hard to see objects
+
+  # Warnings
+  stuck_ratio_warn: 0.50
+  coverage_warn: 0.25
+
+metrics:
+  collect:
+    - frames_processed
+    - stuck_ratio
+    - interaction_attempts
+    - jump_attempts
+    - sprint_attempts
+    - movement_distance
+    - coverage_estimate
+  output_file: playability_results.json
+
+hard_fail_codes:
+  - PLAY_STUCK_TOO_LONG
+  - PLAY_NO_EXPLORATION
+  - PLAY_CRASH
+  - PLAY_NITROGEN_TIMEOUT
+
+warning_codes:
+  - PLAY_LOW_COVERAGE
+  - PLAY_HIGH_STUCK_RATIO
+
+repair_playbook:
+  PLAY_STUCK_TOO_LONG:
+    priority: 1
+    instructions: |
+      Player stuck too often in dungeon (>70%).
+
+      Even with high tolerance for dark environments, this is excessive.
+
+      Dungeon-specific causes:
+      - Lighting too dark to see anything
+      - Dead ends with no visual escape cue
+      - Torch spacing too far apart
+      - Corridors too narrow
+
+      Fixes:
+      - Increase torch density (every 6-8m)
+      - Add ambient glow to show walls
+      - Ensure dead ends have visible turnaround space
+      - Widen corridors to min 3m
+
+  PLAY_NO_EXPLORATION:
+    priority: 1
+    instructions: |
+      Player barely exploring dungeon (coverage <15%).
+
+      This is very low even for a maze environment.
+
+      Check for:
+      - Complete darkness (no light sources)
+      - Player spawn facing wall
+      - Immediate dead end from spawn
+      - NavMesh not generated for corridors
+
+      Fixes:
+      - Add torch at spawn location
+      - Orient SPAWN_PLAYER toward corridor
+      - Ensure spawn room has multiple exits
+      - Regenerate NavMesh

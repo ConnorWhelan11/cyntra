@@ -1,0 +1,100 @@
+# Gameplay Playability Gate - Forest Environment
+#
+# Tuned for outdoor nature environments based on NitroGen behavior analysis:
+# - High exploration expected (52% moving observed)
+# - Natural pauses to admire scenery (30% stuck observed)
+# - Few interactions (forest has less interactive objects)
+# - Occasional jumps (terrain navigation)
+#
+# Use for: Forests, meadows, outdoor nature scenes
+
+gate_config_id: gameplay_playability_forest_v001
+category: gameplay_quality
+schema_version: "1.0"
+
+nitrogen:
+  host: localhost
+  port: 5555
+  timeout_ms: 30000
+  frame_width: 256
+  frame_height: 256
+  frame_rate: 10
+  action_timestep: 0
+
+playtest:
+  duration_seconds: 90
+  warmup_seconds: 5
+  spawn_point: SPAWN_PLAYER
+  max_retries: 3
+  exploration_mode: free
+
+godot:
+  test_scene: res://scenes/playtest.tscn
+  headless: true
+  args: ["--headless", "--fixed-fps", "30"]
+
+thresholds:
+  # Forest: Expect active exploration
+  stuck_ratio_max: 0.45           # Allow up to 45% pausing
+  coverage_min: 0.35              # Expect good coverage in open areas
+  crash_count_max: 0
+  interaction_rate_min: 0.01      # Low - fewer interactive objects
+
+  # Warnings
+  stuck_ratio_warn: 0.30
+  coverage_warn: 0.50
+
+metrics:
+  collect:
+    - frames_processed
+    - stuck_ratio
+    - interaction_attempts
+    - jump_attempts
+    - movement_distance
+    - coverage_estimate
+  output_file: playability_results.json
+
+hard_fail_codes:
+  - PLAY_STUCK_TOO_LONG
+  - PLAY_NO_EXPLORATION
+  - PLAY_CRASH
+  - PLAY_NITROGEN_TIMEOUT
+
+warning_codes:
+  - PLAY_LOW_COVERAGE
+  - PLAY_HIGH_STUCK_RATIO
+
+repair_playbook:
+  PLAY_STUCK_TOO_LONG:
+    priority: 1
+    instructions: |
+      Player stuck too often in forest environment (>45%).
+
+      Forest-specific causes:
+      - Dense vegetation blocking paths
+      - Steep terrain without clear routes
+      - Water/stream barriers without crossings
+      - Tree collision volumes too large
+
+      Fixes:
+      - Add clearings and natural paths
+      - Place stepping stones over streams
+      - Reduce undergrowth density in walkable areas
+      - Check tree trunk collision vs visual size
+
+  PLAY_NO_EXPLORATION:
+    priority: 1
+    instructions: |
+      Player not exploring forest (coverage <35%).
+
+      Check for:
+      - Player spawn in dense area
+      - No visible landmarks or destinations
+      - Fog too dense (can't see openings)
+      - Terrain slopes preventing movement
+
+      Fixes:
+      - Move SPAWN_PLAYER to clearing
+      - Add light sources or landmarks
+      - Reduce fog density
+      - Add NAV_LINK for steep terrain

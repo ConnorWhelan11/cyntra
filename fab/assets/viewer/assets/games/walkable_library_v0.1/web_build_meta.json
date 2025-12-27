@@ -1,0 +1,10 @@
+{
+  "method": "export-pack+template-zip",
+  "template_zip": "/Users/connor/Library/Application Support/Godot/export_templates/4.5.1.stable/web_nothreads_release.zip",
+  "thread_support": false,
+  "extensions_support": false,
+  "pack": "walkable_library_v0.1.pck",
+  "asset_id": "walkable_library_v0.1",
+  "godot_version": "4.5.1.stable.official.f62fdbde1",
+  "source_export_log": "fab/assets/viewer/assets/games/walkable_library_v0.1/godot_export.log"
+}

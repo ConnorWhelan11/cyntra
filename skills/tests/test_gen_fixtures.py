@@ -12,7 +12,6 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-import pytest
 
 # Add skills directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent / "development"))
@@ -29,12 +28,12 @@ class TestParsePythonFile:
     def test_parses_simple_class(self, tmp_path: Path) -> None:
         """Test parsing a simple class."""
         source_file = tmp_path / "models.py"
-        source_file.write_text('''
+        source_file.write_text("""
 class User:
     name: str
     email: str
     age: int
-''')
+""")
         classes, functions = gen_fixtures.parse_python_file(source_file)
 
         assert len(classes) == 1
@@ -44,13 +43,13 @@ class User:
     def test_parses_class_with_init(self, tmp_path: Path) -> None:
         """Test parsing class with __init__ method."""
         source_file = tmp_path / "models.py"
-        source_file.write_text('''
+        source_file.write_text("""
 class User:
     def __init__(self, name: str, email: str, active: bool = True):
         self.name = name
         self.email = email
         self.active = active
-''')
+""")
         classes, functions = gen_fixtures.parse_python_file(source_file)
 
         assert len(classes) == 1
@@ -60,14 +59,14 @@ class User:
     def test_parses_multiple_classes(self, tmp_path: Path) -> None:
         """Test parsing multiple classes."""
         source_file = tmp_path / "models.py"
-        source_file.write_text('''
+        source_file.write_text("""
 class User:
     name: str
 
 class Post:
     title: str
     content: str
-''')
+""")
         classes, functions = gen_fixtures.parse_python_file(source_file)
 
         assert len(classes) == 2
@@ -77,13 +76,13 @@ class Post:
     def test_parses_functions(self, tmp_path: Path) -> None:
         """Test parsing standalone functions."""
         source_file = tmp_path / "utils.py"
-        source_file.write_text('''
+        source_file.write_text("""
 def greet(name: str) -> str:
     return f"Hello, {name}!"
 
 def add(a: int, b: int) -> int:
     return a + b
-''')
+""")
         classes, functions = gen_fixtures.parse_python_file(source_file)
 
         assert len(functions) >= 2
@@ -241,11 +240,11 @@ class TestExecuteFunction:
     def test_generates_fixtures_for_file(self, tmp_path: Path) -> None:
         """Test fixture generation for a file."""
         source_file = tmp_path / "models.py"
-        source_file.write_text('''
+        source_file.write_text("""
 class User:
     name: str
     email: str
-''')
+""")
 
         result = gen_fixtures.execute(
             source_file="models.py",
@@ -260,10 +259,10 @@ class User:
     def test_generates_factory_only(self, tmp_path: Path) -> None:
         """Test generating only factory fixtures."""
         source_file = tmp_path / "models.py"
-        source_file.write_text('''
+        source_file.write_text("""
 class User:
     name: str
-''')
+""")
 
         result = gen_fixtures.execute(
             source_file="models.py",
@@ -278,10 +277,10 @@ class User:
     def test_generates_sample_data_only(self, tmp_path: Path) -> None:
         """Test generating only sample data."""
         source_file = tmp_path / "models.py"
-        source_file.write_text('''
+        source_file.write_text("""
 class User:
     name: str
-''')
+""")
 
         result = gen_fixtures.execute(
             source_file="models.py",
@@ -305,10 +304,10 @@ class User:
     def test_handles_file_with_no_classes(self, tmp_path: Path) -> None:
         """Test handling of file with no classes."""
         source_file = tmp_path / "utils.py"
-        source_file.write_text('''
+        source_file.write_text("""
 def helper():
     pass
-''')
+""")
 
         result = gen_fixtures.execute(
             source_file="utils.py",
@@ -321,10 +320,10 @@ def helper():
     def test_writes_fixture_file(self, tmp_path: Path) -> None:
         """Test writing fixture file to output directory."""
         source_file = tmp_path / "models.py"
-        source_file.write_text('''
+        source_file.write_text("""
 class User:
     name: str
-''')
+""")
         output_dir = tmp_path / "fixtures"
 
         result = gen_fixtures.execute(

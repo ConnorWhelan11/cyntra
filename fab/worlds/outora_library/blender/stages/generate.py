@@ -72,6 +72,7 @@ def execute(
 
     seed = manifest.get("determinism", {}).get("seed", 42)
     import random
+
     random.seed(seed)
 
     if hasattr(bpy.context.scene, "cycles"):
@@ -83,7 +84,7 @@ def execute(
 
     # Add the original blender scripts directory to path for imports
     repo_root = Path(__file__).resolve().parents[5]  # Up to repo root
-    original_blender_dir = repo_root / "fab" / "outora-library" / "blender"
+    original_blender_dir = repo_root / "fab" / "assets" / "blender"
 
     if str(original_blender_dir) not in sys.path:
         sys.path.insert(0, str(original_blender_dir))
@@ -92,6 +93,7 @@ def execute(
         # Import the gothic kit generator module
         import gothic_kit_generator as kit
         import importlib
+
         importlib.reload(kit)  # Ensure fresh import
 
         # Generate all kit pieces
@@ -104,6 +106,7 @@ def execute(
     except Exception as e:
         errors.append(f"Failed to generate kit pieces: {e}")
         import traceback
+
         errors.append(traceback.format_exc())
 
     # ==========================================================================

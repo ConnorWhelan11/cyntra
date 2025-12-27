@@ -1,0 +1,65 @@
+name: history-ingester
+version: 1.0.0
+description: |
+  Scan .cyntra/runs/ for recent completions not yet processed by sleeptime.
+  Yields structured summaries for downstream consolidation. Tracks watermark
+  to avoid reprocessing.
+category: sleeptime
+priority: high
+phase: 1
+
+trigger:
+  type: frequency
+  on_workcell_complete: 5
+  on_idle_seconds: 300
+
+inputs:
+  - name: since_timestamp
+    type: string
+    description: ISO timestamp to scan from (or use stored watermark)
+    required: false
+  - name: include_only
+    type: string
+    description: Filter by outcome (all, failures, successes)
+    required: false
+    default: "all"
+    enum: [all, failures, successes]
+  - name: max_runs
+    type: integer
+    description: Maximum runs to process in one batch
+    required: false
+    default: 20
+
+outputs:
+  - name: run_summaries
+    type: array
+    description: |
+      Structured summaries of each run:
+      - run_id, outcome, duration_ms
+      - toolchain, genome_id
+      - tool_sequence (ordered list of tools called)
+      - error_signature (if failed)
+      - files_modified
+      - gate_results
+  - name: unprocessed_count
+    type: integer
+    description: Remaining runs not yet processed
+  - name: watermark
+    type: string
+    description: New watermark timestamp for next invocation
+
+state:
+  watermark_path: .cyntra/sleeptime/ingester_watermark.json
+
+examples:
+  - description: Ingest last 10 failed runs
+    inputs:
+      include_only: failures
+      max_runs: 10
+    outputs:
+      run_summaries: [...]
+      unprocessed_count: 3
+
+implementation:
+  type: python
+  path: history-ingester.py

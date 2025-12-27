@@ -60,8 +60,35 @@ enum Commands {
         command: WorkcellCommands,
     },
 
+    /// Membrane (Web3 integration)
+    Membrane {
+        #[command(subcommand)]
+        command: MembraneCommands,
+    },
+
     /// Initialize a new project
     Init,
+}
+
+#[derive(Subcommand)]
+enum MembraneCommands {
+    /// Publish a run to IPFS and create attestation
+    Publish {
+        /// Run ID to publish
+        run_id: String,
+    },
+
+    /// Verify an attestation
+    Verify {
+        /// Attestation UID
+        uid: String,
+    },
+
+    /// Check membrane service status
+    Status,
+
+    /// Setup membrane configuration
+    Setup,
 }
 
 #[derive(Subcommand)]
@@ -108,6 +135,9 @@ async fn main() -> Result<()> {
         Some(Commands::Workcell { command }) => {
             handle_workcell(&project_root, command)
         }
+        Some(Commands::Membrane { command }) => {
+            handle_membrane(&project_root, command).await
+        }
         Some(Commands::Init) => {
             init_project(&project_root)
         }
@@ -121,6 +151,7 @@ async fn main() -> Result<()> {
             println!("  run       Run the kernel");
             println!("  status    Show kernel status");
             println!("  workcell  Workcell management");
+            println!("  membrane  Web3 integration (IPFS, attestations)");
             println!("  init      Initialize a new project");
             println!();
             println!("Run 'cyntra --help' for more information.");
@@ -331,6 +362,173 @@ speculation:
     println!("Next steps:");
     println!("  1. Add issues to .beads/issues.jsonl");
     println!("  2. Run: cyntra run --once");
+
+    Ok(())
+}
+
+// ============================================================================
+// Membrane Commands
+// ============================================================================
+
+const MEMBRANE_URL: &str = "http://localhost:7331";
+
+async fn handle_membrane(project_root: &PathBuf, command: MembraneCommands) -> Result<()> {
+    match command {
+        MembraneCommands::Publish { run_id } => {
+            membrane_publish(project_root, &run_id).await
+        }
+        MembraneCommands::Verify { uid } => {
+            membrane_verify(&uid).await
+        }
+        MembraneCommands::Status => {
+            membrane_status().await
+        }
+        MembraneCommands::Setup => {
+            membrane_setup()
+        }
+    }
+}
+
+async fn membrane_publish(project_root: &PathBuf, run_id: &str) -> Result<()> {
+    let runs_dir = project_root.join(".cyntra").join("runs");
+    let run_dir = runs_dir.join(run_id);
+
+    if !run_dir.exists() {
+        anyhow::bail!("Run directory not found: {}", run_dir.display());
+    }
+
+    println!("Publishing run: {}", run_id);
+    println!("  Directory: {}", run_dir.display());
+
+    // Check if membrane is running
+    let client = reqwest::Client::new();
+    let health = client
+        .get(MEMBRANE_URL)
+        .send()
+        .await;
+
+    if health.is_err() {
+        println!();
+        println!("Membrane service is not running.");
+        println!("Start it with: cd packages/membrane && bun run start");
+        anyhow::bail!("Membrane service unavailable");
+    }
+
+    // Call publish endpoint
+    let response = client
+        .post(format!("{}/publish", MEMBRANE_URL))
+        .json(&serde_json::json!({
+            "runDir": run_dir.to_string_lossy()
+        }))
+        .send()
+        .await?;
+
+    if !response.status().is_success() {
+        let error: serde_json::Value = response.json().await?;
+        anyhow::bail!("Publish failed: {}", error.get("error").and_then(|e| e.as_str()).unwrap_or("unknown error"));
+    }
+
+    let result: serde_json::Value = response.json().await?;
+
+    println!();
+    println!("Published successfully!");
+    println!("  CID:         {}", result.get("cid").and_then(|c| c.as_str()).unwrap_or("?"));
+    println!("  Attestation: {}", result.get("attestationUid").and_then(|u| u.as_str()).unwrap_or("?"));
+
+    if let Some(url) = result.get("explorerUrl").and_then(|u| u.as_str()) {
+        println!("  Explorer:    {}", url);
+    }
+    if let Some(url) = result.get("ipfsGatewayUrl").and_then(|u| u.as_str()) {
+        println!("  IPFS:        {}", url);
+    }
+
+    Ok(())
+}
+
+async fn membrane_verify(uid: &str) -> Result<()> {
+    println!("Verifying attestation: {}", uid);
+
+    let client = reqwest::Client::new();
+    let response = client
+        .get(format!("{}/verify/{}", MEMBRANE_URL, uid))
+        .send()
+        .await?;
+
+    if !response.status().is_success() {
+        let error: serde_json::Value = response.json().await?;
+        anyhow::bail!("Verify failed: {}", error.get("error").and_then(|e| e.as_str()).unwrap_or("unknown error"));
+    }
+
+    let result: serde_json::Value = response.json().await?;
+
+    let valid = result.get("valid").and_then(|v| v.as_bool()).unwrap_or(false);
+
+    println!();
+    if valid {
+        println!("Attestation is VALID");
+        if let Some(attester) = result.get("attester").and_then(|a| a.as_str()) {
+            println!("  Attester:   {}", attester);
+        }
+        if let Some(time) = result.get("attestedAt").and_then(|t| t.as_str()) {
+            println!("  Attested:   {}", time);
+        }
+    } else {
+        println!("Attestation is INVALID");
+        if let Some(error) = result.get("error").and_then(|e| e.as_str()) {
+            println!("  Error: {}", error);
+        }
+    }
+
+    Ok(())
+}
+
+async fn membrane_status() -> Result<()> {
+    println!("Membrane Service Status");
+    println!("=======================");
+    println!();
+
+    let client = reqwest::Client::new();
+    let response = client
+        .get(MEMBRANE_URL)
+        .send()
+        .await;
+
+    match response {
+        Ok(resp) if resp.status().is_success() => {
+            let data: serde_json::Value = resp.json().await?;
+            println!("Status: Running");
+            if let Some(version) = data.get("version").and_then(|v| v.as_str()) {
+                println!("Version: {}", version);
+            }
+            if let Some(uptime) = data.get("uptime").and_then(|u| u.as_f64()) {
+                println!("Uptime: {:.1}s", uptime);
+            }
+        }
+        _ => {
+            println!("Status: Not running");
+            println!();
+            println!("Start with: cd packages/membrane && bun run start");
+        }
+    }
+
+    Ok(())
+}
+
+fn membrane_setup() -> Result<()> {
+    println!("Membrane Setup");
+    println!("==============");
+    println!();
+    println!("Run the setup wizard from the membrane package:");
+    println!();
+    println!("  cd packages/membrane && bun run start setup");
+    println!();
+    println!("Or configure environment variables:");
+    println!();
+    println!("  export MEMBRANE_CHAIN=\"base-sepolia\"");
+    println!("  export MEMBRANE_SCHEMA_UID=\"0x...\"");
+    println!("  export MEMBRANE_PRIVATE_KEY=\"0x...\"");
+    println!("  export MEMBRANE_W3UP_SPACE_DID=\"did:key:...\"");
+    println!();
 
     Ok(())
 }

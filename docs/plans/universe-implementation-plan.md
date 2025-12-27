@@ -25,7 +25,7 @@ Key constraint from the spec: this must be **additive**—it should not replace 
 2. **Schema-first**: Universe config + runtime records are validated with schemas; avoid “free-form” JSON that becomes unmaintainable.
 3. **Rebuildable indices**: anything in `.cyntra/universes/<id>/` can be regenerated from `.cyntra/runs/` + git-tracked universe config.
 4. **Evidence-based memory**: patterns/frontiers/dynamics require explicit `evidence_runs` and never bypass gates.
-5. **Determinism defaults**: Universe policies can *tighten* determinism (CPU-only, fixed seeds), but should not silently loosen it.
+5. **Determinism defaults**: Universe policies can _tighten_ determinism (CPU-only, fixed seeds), but should not silently loosen it.
 
 ---
 
@@ -37,8 +37,8 @@ Already exists:
 - Kernel routing + gates: `.cyntra/config.yaml`
 - Workcells: `.workcells/`
 - Runs: `.cyntra/runs/<run_id>/` (contains `run_meta.json`, etc.)
-- Memory/dynamics plumbing: `cyntra-kernel/src/cyntra/memory/`, `cyntra-kernel/src/cyntra/dynamics/`, `cyntra-kernel/src/cyntra/kernel/memory_integration.py`
-- Frontier + evolution-related schemas: `cyntra-kernel/schemas/cyntra/frontier.schema.json`, `cyntra-kernel/schemas/cyntra/evolve_run.schema.json`
+- Memory/dynamics plumbing: `kernel/src/cyntra/memory/`, `kernel/src/cyntra/dynamics/`, `kernel/src/cyntra/kernel/memory_integration.py`
+- Frontier + evolution-related schemas: `kernel/schemas/cyntra/frontier.schema.json`, `kernel/schemas/cyntra/evolve_run.schema.json`
 
 Missing (Universe-specific):
 
@@ -53,19 +53,23 @@ Missing (Universe-specific):
 ## Milestone Map (From `docs/universe.md`)
 
 ### M0: Universe definitions (config + registry)
+
 - Git-tracked `universes/<id>/universe.yaml` with validation
 - Worlds resolved by path and validated with existing schemas where possible
 - Universe context selectable from CLI (even if only as a flag)
 
 ### M1: Universe-scoped indexing
+
 - Runs produce `.cyntra/runs/<run_id>/context.json`
 - `.cyntra/universes/<id>/index/runs.jsonl` rebuildable from `.cyntra/runs/`
 
 ### M2: Memory substrate (provenance-safe)
+
 - Patterns emitted with `evidence_runs`
 - Frontiers maintained per `(universe_id, world_id, objective_id)`
 
 ### M3: Evolution (v1)
+
 - Mutation operators exist for a declared genome schema / parameter surface
 - Selection updates best candidate(s) and/or frontier deterministically
 
@@ -89,7 +93,7 @@ Include at least one template universe (e.g. `universes/medica/`) matching the m
 
 ### 0.2 Add schemas for Universe config + runtime records
 
-Add schemas under `cyntra-kernel/schemas/cyntra/` (names illustrative):
+Add schemas under `kernel/schemas/cyntra/` (names illustrative):
 
 - `universe.schema.json` (validates `universes/<id>/universe.yaml`)
 - `agents.schema.json` (validates `universes/<id>/agents.yaml`)
@@ -105,7 +109,7 @@ Keep these schemas minimal and versioned; the goal is to stabilize required fiel
 
 ### 0.3 Implement Universe config loader + resolver
 
-Add `cyntra-kernel/src/cyntra/universe/`:
+Add `kernel/src/cyntra/universe/`:
 
 - `config.py`: load YAML(s), validate, resolve world paths relative to repo root
 - `models.py`: typed models (dataclasses / pydantic) for Universe/WorldRef/Policies
@@ -125,7 +129,7 @@ Deliverable: a small, importable “UniverseContext” object usable by CLI and 
 
 ### 1.1 Add `cyntra universe` commands
 
-Extend `cyntra-kernel/src/cyntra/cli.py` with a `universe` command group:
+Extend `kernel/src/cyntra/cli.py` with a `universe` command group:
 
 - `cyntra universe ls` — list available universes from `universes/*/universe.yaml`
 - `cyntra universe validate <id>` — validate YAML + referenced world paths/schemas
@@ -166,7 +170,7 @@ Deliverable: Universe selection changes behavior only via explicit, inspectable 
 
 Write an additive join-key file to each run directory when Universe context exists:
 
-` .cyntra/runs/<run_id>/context.json `
+`.cyntra/runs/<run_id>/context.json`
 
 Fields (from spec, allow nulls when not applicable):
 
@@ -184,9 +188,9 @@ Implementation notes:
 
 ### 2.2 Build a rebuildable Universe run index
 
-Add `cyntra-kernel/src/cyntra/universe/index.py` to generate:
+Add `kernel/src/cyntra/universe/index.py` to generate:
 
-` .cyntra/universes/<universe_id>/index/runs.jsonl `
+`.cyntra/universes/<universe_id>/index/runs.jsonl`
 
 Index record should include (at minimum):
 
@@ -204,7 +208,7 @@ Add CLI:
 
 Create:
 
-` .cyntra/universes/<universe_id>/index/generations.jsonl `
+`.cyntra/universes/<universe_id>/index/generations.jsonl`
 
 Populate from evolve/evolution outputs (existing and future):
 
@@ -224,7 +228,7 @@ This phase should build on the existing memory/dynamics plumbing and the plan in
 
 Target file:
 
-` .cyntra/universes/<universe_id>/patterns/patterns.jsonl `
+`.cyntra/universes/<universe_id>/patterns/patterns.jsonl`
 
 Requirements (from spec hygiene rules):
 
@@ -241,7 +245,7 @@ Implementation approach:
 
 Target file:
 
-` .cyntra/universes/<universe_id>/frontiers/<world_id>.json `
+`.cyntra/universes/<universe_id>/frontiers/<world_id>.json`
 
 Maintain per `(universe_id, world_id, objective_id)`:
 
@@ -250,7 +254,7 @@ Maintain per `(universe_id, world_id, objective_id)`:
 
 Schema decision:
 
-- Option A: extend `cyntra-kernel/schemas/cyntra/frontier.schema.json` to include Universe/world metadata.
+- Option A: extend `kernel/schemas/cyntra/frontier.schema.json` to include Universe/world metadata.
 - Option B: introduce a new `universe_frontier.schema.json` aligned to `docs/universe.md`.
 
 Pick one early and keep it stable; Mission Control and downstream tooling will depend on it.
@@ -280,7 +284,7 @@ For Fab Worlds:
 - Start by exposing a small, explicit parameter surface from `fab/worlds/<world_id>/world.yaml`.
 - Once stable, promote to `fab/worlds/<world_id>/genome.yaml` with mutation operators.
 
-Add/align with `cyntra-kernel/schemas/cyntra/genome.schema.json`.
+Add/align with `kernel/schemas/cyntra/genome.schema.json`.
 
 ### 4.2 Implement candidate generation via Swarms
 
@@ -325,7 +329,7 @@ Avoid “smart UI” until the underlying artifact contracts are stable.
 
 ## Verification / Quality Gates
 
-Add unit tests in `cyntra-kernel/tests/` covering:
+Add unit tests in `kernel/tests/` covering:
 
 - Universe YAML validation + path resolution
 - World reference resolution and Fab World schema validation (when `world_kind == fab_world`)
@@ -347,4 +351,3 @@ Add CLI smoke checks:
 3. **Frontier schema**: extend existing `cyntra.frontier.v1` vs introduce Universe-specific schema aligned to `docs/universe.md`.
 4. **World kinds beyond Fab**: do we implement `codebase/dataset/simulation` now (thin stubs) or defer until Fab path is solid?
 5. **Index update strategy**: purely rebuildable batch vs incremental append with periodic compaction.
-

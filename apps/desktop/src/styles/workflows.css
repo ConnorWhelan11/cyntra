@@ -1,0 +1,55 @@
+@layer components {
+  .workflows-view {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    min-height: 0;
+  }
+
+  .workflows-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--slate);
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.6), rgba(15, 23, 42, 0.15));
+  }
+
+  .workflows-header-left {
+    min-width: 0;
+  }
+
+  .workflows-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .workflows-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: 0.02em;
+  }
+
+  .workflows-subtitle {
+    margin-top: 4px;
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+
+  .workflows-unit-surface {
+    flex: 1;
+    min-height: 0;
+    position: relative;
+  }
+
+  .workflows-unit-root {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+}

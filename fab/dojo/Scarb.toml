@@ -1,0 +1,26 @@
+[package]
+name = "glia_fab_world"
+version = "0.1.0"
+cairo-version = "2.9.2"
+description = "Glia Fab onchain world - provable game state with asset attestations"
+homepage = "https://github.com/glia-fab/glia-fab"
+
+[dependencies]
+dojo = { git = "https://github.com/dojoengine/dojo", tag = "v1.0.0" }
+
+[[target.dojo]]
+build-external-contracts = []
+
+[tool.dojo]
+initializer_class_hash = "0x0"
+
+[tool.dojo.env]
+rpc_url = "http://localhost:5050"
+account_address = "0x0"
+private_key = "0x0"
+world_address = "0x0"
+
+[scripts]
+test = "sozo test"
+build = "sozo build"
+migrate = "sozo migrate"

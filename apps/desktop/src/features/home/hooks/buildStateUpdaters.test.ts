@@ -5,7 +5,7 @@
  */
 
 import { describe, it, expect } from "vitest";
-import type { KernelEvent, WorldBuildState, BlueprintDraft } from "@/types";
+import type { KernelEvent, WorldBuildState } from "@/types";
 import {
   handleWorkcellCreated,
   handleCriticResult,
@@ -40,10 +40,10 @@ const createMockBuildState = (overrides?: Partial<WorldBuildState>): WorldBuildS
 });
 
 const createMockEvent = (overrides?: Partial<KernelEvent>): KernelEvent => ({
-  id: "event-1",
   type: "telemetry.started",
   timestamp: new Date().toISOString(),
   issueId: "test-issue-1",
+  data: {},
   ...overrides,
 });
 

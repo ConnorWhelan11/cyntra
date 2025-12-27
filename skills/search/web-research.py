@@ -8,7 +8,6 @@ Orchestrates search → scrape → extract pipeline for comprehensive research.
 from __future__ import annotations
 
 import json
-import os
 import sys
 from pathlib import Path
 from typing import Any
@@ -105,11 +104,13 @@ def execute(
         url = result.get("url")
         if url:
             sources.append(url)
-            all_content.append({
-                "url": url,
-                "title": result.get("title", ""),
-                "content": result.get("markdown", ""),
-            })
+            all_content.append(
+                {
+                    "url": url,
+                    "title": result.get("title", ""),
+                    "content": result.get("markdown", ""),
+                }
+            )
 
     # Step 2: Crawl top results for more depth (if configured)
     if config["crawl_pages"] > 0 and sources:
@@ -126,11 +127,13 @@ def execute(
                 page_url = page.get("url")
                 if page_url and page_url not in sources:
                     sources.append(page_url)
-                    all_content.append({
-                        "url": page_url,
-                        "title": page.get("title", ""),
-                        "content": page.get("markdown", ""),
-                    })
+                    all_content.append(
+                        {
+                            "url": page_url,
+                            "title": page.get("title", ""),
+                            "content": page.get("markdown", ""),
+                        }
+                    )
 
     # Step 3: Format output
     if output_format == "raw":

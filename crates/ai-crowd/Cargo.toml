@@ -1,0 +1,17 @@
+[package]
+name = "ai-crowd"
+description = "Deterministic crowd / local avoidance primitives"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[dependencies]
+ai-nav = { path = "../ai-nav" }
+
+[dev-dependencies]
+criterion = { workspace = true }
+
+[[bench]]
+name = "crowd"
+harness = false

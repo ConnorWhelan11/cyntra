@@ -7,17 +7,17 @@ using ComfyUI workflows.
 
 from __future__ import annotations
 
-import asyncio
 import json
 import secrets
 import tempfile
+from collections.abc import Callable
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any
 
 import structlog
 
 from cyntra.fab.comfyui_client import ComfyUIClient, ComfyUIConfig, ComfyUIError
-from cyntra.fab.workflow_registry import WorkflowRegistry, Workflow, WorkflowInput
+from cyntra.fab.workflow_registry import Workflow, WorkflowInput, WorkflowRegistry
 
 logger = structlog.get_logger()
 
@@ -50,40 +50,32 @@ def validate_workflow_input(inp: WorkflowInput, value: Any) -> Any:
         if not isinstance(value, str):
             try:
                 value = str(value)
-            except (ValueError, TypeError):
-                raise ValidationError(f"Cannot convert '{inp.name}' to string: {value}")
+            except (ValueError, TypeError) as err:
+                raise ValidationError(f"Cannot convert '{inp.name}' to string: {value}") from err
         return value
 
     elif inp.type == "int":
         try:
             val = int(value)
-        except (ValueError, TypeError):
-            raise ValidationError(f"Cannot convert '{inp.name}' to int: {value}")
+        except (ValueError, TypeError) as err:
+            raise ValidationError(f"Cannot convert '{inp.name}' to int: {value}") from err
 
         if inp.min is not None and val < int(inp.min):
-            raise ValidationError(
-                f"'{inp.name}' value {val} is below minimum {int(inp.min)}"
-            )
+            raise ValidationError(f"'{inp.name}' value {val} is below minimum {int(inp.min)}")
         if inp.max is not None and val > int(inp.max):
-            raise ValidationError(
-                f"'{inp.name}' value {val} exceeds maximum {int(inp.max)}"
-            )
+            raise ValidationError(f"'{inp.name}' value {val} exceeds maximum {int(inp.max)}")
         return val
 
     elif inp.type == "float":
         try:
             val = float(value)
-        except (ValueError, TypeError):
-            raise ValidationError(f"Cannot convert '{inp.name}' to float: {value}")
+        except (ValueError, TypeError) as err:
+            raise ValidationError(f"Cannot convert '{inp.name}' to float: {value}") from err
 
         if inp.min is not None and val < inp.min:
-            raise ValidationError(
-                f"'{inp.name}' value {val} is below minimum {inp.min}"
-            )
+            raise ValidationError(f"'{inp.name}' value {val} is below minimum {inp.min}")
         if inp.max is not None and val > inp.max:
-            raise ValidationError(
-                f"'{inp.name}' value {val} exceeds maximum {inp.max}"
-            )
+            raise ValidationError(f"'{inp.name}' value {val} exceeds maximum {inp.max}")
         return val
 
     elif inp.type == "bool":
@@ -192,9 +184,7 @@ def create_comfyui_tools(
             "name": tool_name,
             "description": workflow.to_tool_description(),
             "input_schema": workflow.to_json_schema(),
-            "handler": _create_workflow_handler(
-                workflow, registry, client_config, output_dir
-            ),
+            "handler": _create_workflow_handler(workflow, registry, client_config, output_dir),
         }
 
     return tools
@@ -248,8 +238,7 @@ def _create_list_handler(
                     "category": w.category,
                     "tags": w.tags,
                     "inputs": [
-                        {"name": i.name, "type": i.type, "required": i.required}
-                        for i in w.inputs
+                        {"name": i.name, "type": i.type, "required": i.required} for i in w.inputs
                     ],
                     "outputs": [o.name for o in w.outputs],
                 }

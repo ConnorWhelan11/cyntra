@@ -46,11 +46,12 @@ The repository has many files marked as deleted (`D`) in git status:
  D dev-kernel/tests/**/*.py (many files)
 ```
 
-These appear to be files that were moved to `cyntra-kernel/` but the deletions weren't committed.
+These appear to be files that were moved to `kernel/` but the deletions weren't committed.
 
 ### 2.2 Missing CI Integration
 
-The planner module (`cyntra-kernel/src/cyntra/planner/`) is not explicitly included in CI workflows for:
+The planner module (`kernel/src/cyntra/planner/`) is not explicitly included in CI workflows for:
+
 - Type checking (mypy)
 - Linting (ruff)
 - Unit tests (pytest)
@@ -70,11 +71,13 @@ The planner module (`cyntra-kernel/src/cyntra/planner/`) is not explicitly inclu
 **Description:** Commit the deletion of old `dev-kernel/` files or restore them if needed.
 
 **Steps:**
-1. Review the deleted files to confirm they're migrated to `cyntra-kernel/`
-2. If migrated: `git add dev-kernel/ && git commit -m "Remove old dev-kernel/ (migrated to cyntra-kernel/)"`
+
+1. Review the deleted files to confirm they're migrated to `kernel/`
+2. If migrated: `git add dev-kernel/ && git commit -m "Remove old dev-kernel/ (migrated to kernel/)"`
 3. If not migrated: restore needed files
 
 **Verification:**
+
 ```bash
 git status
 # Should show clean working tree (no D files)
@@ -89,6 +92,7 @@ git status
 **Description:** Ensure planner code is covered by CI checks.
 
 **Files to modify:**
+
 - `.github/workflows/ci.yml` or equivalent
 
 **Changes:**
@@ -101,28 +105,29 @@ jobs:
     steps:
       - name: Ruff check
         run: |
-          cd cyntra-kernel
+          cd kernel
           ruff check src/cyntra/planner/
 
   typecheck:
     steps:
       - name: Mypy check
         run: |
-          cd cyntra-kernel
+          cd kernel
           mypy src/cyntra/planner/ --strict
 
   test:
     steps:
       - name: Pytest planner
         run: |
-          cd cyntra-kernel
+          cd kernel
           pytest tests/planner/ -v
 ```
 
 **Verification:**
+
 ```bash
 # Local verification before PR
-cd cyntra-kernel
+cd kernel
 ruff check src/cyntra/planner/
 mypy src/cyntra/planner/ --strict
 pytest tests/planner/ -v
@@ -137,7 +142,8 @@ pytest tests/planner/ -v
 **Description:** Create tests that validate example payloads against JSON schemas.
 
 **Files to create:**
-- `cyntra-kernel/tests/planner/test_schemas.py`
+
+- `kernel/tests/planner/test_schemas.py`
 
 **Implementation:**
 
@@ -272,6 +278,7 @@ def create_valid_planner_input() -> dict:
 ```
 
 **Verification:**
+
 ```bash
 pytest tests/planner/test_schemas.py -v
 ```
@@ -285,11 +292,12 @@ pytest tests/planner/test_schemas.py -v
 **Description:** Create architecture documentation summarizing the planner system.
 
 **File to create:**
+
 - `docs/architecture/planner.md`
 
 **Content outline:**
 
-```markdown
+````markdown
 # Planner Architecture
 
 ## Overview
@@ -342,11 +350,13 @@ planner:
   inference:
     confidence_threshold: 0.6
 ```
+````
 
 ## Training
 
 See `docs/models/swarm_planner_training_spec.md` for complete training specification.
-```
+
+````
 
 **Estimated time:** 4 hours
 
@@ -357,7 +367,7 @@ See `docs/models/swarm_planner_training_spec.md` for complete training specifica
 **Description:** Document testing conventions for planner module.
 
 **File to create:**
-- `cyntra-kernel/tests/planner/README.md`
+- `kernel/tests/planner/README.md`
 
 **Content:**
 
@@ -366,26 +376,28 @@ See `docs/models/swarm_planner_training_spec.md` for complete training specifica
 
 ## Test Organization
 
-```
+````
+
 tests/planner/
-├── __init__.py
-├── conftest.py           # Shared fixtures
-├── test_action_space.py  # Action space tests
-├── test_dataset.py       # Dataset builder tests
-├── test_models.py        # Model unit tests
-├── test_tokenizer.py     # Tokenizer tests
-├── test_inference.py     # Inference tests
-├── test_schemas.py       # Schema validation
-├── test_onnx_export.py   # ONNX export tests
-├── bench/                # Best-of-K bench tests
-│   ├── test_sampler.py
-│   ├── test_winner.py
-│   └── test_runner.py
-└── fixtures/             # Test fixtures
-    ├── sample_planner_input.json
-    ├── sample_dataset.jsonl
-    └── sample_model_bundle/
-```
+├── **init**.py
+├── conftest.py # Shared fixtures
+├── test_action_space.py # Action space tests
+├── test_dataset.py # Dataset builder tests
+├── test_models.py # Model unit tests
+├── test_tokenizer.py # Tokenizer tests
+├── test_inference.py # Inference tests
+├── test_schemas.py # Schema validation
+├── test_onnx_export.py # ONNX export tests
+├── bench/ # Best-of-K bench tests
+│ ├── test_sampler.py
+│ ├── test_winner.py
+│ └── test_runner.py
+└── fixtures/ # Test fixtures
+├── sample_planner_input.json
+├── sample_dataset.jsonl
+└── sample_model_bundle/
+
+````
 
 ## Running Tests
 
@@ -398,7 +410,7 @@ pytest tests/planner/test_tokenizer.py -v
 
 # With coverage
 pytest tests/planner/ --cov=cyntra.planner --cov-report=html
-```
+````
 
 ## Fixtures
 
@@ -413,12 +425,15 @@ Common fixtures are in `conftest.py`:
 ## Test Categories
 
 ### Unit Tests
+
 Test individual functions in isolation. Mock external dependencies.
 
 ### Integration Tests
+
 Test component interactions. Use `@pytest.mark.integration`.
 
 ### Schema Tests
+
 Validate JSON payloads against schemas. In `test_schemas.py`.
 
 ## Writing New Tests
@@ -428,6 +443,7 @@ Validate JSON payloads against schemas. In `test_schemas.py`.
 3. Add docstrings explaining what's tested
 4. Use fixtures for common setup
 5. Include both positive and negative cases
+
 ```
 
 **Estimated time:** 2 hours
@@ -453,8 +469,8 @@ Validate JSON payloads against schemas. In `test_schemas.py`.
 | File | Description | Status |
 |------|-------------|--------|
 | `.github/workflows/ci.yml` | CI integration | MODIFY |
-| `cyntra-kernel/tests/planner/test_schemas.py` | Schema tests | NEW |
-| `cyntra-kernel/tests/planner/README.md` | Test conventions | NEW |
+| `kernel/tests/planner/test_schemas.py` | Schema tests | NEW |
+| `kernel/tests/planner/README.md` | Test conventions | NEW |
 | `docs/architecture/planner.md` | Architecture docs | NEW |
 
 ---
@@ -495,3 +511,4 @@ Validate JSON payloads against schemas. In `test_schemas.py`.
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
 | 1.0 | 2025-12 | Planner Agent | Initial specification |
+```

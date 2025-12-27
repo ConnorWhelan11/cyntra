@@ -134,6 +134,20 @@ stages:
     optional: true
     outputs: ["godot/project/", "godot/index.html"]
 
+  - id: playtest
+    type: gate
+    requires: [godot]
+    optional: true
+    gates:
+      - fab/gates/gameplay_playability_v001.yaml
+    config:
+      nitrogen:
+        host: localhost
+        port: 5555
+      playtest:
+        duration_seconds: 60
+        exploration_mode: free
+
 budgets:
   blender:
     max_objects: 50000
@@ -146,7 +160,7 @@ budgets:
 publish:
   viewer:
     enabled: true
-    # During migration, publish into the existing viewer under fab/outora-library/.
+    # During migration, publish into the existing viewer under fab/assets/.
     paths:
-      glb: fab/outora-library/viewer/assets/exports/outora_library.glb
-      game: fab/outora-library/viewer/assets/games/outora_library/
+      glb: fab/assets/viewer/assets/exports/outora_library.glb
+      game: fab/assets/viewer/assets/games/outora_library/

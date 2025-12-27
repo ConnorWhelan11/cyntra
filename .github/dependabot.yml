@@ -2,9 +2,9 @@
 version: 2
 
 updates:
-  # Python dependencies (cyntra-kernel)
+  # Python dependencies (kernel)
   - package-ecosystem: "pip"
-    directory: "/cyntra-kernel"
+    directory: "/kernel"
     schedule:
       interval: "weekly"
       day: "monday"
@@ -44,7 +44,7 @@ updates:
 
   # Rust/Cargo dependencies (Tauri)
   - package-ecosystem: "cargo"
-    directory: "/apps/glia-fab-desktop/src-tauri"
+    directory: "/apps/desktop/src-tauri"
     schedule:
       interval: "weekly"
       day: "monday"

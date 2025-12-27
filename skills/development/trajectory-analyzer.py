@@ -13,9 +13,9 @@ from pathlib import Path
 from typing import Any
 
 repo_root = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(repo_root / "cyntra-kernel" / "src"))
-
-from cyntra.cyntra.dynamics.state_t1 import build_state_t1, bucket_diff_lines, bucket_files_touched
+kernel_src = repo_root / "kernel" / "src"
+if kernel_src.exists():
+    sys.path.insert(0, str(kernel_src))
 
 
 def analyze_tool_usage(rollout: dict[str, Any]) -> dict[str, Any]:
@@ -28,7 +28,9 @@ def analyze_tool_usage(rollout: dict[str, Any]) -> dict[str, Any]:
     return {
         "total_tool_calls": total_tools,
         "by_tool": tool_summary,
-        "most_used": max(tool_summary.items(), key=lambda x: x[1])[0] if tool_summary else None,
+        "most_used": max(tool_summary.items(), key=lambda x: x[1])[0]
+        if tool_summary
+        else None,
     }
 
 
@@ -41,15 +43,19 @@ def analyze_file_changes(rollout: dict[str, Any]) -> list[dict[str, Any]]:
     normalized = []
     for change in file_changes:
         if isinstance(change, dict):
-            normalized.append({
-                "path": change.get("path"),
-                "kind": change.get("kind", "modified"),
-            })
+            normalized.append(
+                {
+                    "path": change.get("path"),
+                    "kind": change.get("kind", "modified"),
+                }
+            )
         elif isinstance(change, str):
-            normalized.append({
-                "path": change,
-                "kind": "modified",
-            })
+            normalized.append(
+                {
+                    "path": change,
+                    "kind": "modified",
+                }
+            )
 
     return normalized
 
@@ -60,6 +66,12 @@ def extract_transitions(rollout: dict[str, Any]) -> list[dict[str, Any]]:
 
     This is a simplified version - full implementation would parse telemetry.
     """
+    from cyntra.dynamics.state_t1 import (
+        build_state_t1,
+        bucket_diff_lines,
+        bucket_files_touched,
+    )
+
     # Get basic state info
     job_type = rollout.get("job_type", "code")
     policy = rollout.get("policy", {})
@@ -100,7 +112,7 @@ def extract_transitions(rollout: dict[str, Any]) -> list[dict[str, Any]]:
         policy_key={
             "toolchain": policy.get("toolchain"),
             "model": policy.get("model"),
-        }
+        },
     )
 
     final_state = build_state_t1(
@@ -110,7 +122,7 @@ def extract_transitions(rollout: dict[str, Any]) -> list[dict[str, Any]]:
         policy_key={
             "toolchain": policy.get("toolchain"),
             "model": policy.get("model"),
-        }
+        },
     )
 
     return [
@@ -201,7 +213,9 @@ def main():
 
     parser = argparse.ArgumentParser(description="Analyze trajectory from rollout")
     parser.add_argument("rollout_path", help="Path to rollout.json")
-    parser.add_argument("--transitions", action="store_true", help="Compute transitions")
+    parser.add_argument(
+        "--transitions", action="store_true", help="Compute transitions"
+    )
     parser.add_argument("--output", help="Output path for analysis JSON")
 
     args = parser.parse_args()

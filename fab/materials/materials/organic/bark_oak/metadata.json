@@ -1,0 +1,12 @@
+{
+  "name": "Bark Oak",
+  "description": "Procedural: oak tree bark, deep ridges and furrows, brown gray, seamless tileable, close up",
+  "category": "organic",
+  "tags": ["bark", "tree", "nature", "organic"],
+  "prompt": "oak tree bark, deep ridges and furrows, brown gray, seamless tileable, close up",
+  "seed": 8900,
+  "workflow": "blender_procedural",
+  "resolution": [2048, 2048],
+  "created_at": "2025-12-27T00:47:59.779437+00:00",
+  "source": "blender"
+}

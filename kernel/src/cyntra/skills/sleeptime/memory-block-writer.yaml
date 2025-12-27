@@ -1,0 +1,75 @@
+name: memory-block-writer
+version: 1.0.0
+description: |
+  Update shared memory blocks in .cyntra/learned_context/ with distilled patterns.
+  Manages block size limits, handles merge strategies, maintains version history.
+
+  Memory blocks are markdown files with structured sections that primary agents
+  read for context injection.
+category: sleeptime
+priority: high
+phase: 3
+
+inputs:
+  - name: block_name
+    type: string
+    description: Which memory block to update
+    required: true
+    enum: [failure_modes, successful_patterns, exploration_hints, trap_signatures, genome_patches]
+  - name: new_content
+    type: object
+    description: |
+      Content to add/update:
+      - section: which section within the block
+      - entries: list of entries to add
+      - metadata: timestamps, source run_ids
+    required: true
+  - name: merge_strategy
+    type: string
+    description: How to merge with existing content
+    required: false
+    default: "dedupe_append"
+    enum: [append, replace, dedupe_append, priority_merge]
+  - name: max_block_size
+    type: integer
+    description: Maximum characters per block (older entries pruned)
+    required: false
+    default: 8000
+
+outputs:
+  - name: updated_block_path
+    type: string
+    description: Path to updated block file
+  - name: block_hash
+    type: string
+    description: SHA256 of new block content (for cache invalidation)
+  - name: entries_added
+    type: integer
+    description: Number of new entries added
+  - name: entries_pruned
+    type: integer
+    description: Number of old entries removed to fit limit
+  - name: block_size_remaining
+    type: integer
+    description: Characters remaining before limit
+
+state:
+  blocks_dir: .cyntra/learned_context/
+  history_dir: .cyntra/learned_context/.history/
+
+examples:
+  - description: Add failure pattern to failure_modes block
+    inputs:
+      block_name: failure_modes
+      new_content:
+        section: "Type Errors"
+        entries:
+          - signature: "Cannot assign None to non-optional field"
+            frequency: 5
+            mitigation: "Check optional fields in Pydantic models before assignment"
+            source_runs: ["run_abc", "run_def"]
+      merge_strategy: dedupe_append
+
+implementation:
+  type: python
+  path: memory-block-writer.py

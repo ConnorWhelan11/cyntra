@@ -19,7 +19,7 @@ Validate that all schemas can serialize/deserialize without data loss.
 
 | Parameter | Type | Required | Default | Description |
 |-----------|------|----------|---------|-------------|
-| `schema_dir` | string | No | cyntra-kernel/schemas/cyntra | Directory containing schemas |
+| `schema_dir` | string | No | kernel/schemas/cyntra | Directory containing schemas |
 
 ## Outputs
 

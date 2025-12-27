@@ -1,0 +1,12 @@
+{
+  "name": "Pine Fresh",
+  "description": "Procedural: fresh pine wood boards, light blonde color, knots visible, seamless tileable",
+  "category": "wood",
+  "tags": ["wood", "pine", "light", "fresh"],
+  "prompt": "fresh pine wood boards, light blonde color, knots visible, seamless tileable",
+  "seed": 9694,
+  "workflow": "blender_procedural",
+  "resolution": [2048, 2048],
+  "created_at": "2025-12-27T00:44:44.661162+00:00",
+  "source": "blender"
+}

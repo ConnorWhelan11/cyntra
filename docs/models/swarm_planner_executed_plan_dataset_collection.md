@@ -17,7 +17,7 @@ We want a dataset that is:
 - **Realistic**: collected from real tasks that exercise the kernel + verifier + toolchain stack.
 - **Deterministic to rebuild**: repeated dataset builds from the same artifacts produce the same dataset hash.
 
-This dataset is used for **Stage A pretraining** (learn priors and sensible defaults). It is *not* the final quality signal (Stage B best-of-K/outcome labels are).
+This dataset is used for **Stage A pretraining** (learn priors and sensible defaults). It is _not_ the final quality signal (Stage B best-of-K/outcome labels are).
 
 ---
 
@@ -53,12 +53,13 @@ These are the raw materials for rebuilding datasets. Prefer treating `.cyntra/ar
 Build the executed-plan dataset from local artifacts:
 
 ```bash
-PYTHONPATH=cyntra-kernel/src python -m cyntra.cli planner build-dataset \
+PYTHONPATH=kernel/src python -m cyntra.cli planner build-dataset \
   --out .cyntra/benches/planner_dataset_v1 \
   --no-include-world
 ```
 
 Notes:
+
 - This builder reconstructs `planner_input` deterministically from archives + Beads issue metadata and uses the run’s executed plan as the label.
 - `meta.json` contains `dataset_hash`, counts, split sizes, and `universe_id`.
 
@@ -91,9 +92,9 @@ Start a new dataset version (new output dir) when you make changes that can flip
 
 ### 5.3 GEPA interaction (how this integrates)
 
-GEPA changes the *effective agent policy* (prompt genomes + sampling defaults). That impacts:
+GEPA changes the _effective agent policy_ (prompt genomes + sampling defaults). That impacts:
 
-- **Stage A (“executed_plan”) realism:** the label is usually unchanged, but the *distribution of outcomes* and the history features can drift.
+- **Stage A (“executed_plan”) realism:** the label is usually unchanged, but the _distribution of outcomes_ and the history features can drift.
 - **Stage B (outcome labels):** prompt quality can dominate which swarm/budget choices win, so you should treat GEPA state as part of the environment.
 
 Operational rules:
@@ -138,7 +139,7 @@ You want strong coverage across:
 
 ### 7.2 Lane mix targets (3-lane strategy)
 
-Maintain a backlog whose *steady-state* execution roughly matches:
+Maintain a backlog whose _steady-state_ execution roughly matches:
 
 - **Lane A (50–70%)**: low/medium risk, XS–M, mostly `serial_handoff`
 - **Lane B (20–40%)**: high risk, M–XL, mostly `speculate_vote ×2`
@@ -166,7 +167,7 @@ Practical levers:
 
 ### 8.1 Start where gates are stable in workcells
 
-Collect your first large dataset primarily from **`cyntra-kernel/` code tasks**, because:
+Collect your first large dataset primarily from **`kernel/` code tasks**, because:
 
 - gates are already configured (`pytest`, `mypy`, `ruff`)
 - Python deps are more likely to be present/reproducible across workcells
@@ -175,7 +176,7 @@ Collect your first large dataset primarily from **`cyntra-kernel/` code tasks**,
 
 Only expand to:
 
-- `apps/glia-fab-desktop` (Node/Rust) when installs/builds are deterministic in workcells, and gates reflect that project.
+- `apps/desktop` (Node/Rust) when installs/builds are deterministic in workcells, and gates reflect that project.
 - `fab-world` once deterministic world runs are regularly passing and archived.
 
 If you collect lots of “failures for environment reasons” (missing deps/build tooling), your history features become noisy and your dataset becomes less predictive.
@@ -199,21 +200,21 @@ Optional: create a few reusable issue templates (tiny bugfix, test stabilization
 
 ### 10.1 Weekly audit checklist
 
-1) Summarize available examples:
+1. Summarize available examples:
 
 ```bash
-PYTHONPATH=cyntra-kernel/src python -m cyntra.cli planner stats --no-include-world
+PYTHONPATH=kernel/src python -m cyntra.cli planner stats --no-include-world
 ```
 
-2) Rebuild dataset deterministically and record the hash:
+2. Rebuild dataset deterministically and record the hash:
 
 ```bash
-PYTHONPATH=cyntra-kernel/src python -m cyntra.cli planner build-dataset \
+PYTHONPATH=kernel/src python -m cyntra.cli planner build-dataset \
   --out .cyntra/benches/planner_dataset_v1 \
   --no-include-world
 ```
 
-3) Inspect label distribution (at minimum):
+3. Inspect label distribution (at minimum):
 
 - `swarm_id` frequency
 - `max_candidates_bin` frequency
@@ -235,6 +236,7 @@ If you see gaps, adjust the backlog intentionally:
 ### 11.1 Don’t lose the core artifacts
 
 At minimum, keep per-run:
+
 - `manifest.json`
 - `proof.json`
 - `rollout.json` (when present)

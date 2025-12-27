@@ -14,7 +14,6 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-import pytest
 
 # Add skills directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent / "development"))
@@ -364,9 +363,9 @@ class TestExecuteFunction:
      pass
 """
         result = analyze_diff.execute(diff, None, "quick")
+        assert isinstance(result.get("issues"), list)
 
         # Quick mode shouldn't flag type: ignore as aggressively
-        issues = result["issues"]
         # May or may not have issues depending on implementation
 
     def test_deep_depth_checks_line_length(self) -> None:

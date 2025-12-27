@@ -47,7 +47,7 @@ def generate_skill_md(spec: dict, yaml_path: Path) -> str:
     lines = [
         "---",
         f"name: {name}",
-        f"description: |",
+        "description: |",
     ]
 
     # Multi-line description in YAML
@@ -66,7 +66,7 @@ def generate_skill_md(spec: dict, yaml_path: Path) -> str:
     if metadata:
         lines.append("metadata:")
         for k, v in metadata.items():
-            lines.append(f"  {k}: \"{v}\"")
+            lines.append(f'  {k}: "{v}"')
 
     lines.append("---")
     lines.append("")
@@ -97,7 +97,9 @@ def generate_skill_md(spec: dict, yaml_path: Path) -> str:
             elif isinstance(default, list):
                 default = f"`{default}`"
             desc = inp.get("description", "").replace("\n", " ").strip()
-            lines.append(f"| `{inp['name']}` | {inp['type']} | {req} | {default} | {desc} |")
+            lines.append(
+                f"| `{inp['name']}` | {inp['type']} | {req} | {default} | {desc} |"
+            )
         lines.append("")
 
     # Outputs section
@@ -178,7 +180,7 @@ def generate_skill(yaml_path: Path, output_root: Path, dry_run: bool = False) ->
 
     if dry_run:
         print(f"  Would create: {skill_dir}/")
-        print(f"    - SKILL.md")
+        print("    - SKILL.md")
         impl = spec.get("implementation", {})
         if impl:
             py_name = impl.get("path", "main.py")
@@ -274,7 +276,9 @@ def generate_all(dry_run: bool = False):
     if not dry_run:
         gitignore = CLAUDE_SKILLS_OUT / ".gitignore"
         if not gitignore.exists():
-            gitignore.write_text("# Generated files - regenerate with: python skills/generate.py\n")
+            gitignore.write_text(
+                "# Generated files - regenerate with: python skills/generate.py\n"
+            )
 
 
 def main():
@@ -282,12 +286,12 @@ def main():
         description="Generate Agent Skills from Cyntra YAML definitions"
     )
     parser.add_argument(
-        "--clean", action="store_true",
-        help="Clean output directory before generating"
+        "--clean", action="store_true", help="Clean output directory before generating"
     )
     parser.add_argument(
-        "--dry-run", action="store_true",
-        help="Show what would be generated without writing files"
+        "--dry-run",
+        action="store_true",
+        help="Show what would be generated without writing files",
     )
     args = parser.parse_args()
 

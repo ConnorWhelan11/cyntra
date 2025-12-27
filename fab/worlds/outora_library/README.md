@@ -9,6 +9,7 @@ Procedurally generated Gothic cathedral library with deterministic builds.
 - **Version**: 0.5.0
 
 A massive Gothic cathedral library featuring:
+
 - 3-tier architectural structure
 - Symmetrical wings with study pods
 - Procedural furniture placement
@@ -17,11 +18,13 @@ A massive Gothic cathedral library featuring:
 ## Requirements
 
 ### Software
+
 - Blender 4.0.0 or higher
 - Python 3.10+
-- cyntra-kernel (provides `fab-world` CLI)
+- kernel (provides `fab-world` CLI)
 
 ### Blender Add-ons
+
 - **Sverchok** (required) - Procedural node-based generation
 
 ## Quick Start
@@ -56,22 +59,26 @@ fab-world build \
 ## Parameters
 
 ### Layout
+
 - `bay_size_m`: Structural bay spacing (default: 6.0m)
 - `tier_count`: Number of vertical levels (default: 3)
 - `wing_depth`: Wing depth in bays (default: 3)
 - `complexity`: Detail level [low, medium, high] (default: medium)
 
 ### Lighting
+
 - `preset`: Lighting style [dramatic, warm_reading, cosmic] (default: dramatic)
 - `window_emission`: Window light strength (default: 2.5)
 - `chandelier_count`: Number of chandeliers (default: 8)
 
 ### Materials
+
 - `stone_variant`: Stone material [limestone_weathered, granite_polished, ...]
 - `wood_variant`: Wood material [oak_aged, walnut_dark, ...]
 - `color_palette`: Overall color scheme [warm_academic, cool_monastic, ...]
 
 ### Furniture
+
 - `desk_count`: Number of study desks (default: 24)
 - `chair_count`: Number of chairs (default: 48)
 - `shelf_count`: Number of bookshelves (default: 16)
@@ -102,6 +109,7 @@ Build outputs are written to `.cyntra/runs/<run_id>/`:
 ## Determinism
 
 Builds are deterministic when using the same:
+
 - Seed value
 - Blender version
 - Sverchok version
@@ -114,6 +122,7 @@ The manifest.json tracks all versions and produces SHA256 hashes to verify repro
 ### Godot Contract
 
 The exported GLB includes special markers for Godot integration:
+
 - `SPAWN_PLAYER` - Player spawn location
 - `COLLIDER_*` - Collision meshes
 - Navigation mesh baking support
@@ -125,7 +134,7 @@ Successful builds can publish to the viewer:
 ```bash
 fab-world publish \
   --run .cyntra/runs/outora_001 \
-  --viewer fab/outora-library/viewer
+  --viewer fab/assets/viewer
 ```
 
 ## Development
@@ -139,17 +148,20 @@ fab-world publish \
 ### Troubleshooting
 
 **Sverchok not found:**
+
 ```
 Install Sverchok addon in Blender:
 Edit > Preferences > Add-ons > Install > select sverchok.zip
 ```
 
 **Non-deterministic builds:**
+
 - Verify same Blender version
 - Check for unseeded random() calls
 - Ensure PYTHONHASHSEED=0 is set
 
 **Missing outputs:**
+
 - Check logs in `.cyntra/runs/<run_id>/logs/`
 - Verify stage dependencies are met
 - Ensure sufficient disk space
@@ -157,9 +169,10 @@ Edit > Preferences > Add-ons > Install > select sverchok.zip
 ## Architecture Notes
 
 This world uses the Fab World system, designed for:
+
 - **Portability**: Runs in isolated workcells
 - **Determinism**: Same seed = same output
 - **Quality Gates**: Automated validation
 - **Repair Loops**: Self-healing builds with LLM critics
 
-See `docs/fab-world-schema.md` for the complete world.yaml specification.
+See `docs/specs/fab-world-schema.md` for the complete world.yaml specification.

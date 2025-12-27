@@ -1,0 +1,1 @@
+export { TabsWorkspaceLayout } from "./TabsWorkspaceLayout";

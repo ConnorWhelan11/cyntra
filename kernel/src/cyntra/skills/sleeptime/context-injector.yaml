@@ -1,0 +1,41 @@
+name: context-injector
+version: 1.0.0
+description: |
+  Prepare memory context for injection into new workcell prompts.
+  Uses progressive disclosure to limit token usage.
+category: sleeptime
+priority: critical
+
+inputs:
+  - name: issue
+    type: object
+    description: Issue/task being executed
+    required: true
+  - name: memory_path
+    type: string
+    description: Path to memory store directory
+    required: true
+  - name: max_tokens
+    type: integer
+    description: Maximum tokens for context
+    required: false
+    default: 2000
+  - name: domain
+    type: string
+    description: Domain filter (code, fab_asset, fab_world)
+    required: false
+
+outputs:
+  - name: context
+    type: object
+    description: Memory context for injection
+  - name: blocks_used
+    type: array
+    description: Block IDs included in context
+  - name: token_count
+    type: integer
+    description: Estimated token count
+
+implementation:
+  type: python
+  path: context-injector.py

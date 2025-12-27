@@ -12,12 +12,11 @@ import sys
 from pathlib import Path
 from typing import Any
 
-# Add cyntra-kernel to path
+# Add kernel to path
 repo_root = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(repo_root / "cyntra-kernel" / "src"))
-
-from cyntra.kernel.config import KernelConfig
-from cyntra.workcell.manager import WorkcellManager
+kernel_src = repo_root / "kernel" / "src"
+if kernel_src.exists():
+    sys.path.insert(0, str(kernel_src))
 
 
 def execute(
@@ -45,6 +44,9 @@ def execute(
     """
     if forbidden_paths is None:
         forbidden_paths = [".beads/", ".cyntra/", ".cyntra/secrets/"]
+
+    from cyntra.kernel.config import KernelConfig
+    from cyntra.workcell.manager import WorkcellManager
 
     # Load kernel config
     try:
@@ -85,6 +87,7 @@ def execute(
 
             # Extract branch name from git
             import subprocess
+
             result = subprocess.run(
                 ["git", "rev-parse", "--abbrev-ref", "HEAD"],
                 cwd=workcell_path,
@@ -205,7 +208,9 @@ def main():
     import argparse
 
     parser = argparse.ArgumentParser(description="Manage workcell lifecycle")
-    parser.add_argument("action", choices=["create", "verify", "cleanup", "cleanup-all"])
+    parser.add_argument(
+        "action", choices=["create", "verify", "cleanup", "cleanup-all"]
+    )
     parser.add_argument("--issue-id", help="Issue ID for create")
     parser.add_argument("--workcell-id", help="Workcell ID for verify/cleanup")
 

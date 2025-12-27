@@ -131,5 +131,5 @@ publish:
   viewer:
     enabled: true
     paths:
-      glb: fab/outora-library/viewer/assets/exports/jibglr.glb
-      game: fab/outora-library/viewer/assets/games/jibglr/
+      glb: fab/assets/viewer/assets/exports/jibglr.glb
+      game: fab/assets/viewer/assets/games/jibglr/

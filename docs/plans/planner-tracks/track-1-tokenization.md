@@ -13,7 +13,7 @@
 
 ### 1.1 Purpose
 
-The planner dataset builder (`cyntra-kernel/src/cyntra/planner/dataset.py`) outputs JSON artifacts conforming to `planner_input.v1` schema. However, neural models require fixed-dimensional numeric tensors. This track implements the **encoding layer** that bridges structured JSON inputs to model-ready tensors and decodes model outputs back to valid actions.
+The planner dataset builder (`kernel/src/cyntra/planner/dataset.py`) outputs JSON artifacts conforming to `planner_input.v1` schema. However, neural models require fixed-dimensional numeric tensors. This track implements the **encoding layer** that bridges structured JSON inputs to model-ready tensors and decodes model outputs back to valid actions.
 
 ### 1.2 Goals
 
@@ -100,14 +100,14 @@ Dataset Example (JSON)
 
 **Source:** `planner_input["issue"]`
 
-| Field | Type | Encoding Strategy | Output Dim |
-|-------|------|-------------------|------------|
-| `dk_priority` | enum P0-P3 | One-hot | 4 |
-| `dk_risk` | enum low/medium/high/critical | One-hot | 4 |
-| `dk_size` | enum XS/S/M/L/XL | One-hot | 5 |
-| `dk_attempts` | int | Log-binned categorical (0,1,2,3+) | 4 |
-| `dk_tool_hint` | str\|null | Hash bucket (1024 buckets) + null flag | 11 (10 + 1) |
-| `tags` | list[str] | Multi-hot hash buckets (1024 buckets, max 8 tags) | 1024 |
+| Field          | Type                          | Encoding Strategy                                 | Output Dim  |
+| -------------- | ----------------------------- | ------------------------------------------------- | ----------- |
+| `dk_priority`  | enum P0-P3                    | One-hot                                           | 4           |
+| `dk_risk`      | enum low/medium/high/critical | One-hot                                           | 4           |
+| `dk_size`      | enum XS/S/M/L/XL              | One-hot                                           | 5           |
+| `dk_attempts`  | int                           | Log-binned categorical (0,1,2,3+)                 | 4           |
+| `dk_tool_hint` | str\|null                     | Hash bucket (1024 buckets) + null flag            | 11 (10 + 1) |
+| `tags`         | list[str]                     | Multi-hot hash buckets (1024 buckets, max 8 tags) | 1024        |
 
 **Total issue features:** 4 + 4 + 5 + 4 + 11 + 1024 = **1052**
 
@@ -116,27 +116,28 @@ Dataset Example (JSON)
 **Source:** `planner_input["history"]["last_n_similar_runs"]`
 
 **Configuration:**
+
 - `N_HISTORY_SLOTS = 8` (fixed)
 - Zero-pad if fewer than N runs available
 - Truncate oldest if more than N runs (should not happen with proper retrieval)
 
 **Per-run features:**
 
-| Field | Type | Encoding Strategy | Output Dim |
-|-------|------|-------------------|------------|
-| `job_type` | str | Categorical (code, fab-world, fab-asset) | 3 |
-| `domain` | str | Categorical (code, fab_world, fab_asset) | 3 |
-| `action_executed.swarm_id` | str\|null | Categorical + null | 3 |
-| `action_executed.max_candidates` | int\|null | Binned (1,2,3,NA) | 4 |
-| `action_executed.max_minutes` | int\|null | Binned (15,30,45,60,120,NA) | 6 |
-| `action_executed.max_iterations` | int\|null | Binned (1,2,3,5,NA) | 5 |
-| `outcome.status` | enum | One-hot (success, failed, timeout) | 3 |
-| `outcome.fail_codes` | list[str] | Multi-hot hash (256 buckets, max 5) | 256 |
-| `outcome.gates` | list[{name, passed}] | Gate presence + pass/fail (16 known gates) | 32 |
-| `runtime.duration_ms` | int | Log-binned (6 buckets: <1m, 1-5m, 5-15m, 15-30m, 30-60m, >60m) | 6 |
-| `cost_usd_est` | float\|null | Log-binned (5 buckets) + null | 6 |
-| `recency_bucket` | derived | Categorical (same-day, this-week, this-month, older) | 4 |
-| `valid_mask` | derived | Binary (is this slot populated?) | 1 |
+| Field                            | Type                 | Encoding Strategy                                              | Output Dim |
+| -------------------------------- | -------------------- | -------------------------------------------------------------- | ---------- |
+| `job_type`                       | str                  | Categorical (code, fab-world, fab-asset)                       | 3          |
+| `domain`                         | str                  | Categorical (code, fab_world, fab_asset)                       | 3          |
+| `action_executed.swarm_id`       | str\|null            | Categorical + null                                             | 3          |
+| `action_executed.max_candidates` | int\|null            | Binned (1,2,3,NA)                                              | 4          |
+| `action_executed.max_minutes`    | int\|null            | Binned (15,30,45,60,120,NA)                                    | 6          |
+| `action_executed.max_iterations` | int\|null            | Binned (1,2,3,5,NA)                                            | 5          |
+| `outcome.status`                 | enum                 | One-hot (success, failed, timeout)                             | 3          |
+| `outcome.fail_codes`             | list[str]            | Multi-hot hash (256 buckets, max 5)                            | 256        |
+| `outcome.gates`                  | list[{name, passed}] | Gate presence + pass/fail (16 known gates)                     | 32         |
+| `runtime.duration_ms`            | int                  | Log-binned (6 buckets: <1m, 1-5m, 5-15m, 15-30m, 30-60m, >60m) | 6          |
+| `cost_usd_est`                   | float\|null          | Log-binned (5 buckets) + null                                  | 6          |
+| `recency_bucket`                 | derived              | Categorical (same-day, this-week, this-month, older)           | 4          |
+| `valid_mask`                     | derived              | Binary (is this slot populated?)                               | 1          |
 
 **Per-run dimension:** 3+3+3+4+6+5+3+256+32+6+6+4+1 = **332**
 
@@ -146,12 +147,12 @@ Dataset Example (JSON)
 
 **Source:** `planner_input["action_space"]`
 
-| Field | Encoding Strategy | Output Dim |
-|-------|-------------------|------------|
-| `swarm_ids` | Multi-hot presence mask | 8 (max swarms) |
-| `max_candidates_bins` | Multi-hot presence mask | 8 |
-| `max_minutes_bins` | Multi-hot presence mask | 8 |
-| `max_iterations_bins` | Multi-hot presence mask | 8 |
+| Field                 | Encoding Strategy       | Output Dim     |
+| --------------------- | ----------------------- | -------------- |
+| `swarm_ids`           | Multi-hot presence mask | 8 (max swarms) |
+| `max_candidates_bins` | Multi-hot presence mask | 8              |
+| `max_minutes_bins`    | Multi-hot presence mask | 8              |
+| `max_iterations_bins` | Multi-hot presence mask | 8              |
 
 **Total action space features:** **32**
 
@@ -159,10 +160,10 @@ Dataset Example (JSON)
 
 **Source:** `planner_input["universe_defaults"]`
 
-| Field | Encoding Strategy | Output Dim |
-|-------|-------------------|------------|
-| `swarm_id` | Categorical + null | 3 |
-| `objective_id` | Hash bucket + null | 11 |
+| Field          | Encoding Strategy  | Output Dim |
+| -------------- | ------------------ | ---------- |
+| `swarm_id`     | Categorical + null | 3          |
+| `objective_id` | Hash bucket + null | 11         |
 
 **Total universe defaults features:** **14**
 
@@ -170,14 +171,14 @@ Dataset Example (JSON)
 
 **Source:** `planner_input["system_state"]` (nullable in v1)
 
-| Field | Encoding Strategy | Output Dim |
-|-------|-------------------|------------|
-| `active_workcells_bin` | Categorical (0, 1-2, 3-5, 6+, null) | 5 |
-| `queue_depth_bin` | Categorical (0, 1-5, 6-20, 20+, null) | 5 |
-| `hour_bucket` | Categorical (night, morning, afternoon, evening, null) | 5 |
-| `budget_remaining_bin` | Categorical (low, medium, high, unlimited, null) | 5 |
-| `available_toolchains` | Multi-hot (4 known toolchains) | 4 |
-| `system_state_present` | Binary flag | 1 |
+| Field                  | Encoding Strategy                                      | Output Dim |
+| ---------------------- | ------------------------------------------------------ | ---------- |
+| `active_workcells_bin` | Categorical (0, 1-2, 3-5, 6+, null)                    | 5          |
+| `queue_depth_bin`      | Categorical (0, 1-5, 6-20, 20+, null)                  | 5          |
+| `hour_bucket`          | Categorical (night, morning, afternoon, evening, null) | 5          |
+| `budget_remaining_bin` | Categorical (low, medium, high, unlimited, null)       | 5          |
+| `available_toolchains` | Multi-hot (4 known toolchains)                         | 4          |
+| `system_state_present` | Binary flag                                            | 1          |
 
 **Total system state features:** **25**
 
@@ -197,7 +198,7 @@ d_in = 1052 (issue) + 2656 (history) + 32 (action_space) + 14 (universe) + 25 (s
 ### 4.1 Module Structure
 
 ```
-cyntra-kernel/src/cyntra/planner/
+kernel/src/cyntra/planner/
 ├── tokenizer.py          # Main encoder/decoder module (NEW)
 ├── tokenizer_config.py   # Configuration constants (NEW)
 └── tokenizer_test.py     # Unit tests (in tests/planner/)
@@ -206,7 +207,7 @@ cyntra-kernel/src/cyntra/planner/
 ### 4.2 Core Classes
 
 ```python
-# cyntra-kernel/src/cyntra/planner/tokenizer.py
+# kernel/src/cyntra/planner/tokenizer.py
 
 from __future__ import annotations
 
@@ -533,31 +534,31 @@ predicted_action = action_encoder.decode_action(
 
 ### 5.1 Task Breakdown
 
-| Task ID | Description | Est. Hours | Dependencies |
-|---------|-------------|------------|--------------|
-| T1.1 | Create `tokenizer_config.py` with constants | 1 | None |
-| T1.2 | Implement `PlannerInputEncoder._encode_issue()` | 2 | T1.1 |
-| T1.3 | Implement `PlannerInputEncoder._encode_history()` | 4 | T1.1 |
-| T1.4 | Implement `PlannerInputEncoder._encode_action_space()` | 1 | T1.1 |
-| T1.5 | Implement `PlannerInputEncoder._encode_universe_defaults()` | 1 | T1.1 |
-| T1.6 | Implement `PlannerInputEncoder._encode_system_state()` | 1 | T1.1 |
-| T1.7 | Implement `PlannerInputEncoder.encode()` concatenation | 1 | T1.2-T1.6 |
-| T1.8 | Implement `ActionEncoder` class | 2 | T1.1 |
-| T1.9 | Implement `ValidityMaskBuilder` class | 2 | T1.8 |
-| T1.10 | Write unit tests for encoder roundtrip | 3 | T1.7-T1.9 |
-| T1.11 | Write unit tests for validity masking | 2 | T1.9 |
-| T1.12 | Integration test with real dataset examples | 2 | T1.10 |
+| Task ID | Description                                                 | Est. Hours | Dependencies |
+| ------- | ----------------------------------------------------------- | ---------- | ------------ |
+| T1.1    | Create `tokenizer_config.py` with constants                 | 1          | None         |
+| T1.2    | Implement `PlannerInputEncoder._encode_issue()`             | 2          | T1.1         |
+| T1.3    | Implement `PlannerInputEncoder._encode_history()`           | 4          | T1.1         |
+| T1.4    | Implement `PlannerInputEncoder._encode_action_space()`      | 1          | T1.1         |
+| T1.5    | Implement `PlannerInputEncoder._encode_universe_defaults()` | 1          | T1.1         |
+| T1.6    | Implement `PlannerInputEncoder._encode_system_state()`      | 1          | T1.1         |
+| T1.7    | Implement `PlannerInputEncoder.encode()` concatenation      | 1          | T1.2-T1.6    |
+| T1.8    | Implement `ActionEncoder` class                             | 2          | T1.1         |
+| T1.9    | Implement `ValidityMaskBuilder` class                       | 2          | T1.8         |
+| T1.10   | Write unit tests for encoder roundtrip                      | 3          | T1.7-T1.9    |
+| T1.11   | Write unit tests for validity masking                       | 2          | T1.9         |
+| T1.12   | Integration test with real dataset examples                 | 2          | T1.10        |
 
 **Total estimated hours:** 22
 
 ### 5.2 File Deliverables
 
-| File | Description | Status |
-|------|-------------|--------|
-| `cyntra-kernel/src/cyntra/planner/tokenizer_config.py` | Configuration constants | NEW |
-| `cyntra-kernel/src/cyntra/planner/tokenizer.py` | Main encoder/decoder module | NEW |
-| `cyntra-kernel/tests/planner/test_tokenizer.py` | Unit tests | NEW |
-| `cyntra-kernel/tests/planner/test_tokenizer_integration.py` | Integration tests | NEW |
+| File                                                 | Description                 | Status |
+| ---------------------------------------------------- | --------------------------- | ------ |
+| `kernel/src/cyntra/planner/tokenizer_config.py`      | Configuration constants     | NEW    |
+| `kernel/src/cyntra/planner/tokenizer.py`             | Main encoder/decoder module | NEW    |
+| `kernel/tests/planner/test_tokenizer.py`             | Unit tests                  | NEW    |
+| `kernel/tests/planner/test_tokenizer_integration.py` | Integration tests           | NEW    |
 
 ---
 
@@ -716,20 +717,20 @@ def test_priority_encoding_valid(priority):
 
 ### 8.1 Upstream Dependencies
 
-| Dependency | Location | Status |
-|------------|----------|--------|
-| `planner_input.schema.json` | `schemas/cyntra/` | COMPLETE |
+| Dependency                   | Location          | Status   |
+| ---------------------------- | ----------------- | -------- |
+| `planner_input.schema.json`  | `schemas/cyntra/` | COMPLETE |
 | `planner_action.schema.json` | `schemas/cyntra/` | COMPLETE |
-| `action_space.py` | `cyntra/planner/` | COMPLETE |
-| `dataset.py` | `cyntra/planner/` | COMPLETE |
+| `action_space.py`            | `cyntra/planner/` | COMPLETE |
+| `dataset.py`                 | `cyntra/planner/` | COMPLETE |
 
 ### 8.2 Downstream Dependents
 
-| Dependent | Description |
-|-----------|-------------|
-| Track 2 (Models) | Uses encoded tensors for training |
-| Track 3 (Best-of-K) | Uses encoder for bench inputs |
-| Track 5 (Integration) | Uses encoder for inference |
+| Dependent             | Description                       |
+| --------------------- | --------------------------------- |
+| Track 2 (Models)      | Uses encoded tensors for training |
+| Track 3 (Best-of-K)   | Uses encoder for bench inputs     |
+| Track 5 (Integration) | Uses encoder for inference        |
 
 ---
 
@@ -748,6 +749,6 @@ def test_priority_encoding_valid(priority):
 
 ## 10. Revision History
 
-| Version | Date | Author | Changes |
-|---------|------|--------|---------|
-| 1.0 | 2025-12 | Planner Agent | Initial specification |
+| Version | Date    | Author        | Changes               |
+| ------- | ------- | ------------- | --------------------- |
+| 1.0     | 2025-12 | Planner Agent | Initial specification |

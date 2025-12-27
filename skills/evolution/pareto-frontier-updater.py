@@ -14,9 +14,9 @@ from pathlib import Path
 from typing import Any
 
 repo_root = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(repo_root / "cyntra-kernel" / "src"))
-
-from cyntra.evolve.pareto import pareto_frontier
+kernel_src = repo_root / "kernel" / "src"
+if kernel_src.exists():
+    sys.path.insert(0, str(kernel_src))
 
 
 def execute(
@@ -107,14 +107,22 @@ def execute(
         current_frontier = []
 
     try:
+        from cyntra.evolve.pareto import pareto_frontier
+
         objective_directions = _parse_objectives(existing_objectives)
 
-        existing_items = [item for item in (current_frontier or []) if isinstance(item, dict)]
-        incoming_items = [item for item in (new_genomes or []) if isinstance(item, dict)]
+        existing_items = [
+            item for item in (current_frontier or []) if isinstance(item, dict)
+        ]
+        incoming_items = [
+            item for item in (new_genomes or []) if isinstance(item, dict)
+        ]
         all_items = [*existing_items, *incoming_items]
 
         updated_frontier = pareto_frontier(all_items, objective_directions)
-        updated_frontier.sort(key=lambda item: str(item.get("genome_id") or item.get("run_id") or ""))
+        updated_frontier.sort(
+            key=lambda item: str(item.get("genome_id") or item.get("run_id") or "")
+        )
 
         old_ids = {
             str(item.get("genome_id") or item.get("run_id"))
@@ -138,7 +146,9 @@ def execute(
         }
 
         frontier_path.parent.mkdir(parents=True, exist_ok=True)
-        frontier_path.write_text(json.dumps(frontier_data, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        frontier_path.write_text(
+            json.dumps(frontier_data, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+        )
 
         return {
             "success": True,
@@ -174,7 +184,10 @@ def main():
         if genomes_path.exists():
             new_genomes = json.loads(genomes_path.read_text())
         else:
-            print(f"Error: Invalid JSON and file not found: {args.new_genomes}", file=sys.stderr)
+            print(
+                f"Error: Invalid JSON and file not found: {args.new_genomes}",
+                file=sys.stderr,
+            )
             sys.exit(1)
 
     result = execute(

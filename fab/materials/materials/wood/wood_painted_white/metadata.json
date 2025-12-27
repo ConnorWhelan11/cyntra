@@ -1,0 +1,12 @@
+{
+  "name": "Wood Painted White",
+  "description": "Procedural: white painted wood boards, slightly chipped paint, farmhouse style, seamless tileable",
+  "category": "wood",
+  "tags": ["wood", "painted", "white", "farmhouse"],
+  "prompt": "white painted wood boards, slightly chipped paint, farmhouse style, seamless tileable",
+  "seed": 3952,
+  "workflow": "blender_procedural",
+  "resolution": [2048, 2048],
+  "created_at": "2025-12-27T00:46:29.437212+00:00",
+  "source": "blender"
+}

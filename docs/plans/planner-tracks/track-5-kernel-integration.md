@@ -172,6 +172,7 @@ planner:
 ```
 
 **config.json:**
+
 ```json
 {
   "model_type": "mlp",
@@ -188,6 +189,7 @@ planner:
 ```
 
 **calibration.json:**
+
 ```json
 {
   "temperature": {
@@ -206,7 +208,7 @@ planner:
 ### 4.1 PlannerInference Class
 
 ```python
-# cyntra-kernel/src/cyntra/planner/inference.py
+# kernel/src/cyntra/planner/inference.py
 
 from __future__ import annotations
 
@@ -540,7 +542,7 @@ class PlannerInference:
 ### 4.2 Scheduler Integration
 
 ```python
-# cyntra-kernel/src/cyntra/kernel/scheduler.py (modifications)
+# kernel/src/cyntra/kernel/scheduler.py (modifications)
 
 from cyntra.planner.inference import PlannerInference, PlannerAction, InferenceConfig
 from cyntra.planner.similar_runs import SimilarRunsQuery, select_similar_runs
@@ -650,7 +652,7 @@ class Scheduler:
 ### 4.3 Dispatcher Integration
 
 ```python
-# cyntra-kernel/src/cyntra/kernel/dispatcher.py (modifications)
+# kernel/src/cyntra/kernel/dispatcher.py (modifications)
 
 async def dispatch_async(
     issue: Issue,
@@ -710,7 +712,7 @@ async def dispatch_async(
 ### 4.4 CLI Integration
 
 ```python
-# cyntra-kernel/src/cyntra/cli.py (additions)
+# kernel/src/cyntra/cli.py (additions)
 
 @cli.command()
 @click.option("--planner-model", type=Path, help="Override planner model path")
@@ -749,38 +751,38 @@ def run(
 
 ### 5.1 Task Breakdown
 
-| Task ID | Description | Est. Hours | Dependencies |
-|---------|-------------|------------|--------------|
-| T5.1 | Define PlannerAction dataclass | 1 | None |
-| T5.2 | Define InferenceConfig dataclass | 1 | None |
-| T5.3 | Implement PlannerInference._load_model() | 3 | T5.2 |
-| T5.4 | Implement PlannerInference._load_onnx_model() | 2 | T5.3 |
-| T5.5 | Implement PlannerInference._load_torch_model() | 2 | T5.3 |
-| T5.6 | Implement PlannerInference.predict() | 4 | T5.3-T5.5 |
-| T5.7 | Implement PlannerInference._decode_action() | 2 | T5.6 |
-| T5.8 | Implement PlannerInference._baseline_prediction() | 1 | T5.6 |
-| T5.9 | Implement Scheduler.plan_issue() | 3 | T5.6 |
-| T5.10 | Implement Scheduler._get_similar_runs() | 2 | T5.9 |
-| T5.11 | Update dispatcher for planner_action | 3 | T5.9 |
-| T5.12 | Add planner config to KernelConfig | 2 | T5.2 |
-| T5.13 | Add CLI options for planner | 2 | T5.12 |
-| T5.14 | Unit tests for PlannerInference | 4 | T5.6-T5.8 |
-| T5.15 | Integration test: end-to-end with model | 4 | T5.11 |
-| T5.16 | Integration test: fallback behavior | 2 | T5.11 |
+| Task ID | Description                                        | Est. Hours | Dependencies |
+| ------- | -------------------------------------------------- | ---------- | ------------ |
+| T5.1    | Define PlannerAction dataclass                     | 1          | None         |
+| T5.2    | Define InferenceConfig dataclass                   | 1          | None         |
+| T5.3    | Implement PlannerInference.\_load_model()          | 3          | T5.2         |
+| T5.4    | Implement PlannerInference.\_load_onnx_model()     | 2          | T5.3         |
+| T5.5    | Implement PlannerInference.\_load_torch_model()    | 2          | T5.3         |
+| T5.6    | Implement PlannerInference.predict()               | 4          | T5.3-T5.5    |
+| T5.7    | Implement PlannerInference.\_decode_action()       | 2          | T5.6         |
+| T5.8    | Implement PlannerInference.\_baseline_prediction() | 1          | T5.6         |
+| T5.9    | Implement Scheduler.plan_issue()                   | 3          | T5.6         |
+| T5.10   | Implement Scheduler.\_get_similar_runs()           | 2          | T5.9         |
+| T5.11   | Update dispatcher for planner_action               | 3          | T5.9         |
+| T5.12   | Add planner config to KernelConfig                 | 2          | T5.2         |
+| T5.13   | Add CLI options for planner                        | 2          | T5.12        |
+| T5.14   | Unit tests for PlannerInference                    | 4          | T5.6-T5.8    |
+| T5.15   | Integration test: end-to-end with model            | 4          | T5.11        |
+| T5.16   | Integration test: fallback behavior                | 2          | T5.11        |
 
 **Total estimated hours:** 38
 
 ### 5.2 File Deliverables
 
-| File | Description | Status |
-|------|-------------|--------|
-| `cyntra-kernel/src/cyntra/planner/inference.py` | PlannerInference class | NEW |
-| `cyntra-kernel/src/cyntra/kernel/scheduler.py` | Add plan_issue() | MODIFY |
-| `cyntra-kernel/src/cyntra/kernel/dispatcher.py` | Accept planner_action | MODIFY |
-| `cyntra-kernel/src/cyntra/kernel/config.py` | Add planner config | MODIFY |
-| `cyntra-kernel/src/cyntra/cli.py` | Add planner CLI options | MODIFY |
-| `cyntra-kernel/tests/planner/test_inference.py` | Unit tests | NEW |
-| `cyntra-kernel/tests/integration/test_planner_integration.py` | Integration tests | NEW |
+| File                                                   | Description             | Status |
+| ------------------------------------------------------ | ----------------------- | ------ |
+| `kernel/src/cyntra/planner/inference.py`               | PlannerInference class  | NEW    |
+| `kernel/src/cyntra/kernel/scheduler.py`                | Add plan_issue()        | MODIFY |
+| `kernel/src/cyntra/kernel/dispatcher.py`               | Accept planner_action   | MODIFY |
+| `kernel/src/cyntra/kernel/config.py`                   | Add planner config      | MODIFY |
+| `kernel/src/cyntra/cli.py`                             | Add planner CLI options | MODIFY |
+| `kernel/tests/planner/test_inference.py`               | Unit tests              | NEW    |
+| `kernel/tests/integration/test_planner_integration.py` | Integration tests       | NEW    |
 
 ---
 
@@ -950,16 +952,19 @@ async def test_fallback_on_planner_error():
 ## 8. Rollout Plan
 
 ### 8.1 Phase 1: Shadow Mode (Week 1)
+
 - Deploy with `shadow_mode: true`
 - Log all predictions without using them
 - Collect data on prediction quality vs heuristic
 
 ### 8.2 Phase 2: Limited Rollout (Week 2)
+
 - Enable for low-risk issues only (`dk_risk: low`)
 - Monitor outcomes vs historical baseline
 - Tune confidence threshold based on results
 
 ### 8.3 Phase 3: Full Rollout (Week 3+)
+
 - Enable for all issue types
 - Monitor fallback rate and adjust
 - Collect data for model retraining
@@ -970,18 +975,18 @@ async def test_fallback_on_planner_error():
 
 ### 9.1 Upstream Dependencies
 
-| Dependency | Location | Status |
-|------------|----------|--------|
-| Track 1 (Tokenization) | `cyntra/planner/tokenizer.py` | REQUIRED |
-| Track 2 (Models) | `cyntra/planner/models/` | REQUIRED |
-| Track 4 (executed_plan) | `kernel/dispatcher.py` | REQUIRED |
-| onnxruntime | `requirements.txt` | EXTERNAL |
+| Dependency              | Location                      | Status   |
+| ----------------------- | ----------------------------- | -------- |
+| Track 1 (Tokenization)  | `cyntra/planner/tokenizer.py` | REQUIRED |
+| Track 2 (Models)        | `cyntra/planner/models/`      | REQUIRED |
+| Track 4 (executed_plan) | `kernel/dispatcher.py`        | REQUIRED |
+| onnxruntime             | `requirements.txt`            | EXTERNAL |
 
 ### 9.2 Downstream Dependents
 
-| Dependent | Description |
-|-----------|-------------|
-| None | This is the final integration track |
+| Dependent | Description                         |
+| --------- | ----------------------------------- |
+| None      | This is the final integration track |
 
 ---
 
@@ -1000,6 +1005,6 @@ async def test_fallback_on_planner_error():
 
 ## 11. Revision History
 
-| Version | Date | Author | Changes |
-|---------|------|--------|---------|
-| 1.0 | 2025-12 | Planner Agent | Initial specification |
+| Version | Date    | Author        | Changes               |
+| ------- | ------- | ------------- | --------------------- |
+| 1.0     | 2025-12 | Planner Agent | Initial specification |

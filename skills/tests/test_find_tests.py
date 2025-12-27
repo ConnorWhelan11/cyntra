@@ -13,7 +13,6 @@ import json
 import sys
 from pathlib import Path
 
-import pytest
 
 # Add skills directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent / "development"))
@@ -37,7 +36,9 @@ class TestDetectTestFrameworks:
 
     def test_detects_pytest_from_pyproject(self, tmp_path: Path) -> None:
         """Test detection of pytest from pyproject.toml."""
-        (tmp_path / "pyproject.toml").write_text('[tool.pytest.ini_options]\nminversion = "6.0"')
+        (tmp_path / "pyproject.toml").write_text(
+            '[tool.pytest.ini_options]\nminversion = "6.0"'
+        )
 
         frameworks = find_tests.detect_test_frameworks(tmp_path)
 

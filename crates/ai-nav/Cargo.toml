@@ -1,0 +1,22 @@
+[package]
+name = "ai-nav"
+description = "Navigation primitives (backends, queries, and reference actions)"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[dependencies]
+ai-core = { path = "../ai-core" }
+serde = { workspace = true, optional = true }
+
+[dev-dependencies]
+serde_json = { workspace = true }
+criterion = { workspace = true }
+
+[features]
+serde = ["dep:serde"]
+
+[[bench]]
+name = "nav_mesh"
+harness = false

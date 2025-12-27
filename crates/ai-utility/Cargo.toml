@@ -1,0 +1,14 @@
+[package]
+name = "ai-utility"
+description = "Deterministic utility AI selection policy"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[features]
+bt = ["dep:ai-bt"]
+
+[dependencies]
+ai-core = { path = "../ai-core" }
+ai-bt = { path = "../ai-bt", optional = true }

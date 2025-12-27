@@ -5,39 +5,42 @@ Comprehensive test plan to verify all Godot addons, GDExtensions, and templates 
 ## Inventory Summary
 
 ### GDScript Addons (14 total)
-| ID | Kind | Version | Status |
-|----|------|---------|--------|
-| gdunit4 | testing | v4.4.0 | vendored |
-| gut | testing | v9.3.0 | vendored |
-| debug_draw_3d | debug | 1.4.5 | vendored |
-| panku_console | debug | v1.7.9 | vendored |
-| phantom_camera | camera | v0.8.2 | vendored |
-| dialogue_manager | dialogue | v3.0.1 | vendored |
-| dialogic | dialogue | v1.5.1 | vendored |
-| gloot | inventory | v3.0.1 | vendored |
-| beehave | ai | v2.9.2 | vendored |
-| godot_state_charts | state_machine | v0.9.1 | vendored |
-| proton_scatter | scattering | 4.0 | vendored |
-| gaea | procedural_generation | 2.0 | vendored |
-| aseprite_wizard | animation | v9.6.0-4 | vendored |
-| smart_shape_2d | 2d_tools | v3.3.1 | vendored |
+
+| ID                 | Kind                  | Version  | Status   |
+| ------------------ | --------------------- | -------- | -------- |
+| gdunit4            | testing               | v4.4.0   | vendored |
+| gut                | testing               | v9.3.0   | vendored |
+| debug_draw_3d      | debug                 | 1.4.5    | vendored |
+| panku_console      | debug                 | v1.7.9   | vendored |
+| phantom_camera     | camera                | v0.8.2   | vendored |
+| dialogue_manager   | dialogue              | v3.0.1   | vendored |
+| dialogic           | dialogue              | v1.5.1   | vendored |
+| gloot              | inventory             | v3.0.1   | vendored |
+| beehave            | ai                    | v2.9.2   | vendored |
+| godot_state_charts | state_machine         | v0.9.1   | vendored |
+| proton_scatter     | scattering            | 4.0      | vendored |
+| gaea               | procedural_generation | 2.0      | vendored |
+| aseprite_wizard    | animation             | v9.6.0-4 | vendored |
+| smart_shape_2d     | 2d_tools              | v3.3.1   | vendored |
 
 ### GDExtensions (5 total - require binaries)
-| ID | Kind | Version | Platforms |
-|----|------|---------|-----------|
-| terrain3d | terrain | v1.0.1 | win/linux/mac |
-| godot_jolt | physics | v0.9.0-stable | win/linux/mac/android/ios |
-| limboai | ai | v1.5.3 | win/linux/mac/android/ios/web |
-| godot_steam | platform | v4.17 | win/linux/mac |
-| godot_sqlite | database | v4.6 | win/linux/mac/android/ios/web |
+
+| ID           | Kind     | Version       | Platforms                     |
+| ------------ | -------- | ------------- | ----------------------------- |
+| terrain3d    | terrain  | v1.0.1        | win/linux/mac                 |
+| godot_jolt   | physics  | v0.9.0-stable | win/linux/mac/android/ios     |
+| limboai      | ai       | v1.5.3        | win/linux/mac/android/ios/web |
+| godot_steam  | platform | v4.17         | win/linux/mac                 |
+| godot_sqlite | database | v4.6          | win/linux/mac/android/ios/web |
 
 ### Templates (3 vendored + 1 placeholder)
-| ID | Kind | Version | Status |
-|----|------|---------|--------|
-| fab_game_template | game | 1.0.0 | vendored |
-| maaack_game_template | game | v1.4.2 | vendored |
-| cogito | immersive_sim | v1.1.2 | vendored |
-| minimal_template | minimal | 1.0.0 | placeholder |
+
+| ID                   | Kind          | Version | Status      |
+| -------------------- | ------------- | ------- | ----------- |
+| fab_game_template    | game          | 1.0.0   | vendored    |
+| maaack_game_template | game          | v1.4.2  | vendored    |
+| cogito               | immersive_sim | v1.1.2  | vendored    |
+| minimal_template     | minimal       | 1.0.0   | placeholder |
 
 ---
 
@@ -45,7 +48,7 @@ Comprehensive test plan to verify all Godot addons, GDExtensions, and templates 
 
 ### 1.1 Unit Tests for vault.py
 
-Create `cyntra-kernel/tests/fab/test_vault.py`:
+Create `kernel/tests/fab/test_vault.py`:
 
 ```python
 """Test vault.py module."""
@@ -165,7 +168,7 @@ class TestVaultHashes:
 ### 1.2 Run Unit Tests
 
 ```bash
-cd cyntra-kernel
+cd kernel
 pytest tests/fab/test_vault.py -v
 ```
 
@@ -176,6 +179,7 @@ pytest tests/fab/test_vault.py -v
 ### 2.1 Test Harness Setup
 
 Create a test script that:
+
 1. Creates a fresh Godot project from template
 2. Installs each addon
 3. Runs Godot in headless mode to check for load errors
@@ -218,22 +222,22 @@ fi
 
 Run for each addon:
 
-| Addon | Test Command | Expected Result |
-|-------|--------------|-----------------|
-| gdunit4 | `./test_addon_load.sh gdunit4` | Loads, plugin.cfg valid |
-| gut | `./test_addon_load.sh gut` | Loads, plugin.cfg valid |
-| debug_draw_3d | `./test_addon_load.sh debug_draw_3d` | Loads (GDScript portion) |
-| panku_console | `./test_addon_load.sh panku_console` | Loads, shows in singleton |
-| phantom_camera | `./test_addon_load.sh phantom_camera` | Loads, PhantomCameraManager exists |
-| dialogue_manager | `./test_addon_load.sh dialogue_manager` | Loads, DialogueManager autoload |
-| dialogic | `./test_addon_load.sh dialogic` | Loads, Dialogic autoload |
-| gloot | `./test_addon_load.sh gloot` | Loads, inventory nodes available |
-| beehave | `./test_addon_load.sh beehave` | Loads, BeehaveTree node type |
-| godot_state_charts | `./test_addon_load.sh godot_state_charts` | Loads, StateChart node type |
-| proton_scatter | `./test_addon_load.sh proton_scatter` | Loads, Scatter node type |
-| gaea | `./test_addon_load.sh gaea` | Loads, Gaea nodes available |
-| aseprite_wizard | `./test_addon_load.sh aseprite_wizard` | Loads, import plugin |
-| smart_shape_2d | `./test_addon_load.sh smart_shape_2d` | Loads, SS2D nodes |
+| Addon              | Test Command                              | Expected Result                    |
+| ------------------ | ----------------------------------------- | ---------------------------------- |
+| gdunit4            | `./test_addon_load.sh gdunit4`            | Loads, plugin.cfg valid            |
+| gut                | `./test_addon_load.sh gut`                | Loads, plugin.cfg valid            |
+| debug_draw_3d      | `./test_addon_load.sh debug_draw_3d`      | Loads (GDScript portion)           |
+| panku_console      | `./test_addon_load.sh panku_console`      | Loads, shows in singleton          |
+| phantom_camera     | `./test_addon_load.sh phantom_camera`     | Loads, PhantomCameraManager exists |
+| dialogue_manager   | `./test_addon_load.sh dialogue_manager`   | Loads, DialogueManager autoload    |
+| dialogic           | `./test_addon_load.sh dialogic`           | Loads, Dialogic autoload           |
+| gloot              | `./test_addon_load.sh gloot`              | Loads, inventory nodes available   |
+| beehave            | `./test_addon_load.sh beehave`            | Loads, BeehaveTree node type       |
+| godot_state_charts | `./test_addon_load.sh godot_state_charts` | Loads, StateChart node type        |
+| proton_scatter     | `./test_addon_load.sh proton_scatter`     | Loads, Scatter node type           |
+| gaea               | `./test_addon_load.sh gaea`               | Loads, Gaea nodes available        |
+| aseprite_wizard    | `./test_addon_load.sh aseprite_wizard`    | Loads, import plugin               |
+| smart_shape_2d     | `./test_addon_load.sh smart_shape_2d`     | Loads, SS2D nodes                  |
 
 ---
 
@@ -265,11 +269,11 @@ def test_template_structure(template_id: str):
 
 ### 3.2 Template Launch Tests
 
-| Template | Test Steps | Expected Result |
-|----------|------------|-----------------|
-| fab_game_template | Copy, open in Godot, run | Starts without errors |
-| maaack_game_template | Copy, open in Godot, run | Shows main menu |
-| cogito | Copy, open in Godot, run | Shows FPS demo scene |
+| Template             | Test Steps               | Expected Result       |
+| -------------------- | ------------------------ | --------------------- |
+| fab_game_template    | Copy, open in Godot, run | Starts without errors |
+| maaack_game_template | Copy, open in Godot, run | Shows main menu       |
+| cogito               | Copy, open in Godot, run | Shows FPS demo scene  |
 
 ---
 
@@ -318,13 +322,13 @@ echo "Place in: $TARGET"
 
 ### 4.2 GDExtension Test Matrix
 
-| Extension | Validation Steps |
-|-----------|------------------|
-| terrain3d | Download binary, create Terrain3D node, verify sculpting API |
-| godot_jolt | Download binary, set as physics engine, run physics test |
-| limboai | Download binary, create BTPlayer, verify BT nodes |
-| godot_steam | Download binary, verify Steam API calls (requires Steam running) |
-| godot_sqlite | Download binary, create SQLite, run query test |
+| Extension    | Validation Steps                                                 |
+| ------------ | ---------------------------------------------------------------- |
+| terrain3d    | Download binary, create Terrain3D node, verify sculpting API     |
+| godot_jolt   | Download binary, set as physics engine, run physics test         |
+| limboai      | Download binary, create BTPlayer, verify BT nodes                |
+| godot_steam  | Download binary, verify Steam API calls (requires Steam running) |
+| godot_sqlite | Download binary, create SQLite, run query test                   |
 
 ---
 
@@ -371,7 +375,8 @@ fab-godot --world fab/worlds/outora_library/world.yaml --output /tmp/test_build
 
 ### 6.1 Verify fab/godot.py Uses Vault
 
-Check that `cyntra-kernel/src/cyntra/fab/godot.py` properly:
+Check that `kernel/src/cyntra/fab/godot.py` properly:
+
 1. Discovers vault via `get_vault_registry()`
 2. Uses vault templates when available
 3. Installs addons from world.yaml `required_addons`
@@ -393,6 +398,7 @@ cyntra run --once --issue TEST_VAULT_INTEGRATION
 ## Validation Checklist
 
 ### Addons (check when validated)
+
 - [ ] gdunit4 - loads, tests run
 - [ ] gut - loads, tests run
 - [ ] debug_draw_3d - loads, draws work
@@ -409,6 +415,7 @@ cyntra run --once --issue TEST_VAULT_INTEGRATION
 - [ ] smart_shape_2d - loads, shapes render
 
 ### GDExtensions (check when validated)
+
 - [ ] terrain3d - binary fetched, terrain creates
 - [ ] godot_jolt - binary fetched, physics works
 - [ ] limboai - binary fetched, BT works
@@ -416,11 +423,13 @@ cyntra run --once --issue TEST_VAULT_INTEGRATION
 - [ ] godot_sqlite - binary fetched, queries work
 
 ### Templates (check when validated)
+
 - [ ] fab_game_template - opens, runs
 - [ ] maaack_game_template - opens, runs, menus work
 - [ ] cogito - opens, runs, FPS controls work
 
 ### Integration (check when validated)
+
 - [ ] vault.py API tests pass
 - [ ] fab-godot uses vault correctly
 - [ ] world.yaml addons resolve correctly
@@ -462,7 +471,7 @@ def main():
     print("\n[Phase 2] Python Unit Tests")
     result = subprocess.run(
         ["pytest", "tests/fab/test_vault.py", "-v"],
-        cwd=vault_root.parent.parent / "cyntra-kernel",
+        cwd=vault_root.parent.parent / "kernel",
         capture_output=True, text=True
     )
     print(result.stdout)

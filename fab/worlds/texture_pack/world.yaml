@@ -1,0 +1,150 @@
+# Texture Pack World
+# Minimal example demonstrating ComfyUI stages for material generation
+#
+# This pipeline generates PBR materials using ComfyUI's CHORD workflow.
+# Each stage produces a complete set of PBR maps (basecolor, normal, roughness, metalness, height).
+#
+# Prerequisites:
+#   - ComfyUI server running (local or via SSH tunnel to RunPod)
+#   - CHORD model and custom nodes installed
+#
+# Run:
+#   python -m cyntra.fab.world --world texture_pack --run-id test_001
+
+schema_version: "1.0"
+world_id: texture_pack
+world_config_id: texture_pack_v001
+world_type: props
+version: "0.1.0"
+
+generator:
+  name: "Texture Pack Generator"
+  description: "Generates PBR material textures using ComfyUI CHORD"
+  author: "Cyntra Fab"
+
+build:
+  template_blend: null
+  determinism:
+    seed: 42
+    pythonhashseed: 42
+
+parameters:
+  defaults:
+    steps: 30
+    cfg: 7.0
+  schema:
+    steps:
+      type: integer
+      min: 10
+      max: 50
+      default: 30
+    cfg:
+      type: number
+      min: 1.0
+      max: 15.0
+      default: 7.0
+
+stages:
+  # Stage 1: Generate grass material
+  - id: mat_grass
+    type: comfyui
+    workflow: chord_image_to_material.json
+    settings:
+      host: localhost
+      port: 8188
+      timeout_seconds: 120
+    comfyui_params:
+      prompt: "lush green grass, meadow, seamless tileable, top down view"
+      steps: 30
+      cfg: 7.0
+    outputs:
+      - "basecolor.png"
+      - "normal.png"
+      - "roughness.png"
+      - "metalness.png"
+      - "height.png"
+
+  # Stage 2: Generate cobblestone material
+  - id: mat_cobblestone
+    type: comfyui
+    workflow: chord_image_to_material.json
+    settings:
+      host: localhost
+      port: 8188
+      timeout_seconds: 120
+    comfyui_params:
+      prompt: "worn cobblestone path, medieval, rounded stones with moss, seamless tileable, top down view"
+      steps: 30
+      cfg: 7.0
+    outputs:
+      - "basecolor.png"
+      - "normal.png"
+      - "roughness.png"
+      - "metalness.png"
+      - "height.png"
+
+  # Stage 3: Generate wood material
+  - id: mat_wood
+    type: comfyui
+    workflow: chord_image_to_material.json
+    settings:
+      host: localhost
+      port: 8188
+      timeout_seconds: 120
+    comfyui_params:
+      prompt: "aged oak wood planks, natural grain, warm honey color, seamless tileable, top down view"
+      steps: 30
+      cfg: 7.0
+    outputs:
+      - "basecolor.png"
+      - "normal.png"
+      - "roughness.png"
+      - "metalness.png"
+      - "height.png"
+
+  # Stage 4: Generate brick material
+  - id: mat_brick
+    type: comfyui
+    workflow: chord_image_to_material.json
+    settings:
+      host: localhost
+      port: 8188
+      timeout_seconds: 120
+    comfyui_params:
+      prompt: "old red brick wall, weathered mortar, urban decay, seamless tileable"
+      steps: 30
+      cfg: 7.0
+    outputs:
+      - "basecolor.png"
+      - "normal.png"
+      - "roughness.png"
+      - "metalness.png"
+      - "height.png"
+
+  # Stage 5: Generate metal material
+  - id: mat_metal
+    type: comfyui
+    workflow: chord_image_to_material.json
+    settings:
+      host: localhost
+      port: 8188
+      timeout_seconds: 120
+    comfyui_params:
+      prompt: "rusty corroded iron plates, industrial decay, orange patina, seamless tileable"
+      steps: 30
+      cfg: 7.0
+    outputs:
+      - "basecolor.png"
+      - "normal.png"
+      - "roughness.png"
+      - "metalness.png"
+      - "height.png"
+
+budgets:
+  comfyui:
+    max_stages: 10
+    max_resolution: 1024
+
+publish:
+  viewer:
+    enabled: false

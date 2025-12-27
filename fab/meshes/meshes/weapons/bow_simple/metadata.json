@@ -1,0 +1,31 @@
+{
+  "id": "bow_simple",
+  "metadata": {
+    "name": "Bow Simple",
+    "description": "Generated from: wooden longbow, simple design, game asset",
+    "category": "weapons",
+    "tags": ["weapons", "bow", "archery", "wood"],
+    "prompt": "wooden longbow, simple design, game asset",
+    "seed": 6393,
+    "workflow": "hunyuan3d_v2",
+    "source": "comfyui",
+    "vertices": 78984,
+    "faces": 50126,
+    "file_size_bytes": 3130036,
+    "has_textures": false,
+    "has_uvs": false,
+    "created_at": "2025-12-27T00:14:24.900663+00:00"
+  },
+  "files": {
+    "glb": "/Users/connor/Medica/glia-fab/fab/meshes/meshes/weapons/bow_simple/bow_simple.glb",
+    "glb_untextured": "/Users/connor/Medica/glia-fab/fab/meshes/meshes/weapons/bow_simple/bow_simple_untextured.glb",
+    "thumbnail": null,
+    "basecolor": null,
+    "normal": null,
+    "roughness": null,
+    "metalness": null,
+    "textures": null,
+    "lods": null
+  },
+  "library_path": "/Users/connor/Medica/glia-fab/fab/meshes/meshes/weapons/bow_simple"
+}

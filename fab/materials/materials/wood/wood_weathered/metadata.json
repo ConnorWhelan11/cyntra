@@ -1,0 +1,12 @@
+{
+  "name": "Wood Weathered",
+  "description": "Procedural: old weathered wood planks, gray patina, cracked and worn, rustic, seamless tileable",
+  "category": "wood",
+  "tags": ["wood", "weathered", "rustic", "aged"],
+  "prompt": "old weathered wood planks, gray patina, cracked and worn, rustic, seamless tileable",
+  "seed": 8380,
+  "workflow": "blender_procedural",
+  "resolution": [2048, 2048],
+  "created_at": "2025-12-27T00:45:56.545006+00:00",
+  "source": "blender"
+}

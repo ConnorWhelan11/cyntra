@@ -1,0 +1,40 @@
+name: potential-fitter
+version: 1.0.0
+description: |
+  Solve graph Laplacian for V(state) from reversible edge log-ratios.
+  Estimates potential landscape from detailed-balance constraints.
+category: dynamics
+priority: high
+phase: 4
+
+inputs:
+  - name: transition_matrix
+    type: object
+    description: Transition probability matrix from estimator
+    required: true
+  - name: anchor_state
+    type: string
+    description: State to anchor at V=0 (or null for auto-select)
+    required: false
+  - name: regularization
+    type: number
+    description: Ridge regularization parameter
+    required: false
+    default: 0.01
+
+outputs:
+  - name: potential
+    type: array
+    description: List of {state_id, V, stderr} entries
+  - name: fit_quality
+    type: object
+    description: RMSE of log-ratio residuals, reversible edge count
+  - name: non_equilibrium_drives
+    type: array
+    description: Edges with large residuals (cycles)
+
+examples: []
+
+implementation:
+  type: python
+  path: potential-fitter.py

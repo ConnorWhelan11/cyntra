@@ -54,6 +54,7 @@ def execute(
     # Inject determinism
     seed = manifest.get("determinism", {}).get("seed", 42)
     import random
+
     random.seed(seed)
 
     # Get lighting parameters
@@ -67,7 +68,7 @@ def execute(
 
     # Import and run lighting module
     repo_root = Path(__file__).resolve().parents[5]
-    original_blender_dir = repo_root / "fab" / "outora-library" / "blender"
+    original_blender_dir = repo_root / "fab" / "assets" / "blender"
 
     if str(original_blender_dir) not in sys.path:
         sys.path.insert(0, str(original_blender_dir))
@@ -75,17 +76,21 @@ def execute(
     try:
         import gothic_lighting as lighting
         import importlib
+
         importlib.reload(lighting)
 
         print(f"Setting up lighting (preset={preset}, emission={window_emission})...")
         lighting.create_lighting_setup(clear_existing=True)
 
         metadata["lighting_setup"] = True
-        metadata["light_count"] = len([obj for obj in bpy.data.objects if obj.type == "LIGHT"])
+        metadata["light_count"] = len(
+            [obj for obj in bpy.data.objects if obj.type == "LIGHT"]
+        )
 
     except Exception as e:
         errors.append(f"Failed to setup lighting: {e}")
         import traceback
+
         errors.append(traceback.format_exc())
 
     # Save

@@ -1,0 +1,36 @@
+[package]
+name = "ai"
+description = "Deterministic, engine-agnostic game AI umbrella crate"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[features]
+default = ["full"]
+
+full = ["core", "bt", "goap", "htn", "nav", "crowd", "utility", "tools"]
+
+core = ["dep:ai-core"]
+bt = ["dep:ai-bt", "ai-goap/bt", "ai-utility/bt", "ai-htn/bt"]
+goap = ["dep:ai-goap"]
+htn = ["dep:ai-htn"]
+nav = ["dep:ai-nav"]
+crowd = ["dep:ai-crowd"]
+utility = ["dep:ai-utility"]
+tools = ["dep:ai-tools"]
+
+serde = ["core", "nav", "tools", "ai-core/serde", "ai-nav/serde", "ai-tools/serde"]
+
+[dependencies]
+ai-core = { path = "../ai-core", optional = true }
+ai-bt = { path = "../ai-bt", optional = true }
+ai-goap = { path = "../ai-goap", optional = true, default-features = false }
+ai-htn = { path = "../ai-htn", optional = true, default-features = false }
+ai-nav = { path = "../ai-nav", optional = true, default-features = false }
+ai-crowd = { path = "../ai-crowd", optional = true }
+ai-utility = { path = "../ai-utility", optional = true, default-features = false }
+ai-tools = { path = "../ai-tools", optional = true, default-features = false }
+
+[dev-dependencies]
+serde_json = { workspace = true }

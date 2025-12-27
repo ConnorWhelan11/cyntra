@@ -1,0 +1,39 @@
+name: cyntra-dynamics-ingest
+version: 1.0.0
+description: |
+  Extract T1 states from trajectories and log transitions to SQLite DB.
+  Core dynamics data collection pipeline.
+category: dynamics
+priority: critical
+phase: 3
+
+inputs:
+  - name: rollout_path
+    type: string
+    description: Path to rollout.json
+    required: true
+  - name: db_path
+    type: string
+    description: Path to dynamics SQLite database
+    required: true
+  - name: domain
+    type: string
+    description: Domain (code, fab_asset, fab_world)
+    required: true
+
+outputs:
+  - name: states_extracted
+    type: integer
+    description: Number of T1 states extracted
+  - name: transitions_logged
+    type: integer
+    description: Number of transitions logged
+  - name: state_ids
+    type: array
+    description: List of state IDs created
+
+examples: []
+
+implementation:
+  type: python
+  path: cyntra-dynamics-ingest.py

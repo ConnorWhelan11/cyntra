@@ -1,0 +1,12 @@
+{
+  "name": "Brick Weathered",
+  "description": "Procedural: old weathered brick wall, crumbling mortar, moss in cracks, urban decay, seamless tileable",
+  "category": "architecture",
+  "tags": ["brick", "wall", "weathered", "decay"],
+  "prompt": "old weathered brick wall, crumbling mortar, moss in cracks, urban decay, seamless tileable",
+  "seed": 2896,
+  "workflow": "blender_procedural",
+  "resolution": [2048, 2048],
+  "created_at": "2025-12-27T00:36:26.453187+00:00",
+  "source": "blender"
+}

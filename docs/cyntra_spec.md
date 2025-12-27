@@ -7,78 +7,78 @@ Repo map (top-level)
   events.jsonl, .cyntra/archives/\*
 - Active workcells (git worktrees): .workcells/
 - Run artifacts + local venv/bin shims: .cyntra/runs/_, .cyntra/bin/_, .cyntra/venv/\*
-- Python orchestrator: cyntra-kernel/ (package in cyntra-kernel/src/cyntra/)
+- Python orchestrator: kernel/ (package in kernel/src/cyntra/)
 - 3D/Fab assets + configs: fab/ (gates, lookdev scenes, outora-library, world recipes,
   godot template)
-- Desktop app (Mission Control): apps/glia-fab-desktop/ (Tauri + React), key backend file
-  apps/glia-fab-desktop/src-tauri/src/main.rs
-- Specs/docs: docs/_, plus kernel docs under cyntra-kernel/docs/architecture/_
+- Desktop app (Mission Control): apps/desktop/ (Tauri + React), key backend file
+  apps/desktop/src-tauri/src/main.rs
+- Specs/docs: docs/_, plus kernel docs under kernel/docs/architecture/_
 
-Current orchestrator/cyntra-kernel
+Current orchestrator/kernel
 
-- CLI entrypoints and subcommands: cyntra-kernel/src/cyntra/cli.py, script definitions in
-  cyntra-kernel/pyproject.toml
-- Core kernel modules: cyntra-kernel/src/cyntra/kernel/
+- CLI entrypoints and subcommands: kernel/src/cyntra/cli.py, script definitions in
+  kernel/pyproject.toml
+- Core kernel modules: kernel/src/cyntra/kernel/
   {scheduler.py,dispatcher.py,verifier.py,runner.py,routing.py,config.py}
-- Beads integration: cyntra-kernel/src/cyntra/state/manager.py (bd CLI + file fallback)
-- Workcells via git worktrees: cyntra-kernel/src/cyntra/workcell/manager.py (uses git
+- Beads integration: kernel/src/cyntra/state/manager.py (bd CLI + file fallback)
+- Workcells via git worktrees: kernel/src/cyntra/workcell/manager.py (uses git
   worktree add/remove, writes .workcell)
-- Observability: .cyntra/logs/events.jsonl written by cyntra-kernel/src/cyntra/
+- Observability: .cyntra/logs/events.jsonl written by kernel/src/cyntra/
   observability/events.py
-- MCP server: cyntra-kernel/src/cyntra/mcp/server.py
+- MCP server: kernel/src/cyntra/mcp/server.py
 
 Current Blender/Godot tooling (render harness / critics / gates)
 
 - Fab “realism gate” + critics + deterministic render harness:
-  - Gate runner: cyntra-kernel/src/cyntra/fab/gate.py
-  - Render harness: cyntra-kernel/src/cyntra/fab/render.py
-  - Critics: cyntra-kernel/src/cyntra/fab/critics/\* (e.g. realism.py, geometry.py,
+  - Gate runner: kernel/src/cyntra/fab/gate.py
+  - Render harness: kernel/src/cyntra/fab/render.py
+  - Critics: kernel/src/cyntra/fab/critics/\* (e.g. realism.py, geometry.py,
     category.py)
   - Gate configs: fab/gates/\*.yaml (e.g. fab/gates/interior_realism_v001.yaml, fab/gates/
     godot_integration_v001.yaml)
 - Godot integration harness + contract:
   - Contract: fab/godot/CONTRACT.md
   - Template: fab/godot/template/\*
-  - Python gate: cyntra-kernel/src/cyntra/fab/godot.py
+  - Python gate: kernel/src/cyntra/fab/godot.py
 - Deterministic world-building pipeline (“Fab World”):
-  - World CLI: cyntra-kernel/src/cyntra/fab/world.py (entrypoint fab-world)
-  - Runner/manifest/stages: cyntra-kernel/src/cyntra/fab/
+  - World CLI: kernel/src/cyntra/fab/world.py (entrypoint fab-world)
+  - Runner/manifest/stages: kernel/src/cyntra/fab/
     {world_runner.py,world_manifest.py,stage_executor.py,world_config.py}
   - World recipe: fab/worlds/outora_library/world.yaml (+ Blender stage scripts under
     fab/worlds/outora_library/blender/stages/\*)
   - Example deterministic run manifest: .cyntra/runs/det_export_2/manifest.json
-- Procedural scaffolds incl. Sverchok: cyntra-kernel/src/cyntra/fab/scaffolds/sverchok.py,
-  registry cyntra-kernel/src/cyntra/fab/scaffolds/registry.py
+- Procedural scaffolds incl. Sverchok: kernel/src/cyntra/fab/scaffolds/sverchok.py,
+  registry kernel/src/cyntra/fab/scaffolds/registry.py
 
 Existing schemas + CLIs + tests
 
-- Patch+Proof schemas: cyntra-kernel/schemas/manifest.schema.json, cyntra-kernel/schemas/
+- Patch+Proof schemas: kernel/schemas/manifest.schema.json, kernel/schemas/
   proof.schema.json
-- Fab schemas: cyntra-kernel/schemas/fab/{run-manifest.schema.json,gate-
+- Fab schemas: kernel/schemas/fab/{run-manifest.schema.json,gate-
   verdict.schema.json,critic-report.schema.json,asset-proof.schema.json}
 - Kernel config: .cyntra/config.yaml (routing + speculate + gates)
-- Tests: cyntra-kernel/tests/unit/_, cyntra-kernel/tests/integration/_, cyntra-kernel/tests/fab/\*
+- Tests: kernel/tests/unit/_, kernel/tests/integration/_, kernel/tests/fab/\*
 
 What already matches the non-negotiables
 
-- Workcells via git worktrees: cyntra-kernel/src/cyntra/workcell/manager.py + .workcells/\*
-- Task graph/state management via Beads: .beads/issues.jsonl, cyntra-kernel/src/cyntra/
+- Workcells via git worktrees: kernel/src/cyntra/workcell/manager.py + .workcells/\*
+- Task graph/state management via Beads: .beads/issues.jsonl, kernel/src/cyntra/
   state/manager.py
 - Patch+Proof artifacts exist and are archived: .cyntra/archives/\*/
-  {manifest.json,proof.json,.workcell} and contract doc cyntra-kernel/docs/architecture/
+  {manifest.json,proof.json,.workcell} and contract doc kernel/docs/architecture/
   workcell-contract.md
-- Quality gates for code: configured in .cyntra/config.yaml and run by cyntra-kernel/src/
+- Quality gates for code: configured in .cyntra/config.yaml and run by kernel/src/
   cyntra/gates/runner.py
-- Realism gate for assets + deterministic render harness: cyntra-kernel/src/cyntra/fab/
-  gate.py, cyntra-kernel/src/cyntra/fab/render.py, configs in fab/gates/\*
-- Deterministic world builds w/ SHA manifests: cyntra-kernel/src/cyntra/fab/
+- Realism gate for assets + deterministic render harness: kernel/src/cyntra/fab/
+  gate.py, kernel/src/cyntra/fab/render.py, configs in fab/gates/\*
+- Deterministic world builds w/ SHA manifests: kernel/src/cyntra/fab/
   world_runner.py, .cyntra/runs/\*/manifest.json
 
 Telemetry / trajectory capture (partial)
 
-- Per-workcell telemetry stream (prompts, tool calls, outputs): cyntra-kernel/src/cyntra/
+- Per-workcell telemetry stream (prompts, tool calls, outputs): kernel/src/cyntra/
   adapters/telemetry.py, documented in docs/telemetry.md
-- Desktop app reads telemetry via Tauri commands in apps/glia-fab-desktop/src-tauri/src/
+- Desktop app reads telemetry via Tauri commands in apps/desktop/src-tauri/src/
   main.rs (workcell_get_info, workcell_get_telemetry)
 
 Gaps (with evidence)
@@ -91,7 +91,7 @@ Gaps (with evidence)
   UI transitions.
 - Patch+Proof contract inconsistencies in existing archives:
   - Example proof missing issue_id despite schema requiring it: .cyntra/archives/wc-
-    1-20251219T180213Z/proof.json (schema is cyntra-kernel/schemas/proof.schema.json)
+    1-20251219T180213Z/proof.json (schema is kernel/schemas/proof.schema.json)
   - Proof marks status: "success" while verification.all_passed=false in same file
     (status semantics unclear).
 - State snapshots for reproducibility are strong for “Fab World” (.cyntra/runs/
@@ -142,7 +142,7 @@ All outputs land in a single local store (proposed): `.cyntra/`
 
 3. Components & Interfaces
 
-Cyntra Kernel (extends existing cyntra-kernel/)
+Cyntra Kernel (extends existing kernel/)
 
 - Responsibilities
   - Read/write canonical work graph from Beads (.beads/\*) and enforce status machine.
@@ -159,24 +159,24 @@ Cyntra Kernel (extends existing cyntra-kernel/)
 Workcell Runtime (existing + formalized)
 
 - Responsibilities
-  - Create/cleanup isolated git worktrees (cyntra-kernel/src/cyntra/workcell/
+  - Create/cleanup isolated git worktrees (kernel/src/cyntra/workcell/
     manager.py).
   - Enforce sandbox policies and forbidden paths (already represented in manifest
     schema).
   - Provide a stable “workcell contract” for any adapter: write proof.json + logs +
     telemetry.
-- Adapter interface (existing pattern in cyntra-kernel/src/cyntra/adapters/\*)
+- Adapter interface (existing pattern in kernel/src/cyntra/adapters/\*)
   - execute(manifest, workcell_path, timeout) -> proof.json (+ telemetry.jsonl)
   - Must be replayable: if “replay mode” enabled, adapter consumes cached LLM outputs
     rather than calling network.
 
-Fab Pipeline (existing fab/ + cyntra-kernel/src/cyntra/fab/)
+Fab Pipeline (existing fab/ + kernel/src/cyntra/fab/)
 
 - Responsibilities
   - Deterministic asset evaluation (render harness + critics) and gate verdicts.
   - Deterministic world-building (Fab World: staged pipeline + SHA manifests).
   - Godot integration gate + export harness.
-  - Provide repair playbooks for iterative fix loops (cyntra-kernel/src/cyntra/fab/
+  - Provide repair playbooks for iterative fix loops (kernel/src/cyntra/fab/
     iteration.py).
 - Interfaces
   - Gate configs (YAML): fab/gates/\*.yaml
@@ -209,8 +209,8 @@ Dynamics Instrumentation (new; “Detailed Balance Lab”)
 
 4. Data Model & Schemas (include JSON examples)
 
-Below are proposed Cyntra schemas that compose existing ones (cyntra-kernel/schemas/_, dev-
-kernel/schemas/fab/_) instead of replacing them. Store under cyntra-kernel/schemas/cyntra/_
+Below are proposed Cyntra schemas that compose existing ones (kernel/schemas/_, dev-
+kernel/schemas/fab/_) instead of replacing them. Store under kernel/schemas/cyntra/_
 (or future cyntra-_/schemas/\*).
 
 A) Task Manifest (input spec, constraints, tools allowed, acceptance criteria)
@@ -255,9 +255,9 @@ A) Task Manifest (input spec, constraints, tools allowed, acceptance criteria)
 },
 "gates": {
 "code": {
-"test": "cd cyntra-kernel && pytest -q",
-"lint": "cd cyntra-kernel && ruff check .",
-"typecheck": "cd cyntra-kernel && mypy src/cyntra"
+"test": "cd kernel && pytest -q",
+"lint": "cd kernel && ruff check .",
+"typecheck": "cd kernel && mypy src/cyntra"
 },
 "fab": {
 "validate": [
@@ -273,7 +273,7 @@ A) Task Manifest (input spec, constraints, tools allowed, acceptance criteria)
 
 B) Patch+Proof artifact (code diffs + tests + render outputs + critic reports)
 
-Keep proof.json compatible with cyntra-kernel/schemas/proof.schema.json, but extend with
+Keep proof.json compatible with kernel/schemas/proof.schema.json, but extend with
 Cyntra fields (new schema_version recommended to avoid ambiguity).
 
 {
@@ -352,7 +352,7 @@ telemetry + proof + gate outputs.
 "Blender": 0
 },
 "file_changes": [
-{ "path": "cyntra-kernel/src/cyntra/kernel/scheduler.py", "kind": "modified" }
+{ "path": "kernel/src/cyntra/kernel/scheduler.py", "kind": "modified" }
 ]
 },
 "outcomes": {
@@ -713,16 +713,16 @@ the kernel prefers lower-V next states:
 Phase 1 — Cyntra “shell” + unified artifact directory
 
 - Goals
-  - Introduce cyntra CLI as an umbrella over existing cyntra-kernel + fab-\* CLIs.
+  - Introduce cyntra CLI as an umbrella over existing kernel + fab-\* CLIs.
   - Create a single local-first store .cyntra/ while maintaining compatibility with .dev-
     kernel/ and .cyntra/.
 - Concrete tasks (paths)
-  - Add cyntra-kernel/src/cyntra/cyntra/cli.py (new) and register cyntra script in dev-
+  - Add kernel/src/cyntra/cyntra/cli.py (new) and register cyntra script in dev-
     kernel/pyproject.toml.
   - Add .cyntra/config.yaml (new) as a superset wrapper around .cyntra/config.yaml.
   - Add .cyntra/README.md documenting run layout and replay conventions.
 - Tests/validation
-  - cd cyntra-kernel && pytest -q
+  - cd kernel && pytest -q
   - Smoke: cyntra run --once behaves like cyntra run --once
 - Done when
   - Running cyntra can list workcells and runs without breaking existing flows.
@@ -736,13 +736,13 @@ Phase 2 — Rollout Builder (normalized trajectory) + schema validation
   - Produce a canonical rollout.json for every completed workcell/world run, derived from
     telemetry + proof + fab manifests.
 - Concrete tasks (paths)
-  - New module: cyntra-kernel/src/cyntra/cyntra/rollouts/
+  - New module: kernel/src/cyntra/cyntra/rollouts/
     {builder.py,schemas.py,store.py}
-  - New schema: cyntra-kernel/schemas/cyntra/rollout.schema.json
-  - Kernel hook: in cyntra-kernel/src/cyntra/kernel/verifier.py (post-proof collection),
+  - New schema: kernel/schemas/cyntra/rollout.schema.json
+  - Kernel hook: in kernel/src/cyntra/kernel/verifier.py (post-proof collection),
     call rollout builder.
 - Tests/validation
-  - Unit tests: cyntra-kernel/tests/unit/test_rollout_builder.py (new)
+  - Unit tests: kernel/tests/unit/test_rollout_builder.py (new)
   - Validate JSON against schema with jsonschema in tests.
 - Done when
   - Every workcell has {manifest.json,proof.json,telemetry.jsonl,rollout.json} or a clear
@@ -758,10 +758,10 @@ Phase 3 — Dynamics DB: states/transitions + P(g|f) estimation
     domains.
   - Compute transition counts and probabilities locally (SQLite).
 - Concrete tasks (paths)
-  - New package: cyntra-kernel/src/cyntra/cyntra/dynamics/
+  - New package: kernel/src/cyntra/cyntra/dynamics/
     - state_t1.py, transition_logger.py, transition_db.py
   - New CLI: cyntra dynamics ingest, cyntra dynamics stats
-  - New schema(s): cyntra-kernel/schemas/cyntra/
+  - New schema(s): kernel/schemas/cyntra/
     {state_t1.schema.json,transition.schema.json}
 - Tests/validation
   - Deterministic hashing tests (same inputs → same state_id)
@@ -779,7 +779,7 @@ Phase 4 — Potential estimator + action metrics + trapping detector
   - Estimate V(state) from reversible edges; compute action; emit actionable “trap”
     warnings.
 - Concrete tasks (paths)
-  - Add cyntra-kernel/src/cyntra/cyntra/dynamics/{potential.py,action.py,report.py}
+  - Add kernel/src/cyntra/cyntra/dynamics/{potential.py,action.py,report.py}
   - New CLI: cyntra dynamics report writing dynamics_report.json
 - Tests/validation
   - Synthetic small Markov graph tests (known V recovery).
@@ -798,9 +798,9 @@ Phase 5 — GEPA-ish Prompt Evolution Lab (genomes + Pareto frontier)
   - Implement genomes, few-rollout evaluation, reflection patches, Pareto frontier
     management.
 - Concrete tasks (paths)
-  - New package: cyntra-kernel/src/cyntra/cyntra/evolve/
+  - New package: kernel/src/cyntra/cyntra/evolve/
     - genome.py, evaluation.py, pareto.py, reflect.py
-  - Storage: prompts/ (new top-level) or cyntra-kernel/prompts/ with schema + versioning.
+  - Storage: prompts/ (new top-level) or kernel/prompts/ with schema + versioning.
   - New CLI: cyntra evolve run, cyntra evolve frontier, cyntra evolve promote
 - Tests/validation
   - Unit tests for Pareto set correctness.
@@ -818,10 +818,10 @@ Phase 6 — Closed-loop controller integration (scheduler + adapters)
   - Use action/potential signals to tune exploration knobs in kernel scheduling and
     adapter invocation.
 - Concrete tasks (paths)
-  - Add cyntra-kernel/src/cyntra/cyntra/control/exploration_controller.py
+  - Add kernel/src/cyntra/cyntra/control/exploration_controller.py
   - Wire into scheduling/routing:
-    - cyntra-kernel/src/cyntra/kernel/scheduler.py (priority scoring augmentation)
-    - cyntra-kernel/src/cyntra/kernel/dispatcher.py (toolchain params, speculate
+    - kernel/src/cyntra/kernel/scheduler.py (priority scoring augmentation)
+    - kernel/src/cyntra/kernel/dispatcher.py (toolchain params, speculate
       parallelism)
 - Tests/validation
   - Simulation tests: when “trap” is flagged, controller increases exploration knobs;
@@ -836,7 +836,7 @@ Phase 6 — Closed-loop controller integration (scheduler + adapters)
 
 9. Open Questions / Assumptions
 
-- Naming/migration: should Cyntra rename cyntra-kernel/ + .cyntra/ + .cyntra/, or keep
+- Naming/migration: should Cyntra rename kernel/ + .cyntra/ + .cyntra/, or keep
   compatibility indefinitely with .cyntra/ as a superset?
   answer: yeah rename to cyntra. no need to keep compat
 - Replay determinism: do we require “offline replay” of LLM steps via cached outputs

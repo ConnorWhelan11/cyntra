@@ -1,0 +1,43 @@
+name: memory-search
+version: 1.0.0
+description: |
+  Semantic and full-text search over memory store.
+  Supports filtering by domain, block type, and tags.
+category: sleeptime
+priority: high
+
+inputs:
+  - name: query
+    type: string
+    description: Search query (natural language)
+    required: true
+  - name: memory_path
+    type: string
+    description: Path to memory store directory
+    required: true
+  - name: search_type
+    type: string
+    description: Search type (semantic, fts, hybrid)
+    required: false
+    default: "hybrid"
+  - name: filters
+    type: object
+    description: Filters (domain, block_type, tags)
+    required: false
+  - name: limit
+    type: integer
+    description: Maximum results
+    required: false
+    default: 10
+
+outputs:
+  - name: results
+    type: array
+    description: Matching memory blocks
+  - name: scores
+    type: array
+    description: Relevance scores
+
+implementation:
+  type: python
+  path: memory-search.py

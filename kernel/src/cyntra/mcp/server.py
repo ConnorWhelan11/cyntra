@@ -48,15 +48,14 @@ except ImportError:
 
 from cyntra.kernel.config import KernelConfig
 from cyntra.kernel.scheduler import Scheduler
-from cyntra.state.manager import StateManager
 from cyntra.observability.events import EventReader
+from cyntra.state.manager import StateManager
 
 # Optional ComfyUI and RunPod tools
 try:
     from cyntra.mcp.comfyui_tools import ComfyUIToolProvider
     from cyntra.mcp.runpod_tools import RunPodToolProvider
-    from cyntra.fab.comfyui_client import ComfyUIConfig
-    from cyntra.fab.workflow_registry import WorkflowRegistry
+
     COMFYUI_AVAILABLE = True
 except ImportError:
     COMFYUI_AVAILABLE = False
@@ -78,9 +77,7 @@ class CyntraMCPServer:
         workflow_registry_path: Path | None = None,
     ) -> None:
         if not MCP_AVAILABLE:
-            raise RuntimeError(
-                "MCP package not installed. Install with: pip install mcp"
-            )
+            raise RuntimeError("MCP package not installed. Install with: pip install mcp")
 
         self.config_path = config_path or Path(".cyntra/config.yaml")
         self._config: KernelConfig | None = None
@@ -94,29 +91,25 @@ class CyntraMCPServer:
 
         # Initialize ComfyUI tools if available
         if COMFYUI_AVAILABLE:
-            registry_path = workflow_registry_path or Path(
-                "fab/workflows/comfyui/registry.yaml"
-            )
+            registry_path = workflow_registry_path or Path("fab/workflows/comfyui/registry.yaml")
             if registry_path.exists():
                 try:
                     self._comfyui_provider = ComfyUIToolProvider(registry_path)
                 except Exception as e:
                     import structlog
-                    structlog.get_logger().warning(
-                        "Failed to load ComfyUI tools", error=str(e)
-                    )
+
+                    structlog.get_logger().warning("Failed to load ComfyUI tools", error=str(e))
 
             # Initialize RunPod tools
             try:
                 self._runpod_provider = RunPodToolProvider()
             except Exception as e:
                 import structlog
-                structlog.get_logger().warning(
-                    "Failed to load RunPod tools", error=str(e)
-                )
+
+                structlog.get_logger().warning("Failed to load RunPod tools", error=str(e))
 
         # Create MCP server
-        self.server = Server("cyntra-kernel")
+        self.server = Server("cyntra")
         self._register_tools()
         self._register_resources()
 
@@ -240,9 +233,7 @@ class CyntraMCPServer:
                 tool_def["handler"],
             )
 
-    def _register_single_tool(
-        self, name: str, description: str, handler: Any
-    ) -> None:
+    def _register_single_tool(self, name: str, description: str, handler: Any) -> None:
         """Register a single tool with proper closure capture.
 
         This factory pattern ensures each handler is captured correctly,
@@ -279,7 +270,7 @@ class CyntraMCPServer:
             graph = self._state_manager.load_graph()
             content = json.dumps([i.to_dict() for i in graph.issues], indent=2)
             return types.Resource(
-                uri="cyntra-kernel://issues",
+                uri="cyntra://issues",
                 name="Beads Issues",
                 description="All issues from the Beads work graph",
                 mimeType="application/json",
@@ -293,7 +284,7 @@ class CyntraMCPServer:
             events = self._event_reader.read_recent(100)
             content = json.dumps(events, indent=2)
             return types.Resource(
-                uri="cyntra-kernel://events",
+                uri="cyntra://events",
                 name="Kernel Events",
                 description="Recent events from Cyntra",
                 mimeType="application/json",
@@ -307,7 +298,7 @@ class CyntraMCPServer:
             stats = self._event_reader.get_stats()
             content = json.dumps(stats, indent=2)
             return types.Resource(
-                uri="cyntra-kernel://stats",
+                uri="cyntra://stats",
                 name="Kernel Statistics",
                 description="Statistics from Cyntra",
                 mimeType="application/json",

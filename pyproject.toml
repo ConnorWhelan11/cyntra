@@ -1,5 +1,5 @@
 [tool.uv.workspace]
 members = [
-    "cyntra-kernel",
+    "kernel",
     "fab/outora-library",
 ]

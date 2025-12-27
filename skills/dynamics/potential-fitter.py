@@ -13,9 +13,9 @@ from pathlib import Path
 from typing import Any
 
 repo_root = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(repo_root / "cyntra-kernel" / "src"))
-
-from cyntra.cyntra.dynamics.potential import fit_potential
+kernel_src = repo_root / "kernel" / "src"
+if kernel_src.exists():
+    sys.path.insert(0, str(kernel_src))
 
 
 def execute(
@@ -39,6 +39,8 @@ def execute(
         }
     """
     try:
+        from cyntra.dynamics.potential import fit_potential
+
         result = fit_potential(
             transition_matrix=transition_matrix,
             anchor_state=anchor_state,
@@ -64,7 +66,9 @@ def main():
     parser = argparse.ArgumentParser(description="Fit potential from transition matrix")
     parser.add_argument("matrix_path", help="Path to transition matrix JSON")
     parser.add_argument("--anchor", help="Anchor state ID")
-    parser.add_argument("--regularization", type=float, default=0.01, help="Ridge parameter")
+    parser.add_argument(
+        "--regularization", type=float, default=0.01, help="Ridge parameter"
+    )
     parser.add_argument("--output", help="Output path for potential JSON")
 
     args = parser.parse_args()

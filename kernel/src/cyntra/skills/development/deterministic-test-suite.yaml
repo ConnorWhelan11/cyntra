@@ -1,0 +1,41 @@
+name: deterministic-test-suite
+version: 1.0.0
+description: |
+  Run tests with fixed seeds, verify replay stability, detect non-determinism.
+  Ensures reproducibility across test runs.
+category: development
+priority: medium
+phase: 2
+
+inputs:
+  - name: test_path
+    type: string
+    description: Path to test directory or specific test file
+    required: true
+  - name: seed
+    type: integer
+    description: Fixed seed for deterministic execution
+    required: false
+    default: 42
+  - name: runs
+    type: integer
+    description: Number of runs to verify stability
+    required: false
+    default: 3
+
+outputs:
+  - name: all_passed
+    type: boolean
+    description: True if all runs passed and results match
+  - name: deterministic
+    type: boolean
+    description: True if all runs produced identical results
+  - name: divergences
+    type: array
+    description: List of non-deterministic behaviors detected
+
+examples: []
+
+implementation:
+  type: python
+  path: deterministic-test-suite.py

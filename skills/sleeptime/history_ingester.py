@@ -11,13 +11,14 @@ import json
 import hashlib
 from datetime import datetime, timezone
 from pathlib import Path
-from dataclasses import dataclass, field, asdict
+from dataclasses import dataclass, asdict
 from typing import Literal
 
 
 @dataclass
 class ToolCall:
     """Single tool invocation from a run."""
+
     name: str
     timestamp: str
     duration_ms: int
@@ -28,6 +29,7 @@ class ToolCall:
 @dataclass
 class RunSummary:
     """Structured summary of a single run."""
+
     run_id: str
     outcome: Literal["success", "failure", "timeout", "cancelled"]
     started_at: str
@@ -47,6 +49,7 @@ class RunSummary:
 @dataclass
 class WatermarkState:
     """Tracks processing progress."""
+
     last_processed_timestamp: str
     last_processed_run_id: str
     total_processed: int
@@ -120,13 +123,15 @@ class HistoryIngester:
                     entry = json.loads(line)
                     tool_name = entry.get("tool", "unknown")
                     sequence.append(tool_name)
-                    calls.append(ToolCall(
-                        name=tool_name,
-                        timestamp=entry.get("timestamp", ""),
-                        duration_ms=entry.get("duration_ms", 0),
-                        success=entry.get("success", True),
-                        error=entry.get("error"),
-                    ))
+                    calls.append(
+                        ToolCall(
+                            name=tool_name,
+                            timestamp=entry.get("timestamp", ""),
+                            duration_ms=entry.get("duration_ms", 0),
+                            success=entry.get("success", True),
+                            error=entry.get("error"),
+                        )
+                    )
                 except Exception:
                     continue
 
@@ -142,9 +147,10 @@ class HistoryIngester:
 
         # Normalize paths, line numbers for clustering
         import re
-        normalized = re.sub(r'/[\w/]+/', '<path>/', error_text)
-        normalized = re.sub(r':\d+:', ':<line>:', normalized)
-        normalized = re.sub(r'0x[0-9a-f]+', '<addr>', normalized)
+
+        normalized = re.sub(r"/[\w/]+/", "<path>/", error_text)
+        normalized = re.sub(r":\d+:", ":<line>:", normalized)
+        normalized = re.sub(r"0x[0-9a-f]+", "<addr>", normalized)
 
         # Hash for dedup
         return hashlib.sha256(normalized.encode()).hexdigest()[:16]
@@ -222,7 +228,9 @@ class HistoryIngester:
             if watermark:
                 since_timestamp = watermark.last_processed_timestamp
 
-        run_dirs = self.discover_runs(since_timestamp, max_runs * 2)  # Over-fetch for filtering
+        run_dirs = self.discover_runs(
+            since_timestamp, max_runs * 2
+        )  # Over-fetch for filtering
 
         summaries = []
         for run_dir in run_dirs:
@@ -243,11 +251,16 @@ class HistoryIngester:
         # Update watermark
         new_watermark = datetime.now(timezone.utc).isoformat()
         if summaries:
-            self.save_watermark(WatermarkState(
-                last_processed_timestamp=new_watermark,
-                last_processed_run_id=summaries[0].run_id,
-                total_processed=(self.load_watermark() or WatermarkState("", "", 0)).total_processed + len(summaries),
-            ))
+            self.save_watermark(
+                WatermarkState(
+                    last_processed_timestamp=new_watermark,
+                    last_processed_run_id=summaries[0].run_id,
+                    total_processed=(
+                        self.load_watermark() or WatermarkState("", "", 0)
+                    ).total_processed
+                    + len(summaries),
+                )
+            )
 
         return {
             "run_summaries": [s.to_dict() for s in summaries],
@@ -259,6 +272,7 @@ class HistoryIngester:
 # CLI entry point
 if __name__ == "__main__":
     import sys
+
     ingester = HistoryIngester()
     result = ingester.ingest(
         include_only=sys.argv[1] if len(sys.argv) > 1 else "all",

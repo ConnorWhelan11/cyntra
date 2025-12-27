@@ -1,0 +1,12 @@
+{
+  "name": "Concrete Smooth",
+  "description": "Procedural: smooth poured concrete, light gray, subtle surface variation, seamless tileable",
+  "category": "architecture",
+  "tags": ["concrete", "modern", "industrial"],
+  "prompt": "smooth poured concrete, light gray, subtle surface variation, seamless tileable",
+  "seed": 1500,
+  "workflow": "blender_procedural",
+  "resolution": [2048, 2048],
+  "created_at": "2025-12-27T00:37:01.063234+00:00",
+  "source": "blender"
+}

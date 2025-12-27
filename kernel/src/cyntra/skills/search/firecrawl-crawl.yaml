@@ -1,0 +1,43 @@
+name: firecrawl-crawl
+version: 1.0.0
+description: |
+  Recursively crawl a website to extract multiple pages.
+  Useful for indexing documentation sites.
+category: search
+priority: medium
+
+inputs:
+  - name: url
+    type: string
+    description: The starting URL to crawl
+    required: true
+  - name: limit
+    type: integer
+    description: Maximum number of pages to crawl
+    required: false
+    default: 50
+  - name: include_patterns
+    type: array
+    description: URL patterns to include (glob syntax)
+    required: false
+  - name: exclude_patterns
+    type: array
+    description: URL patterns to exclude (glob syntax)
+    required: false
+  - name: cache_ttl
+    type: integer
+    description: Cache TTL in seconds (0 to disable)
+    required: false
+    default: 3600
+
+outputs:
+  - name: pages
+    type: array
+    description: Array of scraped page content
+  - name: sitemap
+    type: object
+    description: Site structure discovered during crawl
+
+implementation:
+  type: python
+  path: firecrawl-crawl.py

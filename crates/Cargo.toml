@@ -1,6 +1,25 @@
 [workspace]
 resolver = "2"
-members = ["cyntra-core", "cyntra-cli"]
+members = [
+    # AI primitives
+    "ai",
+    "ai-bt",
+    "ai-crowd",
+    "ai-core",
+    "ai-goap",
+    "ai-htn",
+    "ai-nav",
+    "ai-tools",
+    "ai-utility",
+    # Cyntra kernel
+    "cyntra-core",
+    "cyntra-cli",
+    # Logos formal reasoning
+    "logos-ffi",
+    "logos-z3",
+    "logos-goap",
+    "logos-py",
+]
 
 [workspace.package]
 version = "0.1.0"
@@ -20,6 +39,9 @@ reqwest = { version = "0.12", features = ["json", "rustls-tls"], default-feature
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 serde_yaml = "0.9"
+
+# Benchmarks
+criterion = "0.5"
 
 # CLI
 clap = { version = "4", features = ["derive"] }

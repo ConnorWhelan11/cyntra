@@ -1,0 +1,62 @@
+name: gen-fixtures
+version: 1.0.0
+description: |
+  Generate test fixtures from code analysis.
+  Creates mock data, factory functions, and test helpers.
+category: development
+priority: medium
+phase: 2
+
+inputs:
+  - name: source_file
+    type: string
+    description: Source file to generate fixtures for
+    required: true
+  - name: repo_path
+    type: string
+    description: Repository root path
+    required: true
+  - name: fixture_type
+    type: string
+    description: "Type: factory, mock, sample_data, all"
+    required: false
+    default: "all"
+    enum: [factory, mock, sample_data, all]
+  - name: output_dir
+    type: string
+    description: Directory to write fixtures
+    required: false
+
+outputs:
+  - name: fixtures_created
+    type: array
+    description: List of fixture definitions created
+  - name: factory_functions
+    type: array
+    description: Factory function definitions
+  - name: sample_data
+    type: object
+    description: Generated sample data
+
+examples:
+  - description: Generate fixtures for a model
+    inputs:
+      source_file: "src/models/user.py"
+      repo_path: "/path/to/repo"
+      fixture_type: "all"
+    outputs:
+      fixtures_created:
+        - name: "user_factory"
+          type: "factory"
+          code: "def user_factory(**kwargs): ..."
+      factory_functions:
+        - "user_factory"
+      sample_data:
+        user:
+          id: 1
+          name: "Test User"
+          email: "test@example.com"
+
+implementation:
+  type: python
+  path: gen-fixtures.py

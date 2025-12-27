@@ -1,0 +1,19 @@
+# Dojo Production Configuration (Slot deployment)
+# Used with: sozo --profile prod
+
+[env]
+rpc_url = "https://api.cartridge.gg/x/glia-fab/katana"
+# account_address and private_key loaded from environment
+world_address = "0x0"  # Updated after first deployment
+
+[world]
+name = "glia_fab"
+seed = "glia_fab_mainnet"
+description = "Glia Fab production world"
+
+[slot]
+project = "glia-fab"
+tier = "basic"
+
+[torii]
+url = "https://api.cartridge.gg/x/glia-fab/torii"

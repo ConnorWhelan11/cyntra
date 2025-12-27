@@ -1,0 +1,24 @@
+services:
+  neo4j:
+    image: neo4j:5-community
+    container_name: cyntra-cocoindex-neo4j
+    environment:
+      NEO4J_AUTH: neo4j/cocoindex
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    volumes:
+      - cocoindex_neo4j_data:/data
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget -qO- http://localhost:7474/ || exit 1",
+        ]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+
+volumes:
+  cocoindex_neo4j_data:
+

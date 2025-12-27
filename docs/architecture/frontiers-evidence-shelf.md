@@ -39,7 +39,7 @@ Design rule: keep the **frontier file minimal**; store richer metadata in run in
 
 ## 3) Frontier file format (current + guidance)
 
-Current world-frontier schema (see `cyntra-kernel/schemas/cyntra/universe_world_frontiers.schema.json`):
+Current world-frontier schema (see `kernel/schemas/cyntra/universe_world_frontiers.schema.json`):
 
 ```json
 {
@@ -51,17 +51,16 @@ Current world-frontier schema (see `cyntra-kernel/schemas/cyntra/universe_world_
     {
       "objective_id": "realism_perf_v1",
       "metrics": ["overall", "duration_ms"],
-      "objectives": {"overall": "max", "duration_ms": "min"},
-      "points": [
-        {"run_id": "evo_...", "values": {"overall": 0.82, "duration_ms": 12345}}
-      ]
+      "objectives": { "overall": "max", "duration_ms": "min" },
+      "points": [{ "run_id": "evo_...", "values": { "overall": 0.82, "duration_ms": 12345 } }]
     }
   ]
 }
 ```
 
 Guidance:
-- `points[*].values` should include *only* numeric objective metrics.
+
+- `points[*].values` should include _only_ numeric objective metrics.
 - Enrichments (artifact paths, digests, git rev, thumbnails) belong in:
   - `.cyntra/universes/<id>/index/runs.jsonl`, or
   - a shelf/gallery artifact (below).
@@ -77,6 +76,7 @@ For each objective set:
 5. Write file atomically.
 
 Deterministic tie-breakers:
+
 - `run_id` lexicographic
 - `generated_at` must not influence ordering
 
@@ -95,6 +95,7 @@ Suggested output:
 ```
 
 Each entry includes:
+
 - previous run_id
 - new run_id
 - metric deltas
@@ -126,6 +127,7 @@ Proposed layout:
 ```
 
 Payload:
+
 - selected `run_id`
 - objective id + metrics used for selection
 - artifact pointers (GLB path, renders path, proof pack)
@@ -156,6 +158,7 @@ If you collect ratings:
 - store rating events as append-only logs and compute aggregated scores.
 
 Selection modes can then be:
+
 - “gate pass required + maximize human_rating”
 - “maximize weighted_sum(overall, human_rating)”
 
@@ -167,4 +170,3 @@ Selection modes can then be:
   - shelf promotion (optional “auto-promote champion” policy)
 - Provide a single “review packet” command for humans:
   - show top frontier points + diffs + artifacts
-

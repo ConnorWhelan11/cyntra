@@ -15,7 +15,7 @@ from pathlib import Path
 from typing import Any
 
 repo_root = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(repo_root / "cyntra-kernel" / "src"))
+sys.path.insert(0, str(repo_root / "kernel" / "src"))
 
 
 def execute(
@@ -95,7 +95,8 @@ def execute(
         "--factory-startup",
         "--background",
         str(blend_file),
-        "--python", str(script_path),
+        "--python",
+        str(script_path),
     ]
 
     start_time = time.time()
@@ -172,7 +173,9 @@ def main():
     parser.add_argument("output_dir", help="Output directory")
     parser.add_argument("--seed", type=int, default=42, help="Random seed")
     parser.add_argument("--samples", type=int, default=128, help="Render samples")
-    parser.add_argument("--resolution", nargs=2, type=int, default=[1920, 1080], help="Width height")
+    parser.add_argument(
+        "--resolution", nargs=2, type=int, default=[1920, 1080], help="Width height"
+    )
 
     args = parser.parse_args()
 

@@ -1,0 +1,46 @@
+name: lookdev-render-harness
+version: 1.0.0
+description: |
+  Apply lookdev scene, render from camera rig, export multi-view renders.
+  Standardized rendering for asset evaluation.
+category: fab
+priority: high
+phase: fab
+
+inputs:
+  - name: asset_path
+    type: string
+    description: Path to asset to evaluate
+    required: true
+  - name: lookdev_scene
+    type: string
+    description: Path to lookdev .blend scene
+    required: true
+  - name: output_dir
+    type: string
+    description: Directory for renders
+    required: true
+  - name: seed
+    type: integer
+    description: Random seed
+    required: false
+    default: 42
+  - name: views
+    type: array
+    description: Camera views to render
+    required: false
+    default: ["front", "three_quarter", "detail"]
+
+outputs:
+  - name: renders
+    type: object
+    description: View name → render path mapping
+  - name: manifest_path
+    type: string
+    description: Render manifest with parameters
+
+examples: []
+
+implementation:
+  type: python
+  path: lookdev-render-harness.py

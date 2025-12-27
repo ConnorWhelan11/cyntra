@@ -1,0 +1,112 @@
+# Gameplay Playability Gate - Gothic Interior Variant
+#
+# Adjusted thresholds for contemplative exploration in Gothic environments.
+# Players naturally pause to admire architecture and examine details.
+#
+# Use this gate for: Libraries, cathedrals, museums, atmospheric interiors
+
+gate_config_id: gameplay_playability_gothic_v001
+category: gameplay_quality
+schema_version: "1.0"
+extends: gameplay_playability_v001
+
+nitrogen:
+  host: localhost
+  port: 5555
+  timeout_ms: 30000
+  frame_width: 256
+  frame_height: 256
+  frame_rate: 10
+  action_timestep: 0
+  action_scale: 1.0
+
+playtest:
+  duration_seconds: 60
+  warmup_seconds: 5
+  spawn_point: SPAWN_PLAYER
+  max_retries: 3
+  exploration_mode: free
+
+godot:
+  test_scene: res://scenes/playtest.tscn
+  headless: true
+  args: ["--headless", "--fixed-fps", "30"]
+  viewport_width: 256
+  viewport_height: 256
+
+thresholds:
+  # Relaxed for Gothic interiors - players pause to admire architecture
+  stuck_ratio_max: 0.50           # Allow up to 50% contemplation
+  coverage_min: 0.30              # Lower coverage expectation (complex layouts)
+  crash_count_max: 0
+  interaction_rate_min: 0.03      # Lower - fewer interactive objects in libraries
+
+  # Warnings
+  stuck_ratio_warn: 0.35
+  coverage_warn: 0.50
+
+metrics:
+  collect:
+    - frames_processed
+    - total_playtime_seconds
+    - stuck_frames
+    - stuck_ratio
+    - interaction_attempts
+    - jump_attempts
+    - movement_distance
+    - coverage_estimate
+    - positions_visited
+    - unique_areas_explored
+    - crash_count
+    - respawn_count
+
+  output_file: playability_results.json
+
+hard_fail_codes:
+  - PLAY_STUCK_TOO_LONG
+  - PLAY_NO_EXPLORATION
+  - PLAY_CRASH
+  - PLAY_NITROGEN_TIMEOUT
+  - PLAY_GODOT_MISSING
+  - PLAY_SCENE_NOT_FOUND
+  - PLAY_NO_SPAWN_POINT
+
+warning_codes:
+  - PLAY_LOW_COVERAGE
+  - PLAY_HIGH_STUCK_RATIO
+  - PLAY_NO_INTERACTIONS
+  - PLAY_NITROGEN_SLOW
+
+repair_playbook:
+  PLAY_STUCK_TOO_LONG:
+    priority: 1
+    instructions: |
+      Player got stuck too often (>50% in Gothic mode).
+
+      Even with relaxed thresholds for contemplative environments,
+      this is excessive. Check for:
+
+      - Dead ends with no visual escape route
+      - Overly complex furniture arrangements
+      - Lighting too dark to see paths
+      - Repetitive textures causing disorientation
+
+      Gothic-specific fixes:
+      - Add candles/lights along walkways
+      - Create visual landmarks (statues, windows)
+      - Ensure sightlines between major areas
+
+  PLAY_NO_EXPLORATION:
+    priority: 1
+    instructions: |
+      Player explored less than 30% of the navigable area.
+
+      For Gothic interiors, this suggests:
+      - Main hall is too intimidating
+      - Wing entrances not visible
+      - Player spawn in corner instead of center
+
+      Fixes:
+      - Move SPAWN_PLAYER to central location
+      - Add beckoning lights in each wing
+      - Ensure arched doorways are clearly visible

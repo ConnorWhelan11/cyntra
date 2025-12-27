@@ -49,10 +49,13 @@ def execute(
     # Inject determinism
     seed = manifest.get("determinism", {}).get("seed", 42)
     import random
+
     random.seed(seed)
 
     # Get material parameters
-    stone_variant = params.get("materials", {}).get("stone_variant", "limestone_weathered")
+    stone_variant = params.get("materials", {}).get(
+        "stone_variant", "limestone_weathered"
+    )
     wood_variant = params.get("materials", {}).get("wood_variant", "oak_aged")
     color_palette = params.get("materials", {}).get("color_palette", "warm_academic")
 
@@ -62,7 +65,7 @@ def execute(
 
     # Import and run materials module
     repo_root = Path(__file__).resolve().parents[5]
-    original_blender_dir = repo_root / "fab" / "outora-library" / "blender"
+    original_blender_dir = repo_root / "fab" / "assets" / "blender"
 
     if str(original_blender_dir) not in sys.path:
         sys.path.insert(0, str(original_blender_dir))
@@ -70,6 +73,7 @@ def execute(
     try:
         import gothic_materials as materials
         import importlib
+
         importlib.reload(materials)
 
         print(f"Applying materials (stone={stone_variant}, wood={wood_variant})...")
@@ -82,6 +86,7 @@ def execute(
     except Exception as e:
         errors.append(f"Failed to apply materials: {e}")
         import traceback
+
         errors.append(traceback.format_exc())
 
     # Save

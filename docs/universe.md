@@ -5,6 +5,7 @@ This document defines the **Universe** abstraction: a top-level container that g
 Status: **Draft / proposed**. This spec is designed to layer on top of the existing Cyntra + Fab World system rather than replace it.
 
 Related docs:
+
 - `docs/cyntra_spec.md`
 - `docs/fab-world-system.md`
 - `docs/fab-world-schema.md`
@@ -22,7 +23,7 @@ Related docs:
 
 ## Non-goals
 
-- A physics engine or simulation runtime. A Universe organizes *pipelines*, not real-time simulation loops.
+- A physics engine or simulation runtime. A Universe organizes _pipelines_, not real-time simulation loops.
 - A replacement for Beads, workcells, Patch+Proof, or Fab World. Universe composes these.
 - A UI-first effort. Mission Control should follow stable artifact contracts.
 
@@ -31,6 +32,7 @@ Related docs:
 ## Core Concepts (Glossary)
 
 ### Universe
+
 A Universe is a named container that defines:
 
 - **World registry**: which worlds exist and where their definitions live.
@@ -42,11 +44,13 @@ A Universe is a named container that defines:
 In short: **Universe = registry + policy + memory + defaults**.
 
 ### World
+
 A World is a bounded pipeline definition that produces a **Phenotype** (asset/code/data) from inputs + config, and is evaluated by quality **Gates**.
 
 For Fab Worlds, the concrete definition is `fab/worlds/<world_id>/world.yaml` (see `docs/fab-world-schema.md`).
 
 ### Run
+
 One execution of a world pipeline at a specific seed/config/toolchain set, producing verifiable artifacts:
 
 - build outputs (phenotype + intermediates)
@@ -55,6 +59,7 @@ One execution of a world pipeline at a specific seed/config/toolchain set, produ
 - manifests for provenance (hashes, tool versions)
 
 ### Generation
+
 A lineage unit in an evolution history. A generation typically contains:
 
 - one or more candidate runs
@@ -63,6 +68,7 @@ A lineage unit in an evolution history. A generation typically contains:
 - genome/config deltas relative to a parent
 
 ### Agent
+
 An executable worker profile (LLM or deterministic toolchain) with:
 
 - toolchain/model identity
@@ -73,6 +79,7 @@ An executable worker profile (LLM or deterministic toolchain) with:
 Agents operate inside **workcells** (isolated git worktrees).
 
 ### Swarm
+
 A coordination policy for a group of agents over a goal. Swarms define:
 
 - participants (roles + counts)
@@ -81,11 +88,13 @@ A coordination policy for a group of agents over a goal. Swarms define:
 - stop conditions (success/failure/budget exhaustion)
 
 ### Gates
+
 Deterministic quality checks that emit **machine-readable** metrics and pass/fail verdicts.
 
 For Fab: gate configs live in `fab/gates/*.yaml` and are executed via Cyntra Fab tooling (see `docs/fab-world-system.md`).
 
 ### Memory Substrate
+
 Derived knowledge built from completed runs, always with provenance. Core components:
 
 - **Beads graph** (work state): `.beads/issues.jsonl`, `.beads/deps.jsonl`
@@ -104,7 +113,7 @@ This Universe spec intentionally aligns with current primitives:
 - **Workcells**: `.workcells/` (isolated git worktrees)
 - **Runs**: `.cyntra/runs/<run_id>/` (run artifacts)
 - **Fab Worlds**: `fab/worlds/<world_id>/world.yaml` + stage scripts
-- **Schemas**: `cyntra-kernel/schemas/**` (Fab run manifest, gate verdict, critic reports, Patch+Proof)
+- **Schemas**: `kernel/schemas/**` (Fab run manifest, gate verdict, critic reports, Patch+Proof)
 - **Telemetry**: `.workcells/*/telemetry.jsonl` (see `docs/telemetry.md`)
 - **Memory/Dynamics stores**: `.cyntra/memory/`, `.cyntra/dynamics/`, `.cyntra/sleeptime/`
 
@@ -146,7 +155,7 @@ Universe runtime state should live under `.cyntra/` (generated artifacts, indice
         └── patterns.jsonl             # extracted patterns w/ evidence run_ids
 ```
 
-Note: the *authoritative* run artifacts remain in `.cyntra/runs/`. Universe state references them by `run_id`.
+Note: the _authoritative_ run artifacts remain in `.cyntra/runs/`. Universe state references them by `run_id`.
 
 ---
 
@@ -238,6 +247,7 @@ agents:
 ```
 
 Notes:
+
 - Toolchain names should align with `.cyntra/config.yaml` (`codex`, `claude`, `opencode`, `crush`, `fab-world`).
 - “Agent memory” is not magic; it is access to Universe memory indices and suggested actions, still validated by gates.
 
@@ -280,15 +290,15 @@ swarms:
 
 Universe operations should produce consistent, replayable artifacts. At minimum, each run should have:
 
-- **Provenance**: a manifest with tool versions and content hashes (Fab: `cyntra-kernel/schemas/fab/run-manifest.schema.json`)
-- **Quality**: gate verdict + critic reports (Fab: `cyntra-kernel/schemas/fab/gate-verdict.schema.json`)
+- **Provenance**: a manifest with tool versions and content hashes (Fab: `kernel/schemas/fab/run-manifest.schema.json`)
+- **Quality**: gate verdict + critic reports (Fab: `kernel/schemas/fab/gate-verdict.schema.json`)
 - **Evidence**: logs, renders, exports, test output
 
 ### Universe-scoped run context (proposed additive file)
 
 To avoid breaking existing schemas, Universe metadata can be recorded in an additive context file in the run directory:
 
-` .cyntra/runs/<run_id>/context.json `
+`.cyntra/runs/<run_id>/context.json`
 
 ```json
 {
@@ -325,6 +335,7 @@ last_updated_at: "2025-12-21T00:00:00Z"
 ```
 
 Hygiene rules:
+
 - No pattern without `evidence_runs`.
 - Confidence decays unless reinforced by new successful evidence.
 - Patterns never bypass gates; they only propose actions and priors.
@@ -343,7 +354,10 @@ Minimum frontier record:
   "objective_id": "realism_perf_v1",
   "metrics": ["realism", "performance_fps", "file_size_mb"],
   "points": [
-    { "run_id": "run_...", "values": { "realism": 0.88, "performance_fps": 62, "file_size_mb": 18.4 } }
+    {
+      "run_id": "run_...",
+      "values": { "realism": 0.88, "performance_fps": 62, "file_size_mb": 18.4 }
+    }
   ]
 }
 ```
@@ -411,7 +425,7 @@ cyntra memory search --universe medica "gothic arch"
 cyntra memory consolidate --universe medica
 ```
 
-Note: command names are illustrative; actual CLI should remain consistent with `cyntra-kernel/src/cyntra/cli.py`.
+Note: command names are illustrative; actual CLI should remain consistent with `kernel/src/cyntra/cli.py`.
 
 ---
 
@@ -431,19 +445,23 @@ Defer “deep” features (interactive dynamics tuning, pattern editing) until t
 ## Milestones (Acceptance Criteria)
 
 ### M0: Universe definitions (config + registry)
+
 - `universes/<id>/universe.yaml` exists and can be parsed/validated.
 - Worlds can be resolved by `path` and validated using their existing schemas.
 - A Universe can be selected as context for `cyntra` commands (even if only as a flag).
 
 ### M1: Universe-scoped indexing
+
 - Runs produce a `context.json` (or equivalent) connecting `universe_id` ↔ `world_id` ↔ `issue_id`.
 - `.cyntra/universes/<id>/index/runs.jsonl` can be rebuilt from `.cyntra/runs/`.
 
 ### M2: Memory substrate (provenance-safe)
+
 - Pattern extraction emits records with `evidence_runs`.
 - Frontier tracking produces nondominated sets per world/objective.
 
 ### M3: Evolution (v1)
+
 - Mutation operators exist for a declared genome schema.
 - Selection updates best candidate(s) and/or frontier deterministically under pinned seeds.
 

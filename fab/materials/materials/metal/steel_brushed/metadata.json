@@ -1,0 +1,12 @@
+{
+  "name": "Steel Brushed",
+  "description": "Procedural: brushed stainless steel, linear grain pattern, subtle reflections, seamless tileable",
+  "category": "metal",
+  "tags": ["steel", "metal", "modern", "industrial"],
+  "prompt": "brushed stainless steel, linear grain pattern, subtle reflections, seamless tileable",
+  "seed": 8146,
+  "workflow": "blender_procedural",
+  "resolution": [2048, 2048],
+  "created_at": "2025-12-27T00:40:18.641842+00:00",
+  "source": "blender"
+}
