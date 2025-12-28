@@ -1,0 +1,109 @@
+plains:
+  name: "Plains"
+  defense_bonus: 0
+  move_cost: 1
+  impassable: false
+  yields:
+    food: 1
+    production: 1
+    gold: 0
+
+grassland:
+  name: "Grassland"
+  defense_bonus: 0
+  move_cost: 1
+  impassable: false
+  yields:
+    food: 2
+    production: 0
+    gold: 0
+
+hills:
+  name: "Hills"
+  defense_bonus: 50
+  move_cost: 2
+  impassable: false
+  yields:
+    food: 1
+    production: 2
+    gold: 0
+
+mountains:
+  name: "Mountains"
+  defense_bonus: 0
+  move_cost: 1
+  impassable: true
+  yields:
+    food: 0
+    production: 0
+    gold: 0
+
+coast:
+  name: "Coast"
+  defense_bonus: 0
+  move_cost: 1
+  impassable: false
+  yields:
+    food: 1
+    production: 0
+    gold: 1
+
+ocean:
+  name: "Ocean"
+  defense_bonus: 0
+  move_cost: 1
+  impassable: true
+  yields:
+    food: 1
+    production: 0
+    gold: 0
+
+forest:
+  name: "Forest"
+  defense_bonus: 25
+  move_cost: 2
+  impassable: false
+  yields:
+    food: 1
+    production: 1
+    gold: 0
+
+desert:
+  name: "Desert"
+  defense_bonus: 0
+  move_cost: 1
+  impassable: false
+  yields:
+    food: 0
+    production: 1
+    gold: 0
+
+tundra:
+  name: "Tundra"
+  defense_bonus: 0
+  move_cost: 1
+  impassable: false
+  yields:
+    food: 1
+    production: 0
+    gold: 0
+
+jungle:
+  name: "Jungle"
+  defense_bonus: 25
+  move_cost: 2
+  impassable: false
+  yields:
+    food: 1
+    production: 0
+    gold: 0
+
+marsh:
+  name: "Marsh"
+  defense_bonus: -10
+  move_cost: 2
+  impassable: false
+  yields:
+    food: 1
+    production: 0
+    gold: 0

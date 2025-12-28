@@ -86,6 +86,7 @@ func _ready() -> void:
 	hud.context_why_pressed.connect(_on_context_why_pressed)
 	hud.worker_automation_toggled.connect(_on_worker_automation_toggled)
 	hud.share_replay_pressed.connect(_on_share_replay_pressed)
+	hud.fortify_requested.connect(_on_fortify_requested)
 
 	# Connect research panel signals
 	research_panel.research_selected.connect(_on_research_selected)
@@ -818,6 +819,26 @@ func _on_worker_automation_toggled(unit_id: int, enabled: bool) -> void:
 		hud.add_message("Not your turn")
 		return
 	network_client.set_worker_automation(unit_id, enabled)
+
+func _on_fortify_requested(unit_id: int) -> void:
+	if _is_game_over:
+		hud.add_message("Game over: replay only")
+		return
+
+	var current_player = _extract_player_id(current_snapshot.get("current_player", 0))
+	if current_player != my_player_id:
+		hud.add_message("Not your turn")
+		return
+
+	var unit := _find_unit_by_id(unit_id)
+	if unit.is_empty():
+		return
+	if _extract_player_id(unit.get("owner", -1)) != my_player_id:
+		hud.add_message("Not your unit")
+		return
+
+	network_client.send_fortify(unit_id)
+	hud.add_message("Fortify queued")
 
 
 func _on_combat_preview_received(attacker_id: int, defender_id: int, preview) -> void:

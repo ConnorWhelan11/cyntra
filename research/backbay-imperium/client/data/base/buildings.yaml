@@ -1,0 +1,30 @@
+monument:
+  name: "Monument"
+  cost: 60
+  maintenance: 1
+  admin: 0
+  tech_required: null
+  effects:
+    - type: "YieldBonus"
+      yield_type: "Culture"
+      value: 1
+  requirements: []
+library:
+  name: "Library"
+  cost: 80
+  maintenance: 1
+  admin: 0
+  tech_required: "writing"
+  effects:
+    - type: "SciencePerPopMilli"
+      value_milli: 500
+  requirements: []
+
+courthouse:
+  name: "Courthouse"
+  cost: 80
+  maintenance: 2
+  admin: 1
+  tech_required: "writing"
+  effects: []
+  requirements: []

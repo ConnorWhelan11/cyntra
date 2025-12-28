@@ -1,0 +1,7 @@
+council:
+  name: "Council"
+  admin: 0
+
+bureaucracy:
+  name: "Bureaucracy"
+  admin: 1

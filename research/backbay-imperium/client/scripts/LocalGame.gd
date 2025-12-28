@@ -10,6 +10,7 @@ class_name LocalGame
 var _pending_found_city_unit_id := -1
 var _unit_rules_by_id: Dictionary = {}     # unit_type_id -> RulesCatalogUnitType dict
 var _building_rules_by_id: Dictionary = {} # building_id -> RulesCatalogBuilding dict
+var _latest_promises: Array = []
 
 
 func _ready() -> void:
@@ -29,6 +30,7 @@ func _ready() -> void:
 	hud.city_panel_close_requested.connect(_on_city_panel_closed)
 	hud.promise_selected.connect(_on_promise_selected)
 	hud.share_replay_pressed.connect(_on_share_replay_pressed)
+	hud.fortify_requested.connect(_on_fortify_requested)
 
 	research_panel.research_selected.connect(_on_research_selected)
 	research_panel.panel_closed.connect(_on_research_panel_closed)
@@ -47,6 +49,12 @@ func _on_snapshot_loaded() -> void:
 	_refresh_top_bar()
 	_refresh_promises()
 	hud.update_minimap(client.snapshot, client.current_player)
+	# MapView may auto-select a unit before our rules/catalog are applied; refresh panels now that
+	# the HUD has the right rules context.
+	if map_view.selected_city_id >= 0:
+		_refresh_city_panel(map_view.selected_city_id)
+	elif map_view.selected_unit_id >= 0:
+		_refresh_unit_panel(map_view.selected_unit_id)
 
 
 func _rebuild_rules_indexes() -> void:
@@ -217,6 +225,22 @@ func _on_found_city_requested() -> void:
 	var unit_id := map_view.selected_unit_id
 	if unit_id < 0:
 		return
+	if not client.units.has(unit_id):
+		return
+
+	# Safety check: only allow if this unit can found cities per the rules catalog.
+	var u: Dictionary = client.units[unit_id]
+	var type_data = u.get("type_id", -1)
+	var type_id := -1
+	if typeof(type_data) == TYPE_DICTIONARY:
+		type_id = int(type_data.get("raw", -1))
+	else:
+		type_id = int(type_data)
+	var rules = _unit_rules_by_id.get(type_id, {})
+	if typeof(rules) != TYPE_DICTIONARY or not bool(rules.get("can_found_city", false)):
+		hud.add_message("Selected unit can't found a city")
+		return
+
 	_pending_found_city_unit_id = unit_id
 	city_dialog.open()
 
@@ -254,6 +278,28 @@ func _on_production_selected(item_type: String, item_id: int) -> void:
 		return
 	client.set_production(city_id, item_type, item_id)
 	_refresh_city_panel(city_id)
+
+func _on_fortify_requested(unit_id: int) -> void:
+	var unit_data = client.units.get(unit_id, null)
+	if typeof(unit_data) != TYPE_DICTIONARY:
+		# Fall back to snapshot scan.
+		for u in client.snapshot.get("units", []):
+			if typeof(u) != TYPE_DICTIONARY:
+				continue
+			var ud: Dictionary = u
+			if _extract_entity_id(ud.get("id", -1)) == unit_id:
+				unit_data = ud
+				break
+
+	if typeof(unit_data) != TYPE_DICTIONARY:
+		return
+
+	var unit: Dictionary = unit_data
+	if int(unit.get("owner", -1)) != client.current_player:
+		hud.add_message("Not your unit")
+		return
+
+	client.fortify_unit(unit_id)
 
 
 func _on_city_panel_closed() -> void:
@@ -299,6 +345,7 @@ func _refresh_promises() -> void:
 	if not hud.has_method("set_promises"):
 		return
 	var raw_promises := client.get_promise_strip(client.current_player)
+	_latest_promises = raw_promises
 	var city_names := _city_name_lookup()
 
 	var enriched: Array = []
@@ -317,6 +364,29 @@ func _refresh_promises() -> void:
 		enriched.append(d)
 
 	hud.set_promises(enriched)
+	_apply_end_turn_gate_from_promises(raw_promises)
+
+func _apply_end_turn_gate_from_promises(promises: Array) -> void:
+	if not hud.has_method("set_end_turn_blocked"):
+		return
+
+	var blocked := false
+	var reason := ""
+	for raw in promises:
+		if typeof(raw) != TYPE_DICTIONARY:
+			continue
+		var p: Dictionary = raw
+		var t := String(p.get("type", ""))
+		if t == "TechPickRequired":
+			blocked = true
+			reason = "Choose Tech"
+			break
+		if t == "CityProductionPickRequired":
+			blocked = true
+			reason = "Choose Prod"
+			break
+
+	hud.set_end_turn_blocked(blocked, reason)
 
 func _city_name_lookup() -> Dictionary:
 	var out: Dictionary = {}
@@ -349,28 +419,28 @@ func _on_promise_selected(promise: Dictionary) -> void:
 			pass
 
 func _gate_end_turn_if_action_required() -> bool:
-	# Gate end turn if the player must pick research or production.
-	var player_data := _player_snapshot(client.current_player)
-	if not player_data.is_empty():
-		var researching = player_data.get("researching", null)
-		if researching == null:
-			var options := client.get_tech_options(client.current_player)
-			if options.size() > 0:
+	# Gate end turn if the sim says the player has required choices.
+	var promises: Array = _latest_promises
+	if promises.is_empty():
+		promises = client.get_promise_strip(client.current_player)
+
+	for raw in promises:
+		if typeof(raw) != TYPE_DICTIONARY:
+			continue
+		var p: Dictionary = raw
+		var t := String(p.get("type", ""))
+		match t:
+			"TechPickRequired":
 				hud.add_message("Pick a technology before ending turn")
 				_on_research_button_pressed()
 				return true
-
-	for city_data in client.snapshot.get("cities", []):
-		if typeof(city_data) != TYPE_DICTIONARY:
-			continue
-		var c: Dictionary = city_data
-		if int(c.get("owner", -1)) != client.current_player:
-			continue
-		if c.get("producing", null) == null:
-			var city_id = _extract_entity_id(c.get("id", -1))
-			hud.add_message("Pick production for %s" % String(c.get("name", "City")))
-			if city_id >= 0:
-				map_view.select_city(city_id)
-			return true
+			"CityProductionPickRequired":
+				var city_id = _extract_entity_id(p.get("city", -1))
+				hud.add_message("Pick production before ending turn")
+				if city_id >= 0:
+					map_view.select_city(city_id)
+				return true
+			_:
+				pass
 
 	return false

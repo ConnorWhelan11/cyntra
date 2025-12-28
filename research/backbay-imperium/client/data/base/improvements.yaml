@@ -1,0 +1,157 @@
+# ============================================================================
+# AGRICULTURAL IMPROVEMENTS
+# ============================================================================
+
+farm:
+  name: "Farm"
+  build_time: 3
+  repair_time: 2
+  allowed_terrain: ["plains", "grassland"]
+  tiers:
+    - yields: { food: 1, production: 0, gold: 0 }
+      worked_turns_to_next: 8
+    - yields: { food: 2, production: 0, gold: 0 }
+      worked_turns_to_next: 12
+    - yields: { food: 3, production: 0, gold: 0 }
+
+pasture:
+  name: "Pasture"
+  build_time: 3
+  repair_time: 2
+  allowed_terrain: ["plains", "grassland", "tundra"]
+  tiers:
+    - yields: { food: 1, production: 0, gold: 0 }
+      worked_turns_to_next: 10
+    - yields: { food: 1, production: 1, gold: 0 }
+      worked_turns_to_next: 15
+    - yields: { food: 2, production: 1, gold: 0 }
+
+plantation:
+  name: "Plantation"
+  build_time: 4
+  repair_time: 2
+  allowed_terrain: ["jungle", "marsh"]
+  tiers:
+    - yields: { food: 1, production: 0, gold: 1 }
+      worked_turns_to_next: 10
+    - yields: { food: 2, production: 0, gold: 1 }
+      worked_turns_to_next: 15
+    - yields: { food: 2, production: 0, gold: 2 }
+
+# ============================================================================
+# PRODUCTION IMPROVEMENTS
+# ============================================================================
+
+mine:
+  name: "Mine"
+  build_time: 4
+  repair_time: 2
+  allowed_terrain: ["hills"]
+  tiers:
+    - yields: { food: 0, production: 1, gold: 0 }
+      worked_turns_to_next: 8
+    - yields: { food: 0, production: 2, gold: 0 }
+      worked_turns_to_next: 12
+    - yields: { food: 0, production: 3, gold: 0 }
+
+lumber_mill:
+  name: "Lumber Mill"
+  build_time: 3
+  repair_time: 2
+  allowed_terrain: ["forest"]
+  tiers:
+    - yields: { food: 0, production: 1, gold: 0 }
+      worked_turns_to_next: 8
+    - yields: { food: 0, production: 2, gold: 0 }
+      worked_turns_to_next: 12
+    - yields: { food: 1, production: 2, gold: 0 }
+
+quarry:
+  name: "Quarry"
+  build_time: 5
+  repair_time: 3
+  allowed_terrain: ["hills", "desert"]
+  tiers:
+    - yields: { food: 0, production: 1, gold: 0 }
+      worked_turns_to_next: 10
+    - yields: { food: 0, production: 2, gold: 1 }
+      worked_turns_to_next: 15
+    - yields: { food: 0, production: 3, gold: 1 }
+
+# ============================================================================
+# GOLD/COMMERCE IMPROVEMENTS
+# ============================================================================
+
+trading_post:
+  name: "Trading Post"
+  build_time: 3
+  repair_time: 2
+  allowed_terrain: ["plains", "grassland", "coast"]
+  tiers:
+    - yields: { food: 0, production: 0, gold: 1 }
+      worked_turns_to_next: 8
+    - yields: { food: 0, production: 0, gold: 2 }
+      worked_turns_to_next: 12
+    - yields: { food: 0, production: 0, gold: 3 }
+
+fishing_boats:
+  name: "Fishing Boats"
+  build_time: 3
+  repair_time: 2
+  allowed_terrain: ["coast"]
+  tiers:
+    - yields: { food: 1, production: 0, gold: 1 }
+      worked_turns_to_next: 10
+    - yields: { food: 2, production: 0, gold: 1 }
+      worked_turns_to_next: 15
+    - yields: { food: 2, production: 0, gold: 2 }
+
+# ============================================================================
+# SPECIAL TERRAIN IMPROVEMENTS
+# ============================================================================
+
+camp:
+  name: "Camp"
+  build_time: 3
+  repair_time: 2
+  allowed_terrain: ["tundra", "forest"]
+  tiers:
+    - yields: { food: 0, production: 0, gold: 1 }
+      worked_turns_to_next: 8
+    - yields: { food: 1, production: 0, gold: 1 }
+      worked_turns_to_next: 12
+    - yields: { food: 1, production: 0, gold: 2 }
+
+oasis:
+  name: "Oasis"
+  build_time: 4
+  repair_time: 2
+  allowed_terrain: ["desert"]
+  tiers:
+    - yields: { food: 2, production: 0, gold: 0 }
+      worked_turns_to_next: 10
+    - yields: { food: 3, production: 0, gold: 0 }
+      worked_turns_to_next: 15
+    - yields: { food: 3, production: 0, gold: 1 }
+
+# ============================================================================
+# INFRASTRUCTURE IMPROVEMENTS
+# ============================================================================
+
+road:
+  name: "Road"
+  build_time: 2
+  repair_time: 1
+  allowed_terrain: []
+  tiers:
+    - yields: { food: 0, production: 0, gold: 0 }
+
+fort:
+  name: "Fort"
+  build_time: 5
+  repair_time: 3
+  allowed_terrain: []
+  tiers:
+    - yields: { food: 0, production: 0, gold: 0 }
+      worked_turns_to_next: 20
+    - yields: { food: 0, production: 0, gold: 0 }

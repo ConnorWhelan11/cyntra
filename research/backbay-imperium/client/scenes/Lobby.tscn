@@ -1,0 +1,200 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/LobbyUI.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/NetworkClient.gd" id="2"]
+
+[node name="Lobby" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1")
+network_client_path = NodePath("NetworkClient")
+
+[node name="NetworkClient" type="Node" parent="."]
+script = ExtResource("2")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.12, 0.14, 0.18, 1)
+
+[node name="ConnectionPanel" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -150.0
+offset_right = 200.0
+offset_bottom = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="ConnectionPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="Title" type="Label" parent="ConnectionPanel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Backbay Imperium"
+horizontal_alignment = 1
+
+[node name="Spacer1" type="Control" parent="ConnectionPanel/VBox"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="HostLabel" type="Label" parent="ConnectionPanel/VBox"]
+layout_mode = 2
+text = "Server Address:"
+
+[node name="HostInput" type="LineEdit" parent="ConnectionPanel/VBox"]
+layout_mode = 2
+placeholder_text = "127.0.0.1"
+text = "127.0.0.1"
+
+[node name="PortLabel" type="Label" parent="ConnectionPanel/VBox"]
+layout_mode = 2
+text = "Port:"
+
+[node name="PortInput" type="SpinBox" parent="ConnectionPanel/VBox"]
+layout_mode = 2
+min_value = 1024.0
+max_value = 65535.0
+value = 7777.0
+
+[node name="NameLabel" type="Label" parent="ConnectionPanel/VBox"]
+layout_mode = 2
+text = "Player Name:"
+
+[node name="NameInput" type="LineEdit" parent="ConnectionPanel/VBox"]
+layout_mode = 2
+placeholder_text = "Enter your name"
+text = "Player"
+max_length = 32
+
+[node name="Spacer2" type="Control" parent="ConnectionPanel/VBox"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="ConnectButton" type="Button" parent="ConnectionPanel/VBox"]
+layout_mode = 2
+text = "Connect"
+
+[node name="StatusLabel" type="Label" parent="ConnectionPanel/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.7, 0.7, 1)
+horizontal_alignment = 1
+
+[node name="LobbyPanel" type="Control" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 40.0
+offset_top = 40.0
+offset_right = -40.0
+offset_bottom = -40.0
+
+[node name="VBox" type="VBoxContainer" parent="LobbyPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="TopBar" type="HBoxContainer" parent="LobbyPanel/VBox"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="LobbyPanel/VBox/TopBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 20
+text = "Game Lobby"
+
+[node name="LobbyStatus" type="Label" parent="LobbyPanel/VBox/TopBar"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.6, 0.6, 1)
+text = "Players: 0 | Ready: 0"
+horizontal_alignment = 2
+
+[node name="HSplit" type="HSplitContainer" parent="LobbyPanel/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+split_offset = 300
+
+[node name="LeftPanel" type="VBoxContainer" parent="LobbyPanel/VBox/HSplit"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PlayersLabel" type="Label" parent="LobbyPanel/VBox/HSplit/LeftPanel"]
+layout_mode = 2
+text = "Players"
+
+[node name="PlayerList" type="ItemList" parent="LobbyPanel/VBox/HSplit/LeftPanel"]
+layout_mode = 2
+size_flags_vertical = 3
+allow_reselect = true
+allow_search = false
+
+[node name="MapSizeLabel" type="Label" parent="LobbyPanel/VBox/HSplit/LeftPanel"]
+layout_mode = 2
+text = "Map Size:"
+
+[node name="MapSizeInput" type="SpinBox" parent="LobbyPanel/VBox/HSplit/LeftPanel"]
+layout_mode = 2
+min_value = 32.0
+max_value = 128.0
+step = 16.0
+value = 64.0
+
+[node name="RightPanel" type="VBoxContainer" parent="LobbyPanel/VBox/HSplit"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ChatLabel" type="Label" parent="LobbyPanel/VBox/HSplit/RightPanel"]
+layout_mode = 2
+text = "Chat"
+
+[node name="ChatDisplay" type="RichTextLabel" parent="LobbyPanel/VBox/HSplit/RightPanel"]
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+scroll_following = true
+
+[node name="ChatInput" type="LineEdit" parent="LobbyPanel/VBox/HSplit/RightPanel"]
+layout_mode = 2
+placeholder_text = "Type a message..."
+max_length = 256
+
+[node name="HBox" type="HBoxContainer" parent="LobbyPanel/VBox"]
+layout_mode = 2
+alignment = 1
+
+[node name="LeaveButton" type="Button" parent="LobbyPanel/VBox/HBox"]
+custom_minimum_size = Vector2(120, 40)
+layout_mode = 2
+text = "Leave"
+
+[node name="Spacer" type="Control" parent="LobbyPanel/VBox/HBox"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+
+[node name="ReadyButton" type="Button" parent="LobbyPanel/VBox/HBox"]
+custom_minimum_size = Vector2(120, 40)
+layout_mode = 2
+text = "Ready"
+
+[node name="StartButton" type="Button" parent="LobbyPanel/VBox/HBox"]
+custom_minimum_size = Vector2(120, 40)
+layout_mode = 2
+text = "Start Game"

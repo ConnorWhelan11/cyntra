@@ -1,0 +1,5738 @@
+[
+  {
+    "genome": {
+      "genome_id": "backbay_balance_v1",
+      "domain": "backbay",
+      "parent_id": null,
+      "generation": 0,
+      "genes": {
+        "units.scout.attack": {
+          "key": "units.scout.attack",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": null,
+          "description": "Scout attack strength"
+        },
+        "units.scout.defense": {
+          "key": "units.scout.defense",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": null,
+          "description": "Scout defense strength"
+        },
+        "units.scout.moves": {
+          "key": "units.scout.moves",
+          "kind": "int_range",
+          "min": 2,
+          "max": 4,
+          "default": 2,
+          "value": null,
+          "description": "Scout movement points"
+        },
+        "units.scout.cost": {
+          "key": "units.scout.cost",
+          "kind": "int_range",
+          "min": 15,
+          "max": 35,
+          "default": 25,
+          "value": null,
+          "description": "Scout production cost"
+        },
+        "units.warrior.attack": {
+          "key": "units.warrior.attack",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": null,
+          "description": "Warrior attack strength"
+        },
+        "units.warrior.defense": {
+          "key": "units.warrior.defense",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": null,
+          "description": "Warrior defense strength"
+        },
+        "units.warrior.moves": {
+          "key": "units.warrior.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": null,
+          "description": "Warrior movement points"
+        },
+        "units.warrior.cost": {
+          "key": "units.warrior.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": null,
+          "description": "Warrior production cost"
+        },
+        "units.settler.moves": {
+          "key": "units.settler.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": null,
+          "description": "Settler movement points"
+        },
+        "units.settler.cost": {
+          "key": "units.settler.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": null,
+          "description": "Settler production cost (key for expansion balance)"
+        },
+        "units.worker.moves": {
+          "key": "units.worker.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 3,
+          "default": 2,
+          "value": null,
+          "description": "Worker movement points"
+        },
+        "units.worker.cost": {
+          "key": "units.worker.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": null,
+          "description": "Worker production cost"
+        },
+        "buildings.monument.cost": {
+          "key": "buildings.monument.cost",
+          "kind": "int_range",
+          "min": 30,
+          "max": 80,
+          "default": 60,
+          "value": null,
+          "description": "Monument production cost"
+        },
+        "buildings.monument.maintenance": {
+          "key": "buildings.monument.maintenance",
+          "kind": "int_range",
+          "min": 0,
+          "max": 2,
+          "default": 1,
+          "value": null,
+          "description": "Monument gold maintenance"
+        },
+        "buildings.library.cost": {
+          "key": "buildings.library.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": null,
+          "description": "Library production cost"
+        },
+        "buildings.library.maintenance": {
+          "key": "buildings.library.maintenance",
+          "kind": "int_range",
+          "min": 0,
+          "max": 3,
+          "default": 1,
+          "value": null,
+          "description": "Library gold maintenance"
+        },
+        "buildings.courthouse.cost": {
+          "key": "buildings.courthouse.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": null,
+          "description": "Courthouse production cost"
+        },
+        "buildings.courthouse.maintenance": {
+          "key": "buildings.courthouse.maintenance",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": null,
+          "description": "Courthouse gold maintenance"
+        },
+        "techs.pottery.cost": {
+          "key": "techs.pottery.cost",
+          "kind": "int_range",
+          "min": 15,
+          "max": 40,
+          "default": 25,
+          "value": null,
+          "description": "Pottery research cost"
+        },
+        "techs.writing.cost": {
+          "key": "techs.writing.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": null,
+          "description": "Writing research cost"
+        }
+      },
+      "metadata": {
+        "schema_version": "1.0",
+        "mutation": {
+          "per_candidate": 3,
+          "weights": {
+            "units": 1.0,
+            "buildings": 0.8,
+            "techs": 0.6
+          }
+        },
+        "evaluation": {
+          "games_per_eval": 10,
+          "selfplay": {
+            "map_width": 25,
+            "map_height": 18,
+            "num_players": 2,
+            "max_turns": 100
+          },
+          "fitness_weights": {
+            "win_rate_balance": 0.5,
+            "game_length_score": 0.3,
+            "avg_combats": 0.1,
+            "avg_cities": 0.1
+          }
+        },
+        "objectives": {
+          "win_rate_balance": {
+            "direction": "max",
+            "description": "How close to 50/50 win rate (1.0 = perfect balance)"
+          },
+          "decision_diversity": {
+            "direction": "max",
+            "description": "Variety in viable strategies (measured by build order entropy)"
+          },
+          "game_length_score": {
+            "direction": "max",
+            "description": "Score based on game length being in ideal range (30-100 turns)"
+          }
+        }
+      }
+    },
+    "fitness": {
+      "win_rate_balance": 0.8,
+      "game_length_score": 1.0,
+      "decision_diversity": 0.46249999999999997,
+      "avg_combats": 1.3333333333333333,
+      "avg_cities": 2.0,
+      "avg_techs": 4.0,
+      "domination_rate": 0.0
+    }
+  },
+  {
+    "genome": {
+      "genome_id": "bb_488e371ebde5",
+      "domain": "backbay",
+      "parent_id": "backbay_balance_v1",
+      "generation": 1,
+      "genes": {
+        "units.scout.attack": {
+          "key": "units.scout.attack",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": 2,
+          "description": "Scout attack strength"
+        },
+        "units.scout.defense": {
+          "key": "units.scout.defense",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Scout defense strength"
+        },
+        "units.scout.moves": {
+          "key": "units.scout.moves",
+          "kind": "int_range",
+          "min": 2,
+          "max": 4,
+          "default": 2,
+          "value": 2,
+          "description": "Scout movement points"
+        },
+        "units.scout.cost": {
+          "key": "units.scout.cost",
+          "kind": "int_range",
+          "min": 15,
+          "max": 35,
+          "default": 25,
+          "value": 26,
+          "description": "Scout production cost"
+        },
+        "units.warrior.attack": {
+          "key": "units.warrior.attack",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": null,
+          "description": "Warrior attack strength"
+        },
+        "units.warrior.defense": {
+          "key": "units.warrior.defense",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": null,
+          "description": "Warrior defense strength"
+        },
+        "units.warrior.moves": {
+          "key": "units.warrior.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Warrior movement points"
+        },
+        "units.warrior.cost": {
+          "key": "units.warrior.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": null,
+          "description": "Warrior production cost"
+        },
+        "units.settler.moves": {
+          "key": "units.settler.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Settler movement points"
+        },
+        "units.settler.cost": {
+          "key": "units.settler.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": null,
+          "description": "Settler production cost (key for expansion balance)"
+        },
+        "units.worker.moves": {
+          "key": "units.worker.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 3,
+          "default": 2,
+          "value": 2,
+          "description": "Worker movement points"
+        },
+        "units.worker.cost": {
+          "key": "units.worker.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": 27,
+          "description": "Worker production cost"
+        },
+        "buildings.monument.cost": {
+          "key": "buildings.monument.cost",
+          "kind": "int_range",
+          "min": 30,
+          "max": 80,
+          "default": 60,
+          "value": null,
+          "description": "Monument production cost"
+        },
+        "buildings.monument.maintenance": {
+          "key": "buildings.monument.maintenance",
+          "kind": "int_range",
+          "min": 0,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Monument gold maintenance"
+        },
+        "buildings.library.cost": {
+          "key": "buildings.library.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": null,
+          "description": "Library production cost"
+        },
+        "buildings.library.maintenance": {
+          "key": "buildings.library.maintenance",
+          "kind": "int_range",
+          "min": 0,
+          "max": 3,
+          "default": 1,
+          "value": null,
+          "description": "Library gold maintenance"
+        },
+        "buildings.courthouse.cost": {
+          "key": "buildings.courthouse.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": 66,
+          "description": "Courthouse production cost"
+        },
+        "buildings.courthouse.maintenance": {
+          "key": "buildings.courthouse.maintenance",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": null,
+          "description": "Courthouse gold maintenance"
+        },
+        "techs.pottery.cost": {
+          "key": "techs.pottery.cost",
+          "kind": "int_range",
+          "min": 15,
+          "max": 40,
+          "default": 25,
+          "value": null,
+          "description": "Pottery research cost"
+        },
+        "techs.writing.cost": {
+          "key": "techs.writing.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": 53,
+          "description": "Writing research cost"
+        }
+      },
+      "metadata": {
+        "schema_version": "1.0",
+        "mutation": {
+          "per_candidate": 3,
+          "weights": {
+            "units": 1.0,
+            "buildings": 0.8,
+            "techs": 0.6
+          }
+        },
+        "evaluation": {
+          "games_per_eval": 10,
+          "selfplay": {
+            "map_width": 25,
+            "map_height": 18,
+            "num_players": 2,
+            "max_turns": 100
+          },
+          "fitness_weights": {
+            "win_rate_balance": 0.5,
+            "game_length_score": 0.3,
+            "avg_combats": 0.1,
+            "avg_cities": 0.1
+          }
+        },
+        "objectives": {
+          "win_rate_balance": {
+            "direction": "max",
+            "description": "How close to 50/50 win rate (1.0 = perfect balance)"
+          },
+          "decision_diversity": {
+            "direction": "max",
+            "description": "Variety in viable strategies (measured by build order entropy)"
+          },
+          "game_length_score": {
+            "direction": "max",
+            "description": "Score based on game length being in ideal range (30-100 turns)"
+          }
+        }
+      }
+    },
+    "fitness": {
+      "win_rate_balance": 0.9333333333333333,
+      "game_length_score": 1.0,
+      "decision_diversity": 0.44749999999999995,
+      "avg_combats": 1.1333333333333333,
+      "avg_cities": 2.0,
+      "avg_techs": 4.0,
+      "domination_rate": 0.0
+    }
+  },
+  {
+    "genome": {
+      "genome_id": "bb_5152a4a5b24e",
+      "domain": "backbay",
+      "parent_id": "backbay_balance_v1",
+      "generation": 1,
+      "genes": {
+        "units.scout.attack": {
+          "key": "units.scout.attack",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Scout attack strength"
+        },
+        "units.scout.defense": {
+          "key": "units.scout.defense",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": null,
+          "description": "Scout defense strength"
+        },
+        "units.scout.moves": {
+          "key": "units.scout.moves",
+          "kind": "int_range",
+          "min": 2,
+          "max": 4,
+          "default": 2,
+          "value": 2,
+          "description": "Scout movement points"
+        },
+        "units.scout.cost": {
+          "key": "units.scout.cost",
+          "kind": "int_range",
+          "min": 15,
+          "max": 35,
+          "default": 25,
+          "value": 25,
+          "description": "Scout production cost"
+        },
+        "units.warrior.attack": {
+          "key": "units.warrior.attack",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": 2,
+          "description": "Warrior attack strength"
+        },
+        "units.warrior.defense": {
+          "key": "units.warrior.defense",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": 2,
+          "description": "Warrior defense strength"
+        },
+        "units.warrior.moves": {
+          "key": "units.warrior.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": null,
+          "description": "Warrior movement points"
+        },
+        "units.warrior.cost": {
+          "key": "units.warrior.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": null,
+          "description": "Warrior production cost"
+        },
+        "units.settler.moves": {
+          "key": "units.settler.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": null,
+          "description": "Settler movement points"
+        },
+        "units.settler.cost": {
+          "key": "units.settler.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": null,
+          "description": "Settler production cost (key for expansion balance)"
+        },
+        "units.worker.moves": {
+          "key": "units.worker.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 3,
+          "default": 2,
+          "value": null,
+          "description": "Worker movement points"
+        },
+        "units.worker.cost": {
+          "key": "units.worker.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": null,
+          "description": "Worker production cost"
+        },
+        "buildings.monument.cost": {
+          "key": "buildings.monument.cost",
+          "kind": "int_range",
+          "min": 30,
+          "max": 80,
+          "default": 60,
+          "value": null,
+          "description": "Monument production cost"
+        },
+        "buildings.monument.maintenance": {
+          "key": "buildings.monument.maintenance",
+          "kind": "int_range",
+          "min": 0,
+          "max": 2,
+          "default": 1,
+          "value": null,
+          "description": "Monument gold maintenance"
+        },
+        "buildings.library.cost": {
+          "key": "buildings.library.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": null,
+          "description": "Library production cost"
+        },
+        "buildings.library.maintenance": {
+          "key": "buildings.library.maintenance",
+          "kind": "int_range",
+          "min": 0,
+          "max": 3,
+          "default": 1,
+          "value": null,
+          "description": "Library gold maintenance"
+        },
+        "buildings.courthouse.cost": {
+          "key": "buildings.courthouse.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": null,
+          "description": "Courthouse production cost"
+        },
+        "buildings.courthouse.maintenance": {
+          "key": "buildings.courthouse.maintenance",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": null,
+          "description": "Courthouse gold maintenance"
+        },
+        "techs.pottery.cost": {
+          "key": "techs.pottery.cost",
+          "kind": "int_range",
+          "min": 15,
+          "max": 40,
+          "default": 25,
+          "value": 24,
+          "description": "Pottery research cost"
+        },
+        "techs.writing.cost": {
+          "key": "techs.writing.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": null,
+          "description": "Writing research cost"
+        }
+      },
+      "metadata": {
+        "schema_version": "1.0",
+        "mutation": {
+          "per_candidate": 3,
+          "weights": {
+            "units": 1.0,
+            "buildings": 0.8,
+            "techs": 0.6
+          }
+        },
+        "evaluation": {
+          "games_per_eval": 10,
+          "selfplay": {
+            "map_width": 25,
+            "map_height": 18,
+            "num_players": 2,
+            "max_turns": 100
+          },
+          "fitness_weights": {
+            "win_rate_balance": 0.5,
+            "game_length_score": 0.3,
+            "avg_combats": 0.1,
+            "avg_cities": 0.1
+          }
+        },
+        "objectives": {
+          "win_rate_balance": {
+            "direction": "max",
+            "description": "How close to 50/50 win rate (1.0 = perfect balance)"
+          },
+          "decision_diversity": {
+            "direction": "max",
+            "description": "Variety in viable strategies (measured by build order entropy)"
+          },
+          "game_length_score": {
+            "direction": "max",
+            "description": "Score based on game length being in ideal range (30-100 turns)"
+          }
+        }
+      }
+    },
+    "fitness": {
+      "win_rate_balance": 0.8,
+      "game_length_score": 1.0,
+      "decision_diversity": 0.46249999999999997,
+      "avg_combats": 1.3333333333333333,
+      "avg_cities": 2.0,
+      "avg_techs": 4.0,
+      "domination_rate": 0.0
+    }
+  },
+  {
+    "genome": {
+      "genome_id": "bb_8bd3d714180f",
+      "domain": "backbay",
+      "parent_id": "backbay_balance_v1",
+      "generation": 1,
+      "genes": {
+        "units.scout.attack": {
+          "key": "units.scout.attack",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Scout attack strength"
+        },
+        "units.scout.defense": {
+          "key": "units.scout.defense",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Scout defense strength"
+        },
+        "units.scout.moves": {
+          "key": "units.scout.moves",
+          "kind": "int_range",
+          "min": 2,
+          "max": 4,
+          "default": 2,
+          "value": 2,
+          "description": "Scout movement points"
+        },
+        "units.scout.cost": {
+          "key": "units.scout.cost",
+          "kind": "int_range",
+          "min": 15,
+          "max": 35,
+          "default": 25,
+          "value": 22,
+          "description": "Scout production cost"
+        },
+        "units.warrior.attack": {
+          "key": "units.warrior.attack",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": null,
+          "description": "Warrior attack strength"
+        },
+        "units.warrior.defense": {
+          "key": "units.warrior.defense",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": null,
+          "description": "Warrior defense strength"
+        },
+        "units.warrior.moves": {
+          "key": "units.warrior.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": null,
+          "description": "Warrior movement points"
+        },
+        "units.warrior.cost": {
+          "key": "units.warrior.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": null,
+          "description": "Warrior production cost"
+        },
+        "units.settler.moves": {
+          "key": "units.settler.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": null,
+          "description": "Settler movement points"
+        },
+        "units.settler.cost": {
+          "key": "units.settler.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": null,
+          "description": "Settler production cost (key for expansion balance)"
+        },
+        "units.worker.moves": {
+          "key": "units.worker.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 3,
+          "default": 2,
+          "value": null,
+          "description": "Worker movement points"
+        },
+        "units.worker.cost": {
+          "key": "units.worker.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": null,
+          "description": "Worker production cost"
+        },
+        "buildings.monument.cost": {
+          "key": "buildings.monument.cost",
+          "kind": "int_range",
+          "min": 30,
+          "max": 80,
+          "default": 60,
+          "value": 64,
+          "description": "Monument production cost"
+        },
+        "buildings.monument.maintenance": {
+          "key": "buildings.monument.maintenance",
+          "kind": "int_range",
+          "min": 0,
+          "max": 2,
+          "default": 1,
+          "value": 2,
+          "description": "Monument gold maintenance"
+        },
+        "buildings.library.cost": {
+          "key": "buildings.library.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": null,
+          "description": "Library production cost"
+        },
+        "buildings.library.maintenance": {
+          "key": "buildings.library.maintenance",
+          "kind": "int_range",
+          "min": 0,
+          "max": 3,
+          "default": 1,
+          "value": null,
+          "description": "Library gold maintenance"
+        },
+        "buildings.courthouse.cost": {
+          "key": "buildings.courthouse.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": null,
+          "description": "Courthouse production cost"
+        },
+        "buildings.courthouse.maintenance": {
+          "key": "buildings.courthouse.maintenance",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": null,
+          "description": "Courthouse gold maintenance"
+        },
+        "techs.pottery.cost": {
+          "key": "techs.pottery.cost",
+          "kind": "int_range",
+          "min": 15,
+          "max": 40,
+          "default": 25,
+          "value": null,
+          "description": "Pottery research cost"
+        },
+        "techs.writing.cost": {
+          "key": "techs.writing.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": null,
+          "description": "Writing research cost"
+        }
+      },
+      "metadata": {
+        "schema_version": "1.0",
+        "mutation": {
+          "per_candidate": 3,
+          "weights": {
+            "units": 1.0,
+            "buildings": 0.8,
+            "techs": 0.6
+          }
+        },
+        "evaluation": {
+          "games_per_eval": 10,
+          "selfplay": {
+            "map_width": 25,
+            "map_height": 18,
+            "num_players": 2,
+            "max_turns": 100
+          },
+          "fitness_weights": {
+            "win_rate_balance": 0.5,
+            "game_length_score": 0.3,
+            "avg_combats": 0.1,
+            "avg_cities": 0.1
+          }
+        },
+        "objectives": {
+          "win_rate_balance": {
+            "direction": "max",
+            "description": "How close to 50/50 win rate (1.0 = perfect balance)"
+          },
+          "decision_diversity": {
+            "direction": "max",
+            "description": "Variety in viable strategies (measured by build order entropy)"
+          },
+          "game_length_score": {
+            "direction": "max",
+            "description": "Score based on game length being in ideal range (30-100 turns)"
+          }
+        }
+      }
+    },
+    "fitness": {
+      "win_rate_balance": 0.8,
+      "game_length_score": 1.0,
+      "decision_diversity": 0.42249999999999993,
+      "avg_combats": 0.8,
+      "avg_cities": 2.0,
+      "avg_techs": 4.0,
+      "domination_rate": 0.0
+    }
+  },
+  {
+    "genome": {
+      "genome_id": "bb_8193b24d66d1",
+      "domain": "backbay",
+      "parent_id": "backbay_balance_v1",
+      "generation": 1,
+      "genes": {
+        "units.scout.attack": {
+          "key": "units.scout.attack",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": null,
+          "description": "Scout attack strength"
+        },
+        "units.scout.defense": {
+          "key": "units.scout.defense",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": null,
+          "description": "Scout defense strength"
+        },
+        "units.scout.moves": {
+          "key": "units.scout.moves",
+          "kind": "int_range",
+          "min": 2,
+          "max": 4,
+          "default": 2,
+          "value": 2,
+          "description": "Scout movement points"
+        },
+        "units.scout.cost": {
+          "key": "units.scout.cost",
+          "kind": "int_range",
+          "min": 15,
+          "max": 35,
+          "default": 25,
+          "value": null,
+          "description": "Scout production cost"
+        },
+        "units.warrior.attack": {
+          "key": "units.warrior.attack",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": null,
+          "description": "Warrior attack strength"
+        },
+        "units.warrior.defense": {
+          "key": "units.warrior.defense",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": null,
+          "description": "Warrior defense strength"
+        },
+        "units.warrior.moves": {
+          "key": "units.warrior.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Warrior movement points"
+        },
+        "units.warrior.cost": {
+          "key": "units.warrior.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": null,
+          "description": "Warrior production cost"
+        },
+        "units.settler.moves": {
+          "key": "units.settler.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Settler movement points"
+        },
+        "units.settler.cost": {
+          "key": "units.settler.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": 91,
+          "description": "Settler production cost (key for expansion balance)"
+        },
+        "units.worker.moves": {
+          "key": "units.worker.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 3,
+          "default": 2,
+          "value": null,
+          "description": "Worker movement points"
+        },
+        "units.worker.cost": {
+          "key": "units.worker.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": null,
+          "description": "Worker production cost"
+        },
+        "buildings.monument.cost": {
+          "key": "buildings.monument.cost",
+          "kind": "int_range",
+          "min": 30,
+          "max": 80,
+          "default": 60,
+          "value": 63,
+          "description": "Monument production cost"
+        },
+        "buildings.monument.maintenance": {
+          "key": "buildings.monument.maintenance",
+          "kind": "int_range",
+          "min": 0,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Monument gold maintenance"
+        },
+        "buildings.library.cost": {
+          "key": "buildings.library.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": 93,
+          "description": "Library production cost"
+        },
+        "buildings.library.maintenance": {
+          "key": "buildings.library.maintenance",
+          "kind": "int_range",
+          "min": 0,
+          "max": 3,
+          "default": 1,
+          "value": 2,
+          "description": "Library gold maintenance"
+        },
+        "buildings.courthouse.cost": {
+          "key": "buildings.courthouse.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": 92,
+          "description": "Courthouse production cost"
+        },
+        "buildings.courthouse.maintenance": {
+          "key": "buildings.courthouse.maintenance",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": null,
+          "description": "Courthouse gold maintenance"
+        },
+        "techs.pottery.cost": {
+          "key": "techs.pottery.cost",
+          "kind": "int_range",
+          "min": 15,
+          "max": 40,
+          "default": 25,
+          "value": null,
+          "description": "Pottery research cost"
+        },
+        "techs.writing.cost": {
+          "key": "techs.writing.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": null,
+          "description": "Writing research cost"
+        }
+      },
+      "metadata": {
+        "schema_version": "1.0",
+        "mutation": {
+          "per_candidate": 3,
+          "weights": {
+            "units": 1.0,
+            "buildings": 0.8,
+            "techs": 0.6
+          }
+        },
+        "evaluation": {
+          "games_per_eval": 10,
+          "selfplay": {
+            "map_width": 25,
+            "map_height": 18,
+            "num_players": 2,
+            "max_turns": 100
+          },
+          "fitness_weights": {
+            "win_rate_balance": 0.5,
+            "game_length_score": 0.3,
+            "avg_combats": 0.1,
+            "avg_cities": 0.1
+          }
+        },
+        "objectives": {
+          "win_rate_balance": {
+            "direction": "max",
+            "description": "How close to 50/50 win rate (1.0 = perfect balance)"
+          },
+          "decision_diversity": {
+            "direction": "max",
+            "description": "Variety in viable strategies (measured by build order entropy)"
+          },
+          "game_length_score": {
+            "direction": "max",
+            "description": "Score based on game length being in ideal range (30-100 turns)"
+          }
+        }
+      }
+    },
+    "fitness": {
+      "win_rate_balance": 0.8,
+      "game_length_score": 1.0,
+      "decision_diversity": 0.43249999999999994,
+      "avg_combats": 0.9333333333333333,
+      "avg_cities": 2.0,
+      "avg_techs": 4.0,
+      "domination_rate": 0.0
+    }
+  },
+  {
+    "genome": {
+      "genome_id": "bb_7d4aaf969154",
+      "domain": "backbay",
+      "parent_id": "backbay_balance_v1",
+      "generation": 1,
+      "genes": {
+        "units.scout.attack": {
+          "key": "units.scout.attack",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": null,
+          "description": "Scout attack strength"
+        },
+        "units.scout.defense": {
+          "key": "units.scout.defense",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": null,
+          "description": "Scout defense strength"
+        },
+        "units.scout.moves": {
+          "key": "units.scout.moves",
+          "kind": "int_range",
+          "min": 2,
+          "max": 4,
+          "default": 2,
+          "value": null,
+          "description": "Scout movement points"
+        },
+        "units.scout.cost": {
+          "key": "units.scout.cost",
+          "kind": "int_range",
+          "min": 15,
+          "max": 35,
+          "default": 25,
+          "value": null,
+          "description": "Scout production cost"
+        },
+        "units.warrior.attack": {
+          "key": "units.warrior.attack",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": 3,
+          "description": "Warrior attack strength"
+        },
+        "units.warrior.defense": {
+          "key": "units.warrior.defense",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": 2,
+          "description": "Warrior defense strength"
+        },
+        "units.warrior.moves": {
+          "key": "units.warrior.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Warrior movement points"
+        },
+        "units.warrior.cost": {
+          "key": "units.warrior.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": 53,
+          "description": "Warrior production cost"
+        },
+        "units.settler.moves": {
+          "key": "units.settler.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": null,
+          "description": "Settler movement points"
+        },
+        "units.settler.cost": {
+          "key": "units.settler.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": null,
+          "description": "Settler production cost (key for expansion balance)"
+        },
+        "units.worker.moves": {
+          "key": "units.worker.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 3,
+          "default": 2,
+          "value": 3,
+          "description": "Worker movement points"
+        },
+        "units.worker.cost": {
+          "key": "units.worker.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": 31,
+          "description": "Worker production cost"
+        },
+        "buildings.monument.cost": {
+          "key": "buildings.monument.cost",
+          "kind": "int_range",
+          "min": 30,
+          "max": 80,
+          "default": 60,
+          "value": 45,
+          "description": "Monument production cost"
+        },
+        "buildings.monument.maintenance": {
+          "key": "buildings.monument.maintenance",
+          "kind": "int_range",
+          "min": 0,
+          "max": 2,
+          "default": 1,
+          "value": null,
+          "description": "Monument gold maintenance"
+        },
+        "buildings.library.cost": {
+          "key": "buildings.library.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": null,
+          "description": "Library production cost"
+        },
+        "buildings.library.maintenance": {
+          "key": "buildings.library.maintenance",
+          "kind": "int_range",
+          "min": 0,
+          "max": 3,
+          "default": 1,
+          "value": null,
+          "description": "Library gold maintenance"
+        },
+        "buildings.courthouse.cost": {
+          "key": "buildings.courthouse.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": 96,
+          "description": "Courthouse production cost"
+        },
+        "buildings.courthouse.maintenance": {
+          "key": "buildings.courthouse.maintenance",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": null,
+          "description": "Courthouse gold maintenance"
+        },
+        "techs.pottery.cost": {
+          "key": "techs.pottery.cost",
+          "kind": "int_range",
+          "min": 15,
+          "max": 40,
+          "default": 25,
+          "value": 15,
+          "description": "Pottery research cost"
+        },
+        "techs.writing.cost": {
+          "key": "techs.writing.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": null,
+          "description": "Writing research cost"
+        }
+      },
+      "metadata": {
+        "schema_version": "1.0",
+        "mutation": {
+          "per_candidate": 3,
+          "weights": {
+            "units": 1.0,
+            "buildings": 0.8,
+            "techs": 0.6
+          }
+        },
+        "evaluation": {
+          "games_per_eval": 10,
+          "selfplay": {
+            "map_width": 25,
+            "map_height": 18,
+            "num_players": 2,
+            "max_turns": 100
+          },
+          "fitness_weights": {
+            "win_rate_balance": 0.5,
+            "game_length_score": 0.3,
+            "avg_combats": 0.1,
+            "avg_cities": 0.1
+          }
+        },
+        "objectives": {
+          "win_rate_balance": {
+            "direction": "max",
+            "description": "How close to 50/50 win rate (1.0 = perfect balance)"
+          },
+          "decision_diversity": {
+            "direction": "max",
+            "description": "Variety in viable strategies (measured by build order entropy)"
+          },
+          "game_length_score": {
+            "direction": "max",
+            "description": "Score based on game length being in ideal range (30-100 turns)"
+          }
+        }
+      }
+    },
+    "fitness": {
+      "win_rate_balance": 0.6666666666666666,
+      "game_length_score": 1.0,
+      "decision_diversity": 0.45249999999999996,
+      "avg_combats": 1.2,
+      "avg_cities": 2.0,
+      "avg_techs": 4.0,
+      "domination_rate": 0.0
+    }
+  },
+  {
+    "genome": {
+      "genome_id": "bb_378b863bca5e",
+      "domain": "backbay",
+      "parent_id": "backbay_balance_v1",
+      "generation": 1,
+      "genes": {
+        "units.scout.attack": {
+          "key": "units.scout.attack",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Scout attack strength"
+        },
+        "units.scout.defense": {
+          "key": "units.scout.defense",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Scout defense strength"
+        },
+        "units.scout.moves": {
+          "key": "units.scout.moves",
+          "kind": "int_range",
+          "min": 2,
+          "max": 4,
+          "default": 2,
+          "value": null,
+          "description": "Scout movement points"
+        },
+        "units.scout.cost": {
+          "key": "units.scout.cost",
+          "kind": "int_range",
+          "min": 15,
+          "max": 35,
+          "default": 25,
+          "value": null,
+          "description": "Scout production cost"
+        },
+        "units.warrior.attack": {
+          "key": "units.warrior.attack",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": null,
+          "description": "Warrior attack strength"
+        },
+        "units.warrior.defense": {
+          "key": "units.warrior.defense",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": null,
+          "description": "Warrior defense strength"
+        },
+        "units.warrior.moves": {
+          "key": "units.warrior.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Warrior movement points"
+        },
+        "units.warrior.cost": {
+          "key": "units.warrior.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": null,
+          "description": "Warrior production cost"
+        },
+        "units.settler.moves": {
+          "key": "units.settler.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": null,
+          "description": "Settler movement points"
+        },
+        "units.settler.cost": {
+          "key": "units.settler.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": null,
+          "description": "Settler production cost (key for expansion balance)"
+        },
+        "units.worker.moves": {
+          "key": "units.worker.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 3,
+          "default": 2,
+          "value": null,
+          "description": "Worker movement points"
+        },
+        "units.worker.cost": {
+          "key": "units.worker.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": null,
+          "description": "Worker production cost"
+        },
+        "buildings.monument.cost": {
+          "key": "buildings.monument.cost",
+          "kind": "int_range",
+          "min": 30,
+          "max": 80,
+          "default": 60,
+          "value": null,
+          "description": "Monument production cost"
+        },
+        "buildings.monument.maintenance": {
+          "key": "buildings.monument.maintenance",
+          "kind": "int_range",
+          "min": 0,
+          "max": 2,
+          "default": 1,
+          "value": null,
+          "description": "Monument gold maintenance"
+        },
+        "buildings.library.cost": {
+          "key": "buildings.library.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": null,
+          "description": "Library production cost"
+        },
+        "buildings.library.maintenance": {
+          "key": "buildings.library.maintenance",
+          "kind": "int_range",
+          "min": 0,
+          "max": 3,
+          "default": 1,
+          "value": null,
+          "description": "Library gold maintenance"
+        },
+        "buildings.courthouse.cost": {
+          "key": "buildings.courthouse.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": null,
+          "description": "Courthouse production cost"
+        },
+        "buildings.courthouse.maintenance": {
+          "key": "buildings.courthouse.maintenance",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": null,
+          "description": "Courthouse gold maintenance"
+        },
+        "techs.pottery.cost": {
+          "key": "techs.pottery.cost",
+          "kind": "int_range",
+          "min": 15,
+          "max": 40,
+          "default": 25,
+          "value": null,
+          "description": "Pottery research cost"
+        },
+        "techs.writing.cost": {
+          "key": "techs.writing.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": null,
+          "description": "Writing research cost"
+        }
+      },
+      "metadata": {
+        "schema_version": "1.0",
+        "mutation": {
+          "per_candidate": 3,
+          "weights": {
+            "units": 1.0,
+            "buildings": 0.8,
+            "techs": 0.6
+          }
+        },
+        "evaluation": {
+          "games_per_eval": 10,
+          "selfplay": {
+            "map_width": 25,
+            "map_height": 18,
+            "num_players": 2,
+            "max_turns": 100
+          },
+          "fitness_weights": {
+            "win_rate_balance": 0.5,
+            "game_length_score": 0.3,
+            "avg_combats": 0.1,
+            "avg_cities": 0.1
+          }
+        },
+        "objectives": {
+          "win_rate_balance": {
+            "direction": "max",
+            "description": "How close to 50/50 win rate (1.0 = perfect balance)"
+          },
+          "decision_diversity": {
+            "direction": "max",
+            "description": "Variety in viable strategies (measured by build order entropy)"
+          },
+          "game_length_score": {
+            "direction": "max",
+            "description": "Score based on game length being in ideal range (30-100 turns)"
+          }
+        }
+      }
+    },
+    "fitness": {
+      "win_rate_balance": 0.5333333333333333,
+      "game_length_score": 1.0,
+      "decision_diversity": 0.44749999999999995,
+      "avg_combats": 1.1333333333333333,
+      "avg_cities": 2.0,
+      "avg_techs": 4.0,
+      "domination_rate": 0.0
+    }
+  },
+  {
+    "genome": {
+      "genome_id": "bb_d152adead53d",
+      "domain": "backbay",
+      "parent_id": "backbay_balance_v1",
+      "generation": 1,
+      "genes": {
+        "units.scout.attack": {
+          "key": "units.scout.attack",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Scout attack strength"
+        },
+        "units.scout.defense": {
+          "key": "units.scout.defense",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": null,
+          "description": "Scout defense strength"
+        },
+        "units.scout.moves": {
+          "key": "units.scout.moves",
+          "kind": "int_range",
+          "min": 2,
+          "max": 4,
+          "default": 2,
+          "value": 2,
+          "description": "Scout movement points"
+        },
+        "units.scout.cost": {
+          "key": "units.scout.cost",
+          "kind": "int_range",
+          "min": 15,
+          "max": 35,
+          "default": 25,
+          "value": 19,
+          "description": "Scout production cost"
+        },
+        "units.warrior.attack": {
+          "key": "units.warrior.attack",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": null,
+          "description": "Warrior attack strength"
+        },
+        "units.warrior.defense": {
+          "key": "units.warrior.defense",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": null,
+          "description": "Warrior defense strength"
+        },
+        "units.warrior.moves": {
+          "key": "units.warrior.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": null,
+          "description": "Warrior movement points"
+        },
+        "units.warrior.cost": {
+          "key": "units.warrior.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": null,
+          "description": "Warrior production cost"
+        },
+        "units.settler.moves": {
+          "key": "units.settler.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Settler movement points"
+        },
+        "units.settler.cost": {
+          "key": "units.settler.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": null,
+          "description": "Settler production cost (key for expansion balance)"
+        },
+        "units.worker.moves": {
+          "key": "units.worker.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 3,
+          "default": 2,
+          "value": 2,
+          "description": "Worker movement points"
+        },
+        "units.worker.cost": {
+          "key": "units.worker.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": 60,
+          "description": "Worker production cost"
+        },
+        "buildings.monument.cost": {
+          "key": "buildings.monument.cost",
+          "kind": "int_range",
+          "min": 30,
+          "max": 80,
+          "default": 60,
+          "value": 80,
+          "description": "Monument production cost"
+        },
+        "buildings.monument.maintenance": {
+          "key": "buildings.monument.maintenance",
+          "kind": "int_range",
+          "min": 0,
+          "max": 2,
+          "default": 1,
+          "value": null,
+          "description": "Monument gold maintenance"
+        },
+        "buildings.library.cost": {
+          "key": "buildings.library.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": null,
+          "description": "Library production cost"
+        },
+        "buildings.library.maintenance": {
+          "key": "buildings.library.maintenance",
+          "kind": "int_range",
+          "min": 0,
+          "max": 3,
+          "default": 1,
+          "value": null,
+          "description": "Library gold maintenance"
+        },
+        "buildings.courthouse.cost": {
+          "key": "buildings.courthouse.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": null,
+          "description": "Courthouse production cost"
+        },
+        "buildings.courthouse.maintenance": {
+          "key": "buildings.courthouse.maintenance",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": 2,
+          "description": "Courthouse gold maintenance"
+        },
+        "techs.pottery.cost": {
+          "key": "techs.pottery.cost",
+          "kind": "int_range",
+          "min": 15,
+          "max": 40,
+          "default": 25,
+          "value": 19,
+          "description": "Pottery research cost"
+        },
+        "techs.writing.cost": {
+          "key": "techs.writing.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": null,
+          "description": "Writing research cost"
+        }
+      },
+      "metadata": {
+        "schema_version": "1.0",
+        "mutation": {
+          "per_candidate": 3,
+          "weights": {
+            "units": 1.0,
+            "buildings": 0.8,
+            "techs": 0.6
+          }
+        },
+        "evaluation": {
+          "games_per_eval": 10,
+          "selfplay": {
+            "map_width": 25,
+            "map_height": 18,
+            "num_players": 2,
+            "max_turns": 100
+          },
+          "fitness_weights": {
+            "win_rate_balance": 0.5,
+            "game_length_score": 0.3,
+            "avg_combats": 0.1,
+            "avg_cities": 0.1
+          }
+        },
+        "objectives": {
+          "win_rate_balance": {
+            "direction": "max",
+            "description": "How close to 50/50 win rate (1.0 = perfect balance)"
+          },
+          "decision_diversity": {
+            "direction": "max",
+            "description": "Variety in viable strategies (measured by build order entropy)"
+          },
+          "game_length_score": {
+            "direction": "max",
+            "description": "Score based on game length being in ideal range (30-100 turns)"
+          }
+        }
+      }
+    },
+    "fitness": {
+      "win_rate_balance": 0.3999999999999999,
+      "game_length_score": 1.0,
+      "decision_diversity": 0.43249999999999994,
+      "avg_combats": 0.9333333333333333,
+      "avg_cities": 2.0,
+      "avg_techs": 4.0,
+      "domination_rate": 0.0
+    }
+  },
+  {
+    "genome": {
+      "genome_id": "bb_487c41649807",
+      "domain": "backbay",
+      "parent_id": "bb_622ab8f8c21c",
+      "generation": 2,
+      "genes": {
+        "units.scout.attack": {
+          "key": "units.scout.attack",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": null,
+          "description": "Scout attack strength"
+        },
+        "units.scout.defense": {
+          "key": "units.scout.defense",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": null,
+          "description": "Scout defense strength"
+        },
+        "units.scout.moves": {
+          "key": "units.scout.moves",
+          "kind": "int_range",
+          "min": 2,
+          "max": 4,
+          "default": 2,
+          "value": null,
+          "description": "Scout movement points"
+        },
+        "units.scout.cost": {
+          "key": "units.scout.cost",
+          "kind": "int_range",
+          "min": 15,
+          "max": 35,
+          "default": 25,
+          "value": 19,
+          "description": "Scout production cost"
+        },
+        "units.warrior.attack": {
+          "key": "units.warrior.attack",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": null,
+          "description": "Warrior attack strength"
+        },
+        "units.warrior.defense": {
+          "key": "units.warrior.defense",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": null,
+          "description": "Warrior defense strength"
+        },
+        "units.warrior.moves": {
+          "key": "units.warrior.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": null,
+          "description": "Warrior movement points"
+        },
+        "units.warrior.cost": {
+          "key": "units.warrior.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": null,
+          "description": "Warrior production cost"
+        },
+        "units.settler.moves": {
+          "key": "units.settler.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": null,
+          "description": "Settler movement points"
+        },
+        "units.settler.cost": {
+          "key": "units.settler.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": null,
+          "description": "Settler production cost (key for expansion balance)"
+        },
+        "units.worker.moves": {
+          "key": "units.worker.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 3,
+          "default": 2,
+          "value": null,
+          "description": "Worker movement points"
+        },
+        "units.worker.cost": {
+          "key": "units.worker.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": null,
+          "description": "Worker production cost"
+        },
+        "buildings.monument.cost": {
+          "key": "buildings.monument.cost",
+          "kind": "int_range",
+          "min": 30,
+          "max": 80,
+          "default": 60,
+          "value": 67,
+          "description": "Monument production cost"
+        },
+        "buildings.monument.maintenance": {
+          "key": "buildings.monument.maintenance",
+          "kind": "int_range",
+          "min": 0,
+          "max": 2,
+          "default": 1,
+          "value": null,
+          "description": "Monument gold maintenance"
+        },
+        "buildings.library.cost": {
+          "key": "buildings.library.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": 84,
+          "description": "Library production cost"
+        },
+        "buildings.library.maintenance": {
+          "key": "buildings.library.maintenance",
+          "kind": "int_range",
+          "min": 0,
+          "max": 3,
+          "default": 1,
+          "value": null,
+          "description": "Library gold maintenance"
+        },
+        "buildings.courthouse.cost": {
+          "key": "buildings.courthouse.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": null,
+          "description": "Courthouse production cost"
+        },
+        "buildings.courthouse.maintenance": {
+          "key": "buildings.courthouse.maintenance",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": null,
+          "description": "Courthouse gold maintenance"
+        },
+        "techs.pottery.cost": {
+          "key": "techs.pottery.cost",
+          "kind": "int_range",
+          "min": 15,
+          "max": 40,
+          "default": 25,
+          "value": null,
+          "description": "Pottery research cost"
+        },
+        "techs.writing.cost": {
+          "key": "techs.writing.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": null,
+          "description": "Writing research cost"
+        }
+      },
+      "metadata": {
+        "schema_version": "1.0",
+        "mutation": {
+          "per_candidate": 3,
+          "weights": {
+            "units": 1.0,
+            "buildings": 0.8,
+            "techs": 0.6
+          }
+        },
+        "evaluation": {
+          "games_per_eval": 10,
+          "selfplay": {
+            "map_width": 25,
+            "map_height": 18,
+            "num_players": 2,
+            "max_turns": 100
+          },
+          "fitness_weights": {
+            "win_rate_balance": 0.5,
+            "game_length_score": 0.3,
+            "avg_combats": 0.1,
+            "avg_cities": 0.1
+          }
+        },
+        "objectives": {
+          "win_rate_balance": {
+            "direction": "max",
+            "description": "How close to 50/50 win rate (1.0 = perfect balance)"
+          },
+          "decision_diversity": {
+            "direction": "max",
+            "description": "Variety in viable strategies (measured by build order entropy)"
+          },
+          "game_length_score": {
+            "direction": "max",
+            "description": "Score based on game length being in ideal range (30-100 turns)"
+          }
+        }
+      }
+    },
+    "fitness": {
+      "win_rate_balance": 0.3999999999999999,
+      "game_length_score": 1.0,
+      "decision_diversity": 0.45749999999999996,
+      "avg_combats": 1.2666666666666666,
+      "avg_cities": 2.0,
+      "avg_techs": 4.0,
+      "domination_rate": 0.0
+    }
+  },
+  {
+    "genome": {
+      "genome_id": "bb_583f3e88530c",
+      "domain": "backbay",
+      "parent_id": "bb_8193b24d66d1",
+      "generation": 2,
+      "genes": {
+        "units.scout.attack": {
+          "key": "units.scout.attack",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": null,
+          "description": "Scout attack strength"
+        },
+        "units.scout.defense": {
+          "key": "units.scout.defense",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Scout defense strength"
+        },
+        "units.scout.moves": {
+          "key": "units.scout.moves",
+          "kind": "int_range",
+          "min": 2,
+          "max": 4,
+          "default": 2,
+          "value": 2,
+          "description": "Scout movement points"
+        },
+        "units.scout.cost": {
+          "key": "units.scout.cost",
+          "kind": "int_range",
+          "min": 15,
+          "max": 35,
+          "default": 25,
+          "value": null,
+          "description": "Scout production cost"
+        },
+        "units.warrior.attack": {
+          "key": "units.warrior.attack",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": null,
+          "description": "Warrior attack strength"
+        },
+        "units.warrior.defense": {
+          "key": "units.warrior.defense",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": null,
+          "description": "Warrior defense strength"
+        },
+        "units.warrior.moves": {
+          "key": "units.warrior.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Warrior movement points"
+        },
+        "units.warrior.cost": {
+          "key": "units.warrior.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": null,
+          "description": "Warrior production cost"
+        },
+        "units.settler.moves": {
+          "key": "units.settler.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Settler movement points"
+        },
+        "units.settler.cost": {
+          "key": "units.settler.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": 119,
+          "description": "Settler production cost (key for expansion balance)"
+        },
+        "units.worker.moves": {
+          "key": "units.worker.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 3,
+          "default": 2,
+          "value": null,
+          "description": "Worker movement points"
+        },
+        "units.worker.cost": {
+          "key": "units.worker.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": null,
+          "description": "Worker production cost"
+        },
+        "buildings.monument.cost": {
+          "key": "buildings.monument.cost",
+          "kind": "int_range",
+          "min": 30,
+          "max": 80,
+          "default": 60,
+          "value": 63,
+          "description": "Monument production cost"
+        },
+        "buildings.monument.maintenance": {
+          "key": "buildings.monument.maintenance",
+          "kind": "int_range",
+          "min": 0,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Monument gold maintenance"
+        },
+        "buildings.library.cost": {
+          "key": "buildings.library.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": 93,
+          "description": "Library production cost"
+        },
+        "buildings.library.maintenance": {
+          "key": "buildings.library.maintenance",
+          "kind": "int_range",
+          "min": 0,
+          "max": 3,
+          "default": 1,
+          "value": 2,
+          "description": "Library gold maintenance"
+        },
+        "buildings.courthouse.cost": {
+          "key": "buildings.courthouse.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": 107,
+          "description": "Courthouse production cost"
+        },
+        "buildings.courthouse.maintenance": {
+          "key": "buildings.courthouse.maintenance",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": null,
+          "description": "Courthouse gold maintenance"
+        },
+        "techs.pottery.cost": {
+          "key": "techs.pottery.cost",
+          "kind": "int_range",
+          "min": 15,
+          "max": 40,
+          "default": 25,
+          "value": null,
+          "description": "Pottery research cost"
+        },
+        "techs.writing.cost": {
+          "key": "techs.writing.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": null,
+          "description": "Writing research cost"
+        }
+      },
+      "metadata": {
+        "schema_version": "1.0",
+        "mutation": {
+          "per_candidate": 3,
+          "weights": {
+            "units": 1.0,
+            "buildings": 0.8,
+            "techs": 0.6
+          }
+        },
+        "evaluation": {
+          "games_per_eval": 10,
+          "selfplay": {
+            "map_width": 25,
+            "map_height": 18,
+            "num_players": 2,
+            "max_turns": 100
+          },
+          "fitness_weights": {
+            "win_rate_balance": 0.5,
+            "game_length_score": 0.3,
+            "avg_combats": 0.1,
+            "avg_cities": 0.1
+          }
+        },
+        "objectives": {
+          "win_rate_balance": {
+            "direction": "max",
+            "description": "How close to 50/50 win rate (1.0 = perfect balance)"
+          },
+          "decision_diversity": {
+            "direction": "max",
+            "description": "Variety in viable strategies (measured by build order entropy)"
+          },
+          "game_length_score": {
+            "direction": "max",
+            "description": "Score based on game length being in ideal range (30-100 turns)"
+          }
+        }
+      }
+    },
+    "fitness": {
+      "win_rate_balance": 0.3999999999999999,
+      "game_length_score": 1.0,
+      "decision_diversity": 0.46249999999999997,
+      "avg_combats": 1.3333333333333333,
+      "avg_cities": 2.0,
+      "avg_techs": 4.0,
+      "domination_rate": 0.0
+    }
+  },
+  {
+    "genome": {
+      "genome_id": "bb_029860a42daf",
+      "domain": "backbay",
+      "parent_id": "bb_8193b24d66d1",
+      "generation": 2,
+      "genes": {
+        "units.scout.attack": {
+          "key": "units.scout.attack",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": null,
+          "description": "Scout attack strength"
+        },
+        "units.scout.defense": {
+          "key": "units.scout.defense",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": null,
+          "description": "Scout defense strength"
+        },
+        "units.scout.moves": {
+          "key": "units.scout.moves",
+          "kind": "int_range",
+          "min": 2,
+          "max": 4,
+          "default": 2,
+          "value": 2,
+          "description": "Scout movement points"
+        },
+        "units.scout.cost": {
+          "key": "units.scout.cost",
+          "kind": "int_range",
+          "min": 15,
+          "max": 35,
+          "default": 25,
+          "value": null,
+          "description": "Scout production cost"
+        },
+        "units.warrior.attack": {
+          "key": "units.warrior.attack",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": 2,
+          "description": "Warrior attack strength"
+        },
+        "units.warrior.defense": {
+          "key": "units.warrior.defense",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": 2,
+          "description": "Warrior defense strength"
+        },
+        "units.warrior.moves": {
+          "key": "units.warrior.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Warrior movement points"
+        },
+        "units.warrior.cost": {
+          "key": "units.warrior.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": 40,
+          "description": "Warrior production cost"
+        },
+        "units.settler.moves": {
+          "key": "units.settler.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Settler movement points"
+        },
+        "units.settler.cost": {
+          "key": "units.settler.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": 91,
+          "description": "Settler production cost (key for expansion balance)"
+        },
+        "units.worker.moves": {
+          "key": "units.worker.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 3,
+          "default": 2,
+          "value": 2,
+          "description": "Worker movement points"
+        },
+        "units.worker.cost": {
+          "key": "units.worker.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": 44,
+          "description": "Worker production cost"
+        },
+        "buildings.monument.cost": {
+          "key": "buildings.monument.cost",
+          "kind": "int_range",
+          "min": 30,
+          "max": 80,
+          "default": 60,
+          "value": 63,
+          "description": "Monument production cost"
+        },
+        "buildings.monument.maintenance": {
+          "key": "buildings.monument.maintenance",
+          "kind": "int_range",
+          "min": 0,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Monument gold maintenance"
+        },
+        "buildings.library.cost": {
+          "key": "buildings.library.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": 93,
+          "description": "Library production cost"
+        },
+        "buildings.library.maintenance": {
+          "key": "buildings.library.maintenance",
+          "kind": "int_range",
+          "min": 0,
+          "max": 3,
+          "default": 1,
+          "value": 2,
+          "description": "Library gold maintenance"
+        },
+        "buildings.courthouse.cost": {
+          "key": "buildings.courthouse.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": 92,
+          "description": "Courthouse production cost"
+        },
+        "buildings.courthouse.maintenance": {
+          "key": "buildings.courthouse.maintenance",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": null,
+          "description": "Courthouse gold maintenance"
+        },
+        "techs.pottery.cost": {
+          "key": "techs.pottery.cost",
+          "kind": "int_range",
+          "min": 15,
+          "max": 40,
+          "default": 25,
+          "value": null,
+          "description": "Pottery research cost"
+        },
+        "techs.writing.cost": {
+          "key": "techs.writing.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": null,
+          "description": "Writing research cost"
+        }
+      },
+      "metadata": {
+        "schema_version": "1.0",
+        "mutation": {
+          "per_candidate": 3,
+          "weights": {
+            "units": 1.0,
+            "buildings": 0.8,
+            "techs": 0.6
+          }
+        },
+        "evaluation": {
+          "games_per_eval": 10,
+          "selfplay": {
+            "map_width": 25,
+            "map_height": 18,
+            "num_players": 2,
+            "max_turns": 100
+          },
+          "fitness_weights": {
+            "win_rate_balance": 0.5,
+            "game_length_score": 0.3,
+            "avg_combats": 0.1,
+            "avg_cities": 0.1
+          }
+        },
+        "objectives": {
+          "win_rate_balance": {
+            "direction": "max",
+            "description": "How close to 50/50 win rate (1.0 = perfect balance)"
+          },
+          "decision_diversity": {
+            "direction": "max",
+            "description": "Variety in viable strategies (measured by build order entropy)"
+          },
+          "game_length_score": {
+            "direction": "max",
+            "description": "Score based on game length being in ideal range (30-100 turns)"
+          }
+        }
+      }
+    },
+    "fitness": {
+      "win_rate_balance": 0.3999999999999999,
+      "game_length_score": 1.0,
+      "decision_diversity": 0.46249999999999997,
+      "avg_combats": 1.3333333333333333,
+      "avg_cities": 2.0,
+      "avg_techs": 4.0,
+      "domination_rate": 0.0
+    }
+  },
+  {
+    "genome": {
+      "genome_id": "bb_b93c0574c3b4",
+      "domain": "backbay",
+      "parent_id": "bb_b93c0574c3b4",
+      "generation": 2,
+      "genes": {
+        "units.scout.attack": {
+          "key": "units.scout.attack",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": null,
+          "description": "Scout attack strength"
+        },
+        "units.scout.defense": {
+          "key": "units.scout.defense",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": null,
+          "description": "Scout defense strength"
+        },
+        "units.scout.moves": {
+          "key": "units.scout.moves",
+          "kind": "int_range",
+          "min": 2,
+          "max": 4,
+          "default": 2,
+          "value": 2,
+          "description": "Scout movement points"
+        },
+        "units.scout.cost": {
+          "key": "units.scout.cost",
+          "kind": "int_range",
+          "min": 15,
+          "max": 35,
+          "default": 25,
+          "value": 26,
+          "description": "Scout production cost"
+        },
+        "units.warrior.attack": {
+          "key": "units.warrior.attack",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": 2,
+          "description": "Warrior attack strength"
+        },
+        "units.warrior.defense": {
+          "key": "units.warrior.defense",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": 3,
+          "description": "Warrior defense strength"
+        },
+        "units.warrior.moves": {
+          "key": "units.warrior.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Warrior movement points"
+        },
+        "units.warrior.cost": {
+          "key": "units.warrior.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": 44,
+          "description": "Warrior production cost"
+        },
+        "units.settler.moves": {
+          "key": "units.settler.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": null,
+          "description": "Settler movement points"
+        },
+        "units.settler.cost": {
+          "key": "units.settler.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": null,
+          "description": "Settler production cost (key for expansion balance)"
+        },
+        "units.worker.moves": {
+          "key": "units.worker.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 3,
+          "default": 2,
+          "value": null,
+          "description": "Worker movement points"
+        },
+        "units.worker.cost": {
+          "key": "units.worker.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": null,
+          "description": "Worker production cost"
+        },
+        "buildings.monument.cost": {
+          "key": "buildings.monument.cost",
+          "kind": "int_range",
+          "min": 30,
+          "max": 80,
+          "default": 60,
+          "value": null,
+          "description": "Monument production cost"
+        },
+        "buildings.monument.maintenance": {
+          "key": "buildings.monument.maintenance",
+          "kind": "int_range",
+          "min": 0,
+          "max": 2,
+          "default": 1,
+          "value": null,
+          "description": "Monument gold maintenance"
+        },
+        "buildings.library.cost": {
+          "key": "buildings.library.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": null,
+          "description": "Library production cost"
+        },
+        "buildings.library.maintenance": {
+          "key": "buildings.library.maintenance",
+          "kind": "int_range",
+          "min": 0,
+          "max": 3,
+          "default": 1,
+          "value": null,
+          "description": "Library gold maintenance"
+        },
+        "buildings.courthouse.cost": {
+          "key": "buildings.courthouse.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": null,
+          "description": "Courthouse production cost"
+        },
+        "buildings.courthouse.maintenance": {
+          "key": "buildings.courthouse.maintenance",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": null,
+          "description": "Courthouse gold maintenance"
+        },
+        "techs.pottery.cost": {
+          "key": "techs.pottery.cost",
+          "kind": "int_range",
+          "min": 15,
+          "max": 40,
+          "default": 25,
+          "value": null,
+          "description": "Pottery research cost"
+        },
+        "techs.writing.cost": {
+          "key": "techs.writing.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": null,
+          "description": "Writing research cost"
+        }
+      },
+      "metadata": {
+        "schema_version": "1.0",
+        "mutation": {
+          "per_candidate": 3,
+          "weights": {
+            "units": 1.0,
+            "buildings": 0.8,
+            "techs": 0.6
+          }
+        },
+        "evaluation": {
+          "games_per_eval": 10,
+          "selfplay": {
+            "map_width": 25,
+            "map_height": 18,
+            "num_players": 2,
+            "max_turns": 100
+          },
+          "fitness_weights": {
+            "win_rate_balance": 0.5,
+            "game_length_score": 0.3,
+            "avg_combats": 0.1,
+            "avg_cities": 0.1
+          }
+        },
+        "objectives": {
+          "win_rate_balance": {
+            "direction": "max",
+            "description": "How close to 50/50 win rate (1.0 = perfect balance)"
+          },
+          "decision_diversity": {
+            "direction": "max",
+            "description": "Variety in viable strategies (measured by build order entropy)"
+          },
+          "game_length_score": {
+            "direction": "max",
+            "description": "Score based on game length being in ideal range (30-100 turns)"
+          }
+        }
+      }
+    },
+    "fitness": {
+      "win_rate_balance": 0.3999999999999999,
+      "game_length_score": 1.0,
+      "decision_diversity": 0.46249999999999997,
+      "avg_combats": 1.3333333333333333,
+      "avg_cities": 2.0,
+      "avg_techs": 4.0,
+      "domination_rate": 0.0
+    }
+  },
+  {
+    "genome": {
+      "genome_id": "bb_b53bd4ecc8b7",
+      "domain": "backbay",
+      "parent_id": "bb_b53bd4ecc8b7",
+      "generation": 3,
+      "genes": {
+        "units.scout.attack": {
+          "key": "units.scout.attack",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": null,
+          "description": "Scout attack strength"
+        },
+        "units.scout.defense": {
+          "key": "units.scout.defense",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Scout defense strength"
+        },
+        "units.scout.moves": {
+          "key": "units.scout.moves",
+          "kind": "int_range",
+          "min": 2,
+          "max": 4,
+          "default": 2,
+          "value": 2,
+          "description": "Scout movement points"
+        },
+        "units.scout.cost": {
+          "key": "units.scout.cost",
+          "kind": "int_range",
+          "min": 15,
+          "max": 35,
+          "default": 25,
+          "value": 26,
+          "description": "Scout production cost"
+        },
+        "units.warrior.attack": {
+          "key": "units.warrior.attack",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": 2,
+          "description": "Warrior attack strength"
+        },
+        "units.warrior.defense": {
+          "key": "units.warrior.defense",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": 2,
+          "description": "Warrior defense strength"
+        },
+        "units.warrior.moves": {
+          "key": "units.warrior.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Warrior movement points"
+        },
+        "units.warrior.cost": {
+          "key": "units.warrior.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": null,
+          "description": "Warrior production cost"
+        },
+        "units.settler.moves": {
+          "key": "units.settler.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Settler movement points"
+        },
+        "units.settler.cost": {
+          "key": "units.settler.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": 91,
+          "description": "Settler production cost (key for expansion balance)"
+        },
+        "units.worker.moves": {
+          "key": "units.worker.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 3,
+          "default": 2,
+          "value": null,
+          "description": "Worker movement points"
+        },
+        "units.worker.cost": {
+          "key": "units.worker.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": 27,
+          "description": "Worker production cost"
+        },
+        "buildings.monument.cost": {
+          "key": "buildings.monument.cost",
+          "kind": "int_range",
+          "min": 30,
+          "max": 80,
+          "default": 60,
+          "value": 63,
+          "description": "Monument production cost"
+        },
+        "buildings.monument.maintenance": {
+          "key": "buildings.monument.maintenance",
+          "kind": "int_range",
+          "min": 0,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Monument gold maintenance"
+        },
+        "buildings.library.cost": {
+          "key": "buildings.library.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": 80,
+          "description": "Library production cost"
+        },
+        "buildings.library.maintenance": {
+          "key": "buildings.library.maintenance",
+          "kind": "int_range",
+          "min": 0,
+          "max": 3,
+          "default": 1,
+          "value": 1,
+          "description": "Library gold maintenance"
+        },
+        "buildings.courthouse.cost": {
+          "key": "buildings.courthouse.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": 92,
+          "description": "Courthouse production cost"
+        },
+        "buildings.courthouse.maintenance": {
+          "key": "buildings.courthouse.maintenance",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": 2,
+          "description": "Courthouse gold maintenance"
+        },
+        "techs.pottery.cost": {
+          "key": "techs.pottery.cost",
+          "kind": "int_range",
+          "min": 15,
+          "max": 40,
+          "default": 25,
+          "value": null,
+          "description": "Pottery research cost"
+        },
+        "techs.writing.cost": {
+          "key": "techs.writing.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": null,
+          "description": "Writing research cost"
+        }
+      },
+      "metadata": {
+        "schema_version": "1.0",
+        "mutation": {
+          "per_candidate": 3,
+          "weights": {
+            "units": 1.0,
+            "buildings": 0.8,
+            "techs": 0.6
+          }
+        },
+        "evaluation": {
+          "games_per_eval": 10,
+          "selfplay": {
+            "map_width": 25,
+            "map_height": 18,
+            "num_players": 2,
+            "max_turns": 100
+          },
+          "fitness_weights": {
+            "win_rate_balance": 0.5,
+            "game_length_score": 0.3,
+            "avg_combats": 0.1,
+            "avg_cities": 0.1
+          }
+        },
+        "objectives": {
+          "win_rate_balance": {
+            "direction": "max",
+            "description": "How close to 50/50 win rate (1.0 = perfect balance)"
+          },
+          "decision_diversity": {
+            "direction": "max",
+            "description": "Variety in viable strategies (measured by build order entropy)"
+          },
+          "game_length_score": {
+            "direction": "max",
+            "description": "Score based on game length being in ideal range (30-100 turns)"
+          }
+        }
+      }
+    },
+    "fitness": {
+      "win_rate_balance": 0.6666666666666666,
+      "game_length_score": 1.0,
+      "decision_diversity": 0.4875,
+      "avg_combats": 1.6666666666666667,
+      "avg_cities": 2.0,
+      "avg_techs": 4.0,
+      "domination_rate": 0.0
+    }
+  },
+  {
+    "genome": {
+      "genome_id": "bb_06b04a8ec6ed",
+      "domain": "backbay",
+      "parent_id": "bb_0e2b07554525",
+      "generation": 3,
+      "genes": {
+        "units.scout.attack": {
+          "key": "units.scout.attack",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Scout attack strength"
+        },
+        "units.scout.defense": {
+          "key": "units.scout.defense",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Scout defense strength"
+        },
+        "units.scout.moves": {
+          "key": "units.scout.moves",
+          "kind": "int_range",
+          "min": 2,
+          "max": 4,
+          "default": 2,
+          "value": 2,
+          "description": "Scout movement points"
+        },
+        "units.scout.cost": {
+          "key": "units.scout.cost",
+          "kind": "int_range",
+          "min": 15,
+          "max": 35,
+          "default": 25,
+          "value": 25,
+          "description": "Scout production cost"
+        },
+        "units.warrior.attack": {
+          "key": "units.warrior.attack",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": 2,
+          "description": "Warrior attack strength"
+        },
+        "units.warrior.defense": {
+          "key": "units.warrior.defense",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": 2,
+          "description": "Warrior defense strength"
+        },
+        "units.warrior.moves": {
+          "key": "units.warrior.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Warrior movement points"
+        },
+        "units.warrior.cost": {
+          "key": "units.warrior.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": 35,
+          "description": "Warrior production cost"
+        },
+        "units.settler.moves": {
+          "key": "units.settler.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Settler movement points"
+        },
+        "units.settler.cost": {
+          "key": "units.settler.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": 87,
+          "description": "Settler production cost (key for expansion balance)"
+        },
+        "units.worker.moves": {
+          "key": "units.worker.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 3,
+          "default": 2,
+          "value": 2,
+          "description": "Worker movement points"
+        },
+        "units.worker.cost": {
+          "key": "units.worker.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": 40,
+          "description": "Worker production cost"
+        },
+        "buildings.monument.cost": {
+          "key": "buildings.monument.cost",
+          "kind": "int_range",
+          "min": 30,
+          "max": 80,
+          "default": 60,
+          "value": 60,
+          "description": "Monument production cost"
+        },
+        "buildings.monument.maintenance": {
+          "key": "buildings.monument.maintenance",
+          "kind": "int_range",
+          "min": 0,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Monument gold maintenance"
+        },
+        "buildings.library.cost": {
+          "key": "buildings.library.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": 77,
+          "description": "Library production cost"
+        },
+        "buildings.library.maintenance": {
+          "key": "buildings.library.maintenance",
+          "kind": "int_range",
+          "min": 0,
+          "max": 3,
+          "default": 1,
+          "value": 1,
+          "description": "Library gold maintenance"
+        },
+        "buildings.courthouse.cost": {
+          "key": "buildings.courthouse.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": 97,
+          "description": "Courthouse production cost"
+        },
+        "buildings.courthouse.maintenance": {
+          "key": "buildings.courthouse.maintenance",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": 3,
+          "description": "Courthouse gold maintenance"
+        },
+        "techs.pottery.cost": {
+          "key": "techs.pottery.cost",
+          "kind": "int_range",
+          "min": 15,
+          "max": 40,
+          "default": 25,
+          "value": 25,
+          "description": "Pottery research cost"
+        },
+        "techs.writing.cost": {
+          "key": "techs.writing.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": 40,
+          "description": "Writing research cost"
+        }
+      },
+      "metadata": {
+        "schema_version": "1.0",
+        "mutation": {
+          "per_candidate": 3,
+          "weights": {
+            "units": 1.0,
+            "buildings": 0.8,
+            "techs": 0.6
+          }
+        },
+        "evaluation": {
+          "games_per_eval": 10,
+          "selfplay": {
+            "map_width": 25,
+            "map_height": 18,
+            "num_players": 2,
+            "max_turns": 100
+          },
+          "fitness_weights": {
+            "win_rate_balance": 0.5,
+            "game_length_score": 0.3,
+            "avg_combats": 0.1,
+            "avg_cities": 0.1
+          }
+        },
+        "objectives": {
+          "win_rate_balance": {
+            "direction": "max",
+            "description": "How close to 50/50 win rate (1.0 = perfect balance)"
+          },
+          "decision_diversity": {
+            "direction": "max",
+            "description": "Variety in viable strategies (measured by build order entropy)"
+          },
+          "game_length_score": {
+            "direction": "max",
+            "description": "Score based on game length being in ideal range (30-100 turns)"
+          }
+        }
+      }
+    },
+    "fitness": {
+      "win_rate_balance": 0.6666666666666666,
+      "game_length_score": 1.0,
+      "decision_diversity": 0.5674999999999999,
+      "avg_combats": 2.7333333333333334,
+      "avg_cities": 2.0,
+      "avg_techs": 4.0,
+      "domination_rate": 0.0
+    }
+  },
+  {
+    "genome": {
+      "genome_id": "bb_655c8ea5d62a",
+      "domain": "backbay",
+      "parent_id": "bb_8193b24d66d1",
+      "generation": 3,
+      "genes": {
+        "units.scout.attack": {
+          "key": "units.scout.attack",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": null,
+          "description": "Scout attack strength"
+        },
+        "units.scout.defense": {
+          "key": "units.scout.defense",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Scout defense strength"
+        },
+        "units.scout.moves": {
+          "key": "units.scout.moves",
+          "kind": "int_range",
+          "min": 2,
+          "max": 4,
+          "default": 2,
+          "value": 2,
+          "description": "Scout movement points"
+        },
+        "units.scout.cost": {
+          "key": "units.scout.cost",
+          "kind": "int_range",
+          "min": 15,
+          "max": 35,
+          "default": 25,
+          "value": null,
+          "description": "Scout production cost"
+        },
+        "units.warrior.attack": {
+          "key": "units.warrior.attack",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": null,
+          "description": "Warrior attack strength"
+        },
+        "units.warrior.defense": {
+          "key": "units.warrior.defense",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": 2,
+          "description": "Warrior defense strength"
+        },
+        "units.warrior.moves": {
+          "key": "units.warrior.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Warrior movement points"
+        },
+        "units.warrior.cost": {
+          "key": "units.warrior.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": null,
+          "description": "Warrior production cost"
+        },
+        "units.settler.moves": {
+          "key": "units.settler.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Settler movement points"
+        },
+        "units.settler.cost": {
+          "key": "units.settler.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": 101,
+          "description": "Settler production cost (key for expansion balance)"
+        },
+        "units.worker.moves": {
+          "key": "units.worker.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 3,
+          "default": 2,
+          "value": null,
+          "description": "Worker movement points"
+        },
+        "units.worker.cost": {
+          "key": "units.worker.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": null,
+          "description": "Worker production cost"
+        },
+        "buildings.monument.cost": {
+          "key": "buildings.monument.cost",
+          "kind": "int_range",
+          "min": 30,
+          "max": 80,
+          "default": 60,
+          "value": 63,
+          "description": "Monument production cost"
+        },
+        "buildings.monument.maintenance": {
+          "key": "buildings.monument.maintenance",
+          "kind": "int_range",
+          "min": 0,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Monument gold maintenance"
+        },
+        "buildings.library.cost": {
+          "key": "buildings.library.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": 93,
+          "description": "Library production cost"
+        },
+        "buildings.library.maintenance": {
+          "key": "buildings.library.maintenance",
+          "kind": "int_range",
+          "min": 0,
+          "max": 3,
+          "default": 1,
+          "value": 1,
+          "description": "Library gold maintenance"
+        },
+        "buildings.courthouse.cost": {
+          "key": "buildings.courthouse.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": 92,
+          "description": "Courthouse production cost"
+        },
+        "buildings.courthouse.maintenance": {
+          "key": "buildings.courthouse.maintenance",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": null,
+          "description": "Courthouse gold maintenance"
+        },
+        "techs.pottery.cost": {
+          "key": "techs.pottery.cost",
+          "kind": "int_range",
+          "min": 15,
+          "max": 40,
+          "default": 25,
+          "value": null,
+          "description": "Pottery research cost"
+        },
+        "techs.writing.cost": {
+          "key": "techs.writing.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": null,
+          "description": "Writing research cost"
+        }
+      },
+      "metadata": {
+        "schema_version": "1.0",
+        "mutation": {
+          "per_candidate": 3,
+          "weights": {
+            "units": 1.0,
+            "buildings": 0.8,
+            "techs": 0.6
+          }
+        },
+        "evaluation": {
+          "games_per_eval": 10,
+          "selfplay": {
+            "map_width": 25,
+            "map_height": 18,
+            "num_players": 2,
+            "max_turns": 100
+          },
+          "fitness_weights": {
+            "win_rate_balance": 0.5,
+            "game_length_score": 0.3,
+            "avg_combats": 0.1,
+            "avg_cities": 0.1
+          }
+        },
+        "objectives": {
+          "win_rate_balance": {
+            "direction": "max",
+            "description": "How close to 50/50 win rate (1.0 = perfect balance)"
+          },
+          "decision_diversity": {
+            "direction": "max",
+            "description": "Variety in viable strategies (measured by build order entropy)"
+          },
+          "game_length_score": {
+            "direction": "max",
+            "description": "Score based on game length being in ideal range (30-100 turns)"
+          }
+        }
+      }
+    },
+    "fitness": {
+      "win_rate_balance": 0.6666666666666666,
+      "game_length_score": 1.0,
+      "decision_diversity": 0.4925,
+      "avg_combats": 1.7333333333333334,
+      "avg_cities": 2.0,
+      "avg_techs": 4.0,
+      "domination_rate": 0.0
+    }
+  },
+  {
+    "genome": {
+      "genome_id": "bb_8e7e1c56959d",
+      "domain": "backbay",
+      "parent_id": "bb_5281b70c5e9f",
+      "generation": 3,
+      "genes": {
+        "units.scout.attack": {
+          "key": "units.scout.attack",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": 2,
+          "description": "Scout attack strength"
+        },
+        "units.scout.defense": {
+          "key": "units.scout.defense",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Scout defense strength"
+        },
+        "units.scout.moves": {
+          "key": "units.scout.moves",
+          "kind": "int_range",
+          "min": 2,
+          "max": 4,
+          "default": 2,
+          "value": 2,
+          "description": "Scout movement points"
+        },
+        "units.scout.cost": {
+          "key": "units.scout.cost",
+          "kind": "int_range",
+          "min": 15,
+          "max": 35,
+          "default": 25,
+          "value": 25,
+          "description": "Scout production cost"
+        },
+        "units.warrior.attack": {
+          "key": "units.warrior.attack",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": null,
+          "description": "Warrior attack strength"
+        },
+        "units.warrior.defense": {
+          "key": "units.warrior.defense",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": null,
+          "description": "Warrior defense strength"
+        },
+        "units.warrior.moves": {
+          "key": "units.warrior.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Warrior movement points"
+        },
+        "units.warrior.cost": {
+          "key": "units.warrior.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": null,
+          "description": "Warrior production cost"
+        },
+        "units.settler.moves": {
+          "key": "units.settler.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Settler movement points"
+        },
+        "units.settler.cost": {
+          "key": "units.settler.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": 80,
+          "description": "Settler production cost (key for expansion balance)"
+        },
+        "units.worker.moves": {
+          "key": "units.worker.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 3,
+          "default": 2,
+          "value": 2,
+          "description": "Worker movement points"
+        },
+        "units.worker.cost": {
+          "key": "units.worker.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": 27,
+          "description": "Worker production cost"
+        },
+        "buildings.monument.cost": {
+          "key": "buildings.monument.cost",
+          "kind": "int_range",
+          "min": 30,
+          "max": 80,
+          "default": 60,
+          "value": 60,
+          "description": "Monument production cost"
+        },
+        "buildings.monument.maintenance": {
+          "key": "buildings.monument.maintenance",
+          "kind": "int_range",
+          "min": 0,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Monument gold maintenance"
+        },
+        "buildings.library.cost": {
+          "key": "buildings.library.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": 80,
+          "description": "Library production cost"
+        },
+        "buildings.library.maintenance": {
+          "key": "buildings.library.maintenance",
+          "kind": "int_range",
+          "min": 0,
+          "max": 3,
+          "default": 1,
+          "value": 1,
+          "description": "Library gold maintenance"
+        },
+        "buildings.courthouse.cost": {
+          "key": "buildings.courthouse.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": 69,
+          "description": "Courthouse production cost"
+        },
+        "buildings.courthouse.maintenance": {
+          "key": "buildings.courthouse.maintenance",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": 2,
+          "description": "Courthouse gold maintenance"
+        },
+        "techs.pottery.cost": {
+          "key": "techs.pottery.cost",
+          "kind": "int_range",
+          "min": 15,
+          "max": 40,
+          "default": 25,
+          "value": null,
+          "description": "Pottery research cost"
+        },
+        "techs.writing.cost": {
+          "key": "techs.writing.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": 53,
+          "description": "Writing research cost"
+        }
+      },
+      "metadata": {
+        "schema_version": "1.0",
+        "mutation": {
+          "per_candidate": 3,
+          "weights": {
+            "units": 1.0,
+            "buildings": 0.8,
+            "techs": 0.6
+          }
+        },
+        "evaluation": {
+          "games_per_eval": 10,
+          "selfplay": {
+            "map_width": 25,
+            "map_height": 18,
+            "num_players": 2,
+            "max_turns": 100
+          },
+          "fitness_weights": {
+            "win_rate_balance": 0.5,
+            "game_length_score": 0.3,
+            "avg_combats": 0.1,
+            "avg_cities": 0.1
+          }
+        },
+        "objectives": {
+          "win_rate_balance": {
+            "direction": "max",
+            "description": "How close to 50/50 win rate (1.0 = perfect balance)"
+          },
+          "decision_diversity": {
+            "direction": "max",
+            "description": "Variety in viable strategies (measured by build order entropy)"
+          },
+          "game_length_score": {
+            "direction": "max",
+            "description": "Score based on game length being in ideal range (30-100 turns)"
+          }
+        }
+      }
+    },
+    "fitness": {
+      "win_rate_balance": 0.6666666666666666,
+      "game_length_score": 1.0,
+      "decision_diversity": 0.5524999999999999,
+      "avg_combats": 2.533333333333333,
+      "avg_cities": 2.0,
+      "avg_techs": 4.0,
+      "domination_rate": 0.0
+    }
+  },
+  {
+    "genome": {
+      "genome_id": "bb_cd95624be914",
+      "domain": "backbay",
+      "parent_id": "bb_47d4aef865ad",
+      "generation": 5,
+      "genes": {
+        "units.scout.attack": {
+          "key": "units.scout.attack",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Scout attack strength"
+        },
+        "units.scout.defense": {
+          "key": "units.scout.defense",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Scout defense strength"
+        },
+        "units.scout.moves": {
+          "key": "units.scout.moves",
+          "kind": "int_range",
+          "min": 2,
+          "max": 4,
+          "default": 2,
+          "value": 2,
+          "description": "Scout movement points"
+        },
+        "units.scout.cost": {
+          "key": "units.scout.cost",
+          "kind": "int_range",
+          "min": 15,
+          "max": 35,
+          "default": 25,
+          "value": 25,
+          "description": "Scout production cost"
+        },
+        "units.warrior.attack": {
+          "key": "units.warrior.attack",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": 2,
+          "description": "Warrior attack strength"
+        },
+        "units.warrior.defense": {
+          "key": "units.warrior.defense",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": 2,
+          "description": "Warrior defense strength"
+        },
+        "units.warrior.moves": {
+          "key": "units.warrior.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Warrior movement points"
+        },
+        "units.warrior.cost": {
+          "key": "units.warrior.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": 30,
+          "description": "Warrior production cost"
+        },
+        "units.settler.moves": {
+          "key": "units.settler.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Settler movement points"
+        },
+        "units.settler.cost": {
+          "key": "units.settler.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": 87,
+          "description": "Settler production cost (key for expansion balance)"
+        },
+        "units.worker.moves": {
+          "key": "units.worker.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 3,
+          "default": 2,
+          "value": 2,
+          "description": "Worker movement points"
+        },
+        "units.worker.cost": {
+          "key": "units.worker.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": 49,
+          "description": "Worker production cost"
+        },
+        "buildings.monument.cost": {
+          "key": "buildings.monument.cost",
+          "kind": "int_range",
+          "min": 30,
+          "max": 80,
+          "default": 60,
+          "value": 60,
+          "description": "Monument production cost"
+        },
+        "buildings.monument.maintenance": {
+          "key": "buildings.monument.maintenance",
+          "kind": "int_range",
+          "min": 0,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Monument gold maintenance"
+        },
+        "buildings.library.cost": {
+          "key": "buildings.library.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": 72,
+          "description": "Library production cost"
+        },
+        "buildings.library.maintenance": {
+          "key": "buildings.library.maintenance",
+          "kind": "int_range",
+          "min": 0,
+          "max": 3,
+          "default": 1,
+          "value": 1,
+          "description": "Library gold maintenance"
+        },
+        "buildings.courthouse.cost": {
+          "key": "buildings.courthouse.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": 90,
+          "description": "Courthouse production cost"
+        },
+        "buildings.courthouse.maintenance": {
+          "key": "buildings.courthouse.maintenance",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": 3,
+          "description": "Courthouse gold maintenance"
+        },
+        "techs.pottery.cost": {
+          "key": "techs.pottery.cost",
+          "kind": "int_range",
+          "min": 15,
+          "max": 40,
+          "default": 25,
+          "value": 25,
+          "description": "Pottery research cost"
+        },
+        "techs.writing.cost": {
+          "key": "techs.writing.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": 40,
+          "description": "Writing research cost"
+        }
+      },
+      "metadata": {
+        "schema_version": "1.0",
+        "mutation": {
+          "per_candidate": 3,
+          "weights": {
+            "units": 1.0,
+            "buildings": 0.8,
+            "techs": 0.6
+          }
+        },
+        "evaluation": {
+          "games_per_eval": 10,
+          "selfplay": {
+            "map_width": 25,
+            "map_height": 18,
+            "num_players": 2,
+            "max_turns": 100
+          },
+          "fitness_weights": {
+            "win_rate_balance": 0.5,
+            "game_length_score": 0.3,
+            "avg_combats": 0.1,
+            "avg_cities": 0.1
+          }
+        },
+        "objectives": {
+          "win_rate_balance": {
+            "direction": "max",
+            "description": "How close to 50/50 win rate (1.0 = perfect balance)"
+          },
+          "decision_diversity": {
+            "direction": "max",
+            "description": "Variety in viable strategies (measured by build order entropy)"
+          },
+          "game_length_score": {
+            "direction": "max",
+            "description": "Score based on game length being in ideal range (30-100 turns)"
+          }
+        }
+      }
+    },
+    "fitness": {
+      "win_rate_balance": 0.2666666666666666,
+      "game_length_score": 1.0,
+      "decision_diversity": 0.5224999999999999,
+      "avg_combats": 2.1333333333333333,
+      "avg_cities": 2.0,
+      "avg_techs": 4.0,
+      "domination_rate": 0.0
+    }
+  },
+  {
+    "genome": {
+      "genome_id": "bb_522049f36e26",
+      "domain": "backbay",
+      "parent_id": "bb_522049f36e26",
+      "generation": 5,
+      "genes": {
+        "units.scout.attack": {
+          "key": "units.scout.attack",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Scout attack strength"
+        },
+        "units.scout.defense": {
+          "key": "units.scout.defense",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Scout defense strength"
+        },
+        "units.scout.moves": {
+          "key": "units.scout.moves",
+          "kind": "int_range",
+          "min": 2,
+          "max": 4,
+          "default": 2,
+          "value": 2,
+          "description": "Scout movement points"
+        },
+        "units.scout.cost": {
+          "key": "units.scout.cost",
+          "kind": "int_range",
+          "min": 15,
+          "max": 35,
+          "default": 25,
+          "value": 25,
+          "description": "Scout production cost"
+        },
+        "units.warrior.attack": {
+          "key": "units.warrior.attack",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": 2,
+          "description": "Warrior attack strength"
+        },
+        "units.warrior.defense": {
+          "key": "units.warrior.defense",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": 2,
+          "description": "Warrior defense strength"
+        },
+        "units.warrior.moves": {
+          "key": "units.warrior.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Warrior movement points"
+        },
+        "units.warrior.cost": {
+          "key": "units.warrior.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": 35,
+          "description": "Warrior production cost"
+        },
+        "units.settler.moves": {
+          "key": "units.settler.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Settler movement points"
+        },
+        "units.settler.cost": {
+          "key": "units.settler.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": 87,
+          "description": "Settler production cost (key for expansion balance)"
+        },
+        "units.worker.moves": {
+          "key": "units.worker.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 3,
+          "default": 2,
+          "value": 2,
+          "description": "Worker movement points"
+        },
+        "units.worker.cost": {
+          "key": "units.worker.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": 27,
+          "description": "Worker production cost"
+        },
+        "buildings.monument.cost": {
+          "key": "buildings.monument.cost",
+          "kind": "int_range",
+          "min": 30,
+          "max": 80,
+          "default": 60,
+          "value": 60,
+          "description": "Monument production cost"
+        },
+        "buildings.monument.maintenance": {
+          "key": "buildings.monument.maintenance",
+          "kind": "int_range",
+          "min": 0,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Monument gold maintenance"
+        },
+        "buildings.library.cost": {
+          "key": "buildings.library.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": 80,
+          "description": "Library production cost"
+        },
+        "buildings.library.maintenance": {
+          "key": "buildings.library.maintenance",
+          "kind": "int_range",
+          "min": 0,
+          "max": 3,
+          "default": 1,
+          "value": 1,
+          "description": "Library gold maintenance"
+        },
+        "buildings.courthouse.cost": {
+          "key": "buildings.courthouse.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": 97,
+          "description": "Courthouse production cost"
+        },
+        "buildings.courthouse.maintenance": {
+          "key": "buildings.courthouse.maintenance",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": 2,
+          "description": "Courthouse gold maintenance"
+        },
+        "techs.pottery.cost": {
+          "key": "techs.pottery.cost",
+          "kind": "int_range",
+          "min": 15,
+          "max": 40,
+          "default": 25,
+          "value": 25,
+          "description": "Pottery research cost"
+        },
+        "techs.writing.cost": {
+          "key": "techs.writing.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": 53,
+          "description": "Writing research cost"
+        }
+      },
+      "metadata": {
+        "schema_version": "1.0",
+        "mutation": {
+          "per_candidate": 3,
+          "weights": {
+            "units": 1.0,
+            "buildings": 0.8,
+            "techs": 0.6
+          }
+        },
+        "evaluation": {
+          "games_per_eval": 10,
+          "selfplay": {
+            "map_width": 25,
+            "map_height": 18,
+            "num_players": 2,
+            "max_turns": 100
+          },
+          "fitness_weights": {
+            "win_rate_balance": 0.5,
+            "game_length_score": 0.3,
+            "avg_combats": 0.1,
+            "avg_cities": 0.1
+          }
+        },
+        "objectives": {
+          "win_rate_balance": {
+            "direction": "max",
+            "description": "How close to 50/50 win rate (1.0 = perfect balance)"
+          },
+          "decision_diversity": {
+            "direction": "max",
+            "description": "Variety in viable strategies (measured by build order entropy)"
+          },
+          "game_length_score": {
+            "direction": "max",
+            "description": "Score based on game length being in ideal range (30-100 turns)"
+          }
+        }
+      }
+    },
+    "fitness": {
+      "win_rate_balance": 0.1333333333333333,
+      "game_length_score": 1.0,
+      "decision_diversity": 0.5025,
+      "avg_combats": 1.8666666666666667,
+      "avg_cities": 2.0,
+      "avg_techs": 4.0,
+      "domination_rate": 0.0
+    }
+  },
+  {
+    "genome": {
+      "genome_id": "bb_5ffc3b07a71e",
+      "domain": "backbay",
+      "parent_id": "bb_09caa1ed0370",
+      "generation": 3,
+      "genes": {
+        "units.scout.attack": {
+          "key": "units.scout.attack",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Scout attack strength"
+        },
+        "units.scout.defense": {
+          "key": "units.scout.defense",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": null,
+          "description": "Scout defense strength"
+        },
+        "units.scout.moves": {
+          "key": "units.scout.moves",
+          "kind": "int_range",
+          "min": 2,
+          "max": 4,
+          "default": 2,
+          "value": 2,
+          "description": "Scout movement points"
+        },
+        "units.scout.cost": {
+          "key": "units.scout.cost",
+          "kind": "int_range",
+          "min": 15,
+          "max": 35,
+          "default": 25,
+          "value": 25,
+          "description": "Scout production cost"
+        },
+        "units.warrior.attack": {
+          "key": "units.warrior.attack",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": 2,
+          "description": "Warrior attack strength"
+        },
+        "units.warrior.defense": {
+          "key": "units.warrior.defense",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": 2,
+          "description": "Warrior defense strength"
+        },
+        "units.warrior.moves": {
+          "key": "units.warrior.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": null,
+          "description": "Warrior movement points"
+        },
+        "units.warrior.cost": {
+          "key": "units.warrior.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": null,
+          "description": "Warrior production cost"
+        },
+        "units.settler.moves": {
+          "key": "units.settler.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": null,
+          "description": "Settler movement points"
+        },
+        "units.settler.cost": {
+          "key": "units.settler.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": null,
+          "description": "Settler production cost (key for expansion balance)"
+        },
+        "units.worker.moves": {
+          "key": "units.worker.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 3,
+          "default": 2,
+          "value": null,
+          "description": "Worker movement points"
+        },
+        "units.worker.cost": {
+          "key": "units.worker.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": 46,
+          "description": "Worker production cost"
+        },
+        "buildings.monument.cost": {
+          "key": "buildings.monument.cost",
+          "kind": "int_range",
+          "min": 30,
+          "max": 80,
+          "default": 60,
+          "value": null,
+          "description": "Monument production cost"
+        },
+        "buildings.monument.maintenance": {
+          "key": "buildings.monument.maintenance",
+          "kind": "int_range",
+          "min": 0,
+          "max": 2,
+          "default": 1,
+          "value": 2,
+          "description": "Monument gold maintenance"
+        },
+        "buildings.library.cost": {
+          "key": "buildings.library.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": 79,
+          "description": "Library production cost"
+        },
+        "buildings.library.maintenance": {
+          "key": "buildings.library.maintenance",
+          "kind": "int_range",
+          "min": 0,
+          "max": 3,
+          "default": 1,
+          "value": 0,
+          "description": "Library gold maintenance"
+        },
+        "buildings.courthouse.cost": {
+          "key": "buildings.courthouse.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": 91,
+          "description": "Courthouse production cost"
+        },
+        "buildings.courthouse.maintenance": {
+          "key": "buildings.courthouse.maintenance",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": null,
+          "description": "Courthouse gold maintenance"
+        },
+        "techs.pottery.cost": {
+          "key": "techs.pottery.cost",
+          "kind": "int_range",
+          "min": 15,
+          "max": 40,
+          "default": 25,
+          "value": 24,
+          "description": "Pottery research cost"
+        },
+        "techs.writing.cost": {
+          "key": "techs.writing.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": null,
+          "description": "Writing research cost"
+        }
+      },
+      "metadata": {
+        "schema_version": "1.0",
+        "mutation": {
+          "per_candidate": 3,
+          "weights": {
+            "units": 1.0,
+            "buildings": 0.8,
+            "techs": 0.6
+          }
+        },
+        "evaluation": {
+          "games_per_eval": 10,
+          "selfplay": {
+            "map_width": 25,
+            "map_height": 18,
+            "num_players": 2,
+            "max_turns": 100
+          },
+          "fitness_weights": {
+            "win_rate_balance": 0.5,
+            "game_length_score": 0.3,
+            "avg_combats": 0.1,
+            "avg_cities": 0.1
+          }
+        },
+        "objectives": {
+          "win_rate_balance": {
+            "direction": "max",
+            "description": "How close to 50/50 win rate (1.0 = perfect balance)"
+          },
+          "decision_diversity": {
+            "direction": "max",
+            "description": "Variety in viable strategies (measured by build order entropy)"
+          },
+          "game_length_score": {
+            "direction": "max",
+            "description": "Score based on game length being in ideal range (30-100 turns)"
+          }
+        }
+      }
+    },
+    "fitness": {
+      "win_rate_balance": 0.2666666666666666,
+      "game_length_score": 1.0,
+      "decision_diversity": 0.46749999999999997,
+      "avg_combats": 1.4,
+      "avg_cities": 2.0,
+      "avg_techs": 4.0,
+      "domination_rate": 0.0
+    }
+  },
+  {
+    "genome": {
+      "genome_id": "bb_9f92017c1c2f",
+      "domain": "backbay",
+      "parent_id": "bb_3d9c8b9f68c2",
+      "generation": 5,
+      "genes": {
+        "units.scout.attack": {
+          "key": "units.scout.attack",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Scout attack strength"
+        },
+        "units.scout.defense": {
+          "key": "units.scout.defense",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Scout defense strength"
+        },
+        "units.scout.moves": {
+          "key": "units.scout.moves",
+          "kind": "int_range",
+          "min": 2,
+          "max": 4,
+          "default": 2,
+          "value": 2,
+          "description": "Scout movement points"
+        },
+        "units.scout.cost": {
+          "key": "units.scout.cost",
+          "kind": "int_range",
+          "min": 15,
+          "max": 35,
+          "default": 25,
+          "value": 25,
+          "description": "Scout production cost"
+        },
+        "units.warrior.attack": {
+          "key": "units.warrior.attack",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": 2,
+          "description": "Warrior attack strength"
+        },
+        "units.warrior.defense": {
+          "key": "units.warrior.defense",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": 2,
+          "description": "Warrior defense strength"
+        },
+        "units.warrior.moves": {
+          "key": "units.warrior.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Warrior movement points"
+        },
+        "units.warrior.cost": {
+          "key": "units.warrior.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": 35,
+          "description": "Warrior production cost"
+        },
+        "units.settler.moves": {
+          "key": "units.settler.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Settler movement points"
+        },
+        "units.settler.cost": {
+          "key": "units.settler.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": 84,
+          "description": "Settler production cost (key for expansion balance)"
+        },
+        "units.worker.moves": {
+          "key": "units.worker.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 3,
+          "default": 2,
+          "value": 2,
+          "description": "Worker movement points"
+        },
+        "units.worker.cost": {
+          "key": "units.worker.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": 40,
+          "description": "Worker production cost"
+        },
+        "buildings.monument.cost": {
+          "key": "buildings.monument.cost",
+          "kind": "int_range",
+          "min": 30,
+          "max": 80,
+          "default": 60,
+          "value": 60,
+          "description": "Monument production cost"
+        },
+        "buildings.monument.maintenance": {
+          "key": "buildings.monument.maintenance",
+          "kind": "int_range",
+          "min": 0,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Monument gold maintenance"
+        },
+        "buildings.library.cost": {
+          "key": "buildings.library.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": 77,
+          "description": "Library production cost"
+        },
+        "buildings.library.maintenance": {
+          "key": "buildings.library.maintenance",
+          "kind": "int_range",
+          "min": 0,
+          "max": 3,
+          "default": 1,
+          "value": 1,
+          "description": "Library gold maintenance"
+        },
+        "buildings.courthouse.cost": {
+          "key": "buildings.courthouse.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": 97,
+          "description": "Courthouse production cost"
+        },
+        "buildings.courthouse.maintenance": {
+          "key": "buildings.courthouse.maintenance",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": 2,
+          "description": "Courthouse gold maintenance"
+        },
+        "techs.pottery.cost": {
+          "key": "techs.pottery.cost",
+          "kind": "int_range",
+          "min": 15,
+          "max": 40,
+          "default": 25,
+          "value": 25,
+          "description": "Pottery research cost"
+        },
+        "techs.writing.cost": {
+          "key": "techs.writing.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": 45,
+          "description": "Writing research cost"
+        }
+      },
+      "metadata": {
+        "schema_version": "1.0",
+        "mutation": {
+          "per_candidate": 3,
+          "weights": {
+            "units": 1.0,
+            "buildings": 0.8,
+            "techs": 0.6
+          }
+        },
+        "evaluation": {
+          "games_per_eval": 10,
+          "selfplay": {
+            "map_width": 25,
+            "map_height": 18,
+            "num_players": 2,
+            "max_turns": 100
+          },
+          "fitness_weights": {
+            "win_rate_balance": 0.5,
+            "game_length_score": 0.3,
+            "avg_combats": 0.1,
+            "avg_cities": 0.1
+          }
+        },
+        "objectives": {
+          "win_rate_balance": {
+            "direction": "max",
+            "description": "How close to 50/50 win rate (1.0 = perfect balance)"
+          },
+          "decision_diversity": {
+            "direction": "max",
+            "description": "Variety in viable strategies (measured by build order entropy)"
+          },
+          "game_length_score": {
+            "direction": "max",
+            "description": "Score based on game length being in ideal range (30-100 turns)"
+          }
+        }
+      }
+    },
+    "fitness": {
+      "win_rate_balance": 0.2666666666666666,
+      "game_length_score": 1.0,
+      "decision_diversity": 0.4925,
+      "avg_combats": 1.7333333333333334,
+      "avg_cities": 2.0,
+      "avg_techs": 4.0,
+      "domination_rate": 0.0
+    }
+  },
+  {
+    "genome": {
+      "genome_id": "bb_6e9f0a5c6f0a",
+      "domain": "backbay",
+      "parent_id": "bb_378b863bca5e",
+      "generation": 3,
+      "genes": {
+        "units.scout.attack": {
+          "key": "units.scout.attack",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": null,
+          "description": "Scout attack strength"
+        },
+        "units.scout.defense": {
+          "key": "units.scout.defense",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": null,
+          "description": "Scout defense strength"
+        },
+        "units.scout.moves": {
+          "key": "units.scout.moves",
+          "kind": "int_range",
+          "min": 2,
+          "max": 4,
+          "default": 2,
+          "value": 3,
+          "description": "Scout movement points"
+        },
+        "units.scout.cost": {
+          "key": "units.scout.cost",
+          "kind": "int_range",
+          "min": 15,
+          "max": 35,
+          "default": 25,
+          "value": 25,
+          "description": "Scout production cost"
+        },
+        "units.warrior.attack": {
+          "key": "units.warrior.attack",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": 2,
+          "description": "Warrior attack strength"
+        },
+        "units.warrior.defense": {
+          "key": "units.warrior.defense",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": 2,
+          "description": "Warrior defense strength"
+        },
+        "units.warrior.moves": {
+          "key": "units.warrior.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": null,
+          "description": "Warrior movement points"
+        },
+        "units.warrior.cost": {
+          "key": "units.warrior.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": 40,
+          "description": "Warrior production cost"
+        },
+        "units.settler.moves": {
+          "key": "units.settler.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Settler movement points"
+        },
+        "units.settler.cost": {
+          "key": "units.settler.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": 80,
+          "description": "Settler production cost (key for expansion balance)"
+        },
+        "units.worker.moves": {
+          "key": "units.worker.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 3,
+          "default": 2,
+          "value": null,
+          "description": "Worker movement points"
+        },
+        "units.worker.cost": {
+          "key": "units.worker.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": null,
+          "description": "Worker production cost"
+        },
+        "buildings.monument.cost": {
+          "key": "buildings.monument.cost",
+          "kind": "int_range",
+          "min": 30,
+          "max": 80,
+          "default": 60,
+          "value": 68,
+          "description": "Monument production cost"
+        },
+        "buildings.monument.maintenance": {
+          "key": "buildings.monument.maintenance",
+          "kind": "int_range",
+          "min": 0,
+          "max": 2,
+          "default": 1,
+          "value": null,
+          "description": "Monument gold maintenance"
+        },
+        "buildings.library.cost": {
+          "key": "buildings.library.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": null,
+          "description": "Library production cost"
+        },
+        "buildings.library.maintenance": {
+          "key": "buildings.library.maintenance",
+          "kind": "int_range",
+          "min": 0,
+          "max": 3,
+          "default": 1,
+          "value": 1,
+          "description": "Library gold maintenance"
+        },
+        "buildings.courthouse.cost": {
+          "key": "buildings.courthouse.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": 80,
+          "description": "Courthouse production cost"
+        },
+        "buildings.courthouse.maintenance": {
+          "key": "buildings.courthouse.maintenance",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": null,
+          "description": "Courthouse gold maintenance"
+        },
+        "techs.pottery.cost": {
+          "key": "techs.pottery.cost",
+          "kind": "int_range",
+          "min": 15,
+          "max": 40,
+          "default": 25,
+          "value": null,
+          "description": "Pottery research cost"
+        },
+        "techs.writing.cost": {
+          "key": "techs.writing.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": 40,
+          "description": "Writing research cost"
+        }
+      },
+      "metadata": {
+        "schema_version": "1.0",
+        "mutation": {
+          "per_candidate": 3,
+          "weights": {
+            "units": 1.0,
+            "buildings": 0.8,
+            "techs": 0.6
+          }
+        },
+        "evaluation": {
+          "games_per_eval": 10,
+          "selfplay": {
+            "map_width": 25,
+            "map_height": 18,
+            "num_players": 2,
+            "max_turns": 100
+          },
+          "fitness_weights": {
+            "win_rate_balance": 0.5,
+            "game_length_score": 0.3,
+            "avg_combats": 0.1,
+            "avg_cities": 0.1
+          }
+        },
+        "objectives": {
+          "win_rate_balance": {
+            "direction": "max",
+            "description": "How close to 50/50 win rate (1.0 = perfect balance)"
+          },
+          "decision_diversity": {
+            "direction": "max",
+            "description": "Variety in viable strategies (measured by build order entropy)"
+          },
+          "game_length_score": {
+            "direction": "max",
+            "description": "Score based on game length being in ideal range (30-100 turns)"
+          }
+        }
+      }
+    },
+    "fitness": {
+      "win_rate_balance": 0.4,
+      "game_length_score": 1.0,
+      "decision_diversity": 0.43749999999999994,
+      "avg_combats": 1.0,
+      "avg_cities": 2.0,
+      "avg_techs": 4.0,
+      "domination_rate": 0.0
+    }
+  },
+  {
+    "genome": {
+      "genome_id": "bb_9a9d1c9e5b4c",
+      "domain": "backbay",
+      "parent_id": "bb_9a9d1c9e5b4c",
+      "generation": 5,
+      "genes": {
+        "units.scout.attack": {
+          "key": "units.scout.attack",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": 2,
+          "description": "Scout attack strength"
+        },
+        "units.scout.defense": {
+          "key": "units.scout.defense",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Scout defense strength"
+        },
+        "units.scout.moves": {
+          "key": "units.scout.moves",
+          "kind": "int_range",
+          "min": 2,
+          "max": 4,
+          "default": 2,
+          "value": 2,
+          "description": "Scout movement points"
+        },
+        "units.scout.cost": {
+          "key": "units.scout.cost",
+          "kind": "int_range",
+          "min": 15,
+          "max": 35,
+          "default": 25,
+          "value": 25,
+          "description": "Scout production cost"
+        },
+        "units.warrior.attack": {
+          "key": "units.warrior.attack",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": 2,
+          "description": "Warrior attack strength"
+        },
+        "units.warrior.defense": {
+          "key": "units.warrior.defense",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": 2,
+          "description": "Warrior defense strength"
+        },
+        "units.warrior.moves": {
+          "key": "units.warrior.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Warrior movement points"
+        },
+        "units.warrior.cost": {
+          "key": "units.warrior.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": 35,
+          "description": "Warrior production cost"
+        },
+        "units.settler.moves": {
+          "key": "units.settler.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Settler movement points"
+        },
+        "units.settler.cost": {
+          "key": "units.settler.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": 80,
+          "description": "Settler production cost (key for expansion balance)"
+        },
+        "units.worker.moves": {
+          "key": "units.worker.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 3,
+          "default": 2,
+          "value": 2,
+          "description": "Worker movement points"
+        },
+        "units.worker.cost": {
+          "key": "units.worker.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": 27,
+          "description": "Worker production cost"
+        },
+        "buildings.monument.cost": {
+          "key": "buildings.monument.cost",
+          "kind": "int_range",
+          "min": 30,
+          "max": 80,
+          "default": 60,
+          "value": 60,
+          "description": "Monument production cost"
+        },
+        "buildings.monument.maintenance": {
+          "key": "buildings.monument.maintenance",
+          "kind": "int_range",
+          "min": 0,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Monument gold maintenance"
+        },
+        "buildings.library.cost": {
+          "key": "buildings.library.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": 80,
+          "description": "Library production cost"
+        },
+        "buildings.library.maintenance": {
+          "key": "buildings.library.maintenance",
+          "kind": "int_range",
+          "min": 0,
+          "max": 3,
+          "default": 1,
+          "value": 1,
+          "description": "Library gold maintenance"
+        },
+        "buildings.courthouse.cost": {
+          "key": "buildings.courthouse.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": 97,
+          "description": "Courthouse production cost"
+        },
+        "buildings.courthouse.maintenance": {
+          "key": "buildings.courthouse.maintenance",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": 2,
+          "description": "Courthouse gold maintenance"
+        },
+        "techs.pottery.cost": {
+          "key": "techs.pottery.cost",
+          "kind": "int_range",
+          "min": 15,
+          "max": 40,
+          "default": 25,
+          "value": 25,
+          "description": "Pottery research cost"
+        },
+        "techs.writing.cost": {
+          "key": "techs.writing.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": 40,
+          "description": "Writing research cost"
+        }
+      },
+      "metadata": {
+        "schema_version": "1.0",
+        "mutation": {
+          "per_candidate": 3,
+          "weights": {
+            "units": 1.0,
+            "buildings": 0.8,
+            "techs": 0.6
+          }
+        },
+        "evaluation": {
+          "games_per_eval": 10,
+          "selfplay": {
+            "map_width": 25,
+            "map_height": 18,
+            "num_players": 2,
+            "max_turns": 100
+          },
+          "fitness_weights": {
+            "win_rate_balance": 0.5,
+            "game_length_score": 0.3,
+            "avg_combats": 0.1,
+            "avg_cities": 0.1
+          }
+        },
+        "objectives": {
+          "win_rate_balance": {
+            "direction": "max",
+            "description": "How close to 50/50 win rate (1.0 = perfect balance)"
+          },
+          "decision_diversity": {
+            "direction": "max",
+            "description": "Variety in viable strategies (measured by build order entropy)"
+          },
+          "game_length_score": {
+            "direction": "max",
+            "description": "Score based on game length being in ideal range (30-100 turns)"
+          }
+        }
+      }
+    },
+    "fitness": {
+      "win_rate_balance": 0.3999999999999999,
+      "game_length_score": 1.0,
+      "decision_diversity": 0.4725,
+      "avg_combats": 1.4666666666666666,
+      "avg_cities": 2.0,
+      "avg_techs": 4.0,
+      "domination_rate": 0.0
+    }
+  },
+  {
+    "genome": {
+      "genome_id": "bb_104e95f60a2d",
+      "domain": "backbay",
+      "parent_id": "bb_5c5c48c565d1",
+      "generation": 3,
+      "genes": {
+        "units.scout.attack": {
+          "key": "units.scout.attack",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Scout attack strength"
+        },
+        "units.scout.defense": {
+          "key": "units.scout.defense",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Scout defense strength"
+        },
+        "units.scout.moves": {
+          "key": "units.scout.moves",
+          "kind": "int_range",
+          "min": 2,
+          "max": 4,
+          "default": 2,
+          "value": 2,
+          "description": "Scout movement points"
+        },
+        "units.scout.cost": {
+          "key": "units.scout.cost",
+          "kind": "int_range",
+          "min": 15,
+          "max": 35,
+          "default": 25,
+          "value": 29,
+          "description": "Scout production cost"
+        },
+        "units.warrior.attack": {
+          "key": "units.warrior.attack",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": 2,
+          "description": "Warrior attack strength"
+        },
+        "units.warrior.defense": {
+          "key": "units.warrior.defense",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": 2,
+          "description": "Warrior defense strength"
+        },
+        "units.warrior.moves": {
+          "key": "units.warrior.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": null,
+          "description": "Warrior movement points"
+        },
+        "units.warrior.cost": {
+          "key": "units.warrior.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": 40,
+          "description": "Warrior production cost"
+        },
+        "units.settler.moves": {
+          "key": "units.settler.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Settler movement points"
+        },
+        "units.settler.cost": {
+          "key": "units.settler.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": 80,
+          "description": "Settler production cost (key for expansion balance)"
+        },
+        "units.worker.moves": {
+          "key": "units.worker.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 3,
+          "default": 2,
+          "value": null,
+          "description": "Worker movement points"
+        },
+        "units.worker.cost": {
+          "key": "units.worker.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": null,
+          "description": "Worker production cost"
+        },
+        "buildings.monument.cost": {
+          "key": "buildings.monument.cost",
+          "kind": "int_range",
+          "min": 30,
+          "max": 80,
+          "default": 60,
+          "value": null,
+          "description": "Monument production cost"
+        },
+        "buildings.monument.maintenance": {
+          "key": "buildings.monument.maintenance",
+          "kind": "int_range",
+          "min": 0,
+          "max": 2,
+          "default": 1,
+          "value": null,
+          "description": "Monument gold maintenance"
+        },
+        "buildings.library.cost": {
+          "key": "buildings.library.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": 80,
+          "description": "Library production cost"
+        },
+        "buildings.library.maintenance": {
+          "key": "buildings.library.maintenance",
+          "kind": "int_range",
+          "min": 0,
+          "max": 3,
+          "default": 1,
+          "value": null,
+          "description": "Library gold maintenance"
+        },
+        "buildings.courthouse.cost": {
+          "key": "buildings.courthouse.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": null,
+          "description": "Courthouse production cost"
+        },
+        "buildings.courthouse.maintenance": {
+          "key": "buildings.courthouse.maintenance",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": 2,
+          "description": "Courthouse gold maintenance"
+        },
+        "techs.pottery.cost": {
+          "key": "techs.pottery.cost",
+          "kind": "int_range",
+          "min": 15,
+          "max": 40,
+          "default": 25,
+          "value": 24,
+          "description": "Pottery research cost"
+        },
+        "techs.writing.cost": {
+          "key": "techs.writing.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": 53,
+          "description": "Writing research cost"
+        }
+      },
+      "metadata": {
+        "schema_version": "1.0",
+        "mutation": {
+          "per_candidate": 3,
+          "weights": {
+            "units": 1.0,
+            "buildings": 0.8,
+            "techs": 0.6
+          }
+        },
+        "evaluation": {
+          "games_per_eval": 10,
+          "selfplay": {
+            "map_width": 25,
+            "map_height": 18,
+            "num_players": 2,
+            "max_turns": 100
+          },
+          "fitness_weights": {
+            "win_rate_balance": 0.5,
+            "game_length_score": 0.3,
+            "avg_combats": 0.1,
+            "avg_cities": 0.1
+          }
+        },
+        "objectives": {
+          "win_rate_balance": {
+            "direction": "max",
+            "description": "How close to 50/50 win rate (1.0 = perfect balance)"
+          },
+          "decision_diversity": {
+            "direction": "max",
+            "description": "Variety in viable strategies (measured by build order entropy)"
+          },
+          "game_length_score": {
+            "direction": "max",
+            "description": "Score based on game length being in ideal range (30-100 turns)"
+          }
+        }
+      }
+    },
+    "fitness": {
+      "win_rate_balance": 0.2666666666666666,
+      "game_length_score": 1.0,
+      "decision_diversity": 0.46749999999999997,
+      "avg_combats": 1.4,
+      "avg_cities": 2.0,
+      "avg_techs": 4.0,
+      "domination_rate": 0.0
+    }
+  },
+  {
+    "genome": {
+      "genome_id": "bb_01236039f9e6",
+      "domain": "backbay",
+      "parent_id": "bb_c0476e26b0a1",
+      "generation": 5,
+      "genes": {
+        "units.scout.attack": {
+          "key": "units.scout.attack",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Scout attack strength"
+        },
+        "units.scout.defense": {
+          "key": "units.scout.defense",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Scout defense strength"
+        },
+        "units.scout.moves": {
+          "key": "units.scout.moves",
+          "kind": "int_range",
+          "min": 2,
+          "max": 4,
+          "default": 2,
+          "value": 2,
+          "description": "Scout movement points"
+        },
+        "units.scout.cost": {
+          "key": "units.scout.cost",
+          "kind": "int_range",
+          "min": 15,
+          "max": 35,
+          "default": 25,
+          "value": 25,
+          "description": "Scout production cost"
+        },
+        "units.warrior.attack": {
+          "key": "units.warrior.attack",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": 2,
+          "description": "Warrior attack strength"
+        },
+        "units.warrior.defense": {
+          "key": "units.warrior.defense",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": 2,
+          "description": "Warrior defense strength"
+        },
+        "units.warrior.moves": {
+          "key": "units.warrior.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Warrior movement points"
+        },
+        "units.warrior.cost": {
+          "key": "units.warrior.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": 35,
+          "description": "Warrior production cost"
+        },
+        "units.settler.moves": {
+          "key": "units.settler.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Settler movement points"
+        },
+        "units.settler.cost": {
+          "key": "units.settler.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": 76,
+          "description": "Settler production cost (key for expansion balance)"
+        },
+        "units.worker.moves": {
+          "key": "units.worker.moves",
+          "kind": "int_range",
+          "min": 1,
+          "max": 3,
+          "default": 2,
+          "value": 2,
+          "description": "Worker movement points"
+        },
+        "units.worker.cost": {
+          "key": "units.worker.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": 40,
+          "description": "Worker production cost"
+        },
+        "buildings.monument.cost": {
+          "key": "buildings.monument.cost",
+          "kind": "int_range",
+          "min": 30,
+          "max": 80,
+          "default": 60,
+          "value": 60,
+          "description": "Monument production cost"
+        },
+        "buildings.monument.maintenance": {
+          "key": "buildings.monument.maintenance",
+          "kind": "int_range",
+          "min": 0,
+          "max": 2,
+          "default": 1,
+          "value": 1,
+          "description": "Monument gold maintenance"
+        },
+        "buildings.library.cost": {
+          "key": "buildings.library.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": 77,
+          "description": "Library production cost"
+        },
+        "buildings.library.maintenance": {
+          "key": "buildings.library.maintenance",
+          "kind": "int_range",
+          "min": 0,
+          "max": 3,
+          "default": 1,
+          "value": 1,
+          "description": "Library gold maintenance"
+        },
+        "buildings.courthouse.cost": {
+          "key": "buildings.courthouse.cost",
+          "kind": "int_range",
+          "min": 50,
+          "max": 120,
+          "default": 80,
+          "value": 97,
+          "description": "Courthouse production cost"
+        },
+        "buildings.courthouse.maintenance": {
+          "key": "buildings.courthouse.maintenance",
+          "kind": "int_range",
+          "min": 1,
+          "max": 4,
+          "default": 2,
+          "value": 3,
+          "description": "Courthouse gold maintenance"
+        },
+        "techs.pottery.cost": {
+          "key": "techs.pottery.cost",
+          "kind": "int_range",
+          "min": 15,
+          "max": 40,
+          "default": 25,
+          "value": 32,
+          "description": "Pottery research cost"
+        },
+        "techs.writing.cost": {
+          "key": "techs.writing.cost",
+          "kind": "int_range",
+          "min": 25,
+          "max": 60,
+          "default": 40,
+          "value": 37,
+          "description": "Writing research cost"
+        }
+      },
+      "metadata": {
+        "schema_version": "1.0",
+        "mutation": {
+          "per_candidate": 3,
+          "weights": {
+            "units": 1.0,
+            "buildings": 0.8,
+            "techs": 0.6
+          }
+        },
+        "evaluation": {
+          "games_per_eval": 10,
+          "selfplay": {
+            "map_width": 25,
+            "map_height": 18,
+            "num_players": 2,
+            "max_turns": 100
+          },
+          "fitness_weights": {
+            "win_rate_balance": 0.5,
+            "game_length_score": 0.3,
+            "avg_combats": 0.1,
+            "avg_cities": 0.1
+          }
+        },
+        "objectives": {
+          "win_rate_balance": {
+            "direction": "max",
+            "description": "How close to 50/50 win rate (1.0 = perfect balance)"
+          },
+          "decision_diversity": {
+            "direction": "max",
+            "description": "Variety in viable strategies (measured by build order entropy)"
+          },
+          "game_length_score": {
+            "direction": "max",
+            "description": "Score based on game length being in ideal range (30-100 turns)"
+          }
+        }
+      }
+    },
+    "fitness": {
+      "win_rate_balance": 0.2666666666666666,
+      "game_length_score": 1.0,
+      "decision_diversity": 0.4975,
+      "avg_combats": 1.8,
+      "avg_cities": 2.0,
+      "avg_techs": 4.0,
+      "domination_rate": 0.0
+    }
+  }
+]

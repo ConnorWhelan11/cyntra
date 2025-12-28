@@ -1,0 +1,36 @@
+[gd_scene load_steps=11 format=3]
+
+[ext_resource type="Script" path="res://scripts/MultiplayerGame.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/MapViewMultiplayer.gd" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/GameHUD.tscn" id="3"]
+[ext_resource type="PackedScene" path="res://scenes/CityNameDialog.tscn" id="4"]
+[ext_resource type="Script" path="res://scripts/NetworkClient.gd" id="5"]
+[ext_resource type="Script" path="res://scripts/CombatEffects.gd" id="6"]
+[ext_resource type="PackedScene" path="res://scenes/ResearchPanel.tscn" id="7"]
+[ext_resource type="PackedScene" path="res://scenes/DiplomacyPanel.tscn" id="8"]
+[ext_resource type="PackedScene" path="res://scenes/CityProductionPanel.tscn" id="9"]
+[ext_resource type="PackedScene" path="res://scenes/GameEndScreen.tscn" id="10"]
+
+[node name="MultiplayerGame" type="Node2D"]
+script = ExtResource("1")
+
+[node name="MapViewMultiplayer" type="Node2D" parent="."]
+script = ExtResource("2")
+
+[node name="CombatEffects" type="Node2D" parent="."]
+script = ExtResource("6")
+
+[node name="GameHUD" parent="." instance=ExtResource("3")]
+
+[node name="ResearchPanel" parent="." instance=ExtResource("7")]
+
+[node name="DiplomacyPanel" parent="." instance=ExtResource("8")]
+
+[node name="CityProductionPanel" parent="." instance=ExtResource("9")]
+
+[node name="CityNameDialog" parent="." instance=ExtResource("4")]
+
+[node name="NetworkClient" type="Node" parent="."]
+script = ExtResource("5")
+
+[node name="GameEndScreen" parent="." instance=ExtResource("10")]

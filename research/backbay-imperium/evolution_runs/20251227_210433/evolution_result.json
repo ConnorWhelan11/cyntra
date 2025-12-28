@@ -1,0 +1,161 @@
+{
+  "seed": 42,
+  "generations": 3,
+  "population_size": 6,
+  "games_per_eval": 10,
+  "final_generation": 2,
+  "pareto_frontier": [
+    {
+      "genome_id": "bb_6d64e3e45384",
+      "parent_id": "backbay_balance_v1",
+      "generation": 0,
+      "win_rate_balance": 0.8,
+      "game_length_score": 1.0,
+      "decision_diversity": 0.4825,
+      "avg_combats": 1.6,
+      "avg_cities": 2.0,
+      "avg_techs": 4.0,
+      "domination_rate": 0.0
+    },
+    {
+      "genome_id": "bb_6d64e3e45384",
+      "parent_id": "backbay_balance_v1",
+      "generation": 1,
+      "win_rate_balance": 0.8,
+      "game_length_score": 1.0,
+      "decision_diversity": 0.4825,
+      "avg_combats": 1.6,
+      "avg_cities": 2.0,
+      "avg_techs": 4.0,
+      "domination_rate": 0.0
+    },
+    {
+      "genome_id": "bb_6d64e3e45384",
+      "parent_id": "backbay_balance_v1",
+      "generation": 2,
+      "win_rate_balance": 0.8,
+      "game_length_score": 1.0,
+      "decision_diversity": 0.4825,
+      "avg_combats": 1.6,
+      "avg_cities": 2.0,
+      "avg_techs": 4.0,
+      "domination_rate": 0.0
+    },
+    {
+      "genome_id": "bb_509714204090",
+      "parent_id": "bb_509714204090",
+      "generation": 2,
+      "win_rate_balance": 0.6,
+      "game_length_score": 1.0,
+      "decision_diversity": 0.4975,
+      "avg_combats": 1.8,
+      "avg_cities": 2.0,
+      "avg_techs": 4.0,
+      "domination_rate": 0.0
+    }
+  ],
+  "hypervolume": 0.6,
+  "history": [
+    {
+      "generation": 0,
+      "frontier_size": 1,
+      "items_evaluated": 6,
+      "frontier": [
+        {
+          "genome_id": "bb_6d64e3e45384",
+          "win_rate_balance": 0.8,
+          "game_length_score": 1.0,
+          "decision_diversity": 0.4825
+        }
+      ]
+    },
+    {
+      "generation": 1,
+      "frontier_size": 2,
+      "items_evaluated": 6,
+      "frontier": [
+        {
+          "genome_id": "bb_6d64e3e45384",
+          "win_rate_balance": 0.8,
+          "game_length_score": 1.0,
+          "decision_diversity": 0.4825
+        },
+        {
+          "genome_id": "bb_6d64e3e45384",
+          "win_rate_balance": 0.8,
+          "game_length_score": 1.0,
+          "decision_diversity": 0.4825
+        }
+      ]
+    },
+    {
+      "generation": 2,
+      "frontier_size": 4,
+      "items_evaluated": 6,
+      "frontier": [
+        {
+          "genome_id": "bb_6d64e3e45384",
+          "win_rate_balance": 0.8,
+          "game_length_score": 1.0,
+          "decision_diversity": 0.4825
+        },
+        {
+          "genome_id": "bb_6d64e3e45384",
+          "win_rate_balance": 0.8,
+          "game_length_score": 1.0,
+          "decision_diversity": 0.4825
+        },
+        {
+          "genome_id": "bb_6d64e3e45384",
+          "win_rate_balance": 0.8,
+          "game_length_score": 1.0,
+          "decision_diversity": 0.4825
+        },
+        {
+          "genome_id": "bb_509714204090",
+          "win_rate_balance": 0.6,
+          "game_length_score": 1.0,
+          "decision_diversity": 0.4975
+        }
+      ]
+    }
+  ],
+  "best_per_objective": {
+    "win_rate_balance": {
+      "genome_id": "bb_6d64e3e45384",
+      "parent_id": "backbay_balance_v1",
+      "generation": 0,
+      "win_rate_balance": 0.8,
+      "game_length_score": 1.0,
+      "decision_diversity": 0.4825,
+      "avg_combats": 1.6,
+      "avg_cities": 2.0,
+      "avg_techs": 4.0,
+      "domination_rate": 0.0
+    },
+    "game_length_score": {
+      "genome_id": "bb_6d64e3e45384",
+      "parent_id": "backbay_balance_v1",
+      "generation": 0,
+      "win_rate_balance": 0.8,
+      "game_length_score": 1.0,
+      "decision_diversity": 0.4825,
+      "avg_combats": 1.6,
+      "avg_cities": 2.0,
+      "avg_techs": 4.0,
+      "domination_rate": 0.0
+    },
+    "decision_diversity": {
+      "genome_id": "bb_509714204090",
+      "parent_id": "bb_509714204090",
+      "generation": 2,
+      "win_rate_balance": 0.6,
+      "game_length_score": 1.0,
+      "decision_diversity": 0.4975,
+      "avg_combats": 1.8,
+      "avg_cities": 2.0,
+      "avg_techs": 4.0,
+      "domination_rate": 0.0
+    }
+  }
+}

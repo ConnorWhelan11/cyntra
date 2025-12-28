@@ -1,0 +1,10 @@
+pottery:
+  name: "Pottery"
+  cost: 25
+  era: "ancient"
+  prerequisites: []
+writing:
+  name: "Writing"
+  cost: 40
+  era: "classical"
+  prerequisites: ["pottery"]

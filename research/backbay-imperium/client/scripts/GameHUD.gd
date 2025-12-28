@@ -17,6 +17,7 @@ signal timeline_turn_selected(turn: int)
 signal context_attack_pressed(attacker_id: int, defender_id: int)
 signal context_why_pressed(kind: String, attacker_id: int, defender_id: int)
 signal worker_automation_toggled(unit_id: int, enabled: bool)
+signal fortify_requested(unit_id: int)
 
 # References
 @onready var turn_label: Label = $TopBar/TurnLabel
@@ -68,6 +69,9 @@ var current_player := 0
 var my_player_id := 0
 var timer_remaining_ms := 0
 var is_my_turn := false
+
+var _end_turn_blocked := false
+var _end_turn_block_reason := ""
 
 var selected_unit: Dictionary = {}
 var selected_city: Dictionary = {}
@@ -256,6 +260,11 @@ func set_turn_info(turn: int, player: int, my_pid: int, time_ms: int) -> void:
 	my_player_id = my_pid
 	timer_remaining_ms = time_ms
 	is_my_turn = (player == my_pid)
+	_update_display()
+
+func set_end_turn_blocked(blocked: bool, reason: String = "") -> void:
+	_end_turn_blocked = blocked
+	_end_turn_block_reason = reason
 	_update_display()
 
 
@@ -456,10 +465,18 @@ func _update_display() -> void:
 		player_label.text = "Your Turn"
 		player_label.add_theme_color_override("font_color", Color.GREEN)
 		end_turn_button.disabled = false
+		if _end_turn_blocked:
+			end_turn_button.text = _end_turn_block_reason if not _end_turn_block_reason.is_empty() else "Needs Attention"
+			end_turn_button.add_theme_color_override("font_color", Color(1.0, 0.45, 0.45, 1.0))
+		else:
+			end_turn_button.text = "End Turn"
+			end_turn_button.add_theme_color_override("font_color", Color(0.2, 1.0, 0.3, 1.0))
 	else:
 		player_label.text = "Player %d's Turn" % current_player
 		player_label.add_theme_color_override("font_color", Color.YELLOW)
 		end_turn_button.disabled = true
+		end_turn_button.text = "End Turn"
+		end_turn_button.add_theme_color_override("font_color", Color(0.7, 0.7, 0.7, 1.0))
 
 	_update_timer_display()
 
@@ -721,8 +738,11 @@ func _on_found_city_pressed() -> void:
 
 
 func _on_fortify_pressed() -> void:
-	# Emit signal to fortify selected unit
-	pass
+	var unit_id = _extract_entity_id(selected_unit.get("id", -1))
+	if unit_id < 0:
+		return
+	AudioManager.play("ui_click")
+	fortify_requested.emit(unit_id)
 
 
 func _on_automation_pressed() -> void:

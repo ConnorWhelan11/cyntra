@@ -1,0 +1,35 @@
+[package]
+name = "backbay-server"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "Authoritative multiplayer server for Backbay Imperium"
+
+[[bin]]
+name = "backbay-server"
+path = "src/main.rs"
+
+[dependencies]
+# Workspace dependencies
+backbay-core = { path = "../backbay-core" }
+backbay-protocol = { path = "../backbay-protocol" }
+serde = { workspace = true }
+rmp-serde = { workspace = true }
+thiserror = { workspace = true }
+
+# Networking
+renet = "1.2"
+renet_netcode = "1.2"
+
+# Async runtime
+tokio = { version = "1", features = ["full"] }
+
+# Utilities
+bincode = "1.3"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+rand = "0.8"
+
+[dev-dependencies]
+tokio-test = "0.4"

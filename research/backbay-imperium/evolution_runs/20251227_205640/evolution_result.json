@@ -1,0 +1,141 @@
+{
+  "seed": 123,
+  "generations": 2,
+  "population_size": 4,
+  "games_per_eval": 5,
+  "best_genome_id": "bb_378b863bca5e",
+  "best_fitness": {
+    "win_rate_balance": 0.8,
+    "game_length_score": 1.0,
+    "decision_diversity": 0.45249999999999996,
+    "avg_combats": 1.2,
+    "avg_cities": 2.0,
+    "avg_techs": 4.0,
+    "domination_rate": 0.0
+  },
+  "best_composite_score": 0.7905,
+  "history": [
+    {
+      "generation": 0,
+      "population": [
+        {
+          "genome_id": "backbay_balance_v1",
+          "parent_id": null,
+          "fitness": {
+            "win_rate_balance": 0.3999999999999999,
+            "game_length_score": 1.0,
+            "decision_diversity": 0.6024999999999999,
+            "avg_combats": 3.2,
+            "avg_cities": 2.0,
+            "avg_techs": 4.0,
+            "domination_rate": 0.0
+          },
+          "composite": 0.6204999999999999
+        },
+        {
+          "genome_id": "bb_378b863bca5e",
+          "parent_id": "backbay_balance_v1",
+          "fitness": {
+            "win_rate_balance": 0.0,
+            "game_length_score": 1.0,
+            "decision_diversity": 0.6325,
+            "avg_combats": 3.6,
+            "avg_cities": 2.0,
+            "avg_techs": 4.0,
+            "domination_rate": 0.0
+          },
+          "composite": 0.4265
+        },
+        {
+          "genome_id": "bb_2bea882f0060",
+          "parent_id": "backbay_balance_v1",
+          "fitness": {
+            "win_rate_balance": 0.0,
+            "game_length_score": 1.0,
+            "decision_diversity": 0.6174999999999999,
+            "avg_combats": 3.4,
+            "avg_cities": 2.0,
+            "avg_techs": 4.0,
+            "domination_rate": 0.0
+          },
+          "composite": 0.4235
+        },
+        {
+          "genome_id": "bb_b2ed9b48f298",
+          "parent_id": "backbay_balance_v1",
+          "fitness": {
+            "win_rate_balance": 0.0,
+            "game_length_score": 1.0,
+            "decision_diversity": 0.5574999999999999,
+            "avg_combats": 2.6,
+            "avg_cities": 2.0,
+            "avg_techs": 4.0,
+            "domination_rate": 0.0
+          },
+          "composite": 0.4115
+        }
+      ]
+    },
+    {
+      "generation": 1,
+      "population": [
+        {
+          "genome_id": "bb_378b863bca5e",
+          "parent_id": "bb_378b863bca5e",
+          "fitness": {
+            "win_rate_balance": 0.8,
+            "game_length_score": 1.0,
+            "decision_diversity": 0.45249999999999996,
+            "avg_combats": 1.2,
+            "avg_cities": 2.0,
+            "avg_techs": 4.0,
+            "domination_rate": 0.0
+          },
+          "composite": 0.7905
+        },
+        {
+          "genome_id": "backbay_balance_v1",
+          "parent_id": null,
+          "fitness": {
+            "win_rate_balance": 0.8,
+            "game_length_score": 1.0,
+            "decision_diversity": 0.4074999999999999,
+            "avg_combats": 0.6,
+            "avg_cities": 2.0,
+            "avg_techs": 4.0,
+            "domination_rate": 0.0
+          },
+          "composite": 0.7815
+        },
+        {
+          "genome_id": "bb_69b00970a9bd",
+          "parent_id": "backbay_balance_v1",
+          "fitness": {
+            "win_rate_balance": 0.3999999999999999,
+            "game_length_score": 1.0,
+            "decision_diversity": 0.43749999999999994,
+            "avg_combats": 1.0,
+            "avg_cities": 2.0,
+            "avg_techs": 4.0,
+            "domination_rate": 0.0
+          },
+          "composite": 0.5874999999999999
+        },
+        {
+          "genome_id": "bb_378b863bca5e",
+          "parent_id": "backbay_balance_v1",
+          "fitness": {
+            "win_rate_balance": 0.3999999999999999,
+            "game_length_score": 1.0,
+            "decision_diversity": 0.4074999999999999,
+            "avg_combats": 0.6,
+            "avg_cities": 2.0,
+            "avg_techs": 4.0,
+            "domination_rate": 0.0
+          },
+          "composite": 0.5814999999999999
+        }
+      ]
+    }
+  ]
+}

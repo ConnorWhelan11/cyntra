@@ -1,0 +1,607 @@
+{
+  "seed": 1234,
+  "generations": 5,
+  "population_size": 8,
+  "games_per_eval": 15,
+  "final_generation": 4,
+  "pareto_frontier": [
+    {
+      "genome_id": "backbay_balance_v1",
+      "parent_id": null,
+      "generation": 0,
+      "win_rate_balance": 0.8,
+      "game_length_score": 1.0,
+      "decision_diversity": 0.46249999999999997,
+      "avg_combats": 1.3333333333333333,
+      "avg_cities": 2.0,
+      "avg_techs": 4.0,
+      "domination_rate": 0.0
+    },
+    {
+      "genome_id": "bb_488e371ebde5",
+      "parent_id": "backbay_balance_v1",
+      "generation": 0,
+      "win_rate_balance": 0.9333333333333333,
+      "game_length_score": 1.0,
+      "decision_diversity": 0.44749999999999995,
+      "avg_combats": 1.1333333333333333,
+      "avg_cities": 2.0,
+      "avg_techs": 4.0,
+      "domination_rate": 0.0
+    },
+    {
+      "genome_id": "bb_5152a4a5b24e",
+      "parent_id": "backbay_balance_v1",
+      "generation": 0,
+      "win_rate_balance": 0.8,
+      "game_length_score": 1.0,
+      "decision_diversity": 0.46249999999999997,
+      "avg_combats": 1.3333333333333333,
+      "avg_cities": 2.0,
+      "avg_techs": 4.0,
+      "domination_rate": 0.0
+    },
+    {
+      "genome_id": "backbay_balance_v1",
+      "parent_id": null,
+      "generation": 1,
+      "win_rate_balance": 0.8,
+      "game_length_score": 1.0,
+      "decision_diversity": 0.46249999999999997,
+      "avg_combats": 1.3333333333333333,
+      "avg_cities": 2.0,
+      "avg_techs": 4.0,
+      "domination_rate": 0.0
+    },
+    {
+      "genome_id": "bb_488e371ebde5",
+      "parent_id": "backbay_balance_v1",
+      "generation": 1,
+      "win_rate_balance": 0.9333333333333333,
+      "game_length_score": 1.0,
+      "decision_diversity": 0.44749999999999995,
+      "avg_combats": 1.1333333333333333,
+      "avg_cities": 2.0,
+      "avg_techs": 4.0,
+      "domination_rate": 0.0
+    },
+    {
+      "genome_id": "bb_5152a4a5b24e",
+      "parent_id": "backbay_balance_v1",
+      "generation": 1,
+      "win_rate_balance": 0.8,
+      "game_length_score": 1.0,
+      "decision_diversity": 0.46249999999999997,
+      "avg_combats": 1.3333333333333333,
+      "avg_cities": 2.0,
+      "avg_techs": 4.0,
+      "domination_rate": 0.0
+    },
+    {
+      "genome_id": "backbay_balance_v1",
+      "parent_id": null,
+      "generation": 2,
+      "win_rate_balance": 0.8,
+      "game_length_score": 1.0,
+      "decision_diversity": 0.46249999999999997,
+      "avg_combats": 1.3333333333333333,
+      "avg_cities": 2.0,
+      "avg_techs": 4.0,
+      "domination_rate": 0.0
+    },
+    {
+      "genome_id": "bb_488e371ebde5",
+      "parent_id": "backbay_balance_v1",
+      "generation": 2,
+      "win_rate_balance": 0.9333333333333333,
+      "game_length_score": 1.0,
+      "decision_diversity": 0.44749999999999995,
+      "avg_combats": 1.1333333333333333,
+      "avg_cities": 2.0,
+      "avg_techs": 4.0,
+      "domination_rate": 0.0
+    },
+    {
+      "genome_id": "bb_5152a4a5b24e",
+      "parent_id": "backbay_balance_v1",
+      "generation": 2,
+      "win_rate_balance": 0.8,
+      "game_length_score": 1.0,
+      "decision_diversity": 0.46249999999999997,
+      "avg_combats": 1.3333333333333333,
+      "avg_cities": 2.0,
+      "avg_techs": 4.0,
+      "domination_rate": 0.0
+    },
+    {
+      "genome_id": "bb_06b04a8ec6ed",
+      "parent_id": "bb_0e2b07554525",
+      "generation": 2,
+      "win_rate_balance": 0.6666666666666666,
+      "game_length_score": 1.0,
+      "decision_diversity": 0.5674999999999999,
+      "avg_combats": 2.7333333333333334,
+      "avg_cities": 2.0,
+      "avg_techs": 4.0,
+      "domination_rate": 0.0
+    },
+    {
+      "genome_id": "backbay_balance_v1",
+      "parent_id": null,
+      "generation": 3,
+      "win_rate_balance": 0.8,
+      "game_length_score": 1.0,
+      "decision_diversity": 0.46249999999999997,
+      "avg_combats": 1.3333333333333333,
+      "avg_cities": 2.0,
+      "avg_techs": 4.0,
+      "domination_rate": 0.0
+    },
+    {
+      "genome_id": "bb_488e371ebde5",
+      "parent_id": "backbay_balance_v1",
+      "generation": 3,
+      "win_rate_balance": 0.9333333333333333,
+      "game_length_score": 1.0,
+      "decision_diversity": 0.44749999999999995,
+      "avg_combats": 1.1333333333333333,
+      "avg_cities": 2.0,
+      "avg_techs": 4.0,
+      "domination_rate": 0.0
+    },
+    {
+      "genome_id": "bb_5152a4a5b24e",
+      "parent_id": "backbay_balance_v1",
+      "generation": 3,
+      "win_rate_balance": 0.8,
+      "game_length_score": 1.0,
+      "decision_diversity": 0.46249999999999997,
+      "avg_combats": 1.3333333333333333,
+      "avg_cities": 2.0,
+      "avg_techs": 4.0,
+      "domination_rate": 0.0
+    },
+    {
+      "genome_id": "bb_06b04a8ec6ed",
+      "parent_id": "bb_0e2b07554525",
+      "generation": 3,
+      "win_rate_balance": 0.6666666666666666,
+      "game_length_score": 1.0,
+      "decision_diversity": 0.5674999999999999,
+      "avg_combats": 2.7333333333333334,
+      "avg_cities": 2.0,
+      "avg_techs": 4.0,
+      "domination_rate": 0.0
+    },
+    {
+      "genome_id": "backbay_balance_v1",
+      "parent_id": null,
+      "generation": 4,
+      "win_rate_balance": 0.8,
+      "game_length_score": 1.0,
+      "decision_diversity": 0.46249999999999997,
+      "avg_combats": 1.3333333333333333,
+      "avg_cities": 2.0,
+      "avg_techs": 4.0,
+      "domination_rate": 0.0
+    },
+    {
+      "genome_id": "bb_488e371ebde5",
+      "parent_id": "backbay_balance_v1",
+      "generation": 4,
+      "win_rate_balance": 0.9333333333333333,
+      "game_length_score": 1.0,
+      "decision_diversity": 0.44749999999999995,
+      "avg_combats": 1.1333333333333333,
+      "avg_cities": 2.0,
+      "avg_techs": 4.0,
+      "domination_rate": 0.0
+    },
+    {
+      "genome_id": "bb_5152a4a5b24e",
+      "parent_id": "backbay_balance_v1",
+      "generation": 4,
+      "win_rate_balance": 0.8,
+      "game_length_score": 1.0,
+      "decision_diversity": 0.46249999999999997,
+      "avg_combats": 1.3333333333333333,
+      "avg_cities": 2.0,
+      "avg_techs": 4.0,
+      "domination_rate": 0.0
+    },
+    {
+      "genome_id": "bb_06b04a8ec6ed",
+      "parent_id": "bb_0e2b07554525",
+      "generation": 4,
+      "win_rate_balance": 0.6666666666666666,
+      "game_length_score": 1.0,
+      "decision_diversity": 0.5674999999999999,
+      "avg_combats": 2.7333333333333334,
+      "avg_cities": 2.0,
+      "avg_techs": 4.0,
+      "domination_rate": 0.0
+    }
+  ],
+  "hypervolume": 0.6666666666666666,
+  "history": [
+    {
+      "generation": 0,
+      "frontier_size": 3,
+      "items_evaluated": 8,
+      "frontier": [
+        {
+          "genome_id": "backbay_balance_v1",
+          "win_rate_balance": 0.8,
+          "game_length_score": 1.0,
+          "decision_diversity": 0.46249999999999997
+        },
+        {
+          "genome_id": "bb_488e371ebde5",
+          "win_rate_balance": 0.9333333333333333,
+          "game_length_score": 1.0,
+          "decision_diversity": 0.44749999999999995
+        },
+        {
+          "genome_id": "bb_5152a4a5b24e",
+          "win_rate_balance": 0.8,
+          "game_length_score": 1.0,
+          "decision_diversity": 0.46249999999999997
+        }
+      ]
+    },
+    {
+      "generation": 1,
+      "frontier_size": 6,
+      "items_evaluated": 8,
+      "frontier": [
+        {
+          "genome_id": "backbay_balance_v1",
+          "win_rate_balance": 0.8,
+          "game_length_score": 1.0,
+          "decision_diversity": 0.46249999999999997
+        },
+        {
+          "genome_id": "bb_488e371ebde5",
+          "win_rate_balance": 0.9333333333333333,
+          "game_length_score": 1.0,
+          "decision_diversity": 0.44749999999999995
+        },
+        {
+          "genome_id": "bb_5152a4a5b24e",
+          "win_rate_balance": 0.8,
+          "game_length_score": 1.0,
+          "decision_diversity": 0.46249999999999997
+        },
+        {
+          "genome_id": "backbay_balance_v1",
+          "win_rate_balance": 0.8,
+          "game_length_score": 1.0,
+          "decision_diversity": 0.46249999999999997
+        },
+        {
+          "genome_id": "bb_488e371ebde5",
+          "win_rate_balance": 0.9333333333333333,
+          "game_length_score": 1.0,
+          "decision_diversity": 0.44749999999999995
+        },
+        {
+          "genome_id": "bb_5152a4a5b24e",
+          "win_rate_balance": 0.8,
+          "game_length_score": 1.0,
+          "decision_diversity": 0.46249999999999997
+        }
+      ]
+    },
+    {
+      "generation": 2,
+      "frontier_size": 10,
+      "items_evaluated": 8,
+      "frontier": [
+        {
+          "genome_id": "backbay_balance_v1",
+          "win_rate_balance": 0.8,
+          "game_length_score": 1.0,
+          "decision_diversity": 0.46249999999999997
+        },
+        {
+          "genome_id": "bb_488e371ebde5",
+          "win_rate_balance": 0.9333333333333333,
+          "game_length_score": 1.0,
+          "decision_diversity": 0.44749999999999995
+        },
+        {
+          "genome_id": "bb_5152a4a5b24e",
+          "win_rate_balance": 0.8,
+          "game_length_score": 1.0,
+          "decision_diversity": 0.46249999999999997
+        },
+        {
+          "genome_id": "backbay_balance_v1",
+          "win_rate_balance": 0.8,
+          "game_length_score": 1.0,
+          "decision_diversity": 0.46249999999999997
+        },
+        {
+          "genome_id": "bb_488e371ebde5",
+          "win_rate_balance": 0.9333333333333333,
+          "game_length_score": 1.0,
+          "decision_diversity": 0.44749999999999995
+        },
+        {
+          "genome_id": "bb_5152a4a5b24e",
+          "win_rate_balance": 0.8,
+          "game_length_score": 1.0,
+          "decision_diversity": 0.46249999999999997
+        },
+        {
+          "genome_id": "backbay_balance_v1",
+          "win_rate_balance": 0.8,
+          "game_length_score": 1.0,
+          "decision_diversity": 0.46249999999999997
+        },
+        {
+          "genome_id": "bb_488e371ebde5",
+          "win_rate_balance": 0.9333333333333333,
+          "game_length_score": 1.0,
+          "decision_diversity": 0.44749999999999995
+        },
+        {
+          "genome_id": "bb_5152a4a5b24e",
+          "win_rate_balance": 0.8,
+          "game_length_score": 1.0,
+          "decision_diversity": 0.46249999999999997
+        },
+        {
+          "genome_id": "bb_06b04a8ec6ed",
+          "win_rate_balance": 0.6666666666666666,
+          "game_length_score": 1.0,
+          "decision_diversity": 0.5674999999999999
+        }
+      ]
+    },
+    {
+      "generation": 3,
+      "frontier_size": 14,
+      "items_evaluated": 8,
+      "frontier": [
+        {
+          "genome_id": "backbay_balance_v1",
+          "win_rate_balance": 0.8,
+          "game_length_score": 1.0,
+          "decision_diversity": 0.46249999999999997
+        },
+        {
+          "genome_id": "bb_488e371ebde5",
+          "win_rate_balance": 0.9333333333333333,
+          "game_length_score": 1.0,
+          "decision_diversity": 0.44749999999999995
+        },
+        {
+          "genome_id": "bb_5152a4a5b24e",
+          "win_rate_balance": 0.8,
+          "game_length_score": 1.0,
+          "decision_diversity": 0.46249999999999997
+        },
+        {
+          "genome_id": "backbay_balance_v1",
+          "win_rate_balance": 0.8,
+          "game_length_score": 1.0,
+          "decision_diversity": 0.46249999999999997
+        },
+        {
+          "genome_id": "bb_488e371ebde5",
+          "win_rate_balance": 0.9333333333333333,
+          "game_length_score": 1.0,
+          "decision_diversity": 0.44749999999999995
+        },
+        {
+          "genome_id": "bb_5152a4a5b24e",
+          "win_rate_balance": 0.8,
+          "game_length_score": 1.0,
+          "decision_diversity": 0.46249999999999997
+        },
+        {
+          "genome_id": "backbay_balance_v1",
+          "win_rate_balance": 0.8,
+          "game_length_score": 1.0,
+          "decision_diversity": 0.46249999999999997
+        },
+        {
+          "genome_id": "bb_488e371ebde5",
+          "win_rate_balance": 0.9333333333333333,
+          "game_length_score": 1.0,
+          "decision_diversity": 0.44749999999999995
+        },
+        {
+          "genome_id": "bb_5152a4a5b24e",
+          "win_rate_balance": 0.8,
+          "game_length_score": 1.0,
+          "decision_diversity": 0.46249999999999997
+        },
+        {
+          "genome_id": "bb_06b04a8ec6ed",
+          "win_rate_balance": 0.6666666666666666,
+          "game_length_score": 1.0,
+          "decision_diversity": 0.5674999999999999
+        },
+        {
+          "genome_id": "backbay_balance_v1",
+          "win_rate_balance": 0.8,
+          "game_length_score": 1.0,
+          "decision_diversity": 0.46249999999999997
+        },
+        {
+          "genome_id": "bb_488e371ebde5",
+          "win_rate_balance": 0.9333333333333333,
+          "game_length_score": 1.0,
+          "decision_diversity": 0.44749999999999995
+        },
+        {
+          "genome_id": "bb_5152a4a5b24e",
+          "win_rate_balance": 0.8,
+          "game_length_score": 1.0,
+          "decision_diversity": 0.46249999999999997
+        },
+        {
+          "genome_id": "bb_06b04a8ec6ed",
+          "win_rate_balance": 0.6666666666666666,
+          "game_length_score": 1.0,
+          "decision_diversity": 0.5674999999999999
+        }
+      ]
+    },
+    {
+      "generation": 4,
+      "frontier_size": 18,
+      "items_evaluated": 8,
+      "frontier": [
+        {
+          "genome_id": "backbay_balance_v1",
+          "win_rate_balance": 0.8,
+          "game_length_score": 1.0,
+          "decision_diversity": 0.46249999999999997
+        },
+        {
+          "genome_id": "bb_488e371ebde5",
+          "win_rate_balance": 0.9333333333333333,
+          "game_length_score": 1.0,
+          "decision_diversity": 0.44749999999999995
+        },
+        {
+          "genome_id": "bb_5152a4a5b24e",
+          "win_rate_balance": 0.8,
+          "game_length_score": 1.0,
+          "decision_diversity": 0.46249999999999997
+        },
+        {
+          "genome_id": "backbay_balance_v1",
+          "win_rate_balance": 0.8,
+          "game_length_score": 1.0,
+          "decision_diversity": 0.46249999999999997
+        },
+        {
+          "genome_id": "bb_488e371ebde5",
+          "win_rate_balance": 0.9333333333333333,
+          "game_length_score": 1.0,
+          "decision_diversity": 0.44749999999999995
+        },
+        {
+          "genome_id": "bb_5152a4a5b24e",
+          "win_rate_balance": 0.8,
+          "game_length_score": 1.0,
+          "decision_diversity": 0.46249999999999997
+        },
+        {
+          "genome_id": "backbay_balance_v1",
+          "win_rate_balance": 0.8,
+          "game_length_score": 1.0,
+          "decision_diversity": 0.46249999999999997
+        },
+        {
+          "genome_id": "bb_488e371ebde5",
+          "win_rate_balance": 0.9333333333333333,
+          "game_length_score": 1.0,
+          "decision_diversity": 0.44749999999999995
+        },
+        {
+          "genome_id": "bb_5152a4a5b24e",
+          "win_rate_balance": 0.8,
+          "game_length_score": 1.0,
+          "decision_diversity": 0.46249999999999997
+        },
+        {
+          "genome_id": "bb_06b04a8ec6ed",
+          "win_rate_balance": 0.6666666666666666,
+          "game_length_score": 1.0,
+          "decision_diversity": 0.5674999999999999
+        },
+        {
+          "genome_id": "backbay_balance_v1",
+          "win_rate_balance": 0.8,
+          "game_length_score": 1.0,
+          "decision_diversity": 0.46249999999999997
+        },
+        {
+          "genome_id": "bb_488e371ebde5",
+          "win_rate_balance": 0.9333333333333333,
+          "game_length_score": 1.0,
+          "decision_diversity": 0.44749999999999995
+        },
+        {
+          "genome_id": "bb_5152a4a5b24e",
+          "win_rate_balance": 0.8,
+          "game_length_score": 1.0,
+          "decision_diversity": 0.46249999999999997
+        },
+        {
+          "genome_id": "bb_06b04a8ec6ed",
+          "win_rate_balance": 0.6666666666666666,
+          "game_length_score": 1.0,
+          "decision_diversity": 0.5674999999999999
+        },
+        {
+          "genome_id": "backbay_balance_v1",
+          "win_rate_balance": 0.8,
+          "game_length_score": 1.0,
+          "decision_diversity": 0.46249999999999997
+        },
+        {
+          "genome_id": "bb_488e371ebde5",
+          "win_rate_balance": 0.9333333333333333,
+          "game_length_score": 1.0,
+          "decision_diversity": 0.44749999999999995
+        },
+        {
+          "genome_id": "bb_5152a4a5b24e",
+          "win_rate_balance": 0.8,
+          "game_length_score": 1.0,
+          "decision_diversity": 0.46249999999999997
+        },
+        {
+          "genome_id": "bb_06b04a8ec6ed",
+          "win_rate_balance": 0.6666666666666666,
+          "game_length_score": 1.0,
+          "decision_diversity": 0.5674999999999999
+        }
+      ]
+    }
+  ],
+  "best_per_objective": {
+    "win_rate_balance": {
+      "genome_id": "bb_488e371ebde5",
+      "parent_id": "backbay_balance_v1",
+      "generation": 0,
+      "win_rate_balance": 0.9333333333333333,
+      "game_length_score": 1.0,
+      "decision_diversity": 0.44749999999999995,
+      "avg_combats": 1.1333333333333333,
+      "avg_cities": 2.0,
+      "avg_techs": 4.0,
+      "domination_rate": 0.0
+    },
+    "game_length_score": {
+      "genome_id": "backbay_balance_v1",
+      "parent_id": null,
+      "generation": 0,
+      "win_rate_balance": 0.8,
+      "game_length_score": 1.0,
+      "decision_diversity": 0.46249999999999997,
+      "avg_combats": 1.3333333333333333,
+      "avg_cities": 2.0,
+      "avg_techs": 4.0,
+      "domination_rate": 0.0
+    },
+    "decision_diversity": {
+      "genome_id": "bb_06b04a8ec6ed",
+      "parent_id": "bb_0e2b07554525",
+      "generation": 2,
+      "win_rate_balance": 0.6666666666666666,
+      "game_length_score": 1.0,
+      "decision_diversity": 0.5674999999999999,
+      "avg_combats": 2.7333333333333334,
+      "avg_cities": 2.0,
+      "avg_techs": 4.0,
+      "domination_rate": 0.0
+    }
+  }
+}

@@ -1,0 +1,53 @@
+scout:
+  name: "Scout"
+  class: "Melee"
+  attack: 1
+  defense: 1
+  moves: 2
+  hp: 100
+  firepower: 10
+  cost: 25
+  can_fortify: true
+  can_found_city: false
+  is_worker: false
+  tech_required: null
+warrior:
+  name: "Warrior"
+  class: "Melee"
+  attack: 2
+  defense: 2
+  moves: 1
+  hp: 100
+  firepower: 10
+  cost: 40
+  can_fortify: true
+  can_found_city: false
+  is_worker: false
+  tech_required: null
+settler:
+  name: "Settler"
+  class: "Civilian"
+  attack: 0
+  defense: 0
+  moves: 1
+  hp: 100
+  firepower: 0
+  cost: 80
+  can_fortify: false
+  can_found_city: true
+  is_worker: false
+  tech_required: null
+
+worker:
+  name: "Worker"
+  class: "Civilian"
+  attack: 0
+  defense: 0
+  moves: 2
+  hp: 100
+  firepower: 0
+  cost: 40
+  can_fortify: false
+  can_found_city: false
+  is_worker: true
+  tech_required: null

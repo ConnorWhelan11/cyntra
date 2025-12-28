@@ -1,0 +1,25 @@
+scholarship:
+  name: "Scholarship"
+  description: "Invest in learning. +1 Science in all cities (scaled by tenure)."
+  effects:
+    - type: "YieldBonus"
+      yield_type: "Science"
+      value: 1
+  requirements: []
+
+craft:
+  name: "Craft"
+  description: "Invest in artisanship. +1 Production in all cities (scaled by tenure)."
+  effects:
+    - type: "YieldBonus"
+      yield_type: "Production"
+      value: 1
+  requirements: []
+
+academy:
+  name: "Academy"
+  description: "Scholarly institutions. +1 Science per population (scaled by tenure)."
+  effects:
+    - type: "SciencePerPopMilli"
+      value_milli: 1000
+  requirements: []
