@@ -59,3 +59,17 @@ use ai_tools::TraceLog;
 let json = serde_json::to_string(&TraceLog::default()).unwrap();
 # }
 ```
+
+## Bevy integration (optional)
+
+If you’re using Bevy, `ai-bevy` can flush `ai-tools` events into the Bevy ECS as `AiTraceEvent`s,
+collect them into an in-memory ring buffer (`AiTraceBuffer`), and optionally show them in an egui
+inspector UI.
+
+At a high level:
+
+- `ai-bevy/trace`: flush blackboard `TraceLog` → `AiTraceEvent`
+- `ai-bevy/trace-inspector`: `AiTraceEvent` → `AiTraceBuffer`
+- `ai-bevy/trace-egui`: show `AiTraceBuffer` in a window
+
+See `crates/ai-bevy/examples/bevy_debug_demo.rs` for an end-to-end demo.

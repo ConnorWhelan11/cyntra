@@ -7,6 +7,7 @@ class_name CityProductionPanel
 signal production_queued(item_type: String, item_id: int)
 signal production_removed(queue_index: int)
 signal production_moved(from_index: int, to_index: int)
+signal details_requested(item_type: String, item_id: int)
 signal panel_closed()
 
 var available_production: Array = []
@@ -32,6 +33,7 @@ func _ready() -> void:
 	move_up_button.pressed.connect(_on_move_up_pressed)
 	move_down_button.pressed.connect(_on_move_down_pressed)
 	queue_list.item_selected.connect(_on_queue_item_selected)
+	available_list.item_selected.connect(_on_available_item_selected)
 	available_list.item_activated.connect(_on_available_item_activated)
 	visible = false
 
@@ -172,6 +174,25 @@ func _update_button_states() -> void:
 
 func _on_queue_item_selected(_index: int) -> void:
 	_update_button_states()
+	var meta = queue_list.get_item_metadata(queue_list.get_selected_items()[0]) if not queue_list.get_selected_items().is_empty() else null
+	if typeof(meta) == TYPE_DICTIONARY:
+		var item: Dictionary = meta
+		var item_type: String = String(item.get("type", ""))
+		var item_id: int = int(item.get("id", -1))
+		if not item_type.is_empty() and item_id >= 0:
+			details_requested.emit(item_type, item_id)
+
+
+func _on_available_item_selected(index: int) -> void:
+	var meta = available_list.get_item_metadata(index)
+	if typeof(meta) != TYPE_DICTIONARY:
+		return
+	var item: Dictionary = meta
+	var item_type: String = item.get("type", "")
+	var item_id: int = int(item.get("id", -1))
+	if item_id < 0:
+		return
+	details_requested.emit(item_type, item_id)
 
 
 func _on_available_item_activated(index: int) -> void:

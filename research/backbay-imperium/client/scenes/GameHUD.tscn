@@ -203,6 +203,46 @@ Production: 0 | Building: None"
 [node name="Separator2" type="HSeparator" parent="CityPanel/VBox"]
 layout_mode = 2
 
+[node name="GrowthBox" type="VBoxContainer" parent="CityPanel/VBox"]
+layout_mode = 2
+
+[node name="GrowthLabel" type="Label" parent="CityPanel/VBox/GrowthBox"]
+layout_mode = 2
+text = "Growth"
+
+[node name="GrowthBar" type="ProgressBar" parent="CityPanel/VBox/GrowthBox"]
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
+show_percentage = false
+min_value = 0.0
+max_value = 1.0
+value = 0.0
+
+[node name="GrowthDetail" type="Label" parent="CityPanel/VBox/GrowthBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = ""
+
+[node name="ProductionProgressBox" type="VBoxContainer" parent="CityPanel/VBox"]
+layout_mode = 2
+
+[node name="ProductionProgressLabel" type="Label" parent="CityPanel/VBox/ProductionProgressBox"]
+layout_mode = 2
+text = "Production"
+
+[node name="ProductionBar" type="ProgressBar" parent="CityPanel/VBox/ProductionProgressBox"]
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
+show_percentage = false
+min_value = 0.0
+max_value = 1.0
+value = 0.0
+
+[node name="ProductionDetail" type="Label" parent="CityPanel/VBox/ProductionProgressBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = ""
+
 [node name="ProductionLabel" type="Label" parent="CityPanel/VBox"]
 layout_mode = 2
 text = "Production Queue:"
@@ -210,6 +250,10 @@ text = "Production Queue:"
 [node name="ProductionList" type="ItemList" parent="CityPanel/VBox"]
 custom_minimum_size = Vector2(0, 120)
 layout_mode = 2
+
+[node name="CancelProductionButton" type="Button" parent="CityPanel/VBox"]
+layout_mode = 2
+text = "Cancel Production"
 
 [node name="CloseButton" type="Button" parent="CityPanel/VBox"]
 layout_mode = 2

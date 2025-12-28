@@ -91,6 +91,8 @@ func _on_events_received(_events: Array) -> void:
 	_refresh_promises()
 	hud.update_minimap(client.snapshot, client.current_player)
 
+	_handle_completion_and_attention(_events)
+
 	if map_view.selected_city_id >= 0:
 		_refresh_city_panel(map_view.selected_city_id)
 	elif map_view.selected_unit_id >= 0:
@@ -98,6 +100,61 @@ func _on_events_received(_events: Array) -> void:
 	else:
 		hud.hide_city_panel()
 		hud.hide_unit_panel()
+
+
+func _handle_completion_and_attention(events: Array) -> void:
+	if typeof(events) != TYPE_ARRAY or events.is_empty():
+		return
+
+	var focus_tech := false
+	var focus_city_id := -1
+
+	for raw in events:
+		if typeof(raw) != TYPE_DICTIONARY:
+			continue
+		var e: Dictionary = raw
+		var t := String(e.get("type", ""))
+
+		match t:
+			"TechResearched":
+				var player_id := _parse_player_id(e.get("player", -1))
+				if player_id != client.current_player:
+					continue
+				var tech_id := _parse_runtime_id(e.get("tech", -1))
+				hud.add_message("Tech researched: %s" % client.tech_name(tech_id))
+				focus_tech = true
+			"CityProduced":
+				var city_id := _extract_entity_id(e.get("city", -1))
+				if city_id < 0 or not client.cities.has(city_id):
+					continue
+				var c: Dictionary = client.cities[city_id]
+				if int(c.get("owner", -1)) != client.current_player:
+					continue
+				var item_name := _format_production_item(e.get("item", null))
+				var city_name := String(c.get("name", "City"))
+				hud.add_message("%s produced: %s" % [city_name, item_name])
+				if focus_city_id < 0:
+					focus_city_id = city_id
+			"CityGrew":
+				var city_id := _extract_entity_id(e.get("city", -1))
+				if city_id < 0 or not client.cities.has(city_id):
+					continue
+				var c: Dictionary = client.cities[city_id]
+				if int(c.get("owner", -1)) != client.current_player:
+					continue
+				var city_name := String(c.get("name", "City"))
+				var new_pop := int(e.get("new_pop", 0))
+				hud.add_message("%s grew to %d" % [city_name, new_pop])
+				if focus_city_id < 0:
+					focus_city_id = city_id
+			_:
+				pass
+
+	# Auto-focus the most relevant promise target so the player stays in the loop.
+	if focus_tech:
+		_on_research_button_pressed()
+	elif focus_city_id >= 0:
+		map_view.select_city(focus_city_id)
 
 
 func _on_info_message(message: String) -> void:
@@ -405,6 +462,39 @@ func _extract_entity_id(data: Variant) -> int:
 		if d.has("raw"):
 			return int(d.get("raw", 0))
 	return int(data)
+
+func _parse_runtime_id(value: Variant) -> int:
+	if typeof(value) == TYPE_DICTIONARY:
+		var d: Dictionary = value
+		if d.has("raw"):
+			return int(d.get("raw", -1))
+	return int(value)
+
+func _parse_player_id(value: Variant) -> int:
+	if typeof(value) == TYPE_DICTIONARY:
+		var d: Dictionary = value
+		if d.has("0"):
+			return int(d.get("0", -1))
+	return int(value)
+
+func _format_production_item(item: Variant) -> String:
+	if typeof(item) != TYPE_DICTIONARY:
+		return "Production"
+
+	var d: Dictionary = item
+	var keys: Array = d.keys()
+	if keys.is_empty():
+		return "Production"
+
+	var kind := String(keys[0])
+	var item_id := _parse_runtime_id(d.get(kind, -1))
+	match kind:
+		"Unit":
+			return client.unit_type_name(item_id)
+		"Building":
+			return client.building_name(item_id)
+		_:
+			return kind
 
 func _on_promise_selected(promise: Dictionary) -> void:
 	var t = String(promise.get("type", ""))

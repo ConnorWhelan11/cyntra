@@ -7,6 +7,7 @@ signal end_turn_pressed()
 signal menu_pressed()
 signal city_panel_close_requested()
 signal production_selected(item_type: String, item_id: int)
+signal cancel_production_requested()
 signal found_city_requested()
 signal research_button_pressed()
 signal diplomacy_button_pressed()
@@ -37,11 +38,19 @@ signal fortify_requested(unit_id: int)
 @onready var found_city_button: Button = $UnitPanel/VBox/Actions/FoundCityButton
 @onready var fortify_button: Button = $UnitPanel/VBox/Actions/FortifyButton
 @onready var automation_button: Button = $UnitPanel/VBox/Actions/AutomationButton
+@onready var unit_details_button: Button = $UnitPanel/VBox/Actions/DetailsButton
 
 @onready var city_panel: PanelContainer = $CityPanel
 @onready var city_name_label: Label = $CityPanel/VBox/CityName
 @onready var city_info_label: Label = $CityPanel/VBox/CityInfo
+@onready var growth_box: VBoxContainer = $CityPanel/VBox/GrowthBox
+@onready var growth_bar: ProgressBar = $CityPanel/VBox/GrowthBox/GrowthBar
+@onready var growth_detail_label: Label = $CityPanel/VBox/GrowthBox/GrowthDetail
+@onready var production_progress_box: VBoxContainer = $CityPanel/VBox/ProductionProgressBox
+@onready var production_bar: ProgressBar = $CityPanel/VBox/ProductionProgressBox/ProductionBar
+@onready var production_detail_label: Label = $CityPanel/VBox/ProductionProgressBox/ProductionDetail
 @onready var production_list: ItemList = $CityPanel/VBox/ProductionList
+@onready var cancel_production_button: Button = $CityPanel/VBox/CancelProductionButton
 @onready var city_close_button: Button = $CityPanel/VBox/CloseButton
 
 @onready var tooltip_label: Label = $TooltipPanel/TooltipLabel
@@ -56,6 +65,11 @@ signal fortify_requested(unit_id: int)
 @onready var why_title: Label = $WhyPanel/VBox/Header/Title
 @onready var why_body: RichTextLabel = $WhyPanel/VBox/Body
 @onready var why_close_button: Button = $WhyPanel/VBox/Header/CloseButton
+
+@onready var rules_detail_panel: PanelContainer = $RulesDetailPanel
+@onready var rules_detail_title: Label = $RulesDetailPanel/VBox/Header/Title
+@onready var rules_detail_body: RichTextLabel = $RulesDetailPanel/VBox/Body
+@onready var rules_detail_close_button: Button = $RulesDetailPanel/VBox/Header/CloseButton
 
 @onready var promise_list: ItemList = $PromisePanel/VBox/PromiseList
 @onready var timeline_list: ItemList = $TimelinePanel/VBox/TimelineList
@@ -104,6 +118,7 @@ func _ready() -> void:
 	fortify_button.pressed.connect(_on_fortify_pressed)
 	automation_button.pressed.connect(_on_automation_pressed)
 	production_list.item_selected.connect(_on_production_selected)
+	cancel_production_button.pressed.connect(_on_cancel_production_pressed)
 	research_button.pressed.connect(_on_research_button_pressed)
 	diplomacy_button.pressed.connect(_on_diplomacy_button_pressed)
 	share_button.pressed.connect(_on_share_pressed)
@@ -113,12 +128,21 @@ func _ready() -> void:
 	context_why_button.pressed.connect(_on_context_why_pressed)
 	context_attack_button.pressed.connect(_on_context_attack_pressed)
 	why_close_button.pressed.connect(_on_why_close_pressed)
+	unit_details_button.pressed.connect(_on_unit_details_pressed)
+	rules_detail_close_button.pressed.connect(_on_rules_detail_close_pressed)
 
 	unit_panel.visible = false
 	city_panel.visible = false
 	tooltip_panel.visible = false
 	context_panel.visible = false
 	why_panel.visible = false
+	rules_detail_panel.visible = false
+	growth_box.visible = false
+	production_progress_box.visible = false
+	cancel_production_button.visible = false
+
+	why_body.bbcode_enabled = true
+	rules_detail_body.bbcode_enabled = true
 
 	_update_display()
 
@@ -245,6 +269,118 @@ func hide_why_panel() -> void:
 	why_panel.visible = false
 
 
+func show_unit_type_details(type_id: int) -> void:
+	var rules = _unit_rules_by_id.get(type_id, {})
+	var name := _unit_type_name(type_id)
+	if typeof(rules) == TYPE_DICTIONARY and not rules.is_empty():
+		name = String(rules.get("name", name))
+
+	var lines: Array[String] = []
+	lines.append("[b]Cost:[/b] %d" % int(rules.get("cost", _unit_cost(type_id))))
+	lines.append("[b]Combat:[/b] ATK %d / DEF %d" % [int(rules.get("attack", 0)), int(rules.get("defense", 0))])
+	lines.append("[b]Movement:[/b] %d" % int(rules.get("moves", 0)))
+	lines.append("[b]HP:[/b] %d" % int(rules.get("hp", 0)))
+	lines.append("[b]Firepower:[/b] %d" % int(rules.get("firepower", 0)))
+	lines.append("[b]Supply:[/b] %d" % int(rules.get("supply_cost", 0)))
+
+	var tech_req = rules.get("tech_required", null)
+	if tech_req != null:
+		var tech_id = _parse_runtime_id(tech_req)
+		if tech_id >= 0:
+			lines.append("[b]Requires:[/b] %s" % _tech_name(tech_id))
+
+	var caps: Array[String] = []
+	if bool(rules.get("can_found_city", false)):
+		caps.append("Found City")
+	if bool(rules.get("is_worker", false)):
+		caps.append("Worker")
+	if bool(rules.get("can_fortify", false)):
+		caps.append("Fortify")
+	if not caps.is_empty():
+		lines.append("[b]Capabilities:[/b] %s" % ", ".join(caps))
+
+	_show_rules_detail_panel(name, "\n".join(lines))
+
+
+func show_building_details(building_id: int) -> void:
+	var rules = _building_rules_by_id.get(building_id, {})
+	var name := _building_name(building_id)
+	if typeof(rules) == TYPE_DICTIONARY and not rules.is_empty():
+		name = String(rules.get("name", name))
+
+	var lines: Array[String] = []
+	lines.append("[b]Cost:[/b] %d" % int(rules.get("cost", _building_cost(building_id))))
+	lines.append("[b]Maintenance:[/b] %d" % int(rules.get("maintenance", 0)))
+	lines.append("[b]Admin:[/b] %d" % int(rules.get("admin", 0)))
+
+	var tech_req = rules.get("tech_required", null)
+	if tech_req != null:
+		var tech_id = _parse_runtime_id(tech_req)
+		if tech_id >= 0:
+			lines.append("[b]Requires:[/b] %s" % _tech_name(tech_id))
+
+	_show_rules_detail_panel(name, "\n".join(lines))
+
+
+func show_improvement_details(improvement_id: int, instance: Dictionary = {}) -> void:
+	var rules = _improvement_rules_by_id.get(improvement_id, {})
+	var name := _improvement_name(improvement_id)
+	if typeof(rules) == TYPE_DICTIONARY and not rules.is_empty():
+		name = String(rules.get("name", name))
+
+	var lines: Array[String] = []
+	lines.append("[b]Build time:[/b] %d" % int(rules.get("build_time", 0)))
+	lines.append("[b]Repair time:[/b] %d" % int(rules.get("repair_time", 0)))
+
+	var allowed = rules.get("allowed_terrain", [])
+	if typeof(allowed) == TYPE_ARRAY and not allowed.is_empty():
+		var names: Array[String] = []
+		for t in allowed:
+			var tid = _parse_runtime_id(t)
+			if tid >= 0:
+				names.append(_terrain_name(tid))
+		if not names.is_empty():
+			lines.append("[b]Allowed terrain:[/b] %s" % ", ".join(names))
+
+	var tier = int(instance.get("tier", 0))
+	if tier > 0:
+		var pillaged := bool(instance.get("pillaged", false))
+		lines.append("[b]On tile:[/b] Tier %d%s" % [tier, " (pillaged)" if pillaged else ""])
+
+		var worked_turns := int(instance.get("worked_turns", 0))
+		if worked_turns > 0:
+			lines.append("[b]Worked turns:[/b] %d" % worked_turns)
+
+	var tiers = rules.get("tiers", [])
+	if typeof(tiers) == TYPE_ARRAY and not tiers.is_empty():
+		lines.append("")
+		lines.append("[b]Tiers:[/b]")
+		for i in range(tiers.size()):
+			var td = tiers[i]
+			if typeof(td) != TYPE_DICTIONARY:
+				continue
+			var tdict: Dictionary = td
+			var yields = tdict.get("yields", {})
+			var yields_str := _format_yields(yields)
+			var turns_next = tdict.get("worked_turns_to_next", null)
+			var extra := ""
+			if turns_next != null:
+				extra = " (next: %dt)" % int(turns_next)
+			lines.append("  Tier %d: %s%s" % [i + 1, yields_str, extra])
+
+	_show_rules_detail_panel(name, "\n".join(lines))
+
+
+func hide_rules_detail_panel() -> void:
+	rules_detail_panel.visible = false
+
+
+func _show_rules_detail_panel(title: String, body_bbcode: String) -> void:
+	rules_detail_title.text = title
+	rules_detail_body.text = body_bbcode
+	rules_detail_panel.visible = true
+
+
 func _process(delta: float) -> void:
 	# Update timer countdown
 	if timer_remaining_ms > 0:
@@ -365,6 +501,8 @@ func show_city_panel(city: Dictionary, available_production: Array) -> void:
 	var prod_stock = int(city.get("production_stockpile", 0))
 	var prod_cost = null
 	var prod_name: String = "None"
+	var producing_kind: String = ""
+	var producing_id: int = -1
 	var producing = city.get("producing", null)
 	if typeof(producing) == TYPE_DICTIONARY:
 		var item: Dictionary = producing
@@ -372,6 +510,8 @@ func show_city_panel(city: Dictionary, available_production: Array) -> void:
 		if not keys.is_empty():
 			var kind := String(keys[0])
 			var item_id = _parse_runtime_id(item.get(kind, -1))
+			producing_kind = kind
+			producing_id = int(item_id)
 			match kind:
 				"Unit":
 					prod_name = _unit_type_name(item_id)
@@ -418,22 +558,86 @@ func show_city_panel(city: Dictionary, available_production: Array) -> void:
 		prod_line,
 	]
 
+	# Growth progress (explicit bar so UI can't lie).
+	growth_box.visible = true
+	var growth_max: float = float(max(food_needed, 1))
+	growth_bar.max_value = growth_max
+	growth_bar.value = clampf(float(food_stock), 0.0, growth_max)
+	if turns_growth == null:
+		growth_detail_label.text = "Food %d/%d (%s) • stalled" % [food_stock, food_needed, surplus_str]
+	else:
+		growth_detail_label.text = "Food %d/%d (%s) • %d turns" % [food_stock, food_needed, surplus_str, int(turns_growth)]
+
+	# Production progress + cancel.
+	var has_prod := producing != null and prod_cost != null and int(prod_cost) > 0
+	production_progress_box.visible = has_prod
+	cancel_production_button.visible = producing != null
+	if has_prod:
+		var cost_int := int(prod_cost)
+		var prod_max: float = float(max(cost_int, 1))
+		production_bar.max_value = prod_max
+		production_bar.value = clampf(float(prod_stock), 0.0, prod_max)
+		var turns_str := "stalled"
+		if turns_complete != null:
+			turns_str = "%d turns" % int(turns_complete)
+		production_detail_label.text = "%s %d/%d • %s" % [prod_name, prod_stock, cost_int, turns_str]
+	else:
+		production_detail_label.text = ""
+
 	# Populate production list
 	production_list.clear()
-	for item in available_production:
-		if typeof(item) != TYPE_DICTIONARY:
+	var unit_items: Array = []
+	var building_items: Array = []
+	for raw in available_production:
+		if typeof(raw) != TYPE_DICTIONARY:
 			continue
-		var name: String = item.get("name", "Unknown")
-		var cost: int = item.get("cost", 0)
-		var item_type: String = item.get("type", "unit")
-		var item_id: int = item.get("id", 0)
-		production_list.add_item("%s (%d)" % [name, cost])
+		var d: Dictionary = raw
+		var item_type: String = String(d.get("type", ""))
+		match item_type:
+			"unit":
+				unit_items.append(d)
+			"building":
+				building_items.append(d)
+			_:
+				pass
+
+	_add_production_section("Units", unit_items, producing_kind, producing_id)
+	_add_production_section("Buildings", building_items, producing_kind, producing_id)
+
+
+func _add_production_section(title: String, items: Array, producing_kind: String, producing_id: int) -> void:
+	if items.is_empty():
+		return
+
+	var header_index := production_list.item_count
+	production_list.add_item("— %s —" % title)
+	production_list.set_item_disabled(header_index, true)
+
+	for raw in items:
+		if typeof(raw) != TYPE_DICTIONARY:
+			continue
+		var d: Dictionary = raw
+		var name: String = String(d.get("name", "Unknown"))
+		var cost: int = int(d.get("cost", 0))
+		var item_type: String = String(d.get("type", "unit"))
+		var item_id: int = int(d.get("id", 0))
+
+		var prefix := ""
+		if producing_kind == "Unit" and item_type == "unit" and item_id == producing_id:
+			prefix = "▶ "
+		elif producing_kind == "Building" and item_type == "building" and item_id == producing_id:
+			prefix = "▶ "
+
+		production_list.add_item("%s%s (%d)" % [prefix, name, cost])
 		production_list.set_item_metadata(production_list.item_count - 1, {"type": item_type, "id": item_id})
 
 
 func hide_city_panel() -> void:
 	city_panel.visible = false
 	selected_city = {}
+	growth_box.visible = false
+	production_progress_box.visible = false
+	cancel_production_button.visible = false
 
 
 func show_tooltip(text: String, pos: Vector2) -> void:
@@ -534,6 +738,12 @@ func _government_name(government_id: int) -> String:
 	if typeof(names) == TYPE_ARRAY and government_id >= 0 and government_id < names.size():
 		return String(names[government_id])
 	return "Government %d" % government_id
+
+func _terrain_name(terrain_id: int) -> String:
+	var names = _rules_names.get("terrains", [])
+	if typeof(names) == TYPE_ARRAY and terrain_id >= 0 and terrain_id < names.size():
+		return String(names[terrain_id])
+	return "Terrain %d" % terrain_id
 
 func _improvement_name(improvement_id: int) -> String:
 	var names = _rules_names.get("improvements", [])
@@ -687,6 +897,30 @@ func _building_cost(building_id: int) -> int:
 		return int(rules.get("cost", -1))
 	return -1
 
+func _format_yields(y: Variant) -> String:
+	if typeof(y) != TYPE_DICTIONARY:
+		return "—"
+	var d: Dictionary = y
+	var parts: Array[String] = []
+	var food = int(d.get("food", 0))
+	var prod = int(d.get("production", 0))
+	var gold = int(d.get("gold", 0))
+	var sci = int(d.get("science", 0))
+	var cul = int(d.get("culture", 0))
+	if food != 0:
+		parts.append("Food %s" % (("+" if food > 0 else "") + str(food)))
+	if prod != 0:
+		parts.append("Prod %s" % (("+" if prod > 0 else "") + str(prod)))
+	if gold != 0:
+		parts.append("Gold %s" % (("+" if gold > 0 else "") + str(gold)))
+	if sci != 0:
+		parts.append("Sci %s" % (("+" if sci > 0 else "") + str(sci)))
+	if cul != 0:
+		parts.append("Cul %s" % (("+" if cul > 0 else "") + str(cul)))
+	if parts.is_empty():
+		return "—"
+	return ", ".join(parts)
+
 func _format_promise_item(promise: Dictionary) -> String:
 	var t = String(promise.get("type", ""))
 	match t:
@@ -806,6 +1040,20 @@ func _on_context_attack_pressed() -> void:
 func _on_why_close_pressed() -> void:
 	AudioManager.play("ui_close")
 	hide_why_panel()
+
+func _on_rules_detail_close_pressed() -> void:
+	AudioManager.play("ui_close")
+	hide_rules_detail_panel()
+
+func _on_unit_details_pressed() -> void:
+	if selected_unit.is_empty():
+		return
+	var type_data = selected_unit.get("type_id", -1)
+	var type_id := _parse_runtime_id(type_data)
+	if type_id < 0:
+		return
+	AudioManager.play("ui_click")
+	show_unit_type_details(type_id)
 
 
 func _on_research_button_pressed() -> void:

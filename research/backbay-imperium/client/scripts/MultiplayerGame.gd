@@ -102,6 +102,7 @@ func _ready() -> void:
 	city_production_panel.production_queued.connect(_on_production_queued)
 	city_production_panel.production_removed.connect(_on_production_removed)
 	city_production_panel.production_moved.connect(_on_production_moved)
+	city_production_panel.details_requested.connect(_on_production_details_requested)
 	city_production_panel.panel_closed.connect(_on_city_production_panel_closed)
 
 	# Connect city dialog signals
@@ -344,6 +345,37 @@ func _on_tile_clicked(hex_pos: Vector2i) -> void:
 
 		# Request move
 		network_client.send_move(selected_unit_id, hex_pos.x, hex_pos.y)
+		return
+
+	# No unit selected: inspect tile (improvement details)
+	var map_data = current_snapshot.get("map", {})
+	if typeof(map_data) != TYPE_DICTIONARY:
+		return
+	var md: Dictionary = map_data
+	var width := int(md.get("width", 0))
+	var height := int(md.get("height", 0))
+	if width <= 0 or height <= 0:
+		return
+	if hex_pos.x < 0 or hex_pos.x >= width or hex_pos.y < 0 or hex_pos.y >= height:
+		return
+	var tiles = md.get("tiles", [])
+	if typeof(tiles) != TYPE_ARRAY:
+		return
+	var idx := hex_pos.y * width + hex_pos.x
+	if idx < 0 or idx >= tiles.size():
+		return
+	var tile = tiles[idx]
+	if typeof(tile) != TYPE_DICTIONARY:
+		return
+	var td: Dictionary = tile
+	var imp = td.get("improvement", null)
+	if typeof(imp) != TYPE_DICTIONARY:
+		return
+	var impd: Dictionary = imp
+	var imp_id := _extract_type_id(impd.get("id", -1))
+	if imp_id < 0:
+		return
+	hud.show_improvement_details(imp_id, impd)
 
 
 func _on_unit_action_requested(unit_id: int, action: String, target: Variant) -> void:
@@ -413,6 +445,15 @@ func _on_city_action_requested(city_id: int, action: String) -> void:
 			selected_unit_id = -1
 			network_client.query_city_ui(city_id)
 			network_client.query_production_options(city_id)
+
+func _on_production_details_requested(item_type: String, item_id: int) -> void:
+	match item_type:
+		"unit":
+			hud.show_unit_type_details(item_id)
+		"building":
+			hud.show_building_details(item_id)
+		_:
+			pass
 
 func _on_city_ui_received(city_ui: Dictionary) -> void:
 	var city_id = _extract_entity_id(city_ui.get("id", -1))

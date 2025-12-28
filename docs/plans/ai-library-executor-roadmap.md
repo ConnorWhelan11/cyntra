@@ -9,10 +9,13 @@ Status (implemented):
 - `ai-bt`: abort-friendly reactive BT nodes, plus planner-agnostic `PlanNode`
 - `ai-goap`: deterministic GOAP planner, policy wrapper, and optional BT node
 - `ai-htn`: deterministic HTN planner producing `PlanSpec` (BT embedding via `ai-bt::PlanNode`)
-- `ai-nav`: deterministic grid A\*, plus an initial triangle-based navmesh backend
-- `ai-crowd`: deterministic preferred-velocity + separation steering (spatial hashing via deterministic buckets)
+- `ai-nav`: deterministic grid A\*, triangle-based navmesh backend, and polygon bake helper (`ai-nav/bake`)
+- `ai-crowd`: deterministic preferred-velocity + separation steering (spatial hashing via deterministic buckets), plus optional ORCA (`ai-crowd/orca`)
 - `ai-tools`: lightweight trace events + Blackboard hook, with `PlanNode`/GOAP emitting planning/replan/outcome events
 - `ai`: umbrella crate re-exporting `ai-*` + embedded rustdoc guides
+- `ai-bevy`: Bevy adapter (non-send brain registry + position/nav snapshot tick)
+- `ai-hotload`: serde + hot reload helper (mtime/len fingerprint)
+- `ai-ml`: inference boundary traits + reference discrete policy + safety filter hook
 
 ## Next: Navigation (navmesh “v1” → “v2”)
 
@@ -23,7 +26,7 @@ Status (implemented):
    - Add allocation-reuse query APIs (`NavMeshQuery`, `find_path_into`, `find_corridor_into`) ✅
 2. Baking
    - “v1”: accept user-provided triangles/polys (already supported)
-   - “v2”: add a simple 2D polygon baker (earcut/triangulation) or a 2.5D heightfield pipeline
+   - “v2”: add a simple 2D polygon baker (earcut/triangulation) ✅
    - “v3”: tiled build + incremental rebuild regions
 3. Runtime
    - Dynamic obstacles: obstacle “version” → invalidate path/plan signatures deterministically
@@ -34,7 +37,7 @@ Status (implemented):
 - New crate: `ai-crowd`
   - v0: deterministic steering primitives (separation + preferred velocity) ✅
   - Add spatial hashing for 1k–10k agents (stable bucket ordering) ✅
-  - Upgrade path: ORCA/RVO-style constraints (feature-gated)
+  - Upgrade path: ORCA/RVO-style constraints (feature-gated) ✅ (`ai-crowd/orca`)
 
 ## Next: Decision Expansion
 
@@ -56,18 +59,33 @@ Status (implemented):
   - In-engine debug drawing hooks (navmesh, paths, BT/GOAP introspection)
   - Determinism + replay: stable trace logs + determinism tests ✅
 
+## Next: Visualization (Debug Draw)
+
+- New crate: `ai-debug`
+  - v0: engine-agnostic `DebugDraw` + nav/crowd/BT/GOAP draw helpers ✅
+  - Capture + replay of debug commands (`CapturingDebugDraw`) ✅
+  - Optional Bevy gizmos adapter (`ai-debug/bevy`) ✅
+  - Optional Bevy plugin to draw `ai-bevy` state (`ai-debug/bevy-ai`) ✅
+  - Optional Bevy egui panel + click-to-set nav query (`ai-debug/bevy-ai-egui`) ✅
+
 ## Next: Engine Adapters (Bevy First)
 
 - New crate: `ai-bevy`
-  - Bevy ECS adapters for `WorldView/WorldMut`, nav world, debug draw, and optional inspector UI
+  - v0: Bevy ECS adapter for ticking `ai-core::Brain` deterministically ✅
+  - Optional: `ai-bevy/time` (sync `AiTick.dt_seconds` from Bevy time) ✅
+  - Optional: `ai-bevy/trace` (flush `ai-tools` TraceLog into Bevy events) ✅
+  - Optional: `ai-bevy/trace-inspector` (collect events into `AiTraceBuffer`) ✅
+  - Optional: `ai-bevy/transform-sync` (sync `Transform.translation` ↔ `AiPosition`) ✅
+  - Optional: `ai-bevy/trace-egui` (interactive egui inspector UI over `AiTraceBuffer`) ✅
+  - Example: `ai-bevy/examples/bevy_debug_demo.rs` (navmesh + gizmos + trace inspector) ✅
 
 ## Next: Serialization / Hot Reload
 
 - Keep core data model serializable (plan specs, GOAP domains, BT graphs)
-- Versioned schemas + hot reload hooks (feature-gated)
+- v0: versioned schemas + hot reload hooks (feature-gated) ✅ (`ai-hotload`)
 
 ## Next: ML Policy Boundary
 
 - New crate: `ai-ml`
-  - Define inference boundary as a `Policy` implementation + “safety wrapper”
-  - Keep training out-of-scope; only inference + integration tests
+  - v0: define inference boundary traits + reference discrete `Policy` + safety wrapper ✅
+  - Keep training out-of-scope; only inference + integration tests ✅
