@@ -1,4 +1,4 @@
-extends SceneTree
+extends Node
 
 ## Headless validation for scripts/scenes.
 ## Loads all .gd and .tscn files under res://scripts, res://scenes, res://tests.
@@ -12,7 +12,7 @@ const VALIDATE_DIRS: Array[String] = [
 const VALIDATE_EXTS: Array[String] = ["gd", "tscn"]
 
 
-func _init() -> void:
+func _ready() -> void:
 	var files: Array[String] = []
 	for dir_path in VALIDATE_DIRS:
 		_collect_files(dir_path, files)
@@ -22,17 +22,28 @@ func _init() -> void:
 		var res = ResourceLoader.load(path)
 		if res == null:
 			failures.append(path)
+			continue
+		if res is Script:
+			var script := res as Script
+			if not script.can_instantiate():
+				failures.append(path)
+				continue
+		if res is PackedScene:
+			var scene := res as PackedScene
+			if not scene.can_instantiate():
+				failures.append(path)
+				continue
 
 	print("\n=== QA Validate Scripts/Scenes ===")
 	print("Checked %d files" % files.size())
 	if failures.is_empty():
 		print("[PASS] All resources loaded")
-		quit(0)
+		get_tree().quit(0)
 	else:
 		for path in failures:
 			print("[FAIL] Failed to load: %s" % path)
 		print("[FAIL] %d resources failed to load" % failures.size())
-		quit(1)
+		get_tree().quit(1)
 
 
 func _collect_files(dir_path: String, out: Array[String]) -> void:

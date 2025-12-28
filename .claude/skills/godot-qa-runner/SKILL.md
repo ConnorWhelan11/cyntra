@@ -41,7 +41,7 @@ scripts/godot-qa-runner.sh --project research/backbay-imperium/client --scene re
 ### Optional: script-based validation
 
 ```bash
-scripts/godot-qa-runner.sh --project research/backbay-imperium/client --script res://tests/qa_validate_scripts.gd
+scripts/godot-qa-runner.sh --project research/backbay-imperium/client --scene res://tests/qa_validate_scripts.tscn
 ```
 
 ### Combined gate (recommended)

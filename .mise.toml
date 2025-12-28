@@ -41,7 +41,7 @@ cd ../apps/desktop && bun run test
 description = "Run Godot headless QA tests"
 run = """
 scripts/godot-qa-runner.sh --project research/backbay-imperium/client --scene res://tests/run_all_tests.tscn
-scripts/godot-qa-runner.sh --project research/backbay-imperium/client --script res://tests/qa_validate_scripts.gd
+scripts/godot-qa-runner.sh --project research/backbay-imperium/client --scene res://tests/qa_validate_scripts.tscn
 """
 
 [tasks.index-db-up]
