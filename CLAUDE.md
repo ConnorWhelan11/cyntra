@@ -40,6 +40,7 @@ mise run dev      # Start desktop app in dev mode
 mise run kernel   # Run cyntra kernel once
 mise run test     # Run all tests
 mise run godot-qa # Run Godot headless QA tests + script validation
+mise run backbay-qa # Run Backbay Imperium Godot QA tests + script validation
 ```
 
 ### Desktop App

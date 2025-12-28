@@ -44,6 +44,21 @@ scripts/godot-qa-runner.sh --project research/backbay-imperium/client --scene re
 scripts/godot-qa-runner.sh --project research/backbay-imperium/client --scene res://tests/qa_validate_scripts.tscn
 """
 
+[tasks.backbay-qa]
+description = "Run Backbay Imperium Godot QA tests + script validation"
+run = """
+scripts/godot-qa-runner.sh --project research/backbay-imperium/client --scene res://tests/run_all_tests.tscn
+scripts/godot-qa-runner.sh --project research/backbay-imperium/client --scene res://tests/qa_validate_scripts.tscn
+"""
+
+[tasks.backbay-bridge]
+description = "Build backbay-godot GDExtension and link into research/backbay-imperium/client/bin"
+run = "cd research/backbay-imperium && ./scripts/build_godot_bridge.sh"
+
+[tasks.backbay-client]
+description = "Build backbay-godot and run the Backbay Imperium Godot client"
+run = "cd research/backbay-imperium && ./scripts/build_godot_bridge.sh --run"
+
 [tasks.index-db-up]
 description = "Start CocoIndex Postgres (pgvector)"
 run = "docker compose -f services/cocoindex/compose.yaml up -d"

@@ -15,7 +15,7 @@ Options:
 Examples:
   scripts/godot-qa-runner.sh
   scripts/godot-qa-runner.sh --project research/backbay-imperium/client --scene res://tests/run_all_tests.tscn
-  scripts/godot-qa-runner.sh --script res://tests/qa_validate_scripts.gd
+  scripts/godot-qa-runner.sh --scene res://tests/qa_validate_scripts.tscn
 USAGE
 }
 

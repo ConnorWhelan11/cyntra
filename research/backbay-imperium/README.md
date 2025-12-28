@@ -27,6 +27,14 @@ cd research/backbay-imperium
 cargo test
 ```
 
+## QA
+
+From repo root:
+
+```bash
+mise run backbay-qa
+```
+
 ## Godot Smoke Project
 
 Minimal Godot project lives in `research/backbay-imperium/client`.
