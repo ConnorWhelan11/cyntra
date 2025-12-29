@@ -7357,8 +7357,7 @@ impl GameEngine {
                 .collect()
         };
 
-        let prioritize_expansion =
-            plan.context.city_count < plan.context.target_cities && plan.context.turn < 40;
+        let prioritize_expansion = plan.context.city_count < plan.context.target_cities;
         if (prioritize_expansion || plan.dominant == ai::AiGoal::Expand) && allow_units {
             if let Some(settler_id) = self.state.rules.unit_type_id("settler") {
                 if let Some(item) = self.ai_pick_unit_option(&options, &[settler_id]) {
