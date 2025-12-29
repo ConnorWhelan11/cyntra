@@ -14,6 +14,7 @@ var current_player: int = 0
 signal events_received(events: Array)
 signal snapshot_loaded()
 signal info_message(message: String)
+signal game_ended(is_victory: bool, victory_type: String, reason: String, stats: Dictionary)
 
 func _ready() -> void:
 	load("res://addons/backbay_godot/backbay_godot.gdextension")
@@ -39,14 +40,16 @@ func new_game(map_size: int, num_players: int) -> void:
 		return
 
 	var terrain = FileAccess.get_file_as_bytes("res://data/base/terrain.yaml")
+	var resources = FileAccess.get_file_as_bytes("res://data/base/resources.yaml")
 	var units_data = FileAccess.get_file_as_bytes("res://data/base/units.yaml")
 	var buildings = FileAccess.get_file_as_bytes("res://data/base/buildings.yaml")
 	var techs = FileAccess.get_file_as_bytes("res://data/base/techs.yaml")
+	var promotions = FileAccess.get_file_as_bytes("res://data/base/promotions.yaml")
 	var improvements = FileAccess.get_file_as_bytes("res://data/base/improvements.yaml")
 	var policies = FileAccess.get_file_as_bytes("res://data/base/policies.yaml")
 	var governments = FileAccess.get_file_as_bytes("res://data/base/governments.yaml")
 
-	var snapshot_bytes = bridge.new_game(map_size, num_players, terrain, units_data, buildings, techs, improvements, policies, governments)
+	var snapshot_bytes = bridge.new_game(map_size, num_players, terrain, resources, units_data, buildings, techs, promotions, improvements, policies, governments)
 	var snapshot_json := String(bridge.decode_snapshot_json(snapshot_bytes))
 	var parsed = JSON.parse_string(snapshot_json)
 	if typeof(parsed) != TYPE_DICTIONARY:
@@ -106,8 +109,20 @@ func set_production(city_id: int, kind: String, item_id: int) -> Array:
 	item[kind] = item_id
 	return send_command({"type": "SetProduction", "city": city_id, "item": item})
 
+func cancel_production(city_id: int) -> Array:
+	return send_command({"type": "CancelProduction", "city": city_id})
+
+func assign_citizen(city_id: int, tile_index: int) -> Array:
+	return send_command({"type": "AssignCitizen", "city": city_id, "tile_index": tile_index})
+
+func unassign_citizen(city_id: int, tile_index: int) -> Array:
+	return send_command({"type": "UnassignCitizen", "city": city_id, "tile_index": tile_index})
+
 func set_research(tech_id: int) -> Array:
 	return send_command({"type": "SetResearch", "tech": tech_id})
+
+func choose_promotion(unit_id: int, promotion_id: int) -> Array:
+	return send_command({"type": "ChoosePromotion", "unit": unit_id, "promotion": promotion_id})
 
 func replay_to_turn(turn: int) -> void:
 	if bridge == null:
@@ -336,6 +351,16 @@ func get_city_ui(city_id: int) -> Dictionary:
 		return {}
 	return parsed
 
+func get_tile_ui(hex: Vector2i) -> Dictionary:
+	if bridge == null or not bridge.has_method("query_tile_ui"):
+		return {}
+	var bytes = bridge.query_tile_ui(hex.x, hex.y)
+	var json := String(bridge.decode_tile_ui_json(bytes))
+	var parsed = JSON.parse_string(json)
+	if typeof(parsed) != TYPE_DICTIONARY:
+		return {}
+	return parsed
+
 func get_production_options(city_id: int) -> Array:
 	if bridge == null or not bridge.has_method("query_production_options"):
 		return []
@@ -450,6 +475,8 @@ func _apply_events(events: Array) -> void:
 				_emit_movement_message(event, "Orders interrupted")
 			"OrdersCompleted":
 				info_message.emit("Orders completed")
+			"GameEnded":
+				_handle_game_ended(event)
 			_:
 				pass
 
@@ -474,6 +501,88 @@ func _emit_movement_message(event: Dictionary, prefix: String) -> void:
 			info_message.emit("%s: out of moves" % prefix)
 		_:
 			info_message.emit("%s" % prefix)
+
+
+func _handle_game_ended(event: Dictionary) -> void:
+	var winner_data = event.get("winner", {})
+	var winner_id: int = -1
+	if typeof(winner_data) == TYPE_DICTIONARY:
+		winner_id = int(winner_data.get("0", -1))
+	elif typeof(winner_data) == TYPE_INT or typeof(winner_data) == TYPE_FLOAT:
+		winner_id = int(winner_data)
+
+	var reason_data = event.get("reason", "")
+	var victory_type := ""
+	if typeof(reason_data) == TYPE_STRING:
+		victory_type = reason_data
+	elif typeof(reason_data) == TYPE_DICTIONARY:
+		victory_type = String(reason_data.get("type", ""))
+
+	var is_victory: bool = winner_id == current_player
+	var defeat_reason := ""
+	if not is_victory:
+		defeat_reason = "Player %d achieved %s victory" % [winner_id, victory_type.to_lower()]
+
+	# Gather player stats from snapshot
+	var stats: Dictionary = {}
+	stats["score"] = _calculate_player_score(current_player)
+	stats["cities"] = _count_player_cities(current_player)
+	stats["units"] = _count_player_units(current_player)
+	stats["techs"] = _count_player_techs(current_player)
+	stats["turns"] = current_turn
+
+	info_message.emit("Game ended! %s" % ("Victory!" if is_victory else "Defeat..."))
+	game_ended.emit(is_victory, victory_type, defeat_reason, stats)
+
+
+func _calculate_player_score(player_id: int) -> int:
+	# Simple score calculation - can be expanded
+	var score := 0
+	score += _count_player_cities(player_id) * 100
+	score += _count_player_units(player_id) * 10
+	score += _count_player_techs(player_id) * 50
+	return score
+
+
+func _count_player_cities(player_id: int) -> int:
+	var count := 0
+	for city in snapshot.get("cities", []):
+		if typeof(city) == TYPE_DICTIONARY:
+			var owner = city.get("owner", {})
+			var oid := -1
+			if typeof(owner) == TYPE_DICTIONARY:
+				oid = int(owner.get("0", -1))
+			elif typeof(owner) == TYPE_INT or typeof(owner) == TYPE_FLOAT:
+				oid = int(owner)
+			if oid == player_id:
+				count += 1
+	return count
+
+
+func _count_player_units(player_id: int) -> int:
+	var count := 0
+	for unit in snapshot.get("units", []):
+		if typeof(unit) == TYPE_DICTIONARY:
+			var owner = unit.get("owner", {})
+			var oid := -1
+			if typeof(owner) == TYPE_DICTIONARY:
+				oid = int(owner.get("0", -1))
+			elif typeof(owner) == TYPE_INT or typeof(owner) == TYPE_FLOAT:
+				oid = int(owner)
+			if oid == player_id:
+				count += 1
+	return count
+
+
+func _count_player_techs(player_id: int) -> int:
+	var player_states = snapshot.get("player_states", [])
+	if player_id >= 0 and player_id < player_states.size():
+		var pstate = player_states[player_id]
+		if typeof(pstate) == TYPE_DICTIONARY:
+			var researched = pstate.get("researched_techs", [])
+			if typeof(researched) == TYPE_ARRAY:
+				return researched.size()
+	return 0
 
 
 func _parse_hexes(raw: Variant) -> Array[Vector2i]:

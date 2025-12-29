@@ -1,11 +1,14 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=10 format=3 uid="uid://b4a87eqreqi6s"]
 
-[ext_resource type="Script" path="res://scripts/LocalGame.gd" id="1"]
-[ext_resource type="Script" path="res://scripts/GameClient.gd" id="2"]
-[ext_resource type="Script" path="res://scripts/MapView.gd" id="3"]
+[ext_resource type="Script" uid="uid://d32kf6t24logv" path="res://scripts/LocalGame.gd" id="1"]
+[ext_resource type="Script" uid="uid://bcel8j6rl746e" path="res://scripts/GameClient.gd" id="2"]
+[ext_resource type="Script" uid="uid://cgkj41cclym3a" path="res://scripts/MapViewMultiplayer.gd" id="3"]
 [ext_resource type="PackedScene" path="res://scenes/GameHUD.tscn" id="4"]
 [ext_resource type="PackedScene" path="res://scenes/ResearchPanel.tscn" id="5"]
 [ext_resource type="PackedScene" path="res://scenes/CityNameDialog.tscn" id="6"]
+[ext_resource type="PackedScene" path="res://scenes/Unit3DLayer.tscn" id="7"]
+[ext_resource type="PackedScene" path="res://scenes/GameEndScreen.tscn" id="8"]
+[ext_resource type="PackedScene" path="res://scenes/Terrain3DLayer.tscn" id="9"]
 
 [node name="Game" type="Node"]
 script = ExtResource("1")
@@ -13,12 +16,23 @@ script = ExtResource("1")
 [node name="GameClient" type="Node" parent="."]
 script = ExtResource("2")
 
+[node name="Terrain3DCanvas" type="CanvasLayer" parent="."]
+layer = -1
+
+[node name="Terrain3DLayer" parent="Terrain3DCanvas" instance=ExtResource("9")]
+
 [node name="MapView" type="Node2D" parent="."]
 script = ExtResource("3")
-client_path = NodePath("../GameClient")
+
+[node name="Unit3DCanvas" type="CanvasLayer" parent="."]
+layer = 1
+
+[node name="Unit3DLayer" parent="Unit3DCanvas" instance=ExtResource("7")]
 
 [node name="GameHUD" parent="." instance=ExtResource("4")]
 
 [node name="ResearchPanel" parent="." instance=ExtResource("5")]
 
 [node name="CityNameDialog" parent="." instance=ExtResource("6")]
+
+[node name="GameEndScreen" parent="." instance=ExtResource("8")]
