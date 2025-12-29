@@ -1,0 +1,61 @@
+# Car Studio Lighting Preset
+# Optimized for vehicle asset evaluation with dramatic highlights
+
+preset_id: car_studio
+category: vehicle
+description: |
+  High-contrast studio lighting for cars and vehicles.
+  Emphasizes surface reflections, paint clarity, and panel gaps.
+  Key light positioned for hood/fender highlights.
+
+# Three-point lighting setup
+key_light:
+  type: AREA
+  location: [4.5, -4.5, 4.5]
+  energy: 600
+  size: 4.0
+  color: [1.0, 0.99, 0.97]  # Slightly warm (5600K)
+  spread: 60  # Degrees
+
+fill_light:
+  type: AREA
+  location: [-4.0, -3.0, 2.5]
+  energy: 250
+  size: 6.0
+  color: [0.97, 0.98, 1.0]  # Slightly cool (6500K)
+  spread: 90
+
+rim_light:
+  type: AREA
+  location: [0, 5.0, 3.5]
+  energy: 400
+  size: 3.0
+  color: [1.0, 1.0, 1.0]  # Neutral
+  spread: 45
+
+# Optional accent lights for automotive
+accent_lights:
+  - name: ground_bounce
+    type: AREA
+    location: [0, 0, -0.5]
+    energy: 80
+    size: 20.0
+    color: [0.9, 0.9, 0.92]
+    enabled: true
+
+# HDRI environment (provides reflections)
+hdri:
+  name: studio_neutral_v001
+  strength: 0.6
+  rotation_deg: 45
+
+# Render settings
+exposure: 0.0
+view_transform: Filmic
+look: Medium High Contrast
+
+# Recommended camera settings
+camera:
+  focal_length_mm: 50
+  aperture: 8.0
+  distance_factor: 1.2  # x bbox diagonal

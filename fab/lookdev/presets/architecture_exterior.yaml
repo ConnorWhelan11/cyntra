@@ -1,0 +1,53 @@
+# Architecture Exterior Lighting Preset
+# Natural daylight simulation for buildings and environments
+
+preset_id: architecture_exterior
+category: architecture
+description: |
+  Simulated overcast daylight for architectural assets.
+  Soft shadows, balanced exposure for detail visibility.
+  Good for evaluating form, scale, and surface quality.
+
+# Sun light (primary)
+key_light:
+  type: SUN
+  location: [0, 0, 10]  # Position doesn't matter for sun
+  rotation_deg: [45, 0, 135]  # Azimuth/elevation
+  energy: 3.0
+  angle: 0.526  # Sun angular diameter (radians) - soft shadows
+  color: [1.0, 0.98, 0.94]  # Daylight (5500K)
+
+# Sky fill (ambient)
+fill_light:
+  type: AREA
+  location: [0, 0, 20]
+  energy: 150
+  size: 50.0
+  color: [0.85, 0.92, 1.0]  # Sky blue tint
+  spread: 180
+
+# Ground bounce
+rim_light:
+  type: AREA
+  location: [0, 0, -2]
+  energy: 50
+  size: 30.0
+  color: [0.95, 0.93, 0.88]  # Warm ground reflection
+  spread: 180
+
+# HDRI environment (sky dome)
+hdri:
+  name: outdoor_overcast_v001
+  strength: 0.8
+  rotation_deg: 180
+
+# Render settings
+exposure: -0.3  # Slightly darker to preserve highlights
+view_transform: Filmic
+look: None  # Natural look
+
+# Recommended camera settings
+camera:
+  focal_length_mm: 24
+  aperture: 11
+  distance_factor: 2.0

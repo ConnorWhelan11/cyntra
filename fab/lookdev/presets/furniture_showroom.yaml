@@ -1,0 +1,51 @@
+# Furniture Showroom Lighting Preset
+# Warm, inviting lighting for furniture and home goods
+
+preset_id: furniture_showroom
+category: furniture
+description: |
+  Soft, warm lighting for furniture evaluation.
+  Lower contrast to show fabric textures and wood grain.
+  Mimics interior design photography lighting.
+
+# Three-point lighting setup
+key_light:
+  type: AREA
+  location: [3.5, -3.0, 4.0]
+  energy: 400
+  size: 5.0
+  color: [1.0, 0.96, 0.90]  # Warm (4500K)
+  spread: 75
+
+fill_light:
+  type: AREA
+  location: [-3.5, -2.5, 2.0]
+  energy: 300
+  size: 8.0
+  color: [1.0, 0.98, 0.95]  # Warm neutral
+  spread: 100
+
+rim_light:
+  type: AREA
+  location: [0, 4.0, 2.5]
+  energy: 200
+  size: 4.0
+  color: [1.0, 0.97, 0.92]
+  spread: 60
+
+# HDRI environment
+hdri:
+  name: interior_warm_v001
+  strength: 0.4
+  rotation_deg: 0
+
+# Render settings
+exposure: 0.2  # Slightly brighter
+view_transform: Filmic
+look: Medium Contrast
+
+# Recommended camera settings
+camera:
+  focal_length_mm: 35
+  aperture: 5.6
+  distance_factor: 1.5

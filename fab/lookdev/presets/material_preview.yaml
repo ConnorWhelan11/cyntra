@@ -1,0 +1,68 @@
+# Material Preview Lighting Preset
+# Neutral, balanced lighting for PBR material evaluation
+
+preset_id: material_preview
+category: material
+description: |
+  Neutral studio lighting for material quality assessment.
+  Balanced to show both specular highlights and diffuse response.
+  Ideal for evaluating roughness, metalness, and normal maps.
+
+# Three-point lighting setup (balanced)
+key_light:
+  type: AREA
+  location: [3.0, -3.0, 3.5]
+  energy: 350
+  size: 3.0
+  color: [1.0, 1.0, 1.0]  # Pure neutral (6500K)
+  spread: 60
+
+fill_light:
+  type: AREA
+  location: [-3.0, -2.0, 2.0]
+  energy: 250
+  size: 4.0
+  color: [1.0, 1.0, 1.0]
+  spread: 80
+
+rim_light:
+  type: AREA
+  location: [0, 3.5, 2.5]
+  energy: 200
+  size: 2.5
+  color: [1.0, 1.0, 1.0]
+  spread: 50
+
+# Additional side lights for material reading
+accent_lights:
+  - name: side_left
+    type: AREA
+    location: [-4.0, 0, 2.0]
+    energy: 100
+    size: 2.0
+    color: [1.0, 1.0, 1.0]
+    enabled: true
+  - name: side_right
+    type: AREA
+    location: [4.0, 0, 2.0]
+    energy: 100
+    size: 2.0
+    color: [1.0, 1.0, 1.0]
+    enabled: true
+
+# HDRI environment (neutral studio)
+hdri:
+  name: studio_neutral_v001
+  strength: 0.5
+  rotation_deg: 0
+
+# Render settings
+exposure: 0.0
+view_transform: Filmic
+look: None  # No contrast adjustment
+
+# Recommended camera settings
+camera:
+  focal_length_mm: 50
+  aperture: 8.0
+  distance_factor: 1.0

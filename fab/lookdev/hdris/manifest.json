@@ -1,0 +1,62 @@
+{
+  "schema_version": "1.0",
+  "description": "HDRI environment maps for lookdev rendering",
+  "source": "polyhaven.com",
+  "license": "CC0",
+
+  "hdris": {
+    "studio_neutral_v001": {
+      "filename": "studio_neutral_v001.hdr",
+      "source_name": "studio_small_08",
+      "source_url": "https://polyhaven.com/a/studio_small_08",
+      "resolution": "2k",
+      "rotation_deg": 0,
+      "default_strength": 0.5,
+      "use_cases": ["metallic_materials", "car_lookdev", "general_studio"],
+      "sha256": null
+    },
+    "outdoor_overcast_v001": {
+      "filename": "outdoor_overcast_v001.hdr",
+      "source_name": "kloofendal_48d_partly_cloudy",
+      "source_url": "https://polyhaven.com/a/kloofendal_48d_partly_cloudy",
+      "resolution": "2k",
+      "rotation_deg": 180,
+      "default_strength": 0.6,
+      "use_cases": ["natural_lighting", "organic_materials", "architecture"],
+      "sha256": null
+    },
+    "interior_warm_v001": {
+      "filename": "interior_warm_v001.hdr",
+      "source_name": "small_empty_room_3",
+      "source_url": "https://polyhaven.com/a/small_empty_room_3",
+      "resolution": "2k",
+      "rotation_deg": 0,
+      "default_strength": 0.4,
+      "use_cases": ["interior_scenes", "furniture", "warm_tones"],
+      "sha256": null
+    }
+  },
+
+  "presets": {
+    "car_studio": {
+      "hdri": "studio_neutral_v001",
+      "strength": 0.6,
+      "rotation_deg": 45
+    },
+    "material_preview": {
+      "hdri": "studio_neutral_v001",
+      "strength": 0.5,
+      "rotation_deg": 0
+    },
+    "natural_outdoor": {
+      "hdri": "outdoor_overcast_v001",
+      "strength": 0.8,
+      "rotation_deg": 180
+    },
+    "interior_library": {
+      "hdri": "interior_warm_v001",
+      "strength": 0.4,
+      "rotation_deg": 0
+    }
+  }
+}
