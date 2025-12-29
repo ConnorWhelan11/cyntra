@@ -1,10 +1,101 @@
+# ============================================================================
+# ANCIENT ERA
+# ============================================================================
+
 pottery:
   name: "Pottery"
   cost: 25
   era: "ancient"
   prerequisites: []
+
+animal_husbandry:
+  name: "Animal Husbandry"
+  cost: 25
+  era: "ancient"
+  prerequisites: []
+
+archery:
+  name: "Archery"
+  cost: 30
+  era: "ancient"
+  prerequisites: []
+
+mining:
+  name: "Mining"
+  cost: 30
+  era: "ancient"
+  prerequisites: []
+
+sailing:
+  name: "Sailing"
+  cost: 35
+  era: "ancient"
+  prerequisites: []
+
+# ============================================================================
+# CLASSICAL ERA
+# ============================================================================
+
 writing:
   name: "Writing"
   cost: 40
   era: "classical"
   prerequisites: ["pottery"]
+
+bronze_working:
+  name: "Bronze Working"
+  cost: 45
+  era: "classical"
+  prerequisites: ["mining"]
+
+horseback_riding:
+  name: "Horseback Riding"
+  cost: 45
+  era: "classical"
+  prerequisites: ["animal_husbandry"]
+
+wheel:
+  name: "The Wheel"
+  cost: 40
+  era: "classical"
+  prerequisites: ["animal_husbandry"]
+
+masonry:
+  name: "Masonry"
+  cost: 45
+  era: "classical"
+  prerequisites: ["mining"]
+
+calendar:
+  name: "Calendar"
+  cost: 50
+  era: "classical"
+  prerequisites: ["pottery"]
+
+# ============================================================================
+# MEDIEVAL ERA (placeholder)
+# ============================================================================
+
+currency:
+  name: "Currency"
+  cost: 60
+  era: "medieval"
+  prerequisites: ["writing"]
+
+mathematics:
+  name: "Mathematics"
+  cost: 60
+  era: "medieval"
+  prerequisites: ["writing"]
+
+construction:
+  name: "Construction"
+  cost: 70
+  era: "medieval"
+  prerequisites: ["masonry", "the_wheel"]
+
+iron_working:
+  name: "Iron Working"
+  cost: 75
+  era: "medieval"
+  prerequisites: ["bronze_working"]

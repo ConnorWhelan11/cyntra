@@ -1,3 +1,7 @@
+# ============================================================================
+# ANCIENT ERA BUILDINGS
+# ============================================================================
+
 monument:
   name: "Monument"
   cost: 60
@@ -9,6 +13,46 @@ monument:
       yield_type: "Culture"
       value: 1
   requirements: []
+
+granary:
+  name: "Granary"
+  cost: 60
+  maintenance: 1
+  admin: 0
+  tech_required: "pottery"
+  effects:
+    - type: "YieldBonus"
+      yield_type: "Food"
+      value: 2
+  requirements: []
+
+shrine:
+  name: "Shrine"
+  cost: 50
+  maintenance: 1
+  admin: 0
+  tech_required: null
+  effects:
+    - type: "YieldBonus"
+      yield_type: "Faith"
+      value: 1
+  requirements: []
+
+barracks:
+  name: "Barracks"
+  cost: 80
+  maintenance: 1
+  admin: 0
+  tech_required: "bronze_working"
+  effects:
+    - type: "UnitXPBonus"
+      value: 15
+  requirements: []
+
+# ============================================================================
+# CLASSICAL ERA BUILDINGS
+# ============================================================================
+
 library:
   name: "Library"
   cost: 80
@@ -22,9 +66,74 @@ library:
 
 courthouse:
   name: "Courthouse"
-  cost: 80
+  cost: 100
   maintenance: 2
   admin: 1
   tech_required: "writing"
-  effects: []
+  effects:
+    - type: "ReduceUnhappiness"
+      value: 2
+  requirements: []
+
+walls:
+  name: "Walls"
+  cost: 120
+  maintenance: 0
+  admin: 0
+  tech_required: "masonry"
+  effects:
+    - type: "DefenseBonus"
+      value: 50
+  requirements: []
+
+market:
+  name: "Market"
+  cost: 100
+  maintenance: 0
+  admin: 0
+  tech_required: "currency"
+  effects:
+    - type: "GoldPercentBonus"
+      value: 25
+  requirements: []
+
+water_mill:
+  name: "Water Mill"
+  cost: 80
+  maintenance: 2
+  admin: 0
+  tech_required: "wheel"
+  effects:
+    - type: "YieldBonus"
+      yield_type: "Production"
+      value: 2
+  requirements:
+    - type: "NextToRiver"
+
+# ============================================================================
+# MEDIEVAL ERA BUILDINGS
+# ============================================================================
+
+university:
+  name: "University"
+  cost: 150
+  maintenance: 2
+  admin: 0
+  tech_required: "mathematics"
+  effects:
+    - type: "SciencePercentBonus"
+      value: 33
+  requirements:
+    - type: "HasBuilding"
+      building: "library"
+
+workshop:
+  name: "Workshop"
+  cost: 120
+  maintenance: 2
+  admin: 0
+  tech_required: "iron_working"
+  effects:
+    - type: "ProductionPercentBonus"
+      value: 20
   requirements: []
