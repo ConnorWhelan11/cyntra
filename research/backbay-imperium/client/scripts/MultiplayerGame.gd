@@ -187,7 +187,7 @@ func _on_share_replay_pressed() -> void:
 func _process(_delta: float) -> void:
 	# Update minimap viewport bounds
 	if map_view.map_width > 0:
-		var bounds := map_view.get_visible_hex_bounds()
+		var bounds: Rect2 = map_view.get_visible_hex_bounds()
 		hud.update_minimap_viewport(bounds)
 	_maybe_refresh_context_panel()
 
@@ -323,9 +323,11 @@ func _update_unit_selection(unit: Dictionary) -> void:
 		map_view.set_movement_range([])
 
 
-func _on_tile_clicked(hex_pos: Vector2i) -> void:
+func _on_tile_clicked(hex_pos: Vector2i, button: int) -> void:
 	if _is_game_over:
 		hud.add_message("Game over: replay only")
+		return
+	if button != MOUSE_BUTTON_LEFT:
 		return
 	# If we have a selected unit and it's our turn, try to move
 	if selected_unit_id >= 0:
@@ -911,7 +913,7 @@ func _maybe_refresh_context_panel() -> void:
 		hud.clear_context()
 		return
 
-	var hover := map_view.get_hovered_hex()
+	var hover: Vector2i = map_view.get_hovered_hex()
 	if hover == _context_last_hover and selected_unit_id == _context_last_selected_unit_id:
 		return
 
@@ -1002,6 +1004,8 @@ func _on_rules_catalog_received(catalog: Dictionary) -> void:
 	_rebuild_rules_indexes()
 	if hud.has_method("set_rules_catalog"):
 		hud.set_rules_catalog(catalog)
+	if map_view.has_method("set_rules_catalog"):
+		map_view.set_rules_catalog(catalog)
 	if research_panel.has_method("set_catalog"):
 		research_panel.set_catalog(catalog)
 
@@ -2651,8 +2655,8 @@ func _handle_unit_killed_event(event: Dictionary) -> void:
 func _hex_to_screen_pos(hex: Vector2i) -> Vector2:
 	# Convert hex coordinate to screen position
 	# This should match MapViewMultiplayer's coordinate system
-	var hex_size := 36.0 * map_view.zoom_level
-	var origin := map_view.origin + map_view.camera_offset
+	var hex_size: float = 36.0 * map_view.zoom_level
+	var origin: Vector2 = map_view.origin + map_view.camera_offset
 	return HexMath.axial_to_pixel(hex, origin, hex_size)
 
 

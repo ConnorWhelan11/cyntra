@@ -163,6 +163,62 @@ jobs:
           fail_ci_if_error: false
 
   # ============================================
+  # Godot QA (Backbay Imperium)
+  # ============================================
+  backbay-qa:
+    name: Backbay Godot QA
+    runs-on: ubuntu-latest
+    env:
+      GODOT_VERSION: "4.5.1"
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y unzip
+
+      - name: Set up Rust
+        uses: dtolnay/rust-action@stable
+
+      - name: Cache cargo
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: research/backbay-imperium
+
+      - name: Build backbay-godot extension
+        working-directory: research/backbay-imperium
+        run: cargo build -p backbay-godot
+
+      - name: Stage GDExtension binary
+        run: |
+          mkdir -p research/backbay-imperium/client/bin
+          cp research/backbay-imperium/target/debug/libbackbay_godot.so \
+            research/backbay-imperium/client/bin/libbackbay_godot.so
+
+      - name: Download Godot headless
+        run: |
+          curl -L -o /tmp/godot.zip \
+            "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_linux.x86_64_headless.zip"
+          unzip -q /tmp/godot.zip -d /tmp/godot
+          GODOT_BIN="$(find /tmp/godot -maxdepth 2 -type f -name 'Godot_v*_headless' | head -n 1)"
+          if [ -z "$GODOT_BIN" ]; then
+            echo "Godot headless binary not found after unzip." >&2
+            exit 1
+          fi
+          chmod +x "$GODOT_BIN"
+          echo "GODOT_BIN=$GODOT_BIN" >> "$GITHUB_ENV"
+
+      - name: Run Backbay QA
+        run: |
+          scripts/godot-qa-runner.sh --godot-bin "$GODOT_BIN" \
+            --project research/backbay-imperium/client \
+            --scene res://tests/run_all_tests.tscn
+          scripts/godot-qa-runner.sh --godot-bin "$GODOT_BIN" \
+            --project research/backbay-imperium/client \
+            --scene res://tests/qa_validate_scripts.tscn
+
+  # ============================================
   # Rust (Tauri backend)
   # ============================================
   rust-check:

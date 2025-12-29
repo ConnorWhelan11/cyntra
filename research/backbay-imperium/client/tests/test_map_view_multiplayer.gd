@@ -141,7 +141,7 @@ func test_explored_tiles_persistence() -> void:
 	map_view.units[1] = test_unit
 	map_view._update_fog_of_war()
 
-	var explored_count := map_view.explored_tiles.size()
+	var explored_count: int = map_view.explored_tiles.size()
 	assert_true(explored_count > 0, "Tiles get explored")
 
 	# Move unit to new position

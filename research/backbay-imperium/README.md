@@ -53,6 +53,8 @@ mise run backbay-godot-bridge
 Open `client/` in Godot 4.2+ and run `Main.tscn`. It loads the base YAML files, instantiates `GameBridge`, and drives `apply_command` end-to-end via JSON→MessagePack helpers.
 Base YAML files loaded in the smoke project: terrain, units, buildings, techs, improvements, policies, governments.
 
+Note: `client/.godot/` and `client/bin/` are generated locally (ignored in git). CI builds the GDExtension and writes `client/bin/libbackbay_godot.*` for QA.
+
 Controls in the smoke project:
 
 - `LMB`: select unit (on unit) / move (on tile)
