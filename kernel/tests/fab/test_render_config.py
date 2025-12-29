@@ -87,25 +87,29 @@ class TestLoadLightingPreset:
             assert "rim_light" in preset
             assert preset["key_light"]["energy"] == 600
 
-    def test_load_nonexistent_preset_returns_none(self):
-        preset = load_lighting_preset("nonexistent_preset_xyz")
-        assert preset is None
+    def test_load_nonexistent_preset_raises(self):
+        with pytest.raises(FileNotFoundError):
+            load_lighting_preset("nonexistent_preset_xyz")
 
 
 class TestGateConfigWithLighting:
     """Tests for loading gate configs with new lighting/exposure settings."""
 
     def test_car_realism_config_has_lighting(self):
-        # Find the car_realism_v001.yaml
+        # Find the car_realism_v001.yaml - search upward from test location
+        test_dir = Path(__file__).parent
         config_paths = [
-            Path("../fab/gates/car_realism_v001.yaml"),
+            test_dir / "../../../fab/gates/car_realism_v001.yaml",
+            test_dir / "../../../../fab/gates/car_realism_v001.yaml",
             Path("fab/gates/car_realism_v001.yaml"),
+            Path("../fab/gates/car_realism_v001.yaml"),
         ]
 
         config_path = None
         for p in config_paths:
-            if p.exists():
-                config_path = p
+            resolved = p.resolve()
+            if resolved.exists():
+                config_path = resolved
                 break
 
         if config_path is None:

@@ -27,6 +27,20 @@ render:
     color_mode: RGBA
   threads: 4 # Pin for determinism
 
+  # Lighting configuration
+  lighting:
+    preset: car_studio
+    hdri: studio_neutral_v001
+    hdri_strength: 0.6
+    hdri_rotation_deg: 45
+
+  # Exposure settings
+  exposure: 0.0
+  exposure_bracket:
+    enabled: true
+    brackets: [-0.5, 0.0, 0.5]
+    selection_mode: best
+
 # Views configuration
 views:
   fixed:

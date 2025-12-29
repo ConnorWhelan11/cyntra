@@ -21,9 +21,14 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
+import yaml
+
 from .config import GateConfig, find_gate_config, load_gate_config
 
 logger = logging.getLogger(__name__)
+
+# Path to lighting presets
+PRESETS_DIR = Path(__file__).parent.parent.parent.parent.parent / "fab" / "lookdev" / "presets"
 
 # Path to the Blender render script (bundled with this module)
 BLENDER_SCRIPT_PATH = Path(__file__).parent / "blender_scripts" / "render_harness.py"
@@ -41,6 +46,53 @@ class RenderResult:
     errors: list[str] = field(default_factory=list)
     blender_version: str | None = None
     duration_ms: int = 0
+    exposure: float = 0.0  # EV offset used for this render
+
+
+@dataclass
+class BracketResult:
+    """Result from exposure-bracketed rendering."""
+
+    bracket_results: dict[float, RenderResult] = field(default_factory=dict)
+    best_exposure: float = 0.0
+    best_result: RenderResult | None = None
+    all_exposures: list[float] = field(default_factory=list)
+
+
+def load_lighting_preset(preset_name: str) -> dict[str, Any]:
+    """
+    Load a lighting preset from YAML file.
+
+    Args:
+        preset_name: Name of the preset (e.g., "car_studio")
+
+    Returns:
+        Preset configuration dict
+
+    Raises:
+        FileNotFoundError: If preset not found
+    """
+    # Search for preset file
+    preset_path = PRESETS_DIR / f"{preset_name}.yaml"
+
+    if not preset_path.exists():
+        # Try alternate paths
+        alt_paths = [
+            Path(f"fab/lookdev/presets/{preset_name}.yaml"),
+            Path(__file__).parent / "presets" / f"{preset_name}.yaml",
+        ]
+        for alt in alt_paths:
+            if alt.exists():
+                preset_path = alt
+                break
+        else:
+            raise FileNotFoundError(f"Lighting preset '{preset_name}' not found in {PRESETS_DIR}")
+
+    with open(preset_path) as f:
+        preset = yaml.safe_load(f)
+
+    logger.info(f"Loaded lighting preset: {preset_name}")
+    return preset
 
 
 def find_blender() -> Path | None:
@@ -109,9 +161,22 @@ def prepare_render_config(
     output_dir: Path,
     lookdev_scene: Path | None = None,
     camera_rig: Path | None = None,
+    exposure_override: float | None = None,
 ) -> dict[str, Any]:
     """Prepare configuration for Blender script."""
     render = gate_config.render
+    lighting = render.lighting
+
+    # Load lighting preset if specified
+    preset_data = None
+    if lighting.preset:
+        try:
+            preset_data = load_lighting_preset(lighting.preset)
+        except FileNotFoundError as e:
+            logger.warning(f"Lighting preset not found: {e}")
+
+    # Determine exposure value
+    exposure = exposure_override if exposure_override is not None else render.exposure
 
     return {
         "asset_path": str(asset_path.absolute()),
@@ -128,6 +193,18 @@ def prepare_render_config(
             "threads": render.threads,
             "output_format": render.output_format,
             "color_depth": render.color_depth,
+            "exposure": exposure,
+        },
+        "lighting": {
+            "preset": lighting.preset,
+            "preset_data": preset_data,
+            "key_energy": lighting.key_energy,
+            "fill_energy": lighting.fill_energy,
+            "rim_energy": lighting.rim_energy,
+            "hdri": lighting.hdri,
+            "hdri_strength": lighting.hdri_strength,
+            "hdri_rotation_deg": lighting.hdri_rotation_deg,
+            "ambient_strength": lighting.ambient_strength,
         },
         "views": (gate_config.critics.get("category", {}).params if gate_config.critics else {}),
         "gate_config_id": gate_config.gate_config_id,
@@ -315,6 +392,11 @@ def setup_render_settings(config: dict):
     # Film
     scene.render.film_transparent = False
 
+    # Exposure (applied via color management)
+    exposure = render.get("exposure", 0.0)
+    if hasattr(scene, "view_settings"):
+        scene.view_settings.exposure = exposure
+
 
 def import_asset(asset_path: str) -> list:
     """Import GLB/GLTF asset and return imported objects."""
@@ -385,30 +467,131 @@ def setup_camera(index: int, total: int, distance: float = 5.0):
     bpy.context.scene.camera = cam
 
 
-def setup_lighting():
-    """Setup basic three-point lighting."""
+def setup_lighting(config: dict = None):
+    """Setup lighting from config or defaults."""
     # Clear existing lights
     for obj in bpy.data.objects:
         if obj.type == "LIGHT":
             bpy.data.objects.remove(obj)
 
+    lighting = config.get("lighting", {}) if config else {}
+    preset_data = lighting.get("preset_data", {})
+
+    # Use preset data if available, otherwise use inline config or defaults
+    if preset_data:
+        key_cfg = preset_data.get("key_light", {})
+        fill_cfg = preset_data.get("fill_light", {})
+        rim_cfg = preset_data.get("rim_light", {})
+    else:
+        key_cfg = {}
+        fill_cfg = {}
+        rim_cfg = {}
+
     # Key light
-    bpy.ops.object.light_add(type="AREA", location=(3, -3, 5))
+    key_loc = key_cfg.get("location", [3, -3, 5])
+    bpy.ops.object.light_add(type="AREA", location=tuple(key_loc))
     key = bpy.context.object
-    key.data.energy = 500
-    key.data.size = 2
+    key.name = "Key_Light"
+    key.data.energy = lighting.get("key_energy") or key_cfg.get("energy", 500)
+    key.data.size = key_cfg.get("size", 2)
+    key_color = key_cfg.get("color", [1.0, 1.0, 1.0])
+    key.data.color = tuple(key_color[:3])
 
     # Fill light
-    bpy.ops.object.light_add(type="AREA", location=(-3, -2, 3))
+    fill_loc = fill_cfg.get("location", [-3, -2, 3])
+    bpy.ops.object.light_add(type="AREA", location=tuple(fill_loc))
     fill = bpy.context.object
-    fill.data.energy = 200
-    fill.data.size = 3
+    fill.name = "Fill_Light"
+    fill.data.energy = lighting.get("fill_energy") or fill_cfg.get("energy", 200)
+    fill.data.size = fill_cfg.get("size", 3)
+    fill_color = fill_cfg.get("color", [1.0, 1.0, 1.0])
+    fill.data.color = tuple(fill_color[:3])
 
     # Rim light
-    bpy.ops.object.light_add(type="AREA", location=(0, 4, 4))
+    rim_loc = rim_cfg.get("location", [0, 4, 4])
+    bpy.ops.object.light_add(type="AREA", location=tuple(rim_loc))
     rim = bpy.context.object
-    rim.data.energy = 300
-    rim.data.size = 2
+    rim.name = "Rim_Light"
+    rim.data.energy = lighting.get("rim_energy") or rim_cfg.get("energy", 300)
+    rim.data.size = rim_cfg.get("size", 2)
+    rim_color = rim_cfg.get("color", [1.0, 1.0, 1.0])
+    rim.data.color = tuple(rim_color[:3])
+
+    # Add accent lights from preset
+    for i, accent in enumerate(preset_data.get("accent_lights", [])):
+        accent_loc = accent.get("location", [0, 0, 3])
+        bpy.ops.object.light_add(type="AREA", location=tuple(accent_loc))
+        accent_light = bpy.context.object
+        accent_light.name = f"Accent_Light_{i}"
+        accent_light.data.energy = accent.get("energy", 100)
+        accent_light.data.size = accent.get("size", 1)
+        accent_color = accent.get("color", [1.0, 1.0, 1.0])
+        accent_light.data.color = tuple(accent_color[:3])
+
+    # Setup HDRI environment if specified
+    hdri_name = lighting.get("hdri") or preset_data.get("hdri")
+    if hdri_name:
+        setup_hdri_environment(
+            hdri_name,
+            strength=lighting.get("hdri_strength", preset_data.get("hdri_strength", 0.5)),
+            rotation=lighting.get("hdri_rotation_deg", preset_data.get("hdri_rotation_deg", 0.0)),
+        )
+
+
+def setup_hdri_environment(hdri_name: str, strength: float = 0.5, rotation: float = 0.0):
+    """Setup HDRI environment lighting."""
+    import os
+
+    # Find HDRI file
+    hdri_paths = [
+        os.path.join(os.path.dirname(__file__), "..", "..", "..", "..", "fab", "lookdev", "hdris", f"{hdri_name}.hdr"),
+        os.path.join(os.path.dirname(__file__), "..", "..", "..", "..", "fab", "lookdev", "hdris", f"{hdri_name}.exr"),
+        f"/tmp/hdris/{hdri_name}.hdr",
+    ]
+
+    hdri_path = None
+    for path in hdri_paths:
+        if os.path.exists(path):
+            hdri_path = path
+            break
+
+    if not hdri_path:
+        print(f"HDRI not found: {hdri_name}")
+        return
+
+    # Setup world nodes
+    world = bpy.context.scene.world
+    if not world:
+        world = bpy.data.worlds.new("World")
+        bpy.context.scene.world = world
+
+    world.use_nodes = True
+    nodes = world.node_tree.nodes
+    links = world.node_tree.links
+
+    nodes.clear()
+
+    # Create nodes
+    env_tex = nodes.new("ShaderNodeTexEnvironment")
+    env_tex.image = bpy.data.images.load(hdri_path)
+
+    mapping = nodes.new("ShaderNodeMapping")
+    mapping.inputs["Rotation"].default_value[2] = math.radians(rotation)
+
+    tex_coord = nodes.new("ShaderNodeTexCoord")
+
+    background = nodes.new("ShaderNodeBackground")
+    background.inputs["Strength"].default_value = strength
+
+    output = nodes.new("ShaderNodeOutputWorld")
+
+    # Link nodes
+    links.new(tex_coord.outputs["Generated"], mapping.inputs["Vector"])
+    links.new(mapping.outputs["Vector"], env_tex.inputs["Vector"])
+    links.new(env_tex.outputs["Color"], background.inputs["Color"])
+    links.new(background.outputs["Background"], output.inputs["Surface"])
+
+    print(f"HDRI loaded: {hdri_name} (strength={strength}, rotation={rotation})")
 
 
 def setup_ground():
@@ -534,7 +717,7 @@ def main():
 
     # Setup scene
     setup_render_settings(config)
-    setup_lighting()
+    setup_lighting(config)
     setup_ground()
 
     # Import and normalize asset
@@ -614,11 +797,135 @@ def run_render_harness(
     render_config = prepare_render_config(config, asset_path, output_dir, lookdev_scene, camera_rig)
 
     # Run Blender
-    return run_blender_render(
+    result = run_blender_render(
         blender_path=blender_path,
         asset_path=asset_path,
         output_dir=output_dir,
         render_config=render_config,
+    )
+    result.exposure = config.render.exposure
+    return result
+
+
+def render_with_brackets(
+    asset_path: Path,
+    config: GateConfig,
+    output_dir: Path,
+    lookdev_scene: Path | None = None,
+    camera_rig: Path | None = None,
+    blender_path: Path | None = None,
+    critic_func: callable = None,
+) -> BracketResult:
+    """
+    Render asset at multiple exposure levels and select best based on critic scores.
+
+    This helps avoid false negatives from clipped highlights/shadows by rendering
+    at different exposures and evaluating each with critics.
+
+    Args:
+        asset_path: Path to asset file (.glb)
+        config: Gate configuration (must have exposure_bracket.enabled=True)
+        output_dir: Base output directory
+        lookdev_scene: Optional lookdev scene file
+        camera_rig: Optional camera rig JSON
+        blender_path: Optional Blender executable path
+        critic_func: Optional function(RenderResult) -> float to score renders
+
+    Returns:
+        BracketResult with all renders and best selection
+    """
+    bracket_config = config.render.exposure_bracket
+
+    if not bracket_config.enabled:
+        # Single render at default exposure
+        result = run_render_harness(
+            asset_path=asset_path,
+            config=config,
+            output_dir=output_dir,
+            lookdev_scene=lookdev_scene,
+            camera_rig=camera_rig,
+            blender_path=blender_path,
+        )
+        return BracketResult(
+            bracket_results={config.render.exposure: result},
+            best_exposure=config.render.exposure,
+            best_result=result,
+            all_exposures=[config.render.exposure],
+        )
+
+    brackets = bracket_config.brackets
+    logger.info(f"Rendering with exposure brackets: {brackets}")
+
+    bracket_results: dict[float, RenderResult] = {}
+    scores: dict[float, float] = {}
+
+    for exposure in brackets:
+        # Create exposure-specific output directory
+        exp_suffix = f"exp_{exposure:+.1f}".replace(".", "_").replace("+", "p").replace("-", "m")
+        exp_output_dir = output_dir / exp_suffix
+
+        # Prepare config with exposure override
+        render_config = prepare_render_config(
+            config,
+            asset_path,
+            exp_output_dir,
+            lookdev_scene,
+            camera_rig,
+            exposure_override=exposure,
+        )
+
+        # Find Blender if needed
+        if blender_path is None:
+            blender_path = find_blender()
+
+        if blender_path is None:
+            logger.error("Blender not found")
+            return BracketResult(
+                bracket_results={},
+                best_exposure=0.0,
+                best_result=None,
+                all_exposures=list(brackets),
+            )
+
+        # Render
+        result = run_blender_render(
+            blender_path=blender_path,
+            asset_path=asset_path,
+            output_dir=exp_output_dir,
+            render_config=render_config,
+        )
+        result.exposure = exposure
+        bracket_results[exposure] = result
+
+        # Score if critic function provided
+        if critic_func and result.success:
+            try:
+                score = critic_func(result)
+                scores[exposure] = score
+                logger.info(f"Exposure {exposure:+.1f}: score={score:.3f}")
+            except Exception as e:
+                logger.warning(f"Critic failed for exposure {exposure}: {e}")
+                scores[exposure] = 0.0
+        elif result.success:
+            # Default scoring: prefer neutral exposure
+            scores[exposure] = 1.0 - abs(exposure) * 0.1
+
+    # Select best result
+    if scores:
+        best_exposure = max(scores, key=lambda e: scores[e])
+    else:
+        # Fallback to neutral exposure
+        best_exposure = 0.0 if 0.0 in bracket_results else list(bracket_results.keys())[0]
+
+    best_result = bracket_results.get(best_exposure)
+
+    logger.info(f"Best exposure: {best_exposure:+.1f}")
+
+    return BracketResult(
+        bracket_results=bracket_results,
+        best_exposure=best_exposure,
+        best_result=best_result,
+        all_exposures=list(brackets),
     )
 
 
@@ -669,6 +976,25 @@ def main(args: list[str] = None) -> int:
     )
 
     parser.add_argument(
+        "--lighting-preset",
+        type=str,
+        help="Lighting preset name (e.g., car_studio, furniture_showroom)",
+    )
+
+    parser.add_argument(
+        "--exposure",
+        type=float,
+        default=None,
+        help="Exposure offset in EV (default: from config)",
+    )
+
+    parser.add_argument(
+        "--bracket",
+        action="store_true",
+        help="Enable exposure bracketing (renders at -0.5, 0, +0.5 EV)",
+    )
+
+    parser.add_argument(
         "-v",
         "--verbose",
         action="store_true",
@@ -701,15 +1027,37 @@ def main(args: list[str] = None) -> int:
         logger.error(f"Config not found: {e}")
         return 1
 
-    # Run render harness
-    result = run_render_harness(
-        asset_path=parsed.asset,
-        config=gate_config,
-        output_dir=parsed.out,
-        lookdev_scene=parsed.lookdev,
-        camera_rig=parsed.camera_rig,
-        blender_path=parsed.blender,
-    )
+    # Apply CLI overrides
+    if parsed.lighting_preset:
+        gate_config.render.lighting.preset = parsed.lighting_preset
+    if parsed.exposure is not None:
+        gate_config.render.exposure = parsed.exposure
+    if parsed.bracket:
+        gate_config.render.exposure_bracket.enabled = True
+
+    # Run render harness (with bracketing if enabled)
+    if gate_config.render.exposure_bracket.enabled:
+        bracket_result = render_with_brackets(
+            asset_path=parsed.asset,
+            config=gate_config,
+            output_dir=parsed.out,
+            lookdev_scene=parsed.lookdev,
+            camera_rig=parsed.camera_rig,
+            blender_path=parsed.blender,
+        )
+        result = bracket_result.best_result
+        if result is None:
+            logger.error("All bracket renders failed")
+            return 1
+    else:
+        result = run_render_harness(
+            asset_path=parsed.asset,
+            config=gate_config,
+            output_dir=parsed.out,
+            lookdev_scene=parsed.lookdev,
+            camera_rig=parsed.camera_rig,
+            blender_path=parsed.blender,
+        )
 
     # Output result
     if parsed.json:
@@ -721,6 +1069,7 @@ def main(args: list[str] = None) -> int:
             "errors": result.errors,
             "blender_version": result.blender_version,
             "duration_ms": result.duration_ms,
+            "exposure": result.exposure,
         }
         print(json.dumps(output, indent=2))
     else:

@@ -12,6 +12,29 @@ import yaml
 
 
 @dataclass
+class LightingConfig:
+    """Lighting setup configuration."""
+
+    preset: str | None = None  # e.g., "car_studio", "furniture_showroom"
+    key_energy: float | None = None
+    fill_energy: float | None = None
+    rim_energy: float | None = None
+    hdri: str | None = None  # e.g., "studio_neutral_v001"
+    hdri_strength: float = 0.5
+    hdri_rotation_deg: float = 0.0
+    ambient_strength: float = 0.1
+
+
+@dataclass
+class ExposureBracketConfig:
+    """Exposure bracketing configuration for robust evaluation."""
+
+    enabled: bool = False
+    brackets: tuple[float, ...] = (-0.5, 0.0, 0.5)  # EV offsets
+    selection_mode: str = "best"  # "best" or "all"
+
+
+@dataclass
 class RenderConfig:
     """Render settings for determinism."""
 
@@ -24,6 +47,13 @@ class RenderConfig:
     threads: int = 4
     output_format: str = "PNG"
     color_depth: int = 16
+
+    # Lighting configuration
+    lighting: LightingConfig = field(default_factory=LightingConfig)
+
+    # Exposure settings
+    exposure: float = 0.0  # EV offset from default
+    exposure_bracket: ExposureBracketConfig = field(default_factory=ExposureBracketConfig)
 
 
 @dataclass
@@ -115,6 +145,29 @@ def load_gate_config(config_path: Path) -> GateConfig:
 
     # Parse render config
     render_raw = raw.get("render", {})
+
+    # Parse lighting config
+    lighting_raw = render_raw.get("lighting", {})
+    lighting = LightingConfig(
+        preset=lighting_raw.get("preset"),
+        key_energy=lighting_raw.get("key_energy"),
+        fill_energy=lighting_raw.get("fill_energy"),
+        rim_energy=lighting_raw.get("rim_energy"),
+        hdri=lighting_raw.get("hdri"),
+        hdri_strength=lighting_raw.get("hdri_strength", 0.5),
+        hdri_rotation_deg=lighting_raw.get("hdri_rotation_deg", 0.0),
+        ambient_strength=lighting_raw.get("ambient_strength", 0.1),
+    )
+
+    # Parse exposure bracket config
+    bracket_raw = render_raw.get("exposure_bracket", {})
+    brackets = bracket_raw.get("brackets", [-0.5, 0.0, 0.5])
+    exposure_bracket = ExposureBracketConfig(
+        enabled=bracket_raw.get("enabled", False),
+        brackets=tuple(brackets) if isinstance(brackets, list) else brackets,
+        selection_mode=bracket_raw.get("selection_mode", "best"),
+    )
+
     render = RenderConfig(
         engine=render_raw.get("engine", "CYCLES"),
         device=render_raw.get("device", "CPU"),
@@ -125,6 +178,9 @@ def load_gate_config(config_path: Path) -> GateConfig:
         threads=render_raw.get("threads", 4),
         output_format=render_raw.get("output", {}).get("format", "PNG"),
         color_depth=render_raw.get("output", {}).get("color_depth", 16),
+        lighting=lighting,
+        exposure=render_raw.get("exposure", 0.0),
+        exposure_bracket=exposure_bracket,
     )
 
     # Parse critics config

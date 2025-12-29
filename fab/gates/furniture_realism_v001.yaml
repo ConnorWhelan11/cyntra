@@ -19,6 +19,20 @@ render:
   denoise: false
   film_transparent: false
 
+  # Lighting configuration
+  lighting:
+    preset: furniture_showroom
+    hdri: studio_neutral_v001
+    hdri_strength: 0.4
+    hdri_rotation_deg: 0
+
+  # Exposure settings
+  exposure: 0.0
+  exposure_bracket:
+    enabled: false
+    brackets: [-0.5, 0.0, 0.5]
+    selection_mode: best
+
 # Critics configuration
 critics:
   # Category correctness - detect furniture vs blobs
