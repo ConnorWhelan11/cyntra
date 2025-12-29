@@ -2,15 +2,21 @@ extends Node
 class_name LocalGame
 
 @onready var client: GameClient = $GameClient
-@onready var map_view: MapView = $MapView
+@onready var map_view: MapViewMultiplayer = $MapView
 @onready var hud: GameHUD = $GameHUD
 @onready var research_panel: ResearchPanel = $ResearchPanel
 @onready var city_dialog: CityNameDialog = $CityNameDialog
 
 var _pending_found_city_unit_id := -1
+var _terrain_rules_by_id: Dictionary = {}  # terrain_id -> RulesCatalogTerrain dict
 var _unit_rules_by_id: Dictionary = {}     # unit_type_id -> RulesCatalogUnitType dict
 var _building_rules_by_id: Dictionary = {} # building_id -> RulesCatalogBuilding dict
 var _latest_promises: Array = []
+var _last_tile_tooltip_hex: Vector2i = Vector2i(-999, -999)
+var _tile_tooltip_text: String = ""
+var _last_path_preview_unit_id := -1
+var _last_path_preview_dest := Vector2i(-999, -999)
+var _last_path_preview: Dictionary = {}
 
 
 func _ready() -> void:
@@ -19,13 +25,16 @@ func _ready() -> void:
 	client.info_message.connect(_on_info_message)
 
 	map_view.unit_selected.connect(_on_unit_selected)
-	map_view.city_selected.connect(_on_city_selected)
-	map_view.end_turn_requested.connect(_on_end_turn_pressed)
+	map_view.tile_clicked.connect(_on_tile_clicked)
+	map_view.unit_action_requested.connect(_on_unit_action_requested)
+	map_view.city_action_requested.connect(_on_city_action_requested)
+	map_view.set_use_authoritative_visibility(true)
 
 	hud.end_turn_pressed.connect(_on_end_turn_pressed)
 	hud.menu_pressed.connect(_on_menu_pressed)
 	hud.found_city_requested.connect(_on_found_city_requested)
 	hud.production_selected.connect(_on_production_selected)
+	hud.cancel_production_requested.connect(_on_cancel_production_requested)
 	hud.research_button_pressed.connect(_on_research_button_pressed)
 	hud.city_panel_close_requested.connect(_on_city_panel_closed)
 	hud.promise_selected.connect(_on_promise_selected)
@@ -41,10 +50,26 @@ func _ready() -> void:
 	client.new_game(10, 2)
 
 
+func _process(_delta: float) -> void:
+	_update_tile_tooltip()
+
+
 func _on_snapshot_loaded() -> void:
 	hud.set_rules_names(client.rules_names)
 	if hud.has_method("set_rules_catalog"):
 		hud.set_rules_catalog(client.rules_catalog)
+	if map_view.has_method("set_rules_catalog"):
+		map_view.set_rules_catalog(client.rules_catalog)
+	if map_view.has_method("set_unit_type_names"):
+		var unit_types = client.rules_names.get("unit_types", [])
+		map_view.set_unit_type_names(unit_types if typeof(unit_types) == TYPE_ARRAY else [])
+	if map_view.has_method("set_improvement_names"):
+		var impr_names = client.rules_names.get("improvements", [])
+		map_view.set_improvement_names(impr_names if typeof(impr_names) == TYPE_ARRAY else [])
+	map_view.set_my_player_id(client.current_player)
+	map_view.load_snapshot(client.snapshot, true)
+	map_view.set_authoritative_visible_tiles(client.get_visible_tiles(client.current_player))
+	_auto_select_first_unit()
 	_rebuild_rules_indexes()
 	_refresh_top_bar()
 	_refresh_promises()
@@ -58,12 +83,23 @@ func _on_snapshot_loaded() -> void:
 
 
 func _rebuild_rules_indexes() -> void:
+	_terrain_rules_by_id.clear()
 	_unit_rules_by_id.clear()
 	_building_rules_by_id.clear()
 
 	var catalog: Dictionary = client.rules_catalog
 	if catalog.is_empty():
 		return
+
+	var terrains = catalog.get("terrains", [])
+	if typeof(terrains) == TYPE_ARRAY:
+		for t in terrains:
+			if typeof(t) != TYPE_DICTIONARY:
+				continue
+			var td: Dictionary = t
+			var id = _parse_runtime_id(td.get("id", -1))
+			if id >= 0:
+				_terrain_rules_by_id[id] = td
 
 	var unit_types = catalog.get("unit_types", [])
 	if typeof(unit_types) == TYPE_ARRAY:
@@ -87,6 +123,12 @@ func _rebuild_rules_indexes() -> void:
 
 
 func _on_events_received(_events: Array) -> void:
+	map_view.set_my_player_id(client.current_player)
+	map_view.load_snapshot(client.snapshot, false)
+	map_view.apply_state_deltas(_events)
+	if _events_contains_turn_started(_events):
+		map_view.set_authoritative_visible_tiles(client.get_visible_tiles(client.current_player))
+
 	_refresh_top_bar()
 	_refresh_promises()
 	hud.update_minimap(client.snapshot, client.current_player)
@@ -97,6 +139,7 @@ func _on_events_received(_events: Array) -> void:
 		_refresh_city_panel(map_view.selected_city_id)
 	elif map_view.selected_unit_id >= 0:
 		_refresh_unit_panel(map_view.selected_unit_id)
+		_sync_unit_overlays(map_view.selected_unit_id)
 	else:
 		hud.hide_city_panel()
 		hud.hide_unit_panel()
@@ -181,6 +224,95 @@ func _refresh_top_bar() -> void:
 	hud.set_player_resources(gold, research_name, research_progress, research_total)
 
 
+func _update_tile_tooltip() -> void:
+	# City lens tooltips: only show while a city is selected (so yields are explainable, not noisy).
+	if map_view.selected_city_id < 0:
+		_last_tile_tooltip_hex = Vector2i(-999, -999)
+		_tile_tooltip_text = ""
+		hud.hide_tooltip()
+		return
+
+	var hex: Vector2i = map_view.hovered_hex
+	if hex == Vector2i(-999, -999):
+		hud.hide_tooltip()
+		return
+
+	if not map_view.is_tile_visible(hex):
+		hud.hide_tooltip()
+		return
+
+	if hex != _last_tile_tooltip_hex:
+		_last_tile_tooltip_hex = hex
+		var ui: Dictionary = client.get_tile_ui(hex)
+		_tile_tooltip_text = _format_tile_ui_tooltip(ui)
+
+	if _tile_tooltip_text.is_empty():
+		hud.hide_tooltip()
+		return
+
+	hud.show_tooltip(_tile_tooltip_text, get_viewport().get_mouse_position())
+
+
+func _format_tile_ui_tooltip(tile_ui: Dictionary) -> String:
+	if tile_ui.is_empty():
+		return ""
+
+	var lines: Array[String] = []
+	lines.append(String(tile_ui.get("terrain_name", "Tile")))
+
+	var terrain_id := _parse_runtime_id(tile_ui.get("terrain_id", -1))
+	var trules = _terrain_rules_by_id.get(terrain_id, {})
+	if typeof(trules) == TYPE_DICTIONARY and not trules.is_empty():
+		var move_cost: int = max(1, int(trules.get("move_cost", 1)))
+		var defense: int = int(trules.get("defense_bonus", 0))
+		lines.append("Move %d  Defense %s%d%%" % [move_cost, "+" if defense > 0 else "", defense])
+
+	var total_yields = tile_ui.get("total_yields", {})
+	if typeof(total_yields) == TYPE_DICTIONARY:
+		var yd: Dictionary = total_yields
+		var parts: Array[String] = []
+		parts.append("F%d" % int(yd.get("food", 0)))
+		parts.append("P%d" % int(yd.get("production", 0)))
+		parts.append("G%d" % int(yd.get("gold", 0)))
+		var sci = int(yd.get("science", 0))
+		var cul = int(yd.get("culture", 0))
+		if sci != 0:
+			parts.append("S%d" % sci)
+		if cul != 0:
+			parts.append("C%d" % cul)
+		lines.append("Yields: %s" % " ".join(parts))
+
+	var improvement = tile_ui.get("improvement", null)
+	if typeof(improvement) == TYPE_DICTIONARY:
+		var impr: Dictionary = improvement
+		var label: String = String(impr.get("tier_name", impr.get("name", "Improvement")))
+		if bool(impr.get("pillaged", false)):
+			label += " (pillaged)"
+		lines.append(label)
+
+		var maturation = impr.get("maturation", null)
+		if typeof(maturation) == TYPE_DICTIONARY:
+			var m: Dictionary = maturation
+			lines.append("Matures: %d%% (%d/%d)" % [int(m.get("progress_pct", 0)), int(m.get("worked_turns", 0)), int(m.get("turns_needed", 0))])
+
+	var breakdown = tile_ui.get("yield_breakdown", [])
+	if typeof(breakdown) == TYPE_ARRAY and not breakdown.is_empty():
+		lines.append("")
+		lines.append("Breakdown:")
+		for raw in breakdown:
+			if typeof(raw) != TYPE_DICTIONARY:
+				continue
+			var bd: Dictionary = raw
+			lines.append("- %s: F%d P%d G%d" % [
+				String(bd.get("source", "")),
+				int(bd.get("food", 0)),
+				int(bd.get("production", 0)),
+				int(bd.get("gold", 0)),
+			])
+
+	return "\n".join(lines)
+
+
 func _player_snapshot(player_id: int) -> Dictionary:
 	var players = client.snapshot.get("players", [])
 	if typeof(players) != TYPE_ARRAY:
@@ -197,6 +329,7 @@ func _player_snapshot(player_id: int) -> Dictionary:
 
 func _on_unit_selected(unit_id: int) -> void:
 	_refresh_unit_panel(unit_id)
+	_sync_unit_overlays(unit_id)
 
 
 func _refresh_unit_panel(unit_id: int) -> void:
@@ -209,6 +342,178 @@ func _refresh_unit_panel(unit_id: int) -> void:
 
 func _on_city_selected(city_id: int) -> void:
 	_refresh_city_panel(city_id)
+
+func _on_city_action_requested(city_id: int, action: String) -> void:
+	match action:
+		"select":
+			_on_city_selected(city_id)
+		_:
+			pass
+
+func _on_tile_clicked(hex_pos: Vector2i, button: int) -> void:
+	if button != MOUSE_BUTTON_LEFT:
+		return
+
+	var md: Dictionary = client.snapshot.get("map", {})
+	var width := int(md.get("width", 0))
+	var height := int(md.get("height", 0))
+	if width <= 0 or height <= 0:
+		return
+	if hex_pos.x < 0 or hex_pos.x >= width or hex_pos.y < 0 or hex_pos.y >= height:
+		return
+	var tiles = md.get("tiles", [])
+	if typeof(tiles) != TYPE_ARRAY:
+		return
+	var idx := hex_pos.y * width + hex_pos.x
+	if idx < 0 or idx >= tiles.size():
+		return
+	var tile = tiles[idx]
+	if typeof(tile) != TYPE_DICTIONARY:
+		return
+	var td: Dictionary = tile
+	var imp = td.get("improvement", null)
+	if typeof(imp) != TYPE_DICTIONARY:
+		var terrain_id := _parse_runtime_id(td.get("terrain", -1))
+		if terrain_id >= 0:
+			hud.show_terrain_details(terrain_id)
+		return
+	var impd: Dictionary = imp
+	var imp_id := _parse_runtime_id(impd.get("id", -1))
+	if imp_id < 0:
+		return
+	hud.show_improvement_details(imp_id, impd)
+
+func _on_unit_action_requested(unit_id: int, action: String, target: Variant) -> void:
+	var hex_target := Vector2i(-999, -999)
+	if typeof(target) == TYPE_VECTOR2I:
+		hex_target = target
+	elif typeof(target) == TYPE_DICTIONARY:
+		var d: Dictionary = target
+		hex_target = Vector2i(int(d.get("q", 0)), int(d.get("r", 0)))
+
+	match action:
+		"end_turn":
+			_on_end_turn_pressed()
+		"path_preview":
+			if hex_target.x < 0:
+				return
+			var preview := client.get_path_preview(unit_id, hex_target)
+			if preview.is_empty():
+				return
+			_last_path_preview_unit_id = unit_id
+			_last_path_preview_dest = hex_target
+			_last_path_preview = preview
+			map_view.set_path_preview(
+				preview.get("full_path", []),
+				preview.get("this_turn_path", []),
+				preview.get("stop_at", Vector2i(-999, -999))
+			)
+		"move":
+			if hex_target.x < 0:
+				return
+			var path := _path_for_destination(unit_id, hex_target)
+			if path.is_empty():
+				return
+			client.move_unit(unit_id, path)
+		"goto":
+			if hex_target.x < 0:
+				return
+			var path := _path_for_destination(unit_id, hex_target)
+			if path.is_empty():
+				return
+			client.set_goto_orders(unit_id, path)
+		"attack":
+			if hex_target.x < 0:
+				return
+			var target_id := _unit_at_hex(hex_target, -1)
+			if target_id < 0:
+				return
+			client.attack_unit(unit_id, target_id)
+		"cancel_orders":
+			client.cancel_orders(unit_id)
+		"fortify":
+			_on_fortify_requested(unit_id)
+		"found_city":
+			_on_found_city_requested()
+		_:
+			pass
+
+func _path_for_destination(unit_id: int, dest: Vector2i) -> Array[Vector2i]:
+	var preview: Dictionary = {}
+	if unit_id == _last_path_preview_unit_id and dest == _last_path_preview_dest:
+		preview = _last_path_preview
+	else:
+		preview = client.get_path_preview(unit_id, dest)
+
+	if preview.is_empty():
+		return []
+
+	var raw_full = preview.get("full_path", [])
+	if typeof(raw_full) != TYPE_ARRAY:
+		return []
+
+	var out: Array[Vector2i] = []
+	for h in raw_full:
+		if typeof(h) == TYPE_VECTOR2I:
+			out.append(h)
+		elif typeof(h) == TYPE_DICTIONARY:
+			out.append(Vector2i(int(h.get("q", 0)), int(h.get("r", 0))))
+	return out
+
+func _unit_at_hex(hex: Vector2i, owner_filter: int = -1) -> int:
+	for uid in client.units.keys():
+		var u: Dictionary = client.units[uid]
+		if owner_filter >= 0 and int(u.get("owner", -1)) != owner_filter:
+			continue
+		var pos_data = u.get("pos", {})
+		if typeof(pos_data) != TYPE_DICTIONARY:
+			continue
+		var pos := Vector2i(int(pos_data.get("q", -999)), int(pos_data.get("r", -999)))
+		if pos == hex:
+			return int(uid)
+	return -1
+
+func _sync_unit_overlays(unit_id: int) -> void:
+	if not client.units.has(unit_id):
+		map_view.set_movement_range([])
+		map_view.set_enemy_zoc([])
+		return
+
+	map_view.set_movement_range(client.get_movement_range(unit_id))
+	map_view.set_enemy_zoc(client.get_enemy_zoc(client.current_player))
+
+func _events_contains_turn_started(events: Array) -> bool:
+	for raw in events:
+		if typeof(raw) != TYPE_DICTIONARY:
+			continue
+		var e: Dictionary = raw
+		if String(e.get("type", "")) == "TurnStarted":
+			return true
+	return false
+
+func _auto_select_first_unit() -> void:
+	if map_view.get_selected_unit_id() >= 0 or map_view.get_selected_city_id() >= 0:
+		return
+	for uid in client.units.keys():
+		var u: Dictionary = client.units[uid]
+		if int(u.get("owner", -1)) != client.current_player:
+			continue
+		map_view.select_unit(int(uid))
+		_center_map_on_unit(int(uid))
+		return
+
+func _center_map_on_unit(unit_id: int) -> void:
+	var u = client.units.get(unit_id, null)
+	if typeof(u) != TYPE_DICTIONARY:
+		return
+	var ud: Dictionary = u
+	var pos_data = ud.get("pos", {})
+	if typeof(pos_data) != TYPE_DICTIONARY:
+		return
+	var hex := Vector2i(int(pos_data.get("q", -999)), int(pos_data.get("r", -999)))
+	if hex.x < 0:
+		return
+	map_view.center_on_hex(hex)
 
 
 func _refresh_city_panel(city_id: int) -> void:
@@ -334,6 +639,14 @@ func _on_production_selected(item_type: String, item_id: int) -> void:
 	if city_id < 0:
 		return
 	client.set_production(city_id, item_type, item_id)
+	_refresh_city_panel(city_id)
+
+
+func _on_cancel_production_requested() -> void:
+	var city_id := map_view.selected_city_id
+	if city_id < 0:
+		return
+	client.cancel_production(city_id)
 	_refresh_city_panel(city_id)
 
 func _on_fortify_requested(unit_id: int) -> void:

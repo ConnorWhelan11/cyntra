@@ -34,8 +34,8 @@ shrine:
   tech_required: null
   effects:
     - type: "YieldBonus"
-      yield_type: "Faith"
-      value: 1
+      yield_type: "Culture"
+      value: 2
   requirements: []
 
 barracks:
@@ -45,7 +45,7 @@ barracks:
   admin: 0
   tech_required: "bronze_working"
   effects:
-    - type: "UnitXPBonus"
+    - type: "VeteranBonus"
       value: 15
   requirements: []
 
@@ -71,7 +71,7 @@ courthouse:
   admin: 1
   tech_required: "writing"
   effects:
-    - type: "ReduceUnhappiness"
+    - type: "InstabilityReduction"
       value: 2
   requirements: []
 
@@ -82,8 +82,8 @@ walls:
   admin: 0
   tech_required: "masonry"
   effects:
-    - type: "DefenseBonus"
-      value: 50
+    - type: "CityDefenseBp"
+      value_bp: 5000
   requirements: []
 
 market:
@@ -93,8 +93,9 @@ market:
   admin: 0
   tech_required: "currency"
   effects:
-    - type: "GoldPercentBonus"
-      value: 25
+    - type: "YieldPercentBp"
+      yield_type: "Gold"
+      value_bp: 2500
   requirements: []
 
 water_mill:
@@ -107,8 +108,7 @@ water_mill:
     - type: "YieldBonus"
       yield_type: "Production"
       value: 2
-  requirements:
-    - type: "NextToRiver"
+  requirements: []
 
 # ============================================================================
 # MEDIEVAL ERA BUILDINGS
@@ -121,11 +121,10 @@ university:
   admin: 0
   tech_required: "mathematics"
   effects:
-    - type: "SciencePercentBonus"
-      value: 33
-  requirements:
-    - type: "HasBuilding"
-      building: "library"
+    - type: "YieldPercentBp"
+      yield_type: "Science"
+      value_bp: 3300
+  requirements: []
 
 workshop:
   name: "Workshop"
@@ -134,6 +133,7 @@ workshop:
   admin: 0
   tech_required: "iron_working"
   effects:
-    - type: "ProductionPercentBonus"
-      value: 20
+    - type: "YieldPercentBp"
+      yield_type: "Production"
+      value_bp: 2000
   requirements: []

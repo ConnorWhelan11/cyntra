@@ -4,6 +4,8 @@ class_name MapViewMultiplayer
 ## Enhanced MapView for both local and multiplayer games.
 ## Renders terrain tiles, units, cities, and handles input.
 
+# RulesPalette and TextureLoader are global classes (class_name), no preload needed
+
 signal unit_selected(unit_id: int)
 signal tile_clicked(hex: Vector2i, button: int)
 signal unit_action_requested(unit_id: int, action: String, target: Variant)
@@ -73,6 +75,11 @@ var current_player := 0
 var my_player_id := 0
 var _unit_type_names: Array = []
 var _improvement_names: Array = []
+var _palette: RulesPalette = RulesPalette.new()
+var _tex_loader: TextureLoader = TextureLoader.new()
+
+# Rendering mode: "sprites" uses terrain textures, "colors" uses polygon fills
+var render_mode := "sprites"
 
 # Selection state
 var selected_unit_id: int = -1
@@ -213,6 +220,11 @@ func _unhandled_input(event: InputEvent) -> void:
 				fog_enabled = not fog_enabled
 				queue_redraw()
 				get_viewport().set_input_as_handled()
+			KEY_T:
+				# Toggle texture/color rendering
+				render_mode = "colors" if render_mode == "sprites" else "sprites"
+				queue_redraw()
+				get_viewport().set_input_as_handled()
 			KEY_HOME:
 				_center_on_selection()
 				get_viewport().set_input_as_handled()
@@ -286,8 +298,10 @@ func _select_city(city_id: int) -> void:
 	selected_city_id = city_id
 	selected_unit_id = -1
 	movement_range.clear()
+	enemy_zoc_tiles.clear()
 	path_preview_full.clear()
 	path_preview_this_turn.clear()
+	path_preview_stop_at = Vector2i(-999, -999)
 	city_action_requested.emit(city_id, "select")
 	queue_redraw()
 
@@ -296,8 +310,10 @@ func _deselect_all() -> void:
 	selected_unit_id = -1
 	selected_city_id = -1
 	movement_range.clear()
+	enemy_zoc_tiles.clear()
 	path_preview_full.clear()
 	path_preview_this_turn.clear()
+	path_preview_stop_at = Vector2i(-999, -999)
 	queue_redraw()
 
 
@@ -402,24 +418,42 @@ func load_snapshot(snapshot: Dictionary, full_resync: bool = false) -> void:
 		remembered_units.clear()
 		remembered_cities.clear()
 
-		for idx in range(tiles.size()):
-			var tile_data: Dictionary = {}
-			if typeof(tiles[idx]) == TYPE_DICTIONARY:
-				tile_data = tiles[idx]
-
+		var has_fog_sentinel := false
+		for raw_tile in tiles:
+			if typeof(raw_tile) != TYPE_DICTIONARY:
+				continue
+			var td: Dictionary = raw_tile
 			var terrain_id := 0
-			var terrain_data = tile_data.get("terrain", {})
+			var terrain_data = td.get("terrain", {})
 			if typeof(terrain_data) == TYPE_DICTIONARY:
 				terrain_id = int(terrain_data.get("raw", 0))
 			elif typeof(terrain_data) == TYPE_INT or typeof(terrain_data) == TYPE_FLOAT:
 				terrain_id = int(terrain_data)
-
 			if terrain_id == UNKNOWN_TERRAIN_RAW:
-				continue
+				has_fog_sentinel = true
+				break
 
-			var q := idx % map_width
-			var r := int(idx / map_width)
-			explored_tiles[Vector2i(q, r)] = true
+		# Multiplayer snapshots use UNKNOWN_TERRAIN_RAW for unexplored; local snapshots do not.
+		# Only seed explored tiles from terrain data when that sentinel is present.
+		if has_fog_sentinel:
+			for idx in range(tiles.size()):
+				var tile_data: Dictionary = {}
+				if typeof(tiles[idx]) == TYPE_DICTIONARY:
+					tile_data = tiles[idx]
+
+				var terrain_id := 0
+				var terrain_data = tile_data.get("terrain", {})
+				if typeof(terrain_data) == TYPE_DICTIONARY:
+					terrain_id = int(terrain_data.get("raw", 0))
+				elif typeof(terrain_data) == TYPE_INT or typeof(terrain_data) == TYPE_FLOAT:
+					terrain_id = int(terrain_data)
+
+				if terrain_id == UNKNOWN_TERRAIN_RAW:
+					continue
+
+				var q := idx % map_width
+				var r := int(idx / map_width)
+				explored_tiles[Vector2i(q, r)] = true
 
 	_validate_selection()
 	_update_overlays()
@@ -438,9 +472,38 @@ func set_improvement_names(names: Array) -> void:
 	_improvement_names = names
 
 
+func set_rules_catalog(catalog: Dictionary) -> void:
+	_palette.apply_rules_catalog(catalog)
+	_tex_loader.apply_rules_catalog(catalog)
+	queue_redraw()
+
 func set_use_authoritative_visibility(enabled: bool) -> void:
 	use_authoritative_visibility = enabled
 
+
+func set_authoritative_visible_tiles(hexes: Array) -> void:
+	if not fog_enabled or not use_authoritative_visibility:
+		return
+	if map_width <= 0 or map_height <= 0:
+		return
+
+	visible_tiles.clear()
+	for h in hexes:
+		var hex := Vector2i(-999, -999)
+		if typeof(h) == TYPE_VECTOR2I:
+			hex = h
+		elif typeof(h) == TYPE_DICTIONARY:
+			hex = Vector2i(int(h.get("q", 0)), int(h.get("r", 0)))
+		else:
+			continue
+
+		hex = _normalize_hex(hex)
+		if _hex_in_map(hex):
+			visible_tiles[hex] = true
+			explored_tiles[hex] = true
+
+	_update_fog_of_war()
+	queue_redraw()
 
 func apply_state_deltas(deltas: Array) -> void:
 	if not fog_enabled or map_width <= 0 or map_height <= 0:
@@ -531,7 +594,7 @@ func _draw() -> void:
 			elif typeof(terrain_data) == TYPE_INT or typeof(terrain_data) == TYPE_FLOAT:
 				terrain_id = int(terrain_data)
 
-			var fill_color := TerrainColors.get_terrain_color(terrain_id)
+			var fill_color := _palette.terrain_color(terrain_id)
 
 			# Apply fog of war
 			var is_visible := visible_tiles.has(hex) or not fog_enabled
@@ -540,11 +603,22 @@ func _draw() -> void:
 			if not is_explored:
 				# Unexplored - draw dark
 				fill_color = Color(0.08, 0.08, 0.12, 1.0)
-			elif not is_visible:
-				# Explored but not visible - dim the tile
-				fill_color = fill_color.darkened(0.5)
-
-			draw_colored_polygon(corners, fill_color)
+				draw_colored_polygon(corners, fill_color)
+			elif render_mode == "sprites":
+				# Try to draw terrain sprite
+				var terrain_tex := _tex_loader.terrain_texture(terrain_id)
+				if terrain_tex:
+					_draw_hex_texture(center, terrain_tex, is_visible)
+				else:
+					# Fallback to colored polygon
+					if not is_visible:
+						fill_color = fill_color.darkened(0.5)
+					draw_colored_polygon(corners, fill_color)
+			else:
+				# Colors mode - use colored polygon
+				if not is_visible:
+					fill_color = fill_color.darkened(0.5)
+				draw_colored_polygon(corners, fill_color)
 
 			# Only show overlays on visible/explored tiles
 			if not is_explored:
@@ -578,10 +652,31 @@ func _draw() -> void:
 					elif typeof(resource_data) == TYPE_INT or typeof(resource_data) == TYPE_FLOAT:
 						res_id = int(resource_data)
 
-					var res_color := TerrainColors.get_resource_color(res_id)
-					var res_size := HEX_SIZE * 0.18 * zoom_level
 					var res_offset := Vector2(HEX_SIZE * 0.35 * zoom_level, -HEX_SIZE * 0.25 * zoom_level)
-					draw_circle(center + res_offset, res_size, res_color)
+					var res_tex := _tex_loader.resource_texture(res_id)
+					if res_tex and render_mode == "sprites":
+						var icon_size := HEX_SIZE * 0.5 * zoom_level
+						var icon_pos := center + res_offset - Vector2(icon_size, icon_size) * 0.5
+						draw_texture_rect(res_tex, Rect2(icon_pos, Vector2(icon_size, icon_size)), false)
+					else:
+						var res_color := _palette.resource_color(res_id)
+						var res_size := HEX_SIZE * 0.18 * zoom_level
+						draw_circle(center + res_offset, res_size, res_color)
+						var glyph := _resource_glyph(res_id)
+						if not glyph.is_empty():
+							var font := ThemeDB.fallback_font
+							var font_size := int(8 * zoom_level)
+							var text_size := font.get_string_size(glyph, HORIZONTAL_ALIGNMENT_CENTER, -1, font_size)
+							var text_color := _contrast_text_color(res_color, 0.95)
+							draw_string(
+								font,
+								center + res_offset + Vector2(-text_size.x / 2, font_size / 3),
+								glyph,
+								HORIZONTAL_ALIGNMENT_CENTER,
+								-1,
+								font_size,
+								text_color
+							)
 
 			# Improvement marker (tier + pillaged)
 			if is_visible:
@@ -599,10 +694,18 @@ func _draw() -> void:
 					var pillaged = bool(impr.get("pillaged", false))
 
 					if impr_id >= 0:
-						var color := _improvement_color(impr_id)
+						var color := _palette.improvement_color(impr_id)
 						var tier_scale: float = float(clampi(tier - 1, 0, 4))
 						var radius: float = HEX_SIZE * zoom_level * (0.08 + 0.03 * tier_scale)
 						draw_circle(center, radius, color)
+
+						var glyph := _improvement_glyph(impr_id)
+						if not glyph.is_empty():
+							var font := ThemeDB.fallback_font
+							var font_size := int(9 * zoom_level)
+							var text_size := font.get_string_size(glyph, HORIZONTAL_ALIGNMENT_CENTER, -1, font_size)
+							var text_color := _contrast_text_color(color, 0.95)
+							draw_string(font, center + Vector2(-text_size.x / 2, font_size / 3), glyph, HORIZONTAL_ALIGNMENT_CENTER, -1, font_size, text_color)
 
 						if pillaged:
 							var s := HEX_SIZE * zoom_level * 0.16
@@ -921,8 +1024,10 @@ func _validate_selection() -> void:
 
 func _update_overlays() -> void:
 	movement_range.clear()
+	enemy_zoc_tiles.clear()
 	path_preview_full.clear()
 	path_preview_this_turn.clear()
+	path_preview_stop_at = Vector2i(-999, -999)
 	_last_preview_request_unit_id = -1
 	_last_preview_request_hex = Vector2i(-999, -999)
 	# Note: In multiplayer, overlays are set via set_movement_range, etc.
@@ -1217,6 +1322,50 @@ func _improvement_color(impr_id: int) -> Color:
 		return COLOR_IMPROVEMENT_TRADE
 	return COLOR_IMPROVEMENT_UNKNOWN
 
+func _improvement_glyph(impr_id: int) -> String:
+	var icon := _palette.improvement_icon(impr_id)
+	if icon.is_empty():
+		icon = _improvement_name(impr_id)
+	return _abbrev_from_icon(icon, 2)
+
+func _resource_glyph(resource_id: int) -> String:
+	var icon := _palette.resource_icon(resource_id)
+	if icon.is_empty():
+		return ""
+	return _abbrev_from_icon(icon, 2)
+
+func _abbrev_from_icon(icon: String, max_len: int = 2) -> String:
+	var cleaned := icon.strip_edges()
+	if cleaned.is_empty():
+		return ""
+
+	cleaned = cleaned.replace("-", "_")
+	cleaned = cleaned.replace(" ", "_")
+	var parts := cleaned.split("_", false)
+
+	if parts.size() == 1:
+		var only := String(parts[0]).strip_edges()
+		if not only.is_empty():
+			return only.substr(0, min(max_len, only.length())).to_upper()
+
+	var out := ""
+	for p in parts:
+		var part := String(p).strip_edges()
+		if part.is_empty():
+			continue
+		out += part.substr(0, 1).to_upper()
+		if out.length() >= max_len:
+			break
+
+	if out.is_empty():
+		return cleaned.substr(0, min(max_len, cleaned.length())).to_upper()
+	return out
+
+func _contrast_text_color(bg: Color, alpha: float = 1.0) -> Color:
+	if bg.get_luminance() > 0.6:
+		return Color(0.0, 0.0, 0.0, alpha)
+	return Color(1.0, 1.0, 1.0, alpha)
+
 func _is_neighbor(a: Vector2i, b: Vector2i) -> bool:
 	var dirs := [
 		Vector2i(1, 0),
@@ -1256,6 +1405,28 @@ func _is_attackable_enemy_hex(hex: Vector2i) -> bool:
 	return _is_neighbor(attacker_pos, hex)
 
 
+func _draw_hex_texture(center: Vector2, tex: Texture2D, is_visible: bool) -> void:
+	# Calculate texture size to fill the hex
+	# Hex width = 2 * size, hex height = sqrt(3) * size
+	var hex_width := HEX_SIZE * 2.0 * zoom_level
+	var hex_height := HEX_SIZE * sqrt(3.0) * zoom_level
+
+	# Scale texture to fit hex (maintain aspect ratio, cover hex)
+	var tex_size := tex.get_size()
+	var scale_x := hex_width / tex_size.x
+	var scale_y := hex_height / tex_size.y
+	var scale: float = maxf(scale_x, scale_y)
+
+	var draw_size: Vector2 = Vector2(tex_size) * scale
+	var draw_pos: Vector2 = center - draw_size * 0.5
+
+	var modulate := Color.WHITE
+	if not is_visible:
+		modulate = Color(0.5, 0.5, 0.5, 1.0)
+
+	draw_texture_rect(tex, Rect2(draw_pos, draw_size), false, modulate)
+
+
 func _closed_polyline(points: PackedVector2Array) -> PackedVector2Array:
 	var out := PackedVector2Array()
 	out.resize(points.size() + 1)
@@ -1263,6 +1434,12 @@ func _closed_polyline(points: PackedVector2Array) -> PackedVector2Array:
 		out[i] = points[i]
 	out[points.size()] = points[0]
 	return out
+
+
+func is_tile_visible(hex: Vector2i) -> bool:
+	if not fog_enabled:
+		return true
+	return visible_tiles.has(hex)
 
 
 func get_hovered_hex() -> Vector2i:

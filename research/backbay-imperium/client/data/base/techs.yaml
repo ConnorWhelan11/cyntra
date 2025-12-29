@@ -92,7 +92,7 @@ construction:
   name: "Construction"
   cost: 70
   era: "medieval"
-  prerequisites: ["masonry", "the_wheel"]
+  prerequisites: ["masonry", "wheel"]
 
 iron_working:
   name: "Iron Working"

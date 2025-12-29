@@ -60,7 +60,7 @@ archer:
 
 horseman:
   name: "Horseman"
-  class: "Mounted"
+  class: "Melee"
   attack: 3
   defense: 2
   moves: 3
