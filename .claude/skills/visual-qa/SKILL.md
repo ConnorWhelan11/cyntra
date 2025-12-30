@@ -54,7 +54,7 @@ Run visual QA regression tests for Backbay Imperium.
 ## Usage
 
 ```bash
-python skills/development/visual-qa.py [arguments]
+python scripts/visual-qa.py [arguments]
 ```
 
 ## Examples

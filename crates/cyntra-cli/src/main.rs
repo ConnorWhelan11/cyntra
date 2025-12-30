@@ -185,6 +185,10 @@ async fn main() -> Result<()> {
         Some(Commands::Init) => {
             init_project(&project_root)
         }
+        #[cfg(feature = "fab")]
+        Some(Commands::Fab { command }) => {
+            handle_fab(command)
+        }
         None => {
             // No subcommand - show help or launch desktop
             println!("Cyntra - Autonomous Development Kernel");
@@ -197,6 +201,8 @@ async fn main() -> Result<()> {
             println!("  workcell  Workcell management");
             println!("  membrane  Web3 integration (IPFS, attestations)");
             println!("  init      Initialize a new project");
+            #[cfg(feature = "fab")]
+            println!("  fab       Asset quality critics (geometry, realism)");
             println!();
             println!("Run 'cyntra --help' for more information.");
             Ok(())
