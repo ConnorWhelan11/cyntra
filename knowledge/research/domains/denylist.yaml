@@ -1,0 +1,29 @@
+# Global Domain Denylist for Research
+# =====================================
+# Domains listed here are blocked for all research programs.
+# These take precedence over allowlists.
+
+blocked_domains:
+  # Ad/tracking networks
+  - doubleclick.net
+  - googlesyndication.com
+  - googleadservices.com
+  - facebook.net
+  - analytics.google.com
+
+  # Social media (too noisy for research)
+  - twitter.com
+  - x.com
+  - facebook.com
+  - instagram.com
+  - tiktok.com
+
+  # Forums with low signal-to-noise
+  - reddit.com
+
+  # Content farms
+  - medium.com  # Paywalled, low signal
+
+  # Piracy / malware
+  - piratebay.org
+  - thepiratebay.org

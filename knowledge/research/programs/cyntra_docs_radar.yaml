@@ -1,0 +1,151 @@
+# Research Program Definition
+# ============================
+# Cyntra Documentation Radar
+#
+# Weekly scan of Claude Code and Cyntra documentation updates.
+# Surfaces new features, breaking changes, and best practices.
+
+program_id: cyntra_docs_radar
+name: "Cyntra Documentation Radar"
+description: |
+  Weekly scan of Claude Code and Cyntra documentation updates.
+  Surfaces new features, breaking changes, and best practices.
+owner: "@connor"
+scope: cyntra
+
+# ============================================
+# SCHEDULE
+# ============================================
+schedule:
+  # Every Monday at 8am UTC
+  cadence: "0 8 * * 1"
+  timezone: "America/Los_Angeles"
+  enabled: true
+  skip_if_running: true
+  min_interval_hours: 24
+
+# ============================================
+# SOURCES
+# ============================================
+sources:
+  web:
+    - domain: "github.com"
+      paths:
+        - "/anthropics/claude-code"
+        - "/anthropics/anthropic-cookbook"
+      search_queries:
+        - "claude code release notes"
+        - "claude code changelog"
+        - "claude code new features"
+
+    - domain: "docs.anthropic.com"
+      paths: ["/"]
+      crawl_depth: 2
+
+  repos:
+    - path: "."
+      include_patterns:
+        - "docs/**/*.md"
+        - "CLAUDE.md"
+        - "README.md"
+      exclude_patterns:
+        - "node_modules/**"
+        - ".git/**"
+
+# ============================================
+# QUERIES
+# ============================================
+queries:
+  templates:
+    - "claude code {{topic}} {{year}}"
+    - "cyntra kernel {{topic}}"
+    - "claude code best practices"
+  keywords:
+    - "claude code"
+    - "claude-code"
+    - "cyntra"
+    - "workcell"
+    - "memory system"
+  exclude_keywords:
+    - "deprecated"
+    - "legacy"
+
+# ============================================
+# OUTPUT
+# ============================================
+output:
+  type: radar
+  target_memories: 5
+  max_memories: 10
+  min_confidence: 0.7
+  granularity: claim
+  title_template: "Cyntra: {{topic}}"
+  tags:
+    auto: true
+    required: ["cyntra", "docs"]
+    max_tags: 8
+
+# ============================================
+# BUDGETS
+# ============================================
+budgets:
+  max_pages: 30
+  max_tokens_input: 80000
+  max_tokens_output: 40000
+  max_evidence_mb: 5.0
+  max_cost_per_run: 1.50
+  max_cost_per_day: 3.00
+  max_cost_per_week: 10.00
+  max_duration_minutes: 20
+
+# ============================================
+# SAFETY
+# ============================================
+safety:
+  domain_allowlist: []  # Use global
+  domain_denylist: []
+  pii_scan: true
+  secrets_scan: true
+  redact_on_detect: true
+  allowed_filetypes:
+    - ".md"
+    - ".txt"
+    - ".html"
+    - ".rst"
+  max_file_size_kb: 500
+
+# ============================================
+# DIFF MODE
+# ============================================
+diff_mode:
+  enabled: true
+  compare_runs: 1
+  emit_changes_only: true
+  hash_algorithm: sha256
+  stale_threshold_hours: 168  # 7 days
+
+# ============================================
+# AGENTS
+# ============================================
+agents:
+  toolchain: claude
+  model: claude-sonnet-4-20250514
+  scout_temperature: 0.3
+  collector_temperature: 0.1
+  synthesizer_temperature: 0.4
+  verifier_temperature: 0.1
+  prompt_overrides:
+    synthesizer: |
+      Focus on practical, actionable knowledge about Claude Code and Cyntra.
+      Prioritize:
+      - New features and capabilities
+      - Configuration options and best practices
+      - Breaking changes and migration guides
+      - Performance tips and troubleshooting
+
+# ============================================
+# DEPENDENCIES
+# ============================================
+dependencies:
+  requires: []
+  notifies: []

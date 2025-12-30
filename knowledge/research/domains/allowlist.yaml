@@ -1,0 +1,32 @@
+# Global Domain Allowlist for Research
+# =====================================
+# Domains listed here are allowed for all research programs.
+# Programs can extend this with their own safety.domain_allowlist.
+
+allowed_domains:
+  # Documentation
+  - docs.anthropic.com
+  - docs.github.com
+  - developer.mozilla.org
+  - docs.python.org
+  - doc.rust-lang.org
+
+  # Code repositories
+  - github.com
+  - gitlab.com
+  - bitbucket.org
+
+  # Technical content
+  - arxiv.org
+  - stackoverflow.com
+  - news.ycombinator.com
+  - dev.to
+
+  # Game development
+  - gamedeveloper.com
+  - www.gdcvault.com
+  - docs.godotengine.org
+
+  # Official product sites
+  - anthropic.com
+  - openai.com
