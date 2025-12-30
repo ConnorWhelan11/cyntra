@@ -582,3 +582,132 @@ fn membrane_setup() -> Result<()> {
 
     Ok(())
 }
+
+// ============================================================================
+// Fab Commands (feature-gated)
+// ============================================================================
+
+#[cfg(feature = "fab")]
+fn handle_fab(command: FabCommands) -> Result<()> {
+    use cyntra_fab::critics::{GeometryCritic, RealismCritic};
+
+    match command {
+        FabCommands::Geometry { path, min_triangles, max_triangles } => {
+            let config = cyntra_fab::GeometryConfig {
+                min_triangles,
+                max_triangles,
+                ..Default::default()
+            };
+            let critic = GeometryCritic::with_config(config);
+            let result = critic.evaluate(&path)?;
+
+            let status = if result.passed { "PASS" } else { "FAIL" };
+            println!("{} {} (score: {:.2}, tris: {})",
+                status,
+                path.file_name().unwrap().to_string_lossy(),
+                result.score,
+                result.triangle_count
+            );
+
+            std::process::exit(if result.passed { 0 } else { 1 });
+        }
+
+        FabCommands::Realism { render_dir, stats_only } => {
+            let render_paths: Vec<PathBuf> = std::fs::read_dir(&render_dir)?
+                .filter_map(|e| e.ok())
+                .map(|e| e.path())
+                .filter(|p| {
+                    p.extension()
+                        .map(|e| e == "png" || e == "jpg" || e == "jpeg")
+                        .unwrap_or(false)
+                })
+                .collect();
+
+            if render_paths.is_empty() {
+                anyhow::bail!("No render images found in {}", render_dir.display());
+            }
+
+            let config = cyntra_fab::RealismConfig::default();
+            let critic = if stats_only {
+                RealismCritic::stats_only(config)
+            } else {
+                RealismCritic::with_config(config)?
+            };
+
+            let result = critic.evaluate(&render_paths)?;
+
+            let status = if result.passed { "PASS" } else { "FAIL" };
+            println!("{} Realism (score: {:.2}, sharpness: {:.2}, contrast: {:.2})",
+                status, result.score, result.sharpness_score, result.contrast_score);
+
+            std::process::exit(if result.passed { 0 } else { 1 });
+        }
+
+        FabCommands::Batch { input, output, continue_on_error } => {
+            let glb_files: Vec<PathBuf> = if input.is_dir() {
+                std::fs::read_dir(&input)?
+                    .filter_map(|e| e.ok())
+                    .map(|e| e.path())
+                    .filter(|p| {
+                        p.extension()
+                            .map(|e| e == "glb" || e == "gltf")
+                            .unwrap_or(false)
+                    })
+                    .collect()
+            } else {
+                vec![input.clone()]
+            };
+
+            if glb_files.is_empty() {
+                anyhow::bail!("No GLB files found in {}", input.display());
+            }
+
+            let critic = GeometryCritic::new();
+            let mut passed = 0;
+            let mut failed = 0;
+
+            for path in &glb_files {
+                match critic.evaluate(path) {
+                    Ok(result) => {
+                        let status = if result.passed { "✓" } else { "✗" };
+                        println!("{} {} (tris: {})", status, path.file_name().unwrap().to_string_lossy(), result.triangle_count);
+                        if result.passed { passed += 1; } else { failed += 1; }
+                    }
+                    Err(e) => {
+                        eprintln!("✗ {} (error: {})", path.file_name().unwrap().to_string_lossy(), e);
+                        failed += 1;
+                        if !continue_on_error {
+                            anyhow::bail!("Batch aborted");
+                        }
+                    }
+                }
+            }
+
+            println!("\nTotal: {} passed, {} failed", passed, failed);
+
+            if let Some(output_path) = output {
+                println!("Results would be written to: {}", output_path.display());
+            }
+
+            std::process::exit(if failed == 0 { 0 } else { 1 });
+        }
+
+        FabCommands::Info => {
+            println!("Cyntra Fab Critics");
+            println!("==================");
+            println!();
+            println!("Available critics:");
+            println!("  geometry  - Mesh validation (normals, UVs, triangles)");
+            println!("  realism   - Render quality (sharpness, contrast, CLIP)");
+            println!();
+            println!("Build with Metal acceleration:");
+            println!("  cargo build --release -p cyntra --features metal");
+            println!();
+            println!("Usage:");
+            println!("  cyntra fab geometry model.glb");
+            println!("  cyntra fab realism renders/ --stats-only");
+            println!("  cyntra fab batch models/ --continue-on-error");
+            Ok(())
+        }
+    }
+}
