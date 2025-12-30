@@ -1,0 +1,336 @@
+# Backbay Imperium - Map Resources
+# Generates 3D resource icons for map display
+
+schema_version: "1.0"
+world_id: backbay_resources
+world_type: icons
+version: "1.0.0"
+
+generator:
+  name: "Backbay Imperium - Resource Icons"
+  description: |
+    Resource icons displayed on the game map.
+    Three types: Strategic (military), Luxury (happiness), Bonus (yields).
+
+build:
+  determinism:
+    seed: 42
+    pythonhashseed: 42
+
+  comfyui:
+    host: "${COMFYUI_HOST:-localhost}"
+    port: "${COMFYUI_PORT:-8188}"
+    timeout_seconds: 180
+
+parameters:
+  defaults:
+    target_triangles: 3000
+    guidance_scale: 5.5
+    steps: 40
+
+  style_suffix: ", isolated object, clean background, game icon, classical art style"
+
+meshes:
+  # === STRATEGIC RESOURCES (military unlocks) ===
+
+  - id: resource_iron
+    name: "Iron"
+    prompt: "pile of iron ore and ingots, dark metallic, raw and refined"
+    category: strategic
+    tags: [metal, military, industrial]
+    tech_required: iron_working
+    terrain: [hills, plains]
+    yields: { production: 1 }
+
+  - id: resource_horses
+    name: "Horses"
+    prompt: "noble horse head profile, wild horse, mane flowing, equine beauty"
+    category: strategic
+    tags: [animal, cavalry, mounted]
+    tech_required: animal_husbandry
+    terrain: [plains, grassland]
+    yields: { production: 1 }
+
+  - id: resource_copper
+    name: "Copper"
+    prompt: "copper ore chunks and ingots, reddish metallic sheen"
+    category: strategic
+    tags: [metal, ancient, bronze]
+    tech_required: mining
+    terrain: [hills]
+    yields: { gold: 1 }
+
+  - id: resource_coal
+    name: "Coal"
+    prompt: "pile of black coal chunks, anthracite, fossil fuel"
+    category: strategic
+    tags: [fuel, industrial]
+    tech_required: industrialization
+    terrain: [hills, plains]
+    yields: { production: 2 }
+
+  - id: resource_oil
+    name: "Oil"
+    prompt: "oil derrick with black crude, petroleum, industrial"
+    category: strategic
+    tags: [fuel, modern, industrial]
+    tech_required: biology
+    terrain: [desert, coast, jungle]
+    yields: { production: 2 }
+
+  - id: resource_uranium
+    name: "Uranium"
+    prompt: "glowing green uranium ore, radioactive, hazardous, powerful"
+    category: strategic
+    tags: [nuclear, modern, power]
+    tech_required: nuclear_fission
+    terrain: [hills, jungle]
+    yields: { production: 2 }
+
+  - id: resource_aluminum
+    name: "Aluminum"
+    prompt: "silvery aluminum ingots, lightweight metal, modern"
+    category: strategic
+    tags: [metal, modern, aircraft]
+    tech_required: electricity
+    terrain: [hills]
+    yields: { production: 1 }
+
+  # === LUXURY RESOURCES (happiness) ===
+
+  - id: resource_gold
+    name: "Gold"
+    prompt: "gold nuggets and dust, gleaming yellow precious metal"
+    category: luxury
+    tags: [precious, wealth, trade]
+    tech_required: mining
+    terrain: [hills, desert]
+    yields: { gold: 2 }
+    happiness: 3
+
+  - id: resource_silver
+    name: "Silver"
+    prompt: "silver ore and ingots, shiny white precious metal"
+    category: luxury
+    tags: [precious, wealth]
+    tech_required: mining
+    terrain: [hills, tundra]
+    yields: { gold: 1 }
+    happiness: 3
+
+  - id: resource_gems
+    name: "Gems"
+    prompt: "assorted cut gemstones, diamonds rubies emeralds sapphires, sparkling"
+    category: luxury
+    tags: [precious, jewelry]
+    tech_required: mining
+    terrain: [hills, jungle]
+    yields: { gold: 2 }
+    happiness: 4
+
+  - id: resource_silk
+    name: "Silk"
+    prompt: "rolls of fine silk fabric, lustrous colorful, Chinese luxury"
+    category: luxury
+    tags: [fabric, trade, asian]
+    tech_required: calendar
+    terrain: [grassland, forest]
+    yields: { gold: 1 }
+    happiness: 3
+
+  - id: resource_spices
+    name: "Spices"
+    prompt: "jars and piles of exotic spices, cinnamon saffron pepper, aromatic"
+    category: luxury
+    tags: [food, trade, exotic]
+    tech_required: calendar
+    terrain: [jungle, coast]
+    yields: { gold: 2 }
+    happiness: 3
+
+  - id: resource_wine
+    name: "Wine"
+    prompt: "wine amphora and grapes, Mediterranean vineyard, ancient vessel"
+    category: luxury
+    tags: [beverage, culture]
+    tech_required: calendar
+    terrain: [plains, grassland]
+    yields: { gold: 1 }
+    happiness: 3
+
+  - id: resource_incense
+    name: "Incense"
+    prompt: "frankincense resin and smoking burner, aromatic, sacred"
+    category: luxury
+    tags: [religious, trade, arabian]
+    tech_required: calendar
+    terrain: [desert]
+    yields: { gold: 1 }
+    happiness: 3
+
+  - id: resource_ivory
+    name: "Ivory"
+    prompt: "elephant tusks and carved ivory pieces, white, luxury"
+    category: luxury
+    tags: [animal, trade, african]
+    tech_required: trapping
+    terrain: [plains, jungle]
+    yields: { gold: 1 }
+    happiness: 3
+
+  - id: resource_furs
+    name: "Furs"
+    prompt: "pile of animal fur pelts, beaver fox mink, warm and luxurious"
+    category: luxury
+    tags: [animal, trade, northern]
+    tech_required: trapping
+    terrain: [forest, tundra]
+    yields: { gold: 1 }
+    happiness: 3
+
+  - id: resource_dyes
+    name: "Dyes"
+    prompt: "bowls of colorful natural dyes, indigo crimson purple, pigments"
+    category: luxury
+    tags: [trade, artistic]
+    tech_required: calendar
+    terrain: [jungle, forest]
+    yields: { gold: 1 }
+    happiness: 3
+
+  - id: resource_pearls
+    name: "Pearls"
+    prompt: "lustrous pearls in open oyster shell, white iridescent"
+    category: luxury
+    tags: [precious, coastal]
+    tech_required: sailing
+    terrain: [coast]
+    yields: { gold: 2 }
+    happiness: 3
+
+  - id: resource_marble
+    name: "Marble"
+    prompt: "blocks of white marble with veins, quarried stone, classical"
+    category: luxury
+    tags: [stone, building, classical]
+    tech_required: masonry
+    terrain: [hills]
+    yields: { production: 1 }
+    happiness: 2
+
+  - id: resource_cotton
+    name: "Cotton"
+    prompt: "white cotton bolls and woven fabric, soft plant fiber"
+    category: luxury
+    tags: [fabric, plantation]
+    tech_required: calendar
+    terrain: [plains, grassland]
+    yields: { gold: 1 }
+    happiness: 2
+
+  # === BONUS RESOURCES (extra yields) ===
+
+  - id: resource_wheat
+    name: "Wheat"
+    prompt: "golden wheat sheaves, ripe grain, harvest bundle"
+    category: bonus
+    tags: [food, grain, farmable]
+    tech_required: agriculture
+    terrain: [plains, grassland]
+    yields: { food: 1 }
+
+  - id: resource_cattle
+    name: "Cattle"
+    prompt: "cow head profile, domestic cattle, bovine"
+    category: bonus
+    tags: [animal, food, farmable]
+    tech_required: animal_husbandry
+    terrain: [plains, grassland]
+    yields: { food: 1, production: 1 }
+
+  - id: resource_sheep
+    name: "Sheep"
+    prompt: "fluffy sheep, wool coat, pastoral animal"
+    category: bonus
+    tags: [animal, food, wool]
+    tech_required: animal_husbandry
+    terrain: [hills, grassland]
+    yields: { food: 1 }
+
+  - id: resource_fish
+    name: "Fish"
+    prompt: "pile of fresh fish, ocean catch, seafood"
+    category: bonus
+    tags: [food, coastal, water]
+    tech_required: sailing
+    terrain: [coast, ocean]
+    yields: { food: 2 }
+
+  - id: resource_deer
+    name: "Deer"
+    prompt: "deer antlers and head, stag, wild game"
+    category: bonus
+    tags: [animal, food, hunting]
+    tech_required: trapping
+    terrain: [forest, tundra]
+    yields: { food: 1 }
+
+  - id: resource_bananas
+    name: "Bananas"
+    prompt: "bunch of yellow bananas, tropical fruit"
+    category: bonus
+    tags: [food, tropical, fruit]
+    tech_required: calendar
+    terrain: [jungle]
+    yields: { food: 1 }
+
+  - id: resource_stone
+    name: "Stone"
+    prompt: "cut stone blocks, building material, quarried"
+    category: bonus
+    tags: [building, material]
+    tech_required: mining
+    terrain: [hills]
+    yields: { production: 1 }
+
+  - id: resource_wood
+    name: "Wood"
+    prompt: "stacked lumber logs, timber, forestry"
+    category: bonus
+    tags: [building, material, forest]
+    tech_required: mining
+    terrain: [forest]
+    yields: { production: 1 }
+
+stages:
+  - id: generate_meshes
+    type: comfyui_batch
+    workflow: fab/backbay-imperium/workflows/hunyuan3d_icon.json
+    settings:
+      batch_size: 5
+      retry_on_failure: 2
+    outputs:
+      - "mesh.glb"
+      - "preview.png"
+
+  - id: validate_resources
+    type: gate
+    requires: [generate_meshes]
+    gates:
+      - fab/backbay-imperium/gates/resource_v001.yaml
+
+  - id: render_icons
+    type: blender
+    requires: [validate_resources]
+    script: fab/backbay-imperium/scripts/render_resource_icons.py
+    settings:
+      resolutions: [32, 64, 128]
+      turntable: false
+
+publish:
+  meshes:
+    path: fab/backbay-imperium/assets/resources/meshes
+  icons:
+    path: fab/backbay-imperium/assets/resources/icons
+  manifest:
+    path: fab/backbay-imperium/assets/resources/manifest.yaml

@@ -1,0 +1,89 @@
+# Backbay Imperium - Terrain Mesh Gate
+gate_config_id: backbay_terrain_v001
+category: hex_terrain
+schema_version: "1.0"
+
+render:
+  engine: CYCLES
+  device: CPU
+  resolution: [256, 256]
+  samples: 64
+  seed: 1337
+
+critics:
+  category:
+    enabled: true
+    per_view_conf_min: 0.45
+    target_classes:
+      - terrain
+      - landscape
+      - ground
+      - nature
+      - grass
+      - sand
+      - rock
+      - water
+    excluded_classes:
+      - building
+      - vehicle
+      - person
+      - animal
+
+  alignment:
+    enabled: true
+    clip_model: "ViT-L/14"
+    margin_min: 0.04
+    check_prompt_similarity: true
+
+  geometry:
+    enabled: true
+    bounds_m:
+      width: [0.85, 1.15]
+      depth: [0.85, 1.15]
+      height: [0.01, 0.6]
+    triangle_count: [1000, 8000]
+    manifold_required: true
+    hex_shape:
+      enabled: true
+      tolerance: 0.08
+      flat_bottom: true
+
+  style:
+    enabled: true
+    reference_pack: fab/backbay-imperium/style_reference
+    min_similarity: 0.55
+    color_temperature: warm
+
+decision:
+  weights:
+    category: 0.25
+    alignment: 0.25
+    geometry: 0.30
+    style: 0.20
+  overall_pass_min: 0.60
+  subscore_floors:
+    geometry: 0.50
+
+hard_fail_codes:
+  - IMPORT_FAILED
+  - MESH_EMPTY
+  - NOT_HEX_SHAPE
+  - SCALE_INVALID
+
+repair_playbook:
+  NOT_HEX_SHAPE:
+    priority: 1
+    instructions: |
+      Regenerate with stronger hex constraint:
+      - Add "hexagonal tile shape" to prompt
+      - Post-process to clip to hex boundary
+  SCALE_INVALID:
+    priority: 1
+    instructions: |
+      Scale mesh to 1.0 unit diameter hex
+  CAT_NOT_TERRAIN:
+    priority: 2
+    instructions: |
+      Regenerate with clearer terrain prompt:
+      - Emphasize "terrain", "ground", "landscape"
+      - Remove any non-terrain elements

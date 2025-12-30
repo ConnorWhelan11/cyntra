@@ -1,0 +1,761 @@
+# Backbay Imperium - Audio Asset Specification
+# Soundtrack, ambiance, and sound effects for 4X strategy game
+
+schema_version: "1.0"
+world_id: backbay_audio
+version: "1.0.0"
+
+# ============================================================================
+# TECHNICAL SPECIFICATIONS
+# ============================================================================
+
+technical:
+  formats:
+    music:
+      format: ogg          # or mp3 for broader compatibility
+      bitrate: 192kbps
+      sample_rate: 48000
+      channels: stereo
+    sfx:
+      format: wav
+      sample_rate: 44100
+      bit_depth: 16
+      channels: stereo
+    ambiance:
+      format: ogg
+      bitrate: 128kbps
+      sample_rate: 44100
+      channels: stereo
+
+  loop_requirements:
+    music: seamless_loop   # Must loop without audible gap
+    ambiance: crossfade_safe  # Can crossfade 2-3 seconds
+
+  loudness:
+    music: -14 LUFS
+    sfx: -12 LUFS peak
+    ambiance: -20 LUFS
+
+# ============================================================================
+# AESTHETIC DIRECTION
+# ============================================================================
+
+aesthetic:
+  overall_mood: |
+    Museum-quality, dignified, scholarly.
+    Warm and classical rather than flashy or epic-Hollywood.
+    Think: Civilization V's contemplative elegance meets documentary gravitas.
+
+  palette_alignment:
+    gold: "Triumphant brass, victorious fanfares"
+    bronze: "Military drums, martial themes"
+    deep_blue: "Woodwinds, intellectual/scientific passages"
+    terracotta: "Warm strings, cultural/domestic themes"
+    forest_green: "Pastoral, nature, growth motifs"
+
+  avoid:
+    - Generic epic trailer music
+    - Over-the-top Hans Zimmer bombast
+    - Synthetic/electronic except subtle Modern era hints
+    - Fast tempos (this is turn-based, contemplative)
+
+# ============================================================================
+# ERA THEMES (Core Soundtrack)
+# ============================================================================
+
+era_themes:
+  # Each era has: main theme, peace variant, war variant
+  # Duration: 2:30-4:00 each, loopable
+
+  ancient:
+    id: era_ancient
+    instruments:
+      primary: [lyre, frame_drums, aulos, shofar]
+      secondary: [drone_strings, bone_flutes, rattles]
+    scales: [pentatonic, phrygian, dorian]
+    tempo: 60-75 bpm
+    mood: "Dawn of civilization, mysterious, primal yet hopeful"
+
+    tracks:
+      - id: ancient_main
+        name: "First Light"
+        duration: "3:00-3:30"
+        prompt: |
+          Ancient civilization theme, lyres and frame drums, mysterious
+          and hopeful, pentatonic melody, museum documentary style,
+          contemplative pace, no vocals, warm and earthy
+
+      - id: ancient_peace
+        name: "River Valley"
+        duration: "3:00-3:30"
+        prompt: |
+          Peaceful ancient settlement music, gentle lyre melody, soft
+          percussion, pastoral and serene, flowing river ambiance hints,
+          agricultural civilization vibes
+
+      - id: ancient_war
+        name: "Bronze Clash"
+        duration: "2:30-3:00"
+        prompt: |
+          Ancient tribal warfare music, intense drums, low brass drones,
+          primal tension, bronze age conflict, building intensity,
+          not too fast, strategic menace rather than action
+
+  classical:
+    id: era_classical
+    instruments:
+      primary: [brass_fanfares, kithara, tibia, chorus]
+      secondary: [military_drums, cymbals, strings]
+    scales: [dorian, ionian, lydian]
+    tempo: 70-85 bpm
+    mood: "Roman grandeur, Greek philosophy, ordered civilization"
+
+    tracks:
+      - id: classical_main
+        name: "Marble Halls"
+        duration: "3:00-3:30"
+        prompt: |
+          Classical Roman/Greek theme, brass fanfares, majestic and
+          orderly, civilization at its height, marble grandeur,
+          dignified orchestral arrangement, no vocals
+
+      - id: classical_peace
+        name: "Forum Prosperity"
+        duration: "3:00-3:30"
+        prompt: |
+          Peaceful classical era, flowing strings, gentle brass,
+          prosperous empire, trade and philosophy, warm afternoon
+          sunlight feeling, contemplative and noble
+
+      - id: classical_war
+        name: "Legion March"
+        duration: "2:30-3:00"
+        prompt: |
+          Roman military march, disciplined drums, brass authority,
+          marching legions, organized warfare, steady inexorable
+          advance, powerful but controlled
+
+  medieval:
+    id: era_medieval
+    instruments:
+      primary: [hurdy_gurdy, lute, recorder, church_organ]
+      secondary: [medieval_drums, bells, choir]
+    scales: [modal, gregorian_modes, minor]
+    tempo: 65-80 bpm
+    mood: "Dark ages faith, feudal tension, cathedral mystery"
+
+    tracks:
+      - id: medieval_main
+        name: "Stone and Scripture"
+        duration: "3:00-3:30"
+        prompt: |
+          Medieval civilization theme, church organ undertones,
+          hurdy-gurdy melody, Gothic cathedral atmosphere, faith
+          and feudalism, dark but hopeful, monastery bells
+
+      - id: medieval_peace
+        name: "Castle Gardens"
+        duration: "3:00-3:30"
+        prompt: |
+          Peaceful medieval court music, lutes and recorders,
+          troubadour elegance, castle life, courtly love hints,
+          warm but restrained, tapestry and candlelight
+
+      - id: medieval_war
+        name: "Siege Towers"
+        duration: "2:30-3:00"
+        prompt: |
+          Medieval warfare, heavy drums, ominous brass, castle
+          siege tension, crusader menace, trebuchets and arrows,
+          grim determination, minor key
+
+  renaissance:
+    id: era_renaissance
+    instruments:
+      primary: [harpsichord, viols, recorders, lute]
+      secondary: [early_strings, brass_consort, timpani]
+    scales: [major, baroque_counterpoint]
+    tempo: 75-90 bpm
+    mood: "Enlightenment, artistic flourishing, exploration"
+
+    tracks:
+      - id: renaissance_main
+        name: "New Horizons"
+        duration: "3:00-3:30"
+        prompt: |
+          Renaissance civilization theme, harpsichord and strings,
+          baroque elegance, age of discovery, scientific awakening,
+          hopeful and sophisticated, Vivaldi-inspired clarity
+
+      - id: renaissance_peace
+        name: "Florentine Gardens"
+        duration: "3:00-3:30"
+        prompt: |
+          Peaceful Renaissance court, gentle harpsichord, viols,
+          Medici prosperity, art patronage, sunlit piazzas,
+          cultured and refined, intellectual warmth
+
+      - id: renaissance_war
+        name: "Cannon Foundry"
+        duration: "2:30-3:00"
+        prompt: |
+          Renaissance military, martial drums, brass fanfares,
+          gunpowder age warfare, naval battles, conquistador
+          determination, bold but measured
+
+  industrial:
+    id: era_industrial
+    instruments:
+      primary: [full_orchestra, brass_section, strings]
+      secondary: [military_snare, timpani, piano]
+    scales: [romantic_era, major_minor]
+    tempo: 80-100 bpm
+    mood: "Progress and power, Victorian grandeur, mechanization"
+
+    tracks:
+      - id: industrial_main
+        name: "Iron and Steam"
+        duration: "3:00-3:30"
+        prompt: |
+          Industrial revolution theme, full romantic orchestra,
+          progress and power, train rhythms, factory ambition,
+          Victorian grandeur, Elgar-inspired nobility
+
+      - id: industrial_peace
+        name: "Empire Gardens"
+        duration: "3:00-3:30"
+        prompt: |
+          Peaceful Victorian era, elegant strings, gentle brass,
+          colonial prosperity, afternoon tea, gaslight and
+          railways, cultured and optimistic
+
+      - id: industrial_war
+        name: "Battleship Drums"
+        duration: "2:30-3:00"
+        prompt: |
+          Industrial warfare, military snare, powerful brass,
+          World War drums, dreadnought menace, artillery
+          thunder, nationalistic fervor, massive scale
+
+  modern:
+    id: era_modern
+    instruments:
+      primary: [full_orchestra, subtle_synth, choir]
+      secondary: [percussion_battery, piano, brass]
+    scales: [cinematic, chromatic_tension]
+    tempo: 85-105 bpm
+    mood: "Global stakes, technological triumph, uncertain future"
+
+    tracks:
+      - id: modern_main
+        name: "New World Order"
+        duration: "3:00-3:30"
+        prompt: |
+          Modern era civilization theme, cinematic orchestra,
+          global scale, technological wonder, UN grandeur,
+          hopeful but tense, subtle electronic textures
+
+      - id: modern_peace
+        name: "Golden Age"
+        duration: "3:00-3:30"
+        prompt: |
+          Peaceful modern prosperity, warm orchestra, gentle
+          choir, space age wonder, international cooperation,
+          optimistic and sweeping, gentle synth pads
+
+      - id: modern_war
+        name: "Total War"
+        duration: "2:30-3:00"
+        prompt: |
+          Modern warfare theme, intense percussion, powerful
+          brass, global conflict tension, nuclear age dread,
+          massive orchestral power, controlled intensity
+
+# ============================================================================
+# CIVILIZATION MOTIFS (Leitmotifs)
+# ============================================================================
+
+civilization_motifs:
+  description: |
+    Each civilization gets a short (30-60 second) musical motif that plays
+    during diplomacy, when meeting them, or as an overlay on era themes.
+    These should be culturally authentic but not stereotypical.
+
+  motifs:
+    - id: civ_rome
+      name: "Roman Motif"
+      duration: "0:45-1:00"
+      instruments: [brass_fanfare, military_drums]
+      prompt: |
+        Roman Empire musical motif, brass fanfares, military dignity,
+        SPQR grandeur, Latin gravitas, short triumphant theme,
+        loopable, no vocals
+
+    - id: civ_greece
+      name: "Greek Motif"
+      duration: "0:45-1:00"
+      instruments: [lyre, kithara, aulos]
+      prompt: |
+        Ancient Greek musical motif, lyre and aulos, philosophical
+        and elegant, Athenian democracy, Olympic glory, Doric
+        dignity, contemplative and noble
+
+    - id: civ_egypt
+      name: "Egyptian Motif"
+      duration: "0:45-1:00"
+      instruments: [sistrum, ney_flute, frame_drums]
+      prompt: |
+        Ancient Egyptian musical motif, mysterious and eternal,
+        Nile river flow, pyramid grandeur, desert mysticism,
+        ney flute melody, hypnotic and sacred
+
+    - id: civ_persia
+      name: "Persian Motif"
+      duration: "0:45-1:00"
+      instruments: [santur, tar, daf]
+      prompt: |
+        Persian Empire musical motif, santur and tar, gardens
+        and poetry, Zoroastrian fire, silk road wealth,
+        ornate and elegant, Middle Eastern scales
+
+    - id: civ_china
+      name: "Chinese Motif"
+      duration: "0:45-1:00"
+      instruments: [erhu, pipa, guzheng]
+      prompt: |
+        Chinese Empire musical motif, erhu and pipa, pentatonic
+        scale, Forbidden City grandeur, jade and silk, scholarly
+        and eternal, imperial dignity
+
+    - id: civ_england
+      name: "English Motif"
+      duration: "0:45-1:00"
+      instruments: [brass_band, strings, organ]
+      prompt: |
+        British Empire musical motif, Elgar-style nobility,
+        Rule Britannia hints, naval power, Victorian pride,
+        dignified brass, island kingdom strength
+
+    - id: civ_arabia
+      name: "Arabian Motif"
+      duration: "0:45-1:00"
+      instruments: [oud, qanun, riq]
+      prompt: |
+        Arabian Caliphate musical motif, oud and qanun, maqam
+        scales, Baghdad wisdom, desert caravans, scholarly
+        and spiritual, Alhambra elegance
+
+    - id: civ_aztec
+      name: "Aztec Motif"
+      duration: "0:45-1:00"
+      instruments: [huehuetl, teponaztli, ocarinas]
+      prompt: |
+        Aztec Empire musical motif, log drums and clay flutes,
+        Tenochtitlan temples, jaguar warriors, sacrificial
+        intensity, jungle mysticism, primal power
+
+    - id: civ_india
+      name: "Indian Motif"
+      duration: "0:45-1:00"
+      instruments: [sitar, tabla, tanpura]
+      prompt: |
+        Indian Empire musical motif, sitar and tabla, raga
+        inspiration, Mughal grandeur, Ganges spirituality,
+        dharmic wisdom, ornate and meditative
+
+    - id: civ_japan
+      name: "Japanese Motif"
+      duration: "0:45-1:00"
+      instruments: [shakuhachi, koto, taiko]
+      prompt: |
+        Japanese Shogunate musical motif, shakuhachi and koto,
+        Edo refinement, samurai honor, cherry blossom beauty,
+        zen simplicity, controlled intensity
+
+    - id: civ_russia
+      name: "Russian Motif"
+      duration: "0:45-1:00"
+      instruments: [balalaika, bayan, choir]
+      prompt: |
+        Russian Empire musical motif, balalaika and choir,
+        Slavic melancholy, winter vastness, Orthodox bells,
+        Tchaikovsky echoes, powerful and soulful
+
+    - id: civ_germany
+      name: "German Motif"
+      duration: "0:45-1:00"
+      instruments: [brass, strings, timpani]
+      prompt: |
+        German States musical motif, Prussian brass discipline,
+        Bach-inspired counterpoint, Gothic cathedrals, Rhine
+        romanticism, orderly and powerful
+
+# ============================================================================
+# WONDER COMPLETION FANFARES
+# ============================================================================
+
+wonder_fanfares:
+  description: |
+    Short triumphant stingers (15-25 seconds) that play when completing
+    a World Wonder. Each should feel like a momentous achievement.
+
+  general_fanfare:
+    id: wonder_complete_general
+    name: "Wonder Complete"
+    duration: "0:15-0:20"
+    prompt: |
+      Triumphant orchestral fanfare, World Wonder completion,
+      brass and timpani, victorious achievement, civilization
+      milestone, short and punchy, ends definitively
+
+  specific_fanfares:
+    - id: wonder_pyramids_fanfare
+      wonder: pyramids
+      duration: "0:20-0:25"
+      prompt: |
+        Pyramids completion fanfare, Egyptian mysticism meets
+        triumph, ancient horns, desert wind, eternal monument,
+        awe-inspiring finish
+
+    - id: wonder_colosseum_fanfare
+      wonder: colosseum
+      duration: "0:20-0:25"
+      prompt: |
+        Colosseum completion fanfare, Roman brass glory,
+        crowd roar hint, gladiatorial triumph, arena
+        grandeur, powerful finish
+
+    - id: wonder_notre_dame_fanfare
+      wonder: notre_dame
+      duration: "0:20-0:25"
+      prompt: |
+        Notre Dame completion fanfare, church organ and
+        bells, Gothic majesty, heavenly choir hint,
+        cathedral triumph, sacred and grand
+
+# ============================================================================
+# GAMEPLAY STATE MUSIC
+# ============================================================================
+
+gameplay_states:
+
+  diplomacy:
+    id: music_diplomacy
+    name: "Diplomatic Audience"
+    duration: "2:00-2:30"
+    loop: true
+    prompt: |
+      Diplomatic meeting music, sophisticated strings,
+      gentle tension, negotiation atmosphere, formal
+      and measured, throne room audience, courtly
+
+  city_view:
+    id: music_city
+    name: "City Management"
+    duration: "2:00-2:30"
+    loop: true
+    prompt: |
+      City management ambient music, gentle and productive,
+      building and growth, domestic peace, subtle activity,
+      warm and encouraging, soft orchestral
+
+  tech_tree:
+    id: music_tech
+    name: "Scrolls of Knowledge"
+    duration: "2:00-2:30"
+    loop: true
+    prompt: |
+      Technology/science screen music, intellectual and
+      curious, discovery atmosphere, scholarly pursuit,
+      woodwinds and gentle strings, enlightenment
+
+  victory_screen:
+    id: music_victory
+    name: "Eternal Glory"
+    duration: "1:30-2:00"
+    loop: false
+    prompt: |
+      Victory celebration music, triumphant full orchestra,
+      civilization triumphant, legacy achieved, grand and
+      sweeping, emotional climax, definitive ending
+
+  defeat_screen:
+    id: music_defeat
+    name: "Fall of Empire"
+    duration: "1:30-2:00"
+    loop: false
+    prompt: |
+      Defeat screen music, melancholy strings, fallen
+      civilization, empire crumbled, somber but dignified,
+      not depressing, reflective on what was
+
+# ============================================================================
+# AMBIENT LOOPS
+# ============================================================================
+
+ambiance:
+  description: |
+    Background environmental loops that play under music at low volume.
+    These add atmosphere without competing with the score.
+    Duration: 2-3 minutes each, seamless loop.
+
+  map_ambiance:
+    - id: amb_temperate
+      name: "Temperate Lands"
+      terrain: [plains, grassland, forest]
+      prompt: |
+        Temperate countryside ambiance, distant birds, gentle
+        wind, occasional insect, pastoral peace, subtle and
+        non-intrusive, loopable
+
+    - id: amb_desert
+      name: "Desert Winds"
+      terrain: [desert]
+      prompt: |
+        Desert ambiance, wind over dunes, distant sand shifts,
+        heat shimmer feeling, occasional hawk cry, vast and
+        empty, loopable
+
+    - id: amb_tundra
+      name: "Frozen North"
+      terrain: [tundra, snow]
+      prompt: |
+        Tundra ambiance, cold wind, ice creaks, distant wolf
+        howl, vast frozen emptiness, aurora feeling, sparse
+        and haunting, loopable
+
+    - id: amb_ocean
+      name: "Open Seas"
+      terrain: [ocean, coast]
+      prompt: |
+        Ocean ambiance, waves lapping, seagulls distant, wind
+        in sails, vast water feeling, nautical atmosphere,
+        loopable
+
+    - id: amb_jungle
+      name: "Dense Jungle"
+      terrain: [jungle]
+      prompt: |
+        Jungle ambiance, tropical birds, insect chorus, distant
+        monkey calls, dense vegetation feeling, humid and alive,
+        loopable
+
+    - id: amb_mountain
+      name: "Mountain Heights"
+      terrain: [hills, mountains]
+      prompt: |
+        Mountain ambiance, high altitude wind, distant eagle,
+        rock echoes, thin air vastness, majestic and remote,
+        loopable
+
+  city_ambiance:
+    - id: amb_city_ancient
+      name: "Ancient Settlement"
+      era: [ancient, classical]
+      prompt: |
+        Ancient city ambiance, distant market chatter, animal
+        sounds, cart wheels on stone, temple bells distant,
+        busy but primitive, loopable
+
+    - id: amb_city_medieval
+      name: "Medieval Town"
+      era: [medieval, renaissance]
+      prompt: |
+        Medieval city ambiance, church bells, market bustle,
+        blacksmith distant, horse hooves, castle town life,
+        loopable
+
+    - id: amb_city_modern
+      name: "Modern Metropolis"
+      era: [industrial, modern]
+      prompt: |
+        Modern city ambiance, distant traffic hum, subtle
+        machinery, urban bustle, trains distant, industrial
+        progress, loopable
+
+# ============================================================================
+# UI SOUND EFFECTS
+# ============================================================================
+
+ui_sfx:
+  description: |
+    Interface sound effects. Should be elegant and minimal,
+    matching the museum-quality aesthetic. Not game-y or arcade-y.
+    All sounds: 0.2-1.5 seconds, clean and refined.
+
+  navigation:
+    - id: sfx_click
+      name: "Button Click"
+      duration: "0.15s"
+      description: "Soft, satisfying click. Think quality leather or wood."
+
+    - id: sfx_hover
+      name: "Button Hover"
+      duration: "0.1s"
+      description: "Subtle whisper/breath, barely audible confirmation"
+
+    - id: sfx_tab_switch
+      name: "Tab Switch"
+      duration: "0.2s"
+      description: "Gentle page turn or parchment rustle"
+
+    - id: sfx_menu_open
+      name: "Menu Open"
+      duration: "0.3s"
+      description: "Soft unfurl, like opening a scroll or book"
+
+    - id: sfx_menu_close
+      name: "Menu Close"
+      duration: "0.25s"
+      description: "Gentle closing, definitive but not harsh"
+
+  notifications:
+    - id: sfx_turn_start
+      name: "Turn Start"
+      duration: "0.8s"
+      description: "Gentle chime, new dawn feeling, hopeful"
+
+    - id: sfx_research_complete
+      name: "Research Complete"
+      duration: "1.2s"
+      description: "Eureka moment, crystalline discovery sound, magical"
+
+    - id: sfx_production_complete
+      name: "Production Complete"
+      duration: "0.8s"
+      description: "Solid completion, building finished, hammer-like"
+
+    - id: sfx_city_founded
+      name: "City Founded"
+      duration: "1.5s"
+      description: "Settlement horn, new beginning, frontier hope"
+
+    - id: sfx_war_declared
+      name: "War Declared"
+      duration: "1.5s"
+      description: "Ominous brass, tension spike, not violent but serious"
+
+    - id: sfx_peace_declared
+      name: "Peace Treaty"
+      duration: "1.2s"
+      description: "Relief and resolution, gentle bells, diplomatic success"
+
+  combat:
+    - id: sfx_unit_select
+      name: "Unit Select"
+      duration: "0.3s"
+      description: "Military acknowledgment, brief and professional"
+
+    - id: sfx_unit_move
+      name: "Unit Move Order"
+      duration: "0.2s"
+      description: "March command, subtle but authoritative"
+
+    - id: sfx_attack_order
+      name: "Attack Order"
+      duration: "0.4s"
+      description: "Battle horn, charge signal, aggressive but brief"
+
+    - id: sfx_unit_death
+      name: "Unit Defeated"
+      duration: "0.8s"
+      description: "Somber note, loss acknowledged, not gory"
+
+    - id: sfx_victory_combat
+      name: "Combat Victory"
+      duration: "0.6s"
+      description: "Brief triumph, battle won, not overblown"
+
+  resources:
+    - id: sfx_gold_gain
+      name: "Gold Earned"
+      duration: "0.5s"
+      description: "Coin clink, satisfying wealth, not casino-like"
+
+    - id: sfx_resource_found
+      name: "Resource Discovered"
+      duration: "0.8s"
+      description: "Discovery sparkle, valuable find, exciting"
+
+# ============================================================================
+# ASSET SUMMARY
+# ============================================================================
+
+asset_count:
+  era_themes: 18          # 6 eras x 3 variants (main/peace/war)
+  civ_motifs: 12          # 12 civilizations
+  wonder_fanfares: 13     # 1 general + 12 specific
+  gameplay_states: 5      # diplomacy, city, tech, victory, defeat
+  ambiance_loops: 9       # 6 terrain + 3 city eras
+  ui_sfx: 18              # navigation + notifications + combat + resources
+
+  total_music: 48         # minutes estimated (themes + motifs + fanfares + states)
+  total_ambiance: 27      # minutes estimated (9 x 3 min loops)
+  total_sfx: 18           # individual sound effects
+
+  generation_priority:
+    high:
+      - era_themes (core gameplay loop)
+      - ui_sfx (immediate feedback)
+    medium:
+      - civ_motifs (diplomacy encounters)
+      - wonder_fanfares (achievement moments)
+    low:
+      - ambiance_loops (polish layer)
+      - gameplay_states (secondary screens)
+
+# ============================================================================
+# TOOL RECOMMENDATIONS
+# ============================================================================
+
+generation_tools:
+
+  recommended_for_themes:
+    primary: suno_v4
+    reason: "Fast iteration on 2-4 min orchestral pieces"
+    alternatives: [udio, aiva]
+
+  recommended_for_ambiance:
+    primary: stable_audio
+    reason: "Better for abstract environmental loops"
+    alternatives: [elevenlabs_sfx, freesound_curated]
+
+  recommended_for_sfx:
+    primary: elevenlabs_sfx
+    reason: "High quality, consistent UI sounds"
+    alternatives: [audiogen, manual_foley]
+
+  post_processing:
+    - audacity: "Loop point editing, normalization"
+    - izotope_rx: "Noise reduction, cleanup"
+    - fabfilter: "EQ matching across tracks"
+
+# ============================================================================
+# IMPLEMENTATION NOTES
+# ============================================================================
+
+implementation:
+
+  dynamic_music_system:
+    description: |
+      Consider implementing a layered music system where:
+      1. Era base theme plays continuously
+      2. Civ motif layers in during diplomacy
+      3. War variant crossfades when at war
+      4. Intensity layers add/remove based on game state
+
+    layers:
+      - base: era theme (always playing)
+      - overlay: civ motif (during encounters)
+      - intensity: percussion/brass additions (war, danger)
+      - ambient: terrain ambiance (always, low volume)
+
+  transition_rules:
+    era_change: "3-second crossfade between era themes"
+    peace_to_war: "5-second crossfade with drum buildup"
+    combat_start: "Quick 1-second stinger, then war theme"
+
+  volume_mix:
+    music: 0.7
+    ambiance: 0.3
+    sfx: 1.0

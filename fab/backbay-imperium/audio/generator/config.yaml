@@ -1,0 +1,394 @@
+# Backbay Imperium Audio Generation Config
+# All prompts and settings for automated batch generation
+
+schema_version: "1.0"
+
+# ============================================================================
+# API CONFIGURATION
+# ============================================================================
+
+apis:
+  suno:
+    # Self-hosted gcui-art/suno-api
+    base_url: "${SUNO_API_URL:-http://localhost:3000}"
+    model: "chirp-v4"  # or chirp-v3.5
+    wait_audio: false
+    poll_interval: 5  # seconds
+    max_wait: 300  # seconds
+
+  elevenlabs:
+    # Official ElevenLabs API
+    base_url: "https://api.elevenlabs.io/v1"
+    api_key: "${ELEVENLABS_API_KEY}"
+
+  stability:
+    # Stability AI API (optional, for ambiance)
+    base_url: "https://api.stability.ai/v1"
+    api_key: "${STABILITY_API_KEY}"
+
+# ============================================================================
+# OUTPUT SETTINGS
+# ============================================================================
+
+output:
+  base_dir: "fab/backbay-imperium/audio"
+  raw_dir: "raw"
+  edited_dir: "edited"
+  final_dir: "final"
+
+  formats:
+    music: "mp3"  # Suno outputs mp3
+    sfx: "mp3"    # ElevenLabs outputs mp3
+    ambiance: "mp3"
+
+# ============================================================================
+# STYLE TESTS (Phase 0)
+# ============================================================================
+
+style_tests:
+  output_dir: "raw/style_tests"
+  variations_per_prompt: 2
+
+  prompts:
+    - id: "style_01_ancient"
+      prompt: "Ancient Mediterranean civilization theme, lyres and frame drums, aulos flutes, mysterious yet hopeful, warm earth tones, dawn of civilization, museum documentary quality, 70 BPM, no vocals, NOT epic trailer, contemplative and dignified, classical recording warmth"
+
+    - id: "style_02_classical"
+      prompt: "Roman Empire orchestral theme, noble brass fanfares with restraint, majestic civilization at height, marble halls and forums, dignified and ordered, 80 BPM, Elgar-inspired warmth, no vocals, NOT bombastic or aggressive, scholarly grandeur, warm strings"
+
+    - id: "style_03_war"
+      prompt: "Strategic ancient warfare music, building tension, military drums, minor key strings, controlled intensity not chaos, chess-game stakes not action-movie violence, 75 BPM, menacing but measured, orchestral, no vocals, NOT battle music, tactical anticipation"
+
+    - id: "style_04_peace"
+      prompt: "Peaceful ancient settlement music, pastoral and serene, gentle lyre melody, soft frame drums, afternoon sunlight warmth, agricultural prosperity, flowing river hints, 65 BPM, no vocals, domestic tranquility, warm and hopeful, contemplative pace"
+
+    - id: "style_05_medieval"
+      prompt: "Medieval Gothic civilization theme, church organ undertones, hurdy-gurdy melody, stone cathedral atmosphere, faith and feudalism, candlelight and manuscripts, 70 BPM, dark but hopeful, monastery bells distant, no vocals, NOT fantasy adventure, sacred and scholarly"
+
+    - id: "style_06_renaissance"
+      prompt: "Renaissance civilization theme, harpsichord and viols, baroque counterpoint, Vivaldi-inspired clarity, age of discovery, Medici court elegance, 80 BPM, sophisticated and refined, no vocals, NOT dramatic, warm afternoon sunlight, intellectual optimism"
+
+    - id: "style_07_industrial"
+      prompt: "Victorian industrial era theme, full romantic orchestra, brass nobility, progress and empire, Elgar-inspired grandeur, train-age subtle rhythm, 90 BPM, powerful but dignified, no vocals, NOT steampunk action, documentary gravitas, warm and triumphant"
+
+    - id: "style_08_minimal"
+      prompt: "Minimal contemplative orchestral music, solo cello with soft strings, extremely peaceful, museum gallery atmosphere, 60 BPM, quiet dignity, space between notes, warm and intimate, no vocals, NOT ambient drone, classical restraint"
+
+    - id: "style_09_mideast"
+      prompt: "Middle Eastern classical music, oud and qanun, scholarly and refined, Andalusian maqam influence, palace gardens, 70 BPM, ornate but dignified, no vocals, NOT belly dance or action movie, academic authenticity, warm recording"
+
+    - id: "style_10_eastasia"
+      prompt: "East Asian classical music, erhu and pipa, guzheng, pentatonic melody, scholarly and eternal, imperial court dignity, 65 BPM, contemplative and refined, no vocals, NOT dramatic or action, jade and silk warmth, museum quality"
+
+# ============================================================================
+# ERA THEMES (Phase 1) - Suno
+# ============================================================================
+
+era_themes:
+  output_dir: "raw/era_themes"
+  variations_per_prompt: 3
+  api: "suno"
+
+  tracks:
+    # ANCIENT ERA
+    - id: "ancient_main"
+      name: "First Light"
+      prompt: "Ancient Mediterranean civilization theme, lyres and frame drums, aulos flutes, mysterious yet hopeful, warm earth tones, dawn of civilization, museum documentary quality, 70 BPM, no vocals, NOT epic trailer, contemplative and dignified, classical recording warmth, 3 minutes"
+
+    - id: "ancient_peace"
+      name: "River Valley"
+      prompt: "Peaceful ancient settlement music, pastoral and serene, gentle lyre melody, soft frame drums, afternoon sunlight warmth, agricultural prosperity, river sounds hints, 65 BPM, no vocals, domestic tranquility, warm and hopeful, contemplative pace, 3 minutes"
+
+    - id: "ancient_war"
+      name: "Bronze Clash"
+      prompt: "Ancient tribal warfare music, tense drums building, low brass drones, primal strategic tension, bronze age conflict, building intensity, 75 BPM, NOT action movie, menacing but measured, minor key, orchestral, no vocals, 3 minutes"
+
+    # CLASSICAL ERA
+    - id: "classical_main"
+      name: "Marble Halls"
+      prompt: "Roman Empire orchestral theme, noble brass fanfares with restraint, Greek kithara hints, majestic civilization at height, marble grandeur, dignified and ordered, 80 BPM, Elgar-inspired warmth, no vocals, NOT bombastic, scholarly grandeur, 3 minutes"
+
+    - id: "classical_peace"
+      name: "Forum Prosperity"
+      prompt: "Peaceful classical era music, flowing strings, gentle brass, prosperous empire, trade and philosophy, warm afternoon sunlight feeling, contemplative and noble, 75 BPM, no vocals, NOT dramatic, domestic grandeur, 3 minutes"
+
+    - id: "classical_war"
+      name: "Legion March"
+      prompt: "Roman military march, disciplined drums, brass authority, marching legions, organized warfare, steady inexorable advance, 85 BPM, powerful but controlled, no vocals, NOT chaotic, strategic menace, 3 minutes"
+
+    # MEDIEVAL ERA
+    - id: "medieval_main"
+      name: "Stone and Scripture"
+      prompt: "Medieval Gothic civilization theme, church organ undertones, hurdy-gurdy and lute, Gothic cathedral atmosphere, faith and feudalism, 70 BPM, dark but hopeful, monastery bells distant, no vocals, NOT fantasy adventure, sacred scholarly, 3 minutes"
+
+    - id: "medieval_peace"
+      name: "Castle Gardens"
+      prompt: "Peaceful medieval court music, lutes and recorders, troubadour elegance, castle life, courtly refinement, warm but restrained, 70 BPM, tapestry and candlelight, no vocals, gentle and dignified, 3 minutes"
+
+    - id: "medieval_war"
+      name: "Siege Towers"
+      prompt: "Medieval warfare tension, heavy drums, ominous brass, castle siege anticipation, crusader menace, grim determination, 75 BPM, minor key, no vocals, NOT action, strategic dread, 3 minutes"
+
+    # RENAISSANCE ERA
+    - id: "renaissance_main"
+      name: "New Horizons"
+      prompt: "Renaissance civilization theme, harpsichord and strings, baroque elegance, age of discovery, scientific awakening, 80 BPM, hopeful and sophisticated, Vivaldi-inspired clarity, no vocals, intellectual optimism, 3 minutes"
+
+    - id: "renaissance_peace"
+      name: "Florentine Gardens"
+      prompt: "Peaceful Renaissance court, gentle harpsichord, viols, Medici prosperity, art patronage, sunlit piazzas, 75 BPM, cultured and refined, intellectual warmth, no vocals, afternoon elegance, 3 minutes"
+
+    - id: "renaissance_war"
+      name: "Cannon Foundry"
+      prompt: "Renaissance military theme, martial drums, brass fanfares, gunpowder age warfare, naval battles hints, conquistador determination, 85 BPM, bold but measured, no vocals, strategic power, 3 minutes"
+
+    # INDUSTRIAL ERA
+    - id: "industrial_main"
+      name: "Iron and Steam"
+      prompt: "Industrial revolution theme, full romantic orchestra, progress and power, train rhythms subtle, factory ambition, Victorian grandeur, 90 BPM, Elgar-inspired nobility, no vocals, documentary gravitas, 3 minutes"
+
+    - id: "industrial_peace"
+      name: "Empire Gardens"
+      prompt: "Peaceful Victorian era, elegant strings, gentle brass, colonial prosperity, afternoon tea elegance, gaslight and railways, 80 BPM, cultured and optimistic, no vocals, warm sophistication, 3 minutes"
+
+    - id: "industrial_war"
+      name: "Battleship Drums"
+      prompt: "Industrial warfare theme, military snare, powerful brass, World War tension, dreadnought menace, artillery thunder hints, 95 BPM, nationalistic fervor, massive scale, no vocals, NOT action, strategic power, 3 minutes"
+
+    # MODERN ERA
+    - id: "modern_main"
+      name: "New World Order"
+      prompt: "Modern era civilization theme, cinematic orchestra, subtle electronic textures, global scale, technological wonder, UN dignity, 95 BPM, hopeful yet tense, no vocals, documentary gravitas, 21st century contemplation, 3 minutes"
+
+    - id: "modern_peace"
+      name: "Golden Age"
+      prompt: "Peaceful modern prosperity, warm orchestra, gentle choir hints, space age wonder, international cooperation, 85 BPM, optimistic and sweeping, gentle synth pads, no vocals, hopeful grandeur, 3 minutes"
+
+    - id: "modern_war"
+      name: "Total War"
+      prompt: "Modern warfare theme, intense percussion, powerful brass, global conflict tension, nuclear age dread, 100 BPM, massive orchestral power, controlled intensity, no vocals, NOT action movie, strategic weight, 3 minutes"
+
+# ============================================================================
+# CIVILIZATION MOTIFS (Phase 4) - Suno
+# ============================================================================
+
+civ_motifs:
+  output_dir: "raw/civ_motifs"
+  variations_per_prompt: 2
+  api: "suno"
+  target_duration: 60  # seconds
+
+  tracks:
+    - id: "civ_rome"
+      name: "Roman Motif"
+      prompt: "Roman Empire musical motif, brass fanfares, military drums, Latin dignity, SPQR grandeur, 45 seconds, loopable, noble and powerful, no vocals, NOT gladiator action, senatorial dignity"
+
+    - id: "civ_greece"
+      name: "Greek Motif"
+      prompt: "Ancient Greek musical motif, lyre and kithara, aulos flute, Dorian mode, Athenian philosophy, Olympic nobility, 45 seconds, loopable, contemplative and refined, no vocals"
+
+    - id: "civ_egypt"
+      name: "Egyptian Motif"
+      prompt: "Ancient Egyptian musical motif, ney flute melody, sistrum, frame drums, Nile eternal flow, pyramid mystery, 45 seconds, loopable, sacred and ancient, no vocals, NOT mummy movie"
+
+    - id: "civ_persia"
+      name: "Persian Motif"
+      prompt: "Persian Empire musical motif, santur and tar, daf frame drum, maqam scales, Persepolis gardens, silk road wealth, 45 seconds, loopable, ornate and elegant, no vocals, Zoroastrian dignity"
+
+    - id: "civ_china"
+      name: "Chinese Motif"
+      prompt: "Chinese Empire musical motif, erhu and pipa, guzheng, pentatonic scale, Forbidden City grandeur, jade and silk, 45 seconds, loopable, scholarly and eternal, no vocals"
+
+    - id: "civ_england"
+      name: "English Motif"
+      prompt: "British Empire musical motif, noble brass, Elgar-style strings, Rule Britannia dignity, naval power, 45 seconds, loopable, Victorian pride, no vocals, NOT pompous, refined strength"
+
+    - id: "civ_arabia"
+      name: "Arabian Motif"
+      prompt: "Arabian Caliphate musical motif, oud and qanun, riq percussion, Andalusian maqam, Baghdad wisdom, scholarly and spiritual, 45 seconds, loopable, no vocals, NOT orientalist cliche, Alhambra palace elegance"
+
+    - id: "civ_aztec"
+      name: "Aztec Motif"
+      prompt: "Aztec Empire musical motif, huehuetl log drums, teponaztli, clay ocarinas, Tenochtitlan temples, pre-Columbian ceremonial, 45 seconds, loopable, no vocals, NOT Hollywood tribal, jungle ritual dignity"
+
+    - id: "civ_india"
+      name: "Indian Motif"
+      prompt: "Indian Empire musical motif, sitar and tabla, tanpura drone, raga-inspired, Mughal grandeur, Ganges spirituality, 45 seconds, loopable, ornate and meditative, no vocals, dharmic wisdom"
+
+    - id: "civ_japan"
+      name: "Japanese Motif"
+      prompt: "Japanese Shogunate musical motif, shakuhachi and koto, taiko accents, Edo refinement, samurai honor, zen simplicity, 45 seconds, loopable, controlled beauty, no vocals, cherry blossom contemplation"
+
+    - id: "civ_russia"
+      name: "Russian Motif"
+      prompt: "Russian Empire musical motif, balalaika, bayan accordion hints, Slavic choir, winter vastness, Orthodox bells, Tchaikovsky echoes, 45 seconds, loopable, powerful and soulful, melancholic nobility"
+
+    - id: "civ_germany"
+      name: "German Motif"
+      prompt: "German States musical motif, Prussian brass discipline, Bach counterpoint hints, Gothic cathedral, Rhine romanticism, 45 seconds, loopable, orderly and powerful, no vocals, intellectual rigor"
+
+# ============================================================================
+# WONDER FANFARES (Phase 5) - Suno
+# ============================================================================
+
+wonder_fanfares:
+  output_dir: "raw/fanfares"
+  variations_per_prompt: 2
+  api: "suno"
+
+  tracks:
+    - id: "fanfare_general"
+      name: "Wonder Complete"
+      prompt: "Triumphant orchestral fanfare, World Wonder achievement, brass and timpani, 20 seconds, victorious and grand, definitive ending not fade, civilization milestone, no vocals"
+
+    - id: "fanfare_pyramids"
+      name: "Pyramids"
+      prompt: "Pyramids completion fanfare, Egyptian mysticism meets triumph, ancient horns, desert wind feeling, eternal monument awe, 20 seconds, definitive ending, no vocals"
+
+    - id: "fanfare_colosseum"
+      name: "Colosseum"
+      prompt: "Colosseum completion fanfare, Roman brass glory, crowd roar hint, gladiatorial triumph, arena grandeur, 20 seconds, powerful finish, no vocals"
+
+    - id: "fanfare_great_library"
+      name: "Great Library"
+      prompt: "Great Library completion fanfare, scholarly revelation, harps and strings, wisdom achieved, Alexandria grandeur, 20 seconds, enlightened finish, no vocals"
+
+    - id: "fanfare_notre_dame"
+      name: "Notre Dame"
+      prompt: "Notre Dame completion fanfare, church organ and bells, Gothic majesty, heavenly choir hint, cathedral triumph, 20 seconds, sacred and grand, no vocals"
+
+    - id: "fanfare_forbidden_palace"
+      name: "Forbidden Palace"
+      prompt: "Forbidden Palace completion fanfare, Chinese imperial grandeur, gongs and strings, jade throne achieved, 20 seconds, eastern majesty, no vocals"
+
+    - id: "fanfare_machu_picchu"
+      name: "Machu Picchu"
+      prompt: "Machu Picchu completion fanfare, Andean winds, pan flutes, mountain heights achieved, Incan glory, 20 seconds, triumphant finish, no vocals"
+
+    - id: "fanfare_statue_liberty"
+      name: "Statue of Liberty"
+      prompt: "Statue of Liberty completion fanfare, American brass, freedom achieved, harbor dawn, hopeful triumph, 20 seconds, definitive ending, no vocals"
+
+# ============================================================================
+# UI SOUND EFFECTS (Phase 2) - ElevenLabs
+# ============================================================================
+
+ui_sfx:
+  output_dir: "raw/sfx"
+  api: "elevenlabs"
+
+  sounds:
+    # Navigation
+    - id: "sfx_click"
+      prompt: "Soft wooden button click, luxury interface, warm tone, no reverb, refined and minimal"
+      duration: 0.15
+
+    - id: "sfx_hover"
+      prompt: "Subtle interface hover sound, gentle breath, barely audible confirmation, soft"
+      duration: 0.1
+
+    - id: "sfx_tab_switch"
+      prompt: "Gentle page turn sound, parchment rustle, elegant transition, soft paper"
+      duration: 0.2
+
+    - id: "sfx_menu_open"
+      prompt: "Soft scroll unfurling, opening a book, elegant reveal, warm tone"
+      duration: 0.3
+
+    - id: "sfx_menu_close"
+      prompt: "Gentle book closing, definitive but soft, leather bound, warm finish"
+      duration: 0.25
+
+    # Notifications
+    - id: "sfx_turn_start"
+      prompt: "Gentle chime, new dawn feeling, hopeful tone, warm bell, single note"
+      duration: 0.8
+
+    - id: "sfx_research_complete"
+      prompt: "Eureka discovery chime, crystalline sparkle, magical revelation, scholarly achievement, bright and warm"
+      duration: 1.2
+
+    - id: "sfx_production_complete"
+      prompt: "Solid completion sound, building finished, hammer on anvil, satisfying thunk, warm resonance"
+      duration: 0.8
+
+    - id: "sfx_city_founded"
+      prompt: "Settlement horn call, new beginning, frontier hope, distant brass, warm and welcoming"
+      duration: 1.5
+
+    - id: "sfx_war_declared"
+      prompt: "Ominous brass sting, tension spike, serious and foreboding, not violent, diplomatic warning"
+      duration: 1.5
+
+    - id: "sfx_peace_declared"
+      prompt: "Relief and resolution, gentle bells, diplomatic success, warm chime, hopeful ending"
+      duration: 1.2
+
+    # Combat
+    - id: "sfx_unit_select"
+      prompt: "Military acknowledgment click, brief and professional, soldier attention, crisp"
+      duration: 0.3
+
+    - id: "sfx_unit_move"
+      prompt: "March command sound, subtle but authoritative, footstep hint, movement order"
+      duration: 0.2
+
+    - id: "sfx_attack_order"
+      prompt: "Battle horn short, charge signal, aggressive but brief, brass stab"
+      duration: 0.4
+
+    - id: "sfx_unit_death"
+      prompt: "Somber note, loss acknowledged, fallen soldier, minor key, respectful"
+      duration: 0.8
+
+    - id: "sfx_victory_combat"
+      prompt: "Brief triumph fanfare, battle won, short brass victory, not overblown"
+      duration: 0.6
+
+    # Resources
+    - id: "sfx_gold_gain"
+      prompt: "Coin clink, satisfying wealth sound, gold coins, not casino-like, elegant"
+      duration: 0.5
+
+    - id: "sfx_resource_found"
+      prompt: "Discovery sparkle, valuable find, exciting reveal, gem-like shimmer"
+      duration: 0.8
+
+# ============================================================================
+# AMBIANCE LOOPS (Phase 6) - Stability or ElevenLabs
+# ============================================================================
+
+ambiance:
+  output_dir: "raw/ambiance"
+  api: "elevenlabs"  # Using ElevenLabs looping feature
+
+  loops:
+    - id: "amb_temperate"
+      prompt: "Temperate countryside ambiance, distant birds chirping, gentle wind through grass, occasional insect, pastoral peace, subtle and natural"
+      duration: 30
+      looping: true
+
+    - id: "amb_desert"
+      prompt: "Desert ambiance, wind over sand dunes, distant sand shifts, heat shimmer feeling, occasional hawk cry, vast and empty"
+      duration: 30
+      looping: true
+
+    - id: "amb_tundra"
+      prompt: "Tundra ambiance, cold wind howling, ice creaks, distant wolf howl, vast frozen emptiness, aurora feeling, sparse and haunting"
+      duration: 30
+      looping: true
+
+    - id: "amb_ocean"
+      prompt: "Ocean ambiance, waves lapping rhythmically, seagulls distant, wind in sails, vast water feeling, nautical atmosphere"
+      duration: 30
+      looping: true
+
+    - id: "amb_jungle"
+      prompt: "Jungle ambiance, tropical birds calls, insect chorus, distant monkey, dense vegetation feeling, humid and alive"
+      duration: 30
+      looping: true
+
+    - id: "amb_mountain"
+      prompt: "Mountain ambiance, high altitude wind, distant eagle cry, rock echoes, thin air vastness, majestic and remote"
+      duration: 30
+      looping: true

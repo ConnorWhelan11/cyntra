@@ -1,0 +1,79 @@
+# Backbay Imperium - PBR Material Gate v2 (updated for generated assets)
+gate_config_id: backbay_material_v002
+category: pbr_material
+schema_version: "1.0"
+
+critics:
+  completeness:
+    enabled: true
+    required_maps:
+      - basecolor
+      - normal
+      - roughness
+      - height
+    # Metalness optional - only required for metal materials
+    optional_maps:
+      - metalness
+    resolution_min: 1024
+    file_size_min_bytes: 100000
+
+  tiling:
+    enabled: true
+    seamless_required: false  # AI-generated textures may not be perfectly seamless
+    edge_tolerance: 0.05
+    pattern_repetition_max: 0.9
+
+  alignment:
+    enabled: true
+    clip_model: "ViT-L/14"
+    margin_min: 0.04
+    material_category_match: true
+    check_prompt_similarity: true
+
+  physical_correctness:
+    enabled: true
+    roughness_range: [0.0, 1.0]
+    metalness_binary: false
+    normal_map_color_check: true  # Normal maps should be purple/blue
+    height_grayscale_check: true  # Height maps should be grayscale
+
+  style:
+    enabled: true
+    color_palette_match: true
+    reference_pack: fab/backbay-imperium/style_reference/materials
+    min_similarity: 0.45
+    aesthetic: "classical_warm"
+
+decision:
+  weights:
+    completeness: 0.30
+    tiling: 0.15
+    alignment: 0.25
+    physical_correctness: 0.15
+    style: 0.15
+  overall_pass_min: 0.55
+
+hard_fail_codes:
+  - MISSING_BASECOLOR
+  - RESOLUTION_TOO_LOW
+  - FILE_CORRUPT
+
+repair_playbook:
+  MISSING_MAP:
+    priority: 1
+    instructions: |
+      Generate missing PBR maps:
+      - Re-run generate_pbr_maps.sh for specific material
+      - Check ComfyUI workflow completed successfully
+  NOT_SEAMLESS:
+    priority: 2
+    instructions: |
+      Improve seamless tiling:
+      - Add "seamless tileable" to prompt
+      - Post-process with GIMP/Photoshop offset filter
+  NORMAL_MAP_WRONG_COLOR:
+    priority: 1
+    instructions: |
+      Normal map should be purple/blue tones:
+      - Regenerate with correct prompt
+      - "normal map, purple blue tones, 3D surface"

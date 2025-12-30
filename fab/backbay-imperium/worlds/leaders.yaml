@@ -1,0 +1,201 @@
+# Backbay Imperium - Civilization Leaders
+# Generates leader portraits using SDXL with classical oil painting style
+
+schema_version: "1.0"
+world_id: backbay_leaders
+world_type: portraits
+version: "1.0.0"
+
+generator:
+  name: "Backbay Imperium - Leader Portraits"
+  description: |
+    Civilization leader portraits for diplomacy screens.
+    Style: Classical oil painting, museum quality, dignified.
+
+build:
+  determinism:
+    seed: 42
+    pythonhashseed: 42
+
+  comfyui:
+    host: "${COMFYUI_HOST:-localhost}"
+    port: "${COMFYUI_PORT:-8188}"
+    timeout_seconds: 180
+
+parameters:
+  defaults:
+    resolution: 512
+    steps: 30
+    cfg: 7.5
+
+  style_base: "classical oil painting, museum quality, dignified portrait, warm lighting, detailed face"
+  negative_prompt: "cartoon, anime, modern clothing, blurry, low quality, watermark, text, signature, amateur"
+
+leaders:
+  - id: leader_rome_trajan
+    name: "Trajan"
+    civ_id: rome
+    civ_name: "Roman Empire"
+    prompt: "Emperor Trajan portrait, Roman emperor, imperial purple toga with gold trim, golden laurel wreath crown, clean-shaven, strong jaw, noble bearing, marble columns background"
+    distinctive_features: "military bearing, Roman nose, commanding presence"
+    background: "Roman eagle standard, marble architecture"
+    colors: [purple, gold, white]
+
+  - id: leader_greece_pericles
+    name: "Pericles"
+    civ_id: greece
+    civ_name: "Greek City-States"
+    prompt: "Pericles portrait, Athenian statesman, white himation draped elegantly, distinguished grey beard, philosophical expression, Corinthian helmet held, Parthenon in background"
+    distinctive_features: "bearded philosopher, wise eyes, elongated head"
+    background: "Greek columns, olive branches, Athenian owl"
+    colors: [white, blue, gold]
+
+  - id: leader_egypt_cleopatra
+    name: "Cleopatra VII"
+    civ_id: egypt
+    civ_name: "Egyptian Kingdom"
+    prompt: "Cleopatra VII portrait, Egyptian queen, golden uraeus cobra crown, kohl-lined eyes, elegant black hair, royal linen dress, golden jewelry, Nile river background"
+    distinctive_features: "striking beauty, intelligent eyes, royal bearing"
+    background: "hieroglyphics, pyramids, lotus flowers"
+    colors: [gold, blue, black]
+
+  - id: leader_persia_cyrus
+    name: "Cyrus the Great"
+    civ_id: persia
+    civ_name: "Persian Empire"
+    prompt: "Cyrus the Great portrait, Persian emperor, ornate golden crown, long curled beard, royal purple robes with gold embroidery, noble expression, Persepolis architecture background"
+    distinctive_features: "curled beard, regal crown, benevolent expression"
+    background: "winged lion, Persian columns, roses"
+    colors: [purple, gold, turquoise]
+
+  - id: leader_china_wu_zetian
+    name: "Wu Zetian"
+    civ_id: china
+    civ_name: "Chinese Empire"
+    prompt: "Empress Wu Zetian portrait, Tang dynasty ruler, elaborate phoenix crown with jade and pearls, imperial yellow dragon robes, elegant makeup, palace interior background"
+    distinctive_features: "commanding feminine beauty, elaborate hair ornaments, shrewd eyes"
+    background: "Chinese dragons, palace screens, peonies"
+    colors: [yellow, red, jade_green]
+
+  - id: leader_england_elizabeth
+    name: "Elizabeth I"
+    civ_id: england
+    civ_name: "English Kingdom"
+    prompt: "Queen Elizabeth I portrait, Tudor monarch, enormous white lace ruff collar, red hair, pearl jewelry, ornate brocade gown, royal scepter, English coat of arms background"
+    distinctive_features: "red hair, pale complexion, elaborate ruff, pearls"
+    background: "Tudor rose, English crown, ships"
+    colors: [red, white, gold]
+
+  - id: leader_arabia_harun
+    name: "Harun al-Rashid"
+    civ_id: arabia
+    civ_name: "Arabian Caliphate"
+    prompt: "Caliph Harun al-Rashid portrait, Abbasid ruler, ornate white turban with jewel, flowing white and gold robes, wise bearded face, Baghdad palace background"
+    distinctive_features: "wise scholarly expression, ornate turban, dignified beard"
+    background: "Islamic geometric patterns, crescent moon, gardens"
+    colors: [white, gold, green]
+
+  - id: leader_aztec_montezuma
+    name: "Montezuma II"
+    civ_id: aztec
+    civ_name: "Aztec Empire"
+    prompt: "Emperor Montezuma II portrait, Aztec ruler, magnificent quetzal feather headdress, jade jewelry, jaguar pelt cloak, face paint, obsidian mirror, Tenochtitlan pyramids background"
+    distinctive_features: "fierce dignity, elaborate feathered headdress, jade piercings"
+    background: "Aztec sun stone, jaguar warriors, eagle"
+    colors: [turquoise, gold, red]
+
+  - id: leader_india_ashoka
+    name: "Ashoka"
+    civ_id: india
+    civ_name: "Indian Empire"
+    prompt: "Emperor Ashoka portrait, Mauryan ruler, simple white robes of Buddhist convert, Ashoka Chakra symbol, serene wise expression, Sanchi Stupa background"
+    distinctive_features: "serene expression, simple but regal dress, Buddhist influence"
+    background: "lions of Ashoka, dharma wheel, lotus"
+    colors: [white, saffron, blue]
+
+  - id: leader_japan_tokugawa
+    name: "Tokugawa Ieyasu"
+    civ_id: japan
+    civ_name: "Japanese Shogunate"
+    prompt: "Shogun Tokugawa Ieyasu portrait, Japanese military ruler, formal kamishimo garment, black lacquered armor elements, stern expression, Edo castle background"
+    distinctive_features: "stern samurai bearing, simple refined dress, calculating eyes"
+    background: "cherry blossoms, katana, mon crest"
+    colors: [black, red, gold]
+
+  - id: leader_russia_catherine
+    name: "Catherine the Great"
+    civ_id: russia
+    civ_name: "Russian Empire"
+    prompt: "Empress Catherine the Great portrait, Russian ruler, imperial crown, ermine-trimmed royal robes, elegant hairstyle, regal bearing, Winter Palace background"
+    distinctive_features: "intelligent eyes, elegant European style, imperial bearing"
+    background: "double-headed eagle, Faberge egg, snow"
+    colors: [royal_blue, gold, white]
+
+  - id: leader_germany_frederick
+    name: "Frederick the Great"
+    civ_id: germany
+    civ_name: "German States"
+    prompt: "King Frederick the Great portrait, Prussian ruler, blue military uniform with medals, powdered wig, sharp intelligent eyes, Sanssouci Palace background"
+    distinctive_features: "sharp military bearing, penetrating gaze, tricorn hat nearby"
+    background: "Prussian eagle, military standards, palace gardens"
+    colors: [prussian_blue, black, silver]
+
+variants:
+  - id: full
+    description: "Full portrait with background"
+    resolution: [512, 768]
+    include_background: true
+
+  - id: bust
+    description: "Bust shot for diplomacy UI"
+    resolution: [512, 512]
+    include_background: true
+
+  - id: icon
+    description: "Small icon for lists"
+    resolution: [128, 128]
+    include_background: false
+
+  - id: speaking
+    description: "Alternate expression for dialogue"
+    resolution: [512, 512]
+    expression_modifier: "speaking, slight smile"
+
+  - id: angry
+    description: "Angry expression for war declarations"
+    resolution: [512, 512]
+    expression_modifier: "stern, angry, furrowed brow"
+
+stages:
+  - id: generate_portraits
+    type: comfyui_batch
+    workflow: fab/backbay-imperium/workflows/sdxl_portrait.json
+    settings:
+      batch_size: 4
+      retry_on_failure: 2
+    outputs:
+      - "portrait.png"
+
+  - id: validate_portraits
+    type: gate
+    requires: [generate_portraits]
+    gates:
+      - fab/backbay-imperium/gates/portrait_v001.yaml
+
+  - id: generate_variants
+    type: python
+    requires: [validate_portraits]
+    script: fab/backbay-imperium/scripts/generate_portrait_variants.py
+    settings:
+      variants: [full, bust, icon, speaking, angry]
+
+  - id: composite_backgrounds
+    type: blender
+    requires: [generate_variants]
+    script: fab/backbay-imperium/scripts/composite_portrait_backgrounds.py
+
+publish:
+  portraits:
+    path: fab/backbay-imperium/assets/leaders
+  manifest:
+    path: fab/backbay-imperium/assets/leaders/manifest.yaml

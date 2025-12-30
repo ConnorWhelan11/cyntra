@@ -1,0 +1,70 @@
+# Backbay Imperium - PBR Material Gate
+gate_config_id: backbay_material_v001
+category: pbr_material
+schema_version: "1.0"
+
+critics:
+  completeness:
+    enabled: true
+    required_maps:
+      - basecolor
+      - normal
+      - roughness
+      - metalness
+      - height
+    resolution_min: 2048
+
+  tiling:
+    enabled: true
+    seamless_required: true
+    edge_tolerance: 0.02
+    pattern_repetition_max: 0.8
+
+  alignment:
+    enabled: true
+    clip_model: "ViT-L/14"
+    margin_min: 0.05
+    material_category_match: true
+
+  physical_correctness:
+    enabled: true
+    roughness_range: [0.0, 1.0]
+    metalness_binary: false
+    normal_map_valid: true
+    height_range: [-1.0, 1.0]
+
+  style:
+    enabled: true
+    color_palette_match: true
+    reference_pack: fab/backbay-imperium/style_reference/materials
+    min_similarity: 0.55
+
+decision:
+  weights:
+    completeness: 0.25
+    tiling: 0.25
+    alignment: 0.20
+    physical_correctness: 0.15
+    style: 0.15
+  overall_pass_min: 0.65
+
+hard_fail_codes:
+  - MISSING_MAP
+  - NOT_SEAMLESS
+  - NORMAL_MAP_INVALID
+  - RESOLUTION_TOO_LOW
+
+repair_playbook:
+  NOT_SEAMLESS:
+    priority: 1
+    instructions: |
+      Regenerate with seamless tiling:
+      - Add "seamless tileable" to prompt
+      - Use tiling offset test
+      - Apply seam blending post-process
+  MISSING_MAP:
+    priority: 1
+    instructions: |
+      Generate missing PBR maps:
+      - Re-run workflow with all outputs
+      - Check ComfyUI node connections

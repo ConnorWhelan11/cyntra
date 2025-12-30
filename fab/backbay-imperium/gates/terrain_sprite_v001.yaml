@@ -1,0 +1,85 @@
+# Backbay Imperium - Terrain Sprite Gate (2D isometric hex tiles)
+gate_config_id: backbay_terrain_sprite_v001
+category: terrain_sprite
+schema_version: "1.0"
+
+critics:
+  completeness:
+    enabled: true
+    expected_angles: 8  # N, NE, E, SE, S, SW, W, NW
+    resolution_min: 512
+    file_size_min_bytes: 50000
+
+  category:
+    enabled: true
+    per_view_conf_min: 0.40
+    target_classes:
+      - terrain
+      - landscape
+      - ground
+      - nature
+      - grass
+      - water
+      - mountain
+      - desert
+      - forest
+    excluded_classes:
+      - building
+      - vehicle
+      - person
+      - text
+
+  alignment:
+    enabled: true
+    clip_model: "ViT-L/14"
+    margin_min: 0.04
+    check_prompt_similarity: true
+    check_hex_shape: true
+
+  visual_consistency:
+    enabled: true
+    angle_consistency_min: 0.70  # All 8 angles should look like same terrain
+    color_palette_consistent: true
+    lighting_consistent: true
+
+  style:
+    enabled: true
+    reference_pack: fab/backbay-imperium/style_reference
+    min_similarity: 0.50
+    isometric_perspective: true
+    hex_shape_visible: true
+    color_temperature: warm
+
+decision:
+  weights:
+    completeness: 0.25
+    category: 0.25
+    alignment: 0.20
+    visual_consistency: 0.15
+    style: 0.15
+  overall_pass_min: 0.55
+
+hard_fail_codes:
+  - MISSING_ANGLES
+  - RESOLUTION_TOO_LOW
+  - NOT_TERRAIN
+
+repair_playbook:
+  MISSING_ANGLES:
+    priority: 1
+    instructions: |
+      Re-run terrain sprite generation for missing angles:
+      - Check generate_terrain_sprites.sh output
+      - Verify ComfyUI download succeeded
+  ANGLE_INCONSISTENT:
+    priority: 2
+    instructions: |
+      Regenerate all 8 angles with same seed base:
+      - Use consistent seed offset pattern
+      - Strengthen "hexagonal tile" in prompt
+  NOT_HEX_SHAPE:
+    priority: 1
+    instructions: |
+      Add stronger hex constraint to prompt:
+      - "clean hexagonal tile shape"
+      - "hex tile border visible"

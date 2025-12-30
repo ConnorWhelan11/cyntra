@@ -1,0 +1,120 @@
+{
+  "metadata": {
+    "name": "Hunyuan3D Hex Terrain Generator",
+    "version": "1.0.0",
+    "description": "Generates hex terrain tiles using Hunyuan3D v2"
+  },
+  "nodes": {
+    "1": {
+      "class_type": "CLIPTextEncode",
+      "inputs": {
+        "text": "{{prompt}}{{style_suffix}}, hexagonal tile shape, top-down game asset, clean edges, warm earth tones",
+        "clip": ["4", 0]
+      }
+    },
+    "2": {
+      "class_type": "CLIPTextEncode",
+      "inputs": {
+        "text": "blurry, low quality, broken geometry, floating parts, text, watermark, human, building, vehicle",
+        "clip": ["4", 0]
+      }
+    },
+    "3": {
+      "class_type": "EmptyLatentImage",
+      "inputs": {
+        "width": 512,
+        "height": 512,
+        "batch_size": 1
+      }
+    },
+    "4": {
+      "class_type": "CheckpointLoaderSimple",
+      "inputs": {
+        "ckpt_name": "hunyuan3d_v2.0.safetensors"
+      }
+    },
+    "5": {
+      "class_type": "KSampler",
+      "inputs": {
+        "model": ["4", 0],
+        "positive": ["1", 0],
+        "negative": ["2", 0],
+        "latent_image": ["3", 0],
+        "seed": "{{seed}}",
+        "steps": 50,
+        "cfg": 5.5,
+        "sampler_name": "euler_ancestral",
+        "scheduler": "normal",
+        "denoise": 1.0
+      }
+    },
+    "6": {
+      "class_type": "VAEDecode",
+      "inputs": {
+        "samples": ["5", 0],
+        "vae": ["4", 2]
+      }
+    },
+    "7": {
+      "class_type": "Hunyuan3DImageTo3D",
+      "inputs": {
+        "image": ["6", 0],
+        "steps": 50,
+        "guidance_scale": 5.5,
+        "seed": "{{seed}}",
+        "remove_background": true
+      }
+    },
+    "8": {
+      "class_type": "MeshDecimate",
+      "inputs": {
+        "mesh": ["7", 0],
+        "target_faces": 5000
+      }
+    },
+    "9": {
+      "class_type": "MeshNormalize",
+      "inputs": {
+        "mesh": ["8", 0],
+        "target_size": 1.0,
+        "center": true,
+        "align_bottom": true
+      }
+    },
+    "10": {
+      "class_type": "SaveGLB",
+      "inputs": {
+        "mesh": ["9", 0],
+        "filename_prefix": "terrain_{{id}}"
+      }
+    },
+    "11": {
+      "class_type": "PreviewImage",
+      "inputs": {
+        "images": ["6", 0]
+      }
+    }
+  },
+  "outputs": {
+    "mesh": "10",
+    "preview": "11"
+  },
+  "parameters": {
+    "id": {
+      "type": "string",
+      "required": true
+    },
+    "prompt": {
+      "type": "string",
+      "required": true
+    },
+    "style_suffix": {
+      "type": "string",
+      "default": ""
+    },
+    "seed": {
+      "type": "integer",
+      "default": 42
+    }
+  }
+}

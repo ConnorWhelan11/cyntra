@@ -1,0 +1,91 @@
+# Backbay Imperium - Unit Mesh Gate
+gate_config_id: backbay_unit_v001
+category: game_character
+schema_version: "1.0"
+
+render:
+  engine: CYCLES
+  device: CPU
+  resolution: [64, 64]
+  samples: 32
+  seed: 1337
+
+critics:
+  category:
+    enabled: true
+    per_view_conf_min: 0.40
+    target_classes:
+      - soldier
+      - warrior
+      - person
+      - character
+      - knight
+      - military
+    excluded_classes:
+      - building
+      - landscape
+      - vehicle
+
+  alignment:
+    enabled: true
+    clip_model: "ViT-L/14"
+    margin_min: 0.05
+    era_consistency:
+      enabled: true
+      check_anachronisms: true
+
+  geometry:
+    enabled: true
+    bounds_m:
+      width: [0.3, 2.5]
+      depth: [0.3, 2.5]
+      height: [0.5, 3.5]
+    triangle_count: [3000, 15000]
+    manifold_required: false
+    humanoid_proportions:
+      enabled: true
+      tolerance: 0.3
+
+  silhouette:
+    enabled: true
+    distinctiveness_min: 0.5
+    readability_64px: 0.6
+    weapon_visible: true
+
+  style:
+    enabled: true
+    reference_pack: fab/backbay-imperium/style_reference
+    min_similarity: 0.50
+
+decision:
+  weights:
+    category: 0.20
+    alignment: 0.25
+    geometry: 0.20
+    silhouette: 0.25
+    style: 0.10
+  overall_pass_min: 0.55
+
+hard_fail_codes:
+  - IMPORT_FAILED
+  - MESH_EMPTY
+  - NO_HUMANOID_DETECTED
+
+repair_playbook:
+  ERA_MISMATCH:
+    priority: 1
+    instructions: |
+      Regenerate with correct era equipment:
+      - Ancient: bronze, leather, simple weapons
+      - Classical: iron, lorica, gladius
+      - Medieval: steel, plate, longsword
+      - Renaissance: muskets, pikes, cannons
+      - Industrial: rifles, uniforms, artillery
+      - Modern: assault rifles, tanks, aircraft
+  SILHOUETTE_TOO_SIMILAR:
+    priority: 2
+    instructions: |
+      Make unit more visually distinct:
+      - Exaggerate weapon/shield shape
+      - Add era-specific details
+      - Adjust pose

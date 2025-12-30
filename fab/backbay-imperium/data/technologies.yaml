@@ -1,0 +1,693 @@
+# Backbay Imperium - Technology Tree
+# 70 technologies across 6 eras
+
+schema_version: "1.0"
+
+eras:
+  - id: ancient
+    name: "Ancient Era"
+    start_year: -4000
+  - id: classical
+    name: "Classical Era"
+    start_year: -1000
+  - id: medieval
+    name: "Medieval Era"
+    start_year: 500
+  - id: renaissance
+    name: "Renaissance Era"
+    start_year: 1400
+  - id: industrial
+    name: "Industrial Era"
+    start_year: 1750
+  - id: modern
+    name: "Modern Era"
+    start_year: 1900
+
+technologies:
+  # === ANCIENT ERA (12 techs) ===
+
+  - id: agriculture
+    name: "Agriculture"
+    era: ancient
+    cost: 20
+    prerequisites: []
+    unlocks:
+      improvements: [farm]
+    quote: "The discovery that seeds could be planted marked the dawn of civilization."
+
+  - id: pottery
+    name: "Pottery"
+    era: ancient
+    cost: 20
+    prerequisites: []
+    unlocks:
+      buildings: [granary]
+    quote: "From clay we shaped vessels to hold our harvest."
+
+  - id: animal_husbandry
+    name: "Animal Husbandry"
+    era: ancient
+    cost: 20
+    prerequisites: []
+    unlocks:
+      units: [scout]
+      improvements: [pasture]
+      reveals: [horses]
+    quote: "The first who tamed the horse changed warfare forever."
+
+  - id: mining
+    name: "Mining"
+    era: ancient
+    cost: 20
+    prerequisites: []
+    unlocks:
+      improvements: [mine, quarry]
+    quote: "From the earth we drew stone and metal."
+
+  - id: sailing
+    name: "Sailing"
+    era: ancient
+    cost: 40
+    prerequisites: []
+    unlocks:
+      units: [galley]
+      improvements: [fishing_boats]
+    quote: "The first vessel to catch the wind opened infinite horizons."
+
+  - id: archery
+    name: "Archery"
+    era: ancient
+    cost: 25
+    prerequisites: [animal_husbandry]
+    unlocks:
+      units: [archer]
+    quote: "The bow extended the reach of the hunter and warrior alike."
+
+  - id: writing
+    name: "Writing"
+    era: ancient
+    cost: 35
+    prerequisites: [pottery]
+    unlocks:
+      buildings: [library]
+    quote: "What is written remains."
+
+  - id: masonry
+    name: "Masonry"
+    era: ancient
+    cost: 50
+    prerequisites: [mining]
+    unlocks:
+      buildings: [walls]
+      wonders: [pyramids]
+    quote: "Stone upon stone, we built to last."
+
+  - id: bronze_working
+    name: "Bronze Working"
+    era: ancient
+    cost: 55
+    prerequisites: [mining]
+    unlocks:
+      units: [spearman]
+      buildings: [barracks]
+      reveals: [iron]
+    quote: "The age of bronze armed us for conquest."
+
+  - id: wheel
+    name: "The Wheel"
+    era: ancient
+    cost: 40
+    prerequisites: [animal_husbandry]
+    unlocks:
+      units: [chariot]
+      improvements: [road]
+    quote: "Round and round, bearing the weight of progress."
+
+  - id: mysticism
+    name: "Mysticism"
+    era: ancient
+    cost: 30
+    prerequisites: []
+    unlocks:
+      buildings: [shrine]
+      wonders: [stonehenge, oracle]
+    quote: "We looked to the heavens and found meaning."
+
+  - id: calendar
+    name: "Calendar"
+    era: ancient
+    cost: 45
+    prerequisites: [writing, mysticism]
+    unlocks:
+      improvements: [plantation, camp]
+    quote: "By marking the seasons, we mastered time."
+
+  # === CLASSICAL ERA (12 techs) ===
+
+  - id: iron_working
+    name: "Iron Working"
+    era: classical
+    cost: 75
+    prerequisites: [bronze_working]
+    unlocks:
+      units: [swordsman]
+    quote: "Iron forged the destiny of empires."
+
+  - id: mathematics
+    name: "Mathematics"
+    era: classical
+    cost: 80
+    prerequisites: [writing, calendar]
+    unlocks:
+      units: [catapult]
+    quote: "The language of the universe revealed itself in numbers."
+
+  - id: construction
+    name: "Construction"
+    era: classical
+    cost: 90
+    prerequisites: [masonry, wheel]
+    unlocks:
+      buildings: [arena]
+      wonders: [colosseum]
+    quote: "We built monuments to our glory."
+
+  - id: engineering
+    name: "Engineering"
+    era: classical
+    cost: 100
+    prerequisites: [mathematics, construction]
+    unlocks:
+      buildings: [aqueduct]
+      improvements: [fort]
+    quote: "What nature denied, engineering provided."
+
+  - id: currency
+    name: "Currency"
+    era: classical
+    cost: 70
+    prerequisites: [writing]
+    unlocks:
+      buildings: [market]
+      wonders: [petra]
+    quote: "Gold became the measure of all things."
+
+  - id: horseback_riding
+    name: "Horseback Riding"
+    era: classical
+    cost: 75
+    prerequisites: [animal_husbandry]
+    unlocks:
+      units: [horseman]
+    quote: "On horseback, the world grew smaller."
+
+  - id: philosophy
+    name: "Philosophy"
+    era: classical
+    cost: 85
+    prerequisites: [writing, mysticism]
+    unlocks:
+      buildings: [temple]
+    quote: "Know thyself."
+
+  - id: drama
+    name: "Drama and Poetry"
+    era: classical
+    cost: 70
+    prerequisites: [writing]
+    unlocks:
+      buildings: [amphitheater]
+    quote: "All the world's a stage."
+
+  - id: shipbuilding
+    name: "Shipbuilding"
+    era: classical
+    cost: 90
+    prerequisites: [sailing]
+    unlocks:
+      units: [trireme]
+    quote: "We built ships to conquer the seas."
+
+  - id: celestial_navigation
+    name: "Celestial Navigation"
+    era: classical
+    cost: 100
+    prerequisites: [sailing, calendar]
+    unlocks:
+      abilities: [ocean_travel]
+    quote: "The stars became our guide."
+
+  - id: optics
+    name: "Optics"
+    era: classical
+    cost: 95
+    prerequisites: [mathematics]
+    unlocks:
+      abilities: [increased_visibility]
+    quote: "Light revealed its secrets."
+
+  - id: political_philosophy
+    name: "Political Philosophy"
+    era: classical
+    cost: 100
+    prerequisites: [philosophy, writing]
+    unlocks:
+      governments: [republic, autocracy]
+    quote: "Who shall rule?"
+
+  # === MEDIEVAL ERA (12 techs) ===
+
+  - id: apprenticeship
+    name: "Apprenticeship"
+    era: medieval
+    cost: 150
+    prerequisites: [currency, iron_working]
+    unlocks:
+      buildings: [workshop]
+    quote: "Skill passed from master to student."
+
+  - id: stirrups
+    name: "Stirrups"
+    era: medieval
+    cost: 160
+    prerequisites: [horseback_riding]
+    unlocks:
+      units: [knight]
+    quote: "The stirrup made the knight invincible."
+
+  - id: machinery
+    name: "Machinery"
+    era: medieval
+    cost: 170
+    prerequisites: [engineering, iron_working]
+    unlocks:
+      units: [crossbowman]
+      improvements: [lumber_mill]
+    quote: "Gears and levers multiplied our strength."
+
+  - id: education
+    name: "Education"
+    era: medieval
+    cost: 180
+    prerequisites: [mathematics, philosophy]
+    unlocks:
+      buildings: [university]
+    quote: "Knowledge became power."
+
+  - id: military_tactics
+    name: "Military Tactics"
+    era: medieval
+    cost: 165
+    prerequisites: [mathematics]
+    unlocks:
+      units: [pikeman]
+    quote: "Strategy won where strength alone could not."
+
+  - id: castles
+    name: "Castles"
+    era: medieval
+    cost: 190
+    prerequisites: [construction]
+    unlocks:
+      buildings: [castle]
+    quote: "Behind stone walls, lords defied armies."
+
+  - id: civil_service
+    name: "Civil Service"
+    era: medieval
+    cost: 200
+    prerequisites: [political_philosophy, currency]
+    unlocks:
+      buildings: [palace_upgrade]
+      wonders: [forbidden_palace]
+    quote: "The bureaucrat ruled in the emperor's name."
+
+  - id: guilds
+    name: "Guilds"
+    era: medieval
+    cost: 175
+    prerequisites: [currency, apprenticeship]
+    unlocks:
+      buildings: [bank]
+      wonders: [machu_picchu]
+    quote: "United, the craftsmen prospered."
+
+  - id: theology
+    name: "Theology"
+    era: medieval
+    cost: 185
+    prerequisites: [philosophy, mysticism]
+    unlocks:
+      buildings: [cathedral]
+      wonders: [notre_dame]
+    quote: "Faith found its reasons."
+
+  - id: compass
+    name: "Compass"
+    era: medieval
+    cost: 180
+    prerequisites: [shipbuilding, celestial_navigation]
+    unlocks:
+      units: [caravel]
+    quote: "The needle pointed true."
+
+  - id: siege_weapons
+    name: "Siege Weapons"
+    era: medieval
+    cost: 195
+    prerequisites: [machinery, military_tactics]
+    unlocks:
+      units: [trebuchet]
+    quote: "No wall could stand."
+
+  - id: banking
+    name: "Banking"
+    era: medieval
+    cost: 210
+    prerequisites: [guilds, currency]
+    unlocks:
+      buildings: [bank]
+    quote: "Money begat money."
+
+  # === RENAISSANCE ERA (11 techs) ===
+
+  - id: printing_press
+    name: "Printing Press"
+    era: renaissance
+    cost: 260
+    prerequisites: [education, machinery]
+    unlocks:
+      buildings: [printing_house]
+      wonders: [sistine_chapel]
+    quote: "Ideas spread faster than armies."
+
+  - id: gunpowder
+    name: "Gunpowder"
+    era: renaissance
+    cost: 280
+    prerequisites: [siege_weapons]
+    unlocks:
+      units: [musketman]
+    quote: "Thunder in our hands."
+
+  - id: astronomy
+    name: "Astronomy"
+    era: renaissance
+    cost: 275
+    prerequisites: [education, optics]
+    unlocks:
+      buildings: [observatory]
+    quote: "We are not the center."
+
+  - id: cartography
+    name: "Cartography"
+    era: renaissance
+    cost: 250
+    prerequisites: [compass]
+    unlocks:
+      abilities: [map_trading]
+    quote: "The world took shape on parchment."
+
+  - id: metallurgy
+    name: "Metallurgy"
+    era: renaissance
+    cost: 290
+    prerequisites: [gunpowder]
+    unlocks:
+      units: [cannon]
+      buildings: [arsenal]
+    quote: "Steel became our sword."
+
+  - id: square_rigging
+    name: "Square Rigging"
+    era: renaissance
+    cost: 270
+    prerequisites: [cartography]
+    unlocks:
+      units: [frigate]
+    quote: "Full sails caught the trade winds."
+
+  - id: scientific_method
+    name: "Scientific Method"
+    era: renaissance
+    cost: 300
+    prerequisites: [astronomy, printing_press]
+    unlocks:
+      buildings: [research_lab_precursor]
+    quote: "Question everything. Test everything."
+
+  - id: economics
+    name: "Economics"
+    era: renaissance
+    cost: 280
+    prerequisites: [banking, printing_press]
+    unlocks:
+      buildings: [stock_exchange]
+    quote: "The invisible hand guided markets."
+
+  - id: military_science
+    name: "Military Science"
+    era: renaissance
+    cost: 295
+    prerequisites: [military_tactics, gunpowder]
+    unlocks:
+      units: [lancer]
+    quote: "War became a science."
+
+  - id: exploration
+    name: "Exploration"
+    era: renaissance
+    cost: 260
+    prerequisites: [cartography, astronomy]
+    unlocks:
+      abilities: [discover_natural_wonders]
+    quote: "New worlds awaited."
+
+  - id: architecture
+    name: "Architecture"
+    era: renaissance
+    cost: 285
+    prerequisites: [castles, education]
+    unlocks:
+      wonders: [forbidden_palace]
+    quote: "Form followed function."
+
+  # === INDUSTRIAL ERA (11 techs) ===
+
+  - id: industrialization
+    name: "Industrialization"
+    era: industrial
+    cost: 400
+    prerequisites: [economics, scientific_method]
+    unlocks:
+      buildings: [factory]
+      wonders: [big_ben]
+      reveals: [coal]
+    quote: "The age of iron and steam."
+
+  - id: rifling
+    name: "Rifling"
+    era: industrial
+    cost: 380
+    prerequisites: [metallurgy]
+    unlocks:
+      units: [rifleman]
+    quote: "Accuracy became lethal."
+
+  - id: steam_power
+    name: "Steam Power"
+    era: industrial
+    cost: 420
+    prerequisites: [industrialization]
+    unlocks:
+      units: [ironclad]
+      improvements: [railroad]
+      wonders: [statue_of_liberty]
+    quote: "Steam moved mountains."
+
+  - id: biology
+    name: "Biology"
+    era: industrial
+    cost: 390
+    prerequisites: [scientific_method]
+    unlocks:
+      buildings: [hospital]
+      reveals: [oil]
+    quote: "Life revealed its mechanisms."
+
+  - id: electricity
+    name: "Electricity"
+    era: industrial
+    cost: 440
+    prerequisites: [industrialization]
+    unlocks:
+      buildings: [power_plant]
+      reveals: [aluminum]
+    quote: "Light conquered the night."
+
+  - id: ballistics
+    name: "Ballistics"
+    era: industrial
+    cost: 400
+    prerequisites: [rifling]
+    unlocks:
+      units: [artillery]
+    quote: "Distance was no longer protection."
+
+  - id: military_engineering
+    name: "Military Engineering"
+    era: industrial
+    cost: 410
+    prerequisites: [ballistics, steam_power]
+    unlocks:
+      units: [cavalry]
+    quote: "War industrialized."
+
+  - id: sanitation
+    name: "Sanitation"
+    era: industrial
+    cost: 375
+    prerequisites: [biology]
+    unlocks:
+      buildings: [sewer]
+    quote: "Clean water saved more lives than medicine."
+
+  - id: combustion
+    name: "Combustion"
+    era: industrial
+    cost: 450
+    prerequisites: [steam_power]
+    unlocks:
+      units: [tank_precursor]
+    quote: "Internal fire drove the engine."
+
+  - id: railroad
+    name: "Railroad"
+    era: industrial
+    cost: 430
+    prerequisites: [steam_power]
+    unlocks:
+      improvements: [railroad]
+      buildings: [train_station]
+    quote: "Iron roads connected nations."
+
+  - id: mass_production
+    name: "Mass Production"
+    era: industrial
+    cost: 460
+    prerequisites: [industrialization, economics]
+    unlocks:
+      buildings: [assembly_plant]
+    quote: "One became many."
+
+  # === MODERN ERA (12 techs) ===
+
+  - id: flight
+    name: "Flight"
+    era: modern
+    cost: 550
+    prerequisites: [combustion]
+    unlocks:
+      units: [fighter]
+      buildings: [airport]
+    quote: "We conquered the sky."
+
+  - id: radio
+    name: "Radio"
+    era: modern
+    cost: 520
+    prerequisites: [electricity]
+    unlocks:
+      buildings: [broadcast_tower]
+    quote: "Voices traveled without wires."
+
+  - id: mass_media
+    name: "Mass Media"
+    era: modern
+    cost: 540
+    prerequisites: [radio]
+    unlocks:
+      buildings: [stadium]
+    quote: "The world watched together."
+
+  - id: plastics
+    name: "Plastics"
+    era: modern
+    cost: 500
+    prerequisites: [combustion]
+    unlocks:
+      buildings: [recycling_center]
+    quote: "A new material age."
+
+  - id: combined_arms
+    name: "Combined Arms"
+    era: modern
+    cost: 560
+    prerequisites: [military_engineering, radio]
+    unlocks:
+      units: [tank]
+    quote: "All forces acted as one."
+
+  - id: advanced_flight
+    name: "Advanced Flight"
+    era: modern
+    cost: 580
+    prerequisites: [flight]
+    unlocks:
+      units: [bomber]
+    quote: "Higher, faster, further."
+
+  - id: electronics
+    name: "Electronics"
+    era: modern
+    cost: 560
+    prerequisites: [radio]
+    unlocks:
+      buildings: [research_lab]
+    quote: "Information became electric."
+
+  - id: nuclear_fission
+    name: "Nuclear Fission"
+    era: modern
+    cost: 600
+    prerequisites: [combined_arms]
+    unlocks:
+      units: [nuclear_submarine]
+      reveals: [uranium]
+    quote: "We split the atom."
+
+  - id: computers
+    name: "Computers"
+    era: modern
+    cost: 620
+    prerequisites: [electronics]
+    unlocks:
+      buildings: [computing_center]
+    quote: "Thinking machines."
+
+  - id: rocketry
+    name: "Rocketry"
+    era: modern
+    cost: 640
+    prerequisites: [advanced_flight]
+    unlocks:
+      units: [rocket_artillery]
+    quote: "We reached for the stars."
+
+  - id: satellites
+    name: "Satellites"
+    era: modern
+    cost: 680
+    prerequisites: [rocketry, computers]
+    unlocks:
+      buildings: [space_station_part]
+    quote: "Eyes in the sky."
+
+  - id: telecommunications
+    name: "Telecommunications"
+    era: modern
+    cost: 660
+    prerequisites: [computers, satellites]
+    unlocks:
+      buildings: [internet_hub]
+    quote: "The world connected."

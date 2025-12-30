@@ -1,0 +1,105 @@
+# Backbay Imperium - Building/Wonder 3D Mesh Gate
+gate_config_id: backbay_building_v001
+category: game_building
+schema_version: "1.0"
+
+render:
+  engine: CYCLES
+  device: CPU
+  resolution: [512, 512]
+  samples: 64
+  seed: 1337
+
+critics:
+  category:
+    enabled: true
+    per_view_conf_min: 0.40
+    target_classes:
+      - building
+      - architecture
+      - structure
+      - temple
+      - castle
+      - monument
+      - tower
+      - palace
+    excluded_classes:
+      - vehicle
+      - person
+      - animal
+      - landscape
+
+  alignment:
+    enabled: true
+    clip_model: "ViT-L/14"
+    margin_min: 0.05
+    check_prompt_similarity: true
+    era_consistency:
+      enabled: true
+      check_anachronisms: true
+
+  geometry:
+    enabled: true
+    bounds_m:
+      width: [0.5, 10.0]
+      depth: [0.5, 10.0]
+      height: [0.3, 15.0]
+    triangle_count: [100, 50000]
+    manifold_required: false
+    mesh_not_empty: true
+    min_file_size_bytes: 3000
+
+  silhouette:
+    enabled: true
+    distinctiveness_min: 0.4
+    readability_128px: 0.5
+    recognizable_shape: true
+
+  style:
+    enabled: true
+    reference_pack: fab/backbay-imperium/style_reference
+    min_similarity: 0.50
+    color_temperature: warm
+    aesthetic: "classical_modernism"
+
+decision:
+  weights:
+    category: 0.20
+    alignment: 0.25
+    geometry: 0.30
+    silhouette: 0.15
+    style: 0.10
+  overall_pass_min: 0.55
+  subscore_floors:
+    geometry: 0.40
+
+hard_fail_codes:
+  - IMPORT_FAILED
+  - MESH_EMPTY
+  - FILE_TOO_SMALL
+  - NOT_BUILDING
+
+repair_playbook:
+  MESH_EMPTY:
+    priority: 1
+    instructions: |
+      Regenerate with Hunyuan3D using different settings:
+      - Increase octree resolution to 256
+      - Use higher quality reference image
+      - Try different seed
+  FILE_TOO_SMALL:
+    priority: 1
+    instructions: |
+      GLB file is too small (<3KB), likely empty or corrupt.
+      - Re-run Hunyuan3D pipeline
+      - Verify reference image is suitable
+  ERA_MISMATCH:
+    priority: 2
+    instructions: |
+      Building style doesn't match era:
+      - Ancient: mud brick, stone, simple forms
+      - Classical: columns, pediments, marble
+      - Medieval: Gothic arches, towers, stone
+      - Renaissance: domes, ornate facades
+      - Industrial: brick, smokestacks, iron
+      - Modern: glass, steel, concrete

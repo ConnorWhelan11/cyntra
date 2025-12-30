@@ -10,8 +10,15 @@ license.workspace = true
 name = "cyntra"
 path = "src/main.rs"
 
+[features]
+default = []
+fab = ["dep:cyntra-fab"]
+metal = ["fab", "cyntra-fab/metal"]
+cuda = ["fab", "cyntra-fab/cuda"]
+
 [dependencies]
 cyntra-core = { path = "../cyntra-core" }
+cyntra-fab = { path = "../cyntra-fab", optional = true }
 
 tokio.workspace = true
 clap.workspace = true

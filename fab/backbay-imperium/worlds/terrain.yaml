@@ -1,0 +1,199 @@
+# Backbay Imperium - Terrain Hex Tiles
+# Generates 3D hex terrain meshes using Hunyuan3D
+
+schema_version: "1.0"
+world_id: backbay_terrain
+world_type: hex_meshes
+version: "1.0.0"
+
+generator:
+  name: "Backbay Imperium - Terrain Tiles"
+  description: |
+    Hex terrain tiles for 4X strategy game.
+    Each terrain type has 4 variants for visual variety.
+    Style: Classical modern, museum quality, warm earth tones.
+
+build:
+  determinism:
+    seed: 42
+    pythonhashseed: 42
+
+  comfyui:
+    host: "${COMFYUI_HOST:-localhost}"
+    port: "${COMFYUI_PORT:-8188}"
+    timeout_seconds: 300
+
+parameters:
+  defaults:
+    hex_radius: 1.0
+    target_triangles: 5000
+    guidance_scale: 5.5
+    steps: 50
+
+  style_suffix: ", hexagonal tile shape, top-down game asset, clean edges, warm earth tones, classical style"
+
+meshes:
+  # === BASE TERRAIN (10 types × 4 variants = 40 meshes) ===
+
+  - id: terrain_plains
+    prompt: "flat grassland terrain, golden wheat grass, gentle rolling hills"
+    category: terrain_base
+    variants: 4
+    tags: [terrain, plains, base, farmable]
+    yields: { food: 1, production: 1 }
+
+  - id: terrain_grassland
+    prompt: "lush green grassland, thick grass meadow, wildflowers scattered"
+    category: terrain_base
+    variants: 4
+    tags: [terrain, grassland, base, farmable]
+    yields: { food: 2, production: 0 }
+
+  - id: terrain_hills
+    prompt: "elevated rocky hills terrain, grass covered slopes, stone outcrops"
+    category: terrain_base
+    variants: 4
+    tags: [terrain, hills, elevated, mineable]
+    yields: { food: 0, production: 2 }
+    defense_bonus: 50
+
+  - id: terrain_mountains
+    prompt: "dramatic mountain peaks, snow capped rocky summits, impassable cliffs"
+    category: terrain_base
+    variants: 4
+    tags: [terrain, mountains, impassable]
+    passable: false
+    yields: { food: 0, production: 0 }
+
+  - id: terrain_desert
+    prompt: "sandy desert terrain, golden dunes, arid wasteland, scattered rocks"
+    category: terrain_base
+    variants: 4
+    tags: [terrain, desert, base]
+    yields: { food: 0, production: 0 }
+
+  - id: terrain_tundra
+    prompt: "frozen tundra terrain, snow patches, sparse dead vegetation, permafrost"
+    category: terrain_base
+    variants: 4
+    tags: [terrain, tundra, cold]
+    yields: { food: 1, production: 0 }
+
+  - id: terrain_coast
+    prompt: "coastal beach terrain, sandy shore, gentle waves lapping, tide pools"
+    category: terrain_water
+    variants: 4
+    tags: [terrain, coast, water, naval]
+    yields: { food: 1, gold: 1 }
+
+  - id: terrain_ocean
+    prompt: "deep ocean water, dark blue waves, open sea texture"
+    category: terrain_water
+    variants: 4
+    tags: [terrain, ocean, water, naval, deep]
+    yields: { food: 1, production: 0 }
+
+  - id: terrain_marsh
+    prompt: "swampy marsh terrain, murky water, reeds and cattails, muddy ground"
+    category: terrain_base
+    variants: 4
+    tags: [terrain, marsh, wet, difficult]
+    yields: { food: 1, production: 0 }
+    movement_cost: 2
+
+  - id: terrain_jungle
+    prompt: "dense tropical jungle, thick canopy, vines and ferns, humid forest floor"
+    category: terrain_base
+    variants: 4
+    tags: [terrain, jungle, forest, difficult]
+    yields: { food: 1, production: 1 }
+    movement_cost: 2
+
+  # === TERRAIN FEATURES (overlays) ===
+
+  - id: feature_forest_deciduous
+    prompt: "deciduous forest trees, oak and maple, autumn colors possible, game asset"
+    category: terrain_feature
+    variants: 3
+    tags: [feature, forest, deciduous]
+    overlay: true
+
+  - id: feature_forest_conifer
+    prompt: "conifer forest, pine and spruce trees, evergreen, northern forest"
+    category: terrain_feature
+    variants: 3
+    tags: [feature, forest, conifer]
+    overlay: true
+
+  - id: feature_oasis
+    prompt: "desert oasis, palm trees, small pool of water, green vegetation"
+    category: terrain_feature
+    variants: 2
+    tags: [feature, oasis, desert]
+    overlay: true
+
+  - id: feature_volcanic
+    prompt: "volcanic terrain, black basalt rock, lava cracks glowing, steam vents"
+    category: terrain_feature
+    variants: 2
+    tags: [feature, volcanic, dangerous]
+    overlay: true
+
+  - id: feature_river
+    prompt: "river segment, flowing water, riverbanks with grass"
+    category: terrain_feature
+    variants: 4
+    tags: [feature, river, water]
+    overlay: true
+
+  - id: feature_ice
+    prompt: "ice sheet, frozen water, cracked ice surface, arctic"
+    category: terrain_feature
+    variants: 2
+    tags: [feature, ice, cold]
+    overlay: true
+
+stages:
+  - id: generate_meshes
+    type: comfyui_batch
+    workflow: fab/backbay-imperium/workflows/hunyuan3d_hex_terrain.json
+    settings:
+      batch_size: 4
+      retry_on_failure: 2
+    outputs:
+      - "mesh.glb"
+      - "preview.png"
+
+  - id: validate_meshes
+    type: gate
+    requires: [generate_meshes]
+    gates:
+      - fab/backbay-imperium/gates/terrain_v001.yaml
+    on_failure: retry
+
+  - id: render_sprites
+    type: blender
+    requires: [validate_meshes]
+    script: fab/backbay-imperium/scripts/render_hex_sprites.py
+    settings:
+      rotations: 8
+      lighting_modes: [day, dusk]
+      resolution: [256, 256]
+
+  - id: pack_atlas
+    type: python
+    requires: [render_sprites]
+    script: fab/backbay-imperium/scripts/pack_terrain_atlas.py
+    settings:
+      atlas_size: 4096
+      format: png
+
+publish:
+  meshes:
+    path: fab/backbay-imperium/assets/terrain/meshes
+  sprites:
+    path: fab/backbay-imperium/assets/terrain/sprites
+  atlas:
+    path: fab/backbay-imperium/assets/terrain/atlas.png
+  manifest:
+    path: fab/backbay-imperium/assets/terrain/manifest.yaml

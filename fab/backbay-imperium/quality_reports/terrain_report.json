@@ -1,0 +1,738 @@
+[
+  {
+    "asset_id": "feature_forest_conifer",
+    "asset_type": "terrain_sprite",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/terrain/sprites/feature_forest_conifer_north.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 8/8 angles",
+        "details": {
+          "found": [
+            "north",
+            "northeast",
+            "east",
+            "southeast",
+            "south",
+            "southwest",
+            "west",
+            "northwest"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 512x512",
+        "details": {
+          "width": 512,
+          "height": 512
+        }
+      },
+      {
+        "name": "sprite_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Avg sprite size: 357.0KB",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "feature_forest_deciduous",
+    "asset_type": "terrain_sprite",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/terrain/sprites/feature_forest_deciduous_north.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 8/8 angles",
+        "details": {
+          "found": [
+            "north",
+            "northeast",
+            "east",
+            "southeast",
+            "south",
+            "southwest",
+            "west",
+            "northwest"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 512x512",
+        "details": {
+          "width": 512,
+          "height": 512
+        }
+      },
+      {
+        "name": "sprite_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Avg sprite size: 339.2KB",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "feature_ice",
+    "asset_type": "terrain_sprite",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/terrain/sprites/feature_ice_north.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 8/8 angles",
+        "details": {
+          "found": [
+            "north",
+            "northeast",
+            "east",
+            "southeast",
+            "south",
+            "southwest",
+            "west",
+            "northwest"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 512x512",
+        "details": {
+          "width": 512,
+          "height": 512
+        }
+      },
+      {
+        "name": "sprite_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Avg sprite size: 356.1KB",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "feature_oasis",
+    "asset_type": "terrain_sprite",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/terrain/sprites/feature_oasis_north.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 8/8 angles",
+        "details": {
+          "found": [
+            "north",
+            "northeast",
+            "east",
+            "southeast",
+            "south",
+            "southwest",
+            "west",
+            "northwest"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 512x512",
+        "details": {
+          "width": 512,
+          "height": 512
+        }
+      },
+      {
+        "name": "sprite_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Avg sprite size: 343.5KB",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "feature_river",
+    "asset_type": "terrain_sprite",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/terrain/sprites/feature_river_north.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 8/8 angles",
+        "details": {
+          "found": [
+            "north",
+            "northeast",
+            "east",
+            "southeast",
+            "south",
+            "southwest",
+            "west",
+            "northwest"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 512x512",
+        "details": {
+          "width": 512,
+          "height": 512
+        }
+      },
+      {
+        "name": "sprite_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Avg sprite size: 349.6KB",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "feature_volcanic",
+    "asset_type": "terrain_sprite",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/terrain/sprites/feature_volcanic_north.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 8/8 angles",
+        "details": {
+          "found": [
+            "north",
+            "northeast",
+            "east",
+            "southeast",
+            "south",
+            "southwest",
+            "west",
+            "northwest"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 512x512",
+        "details": {
+          "width": 512,
+          "height": 512
+        }
+      },
+      {
+        "name": "sprite_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Avg sprite size: 331.3KB",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "terrain_coast",
+    "asset_type": "terrain_sprite",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/terrain/sprites/terrain_coast_north.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 8/8 angles",
+        "details": {
+          "found": [
+            "north",
+            "northeast",
+            "east",
+            "southeast",
+            "south",
+            "southwest",
+            "west",
+            "northwest"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 512x512",
+        "details": {
+          "width": 512,
+          "height": 512
+        }
+      },
+      {
+        "name": "sprite_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Avg sprite size: 346.8KB",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "terrain_desert",
+    "asset_type": "terrain_sprite",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/terrain/sprites/terrain_desert_north.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 8/8 angles",
+        "details": {
+          "found": [
+            "north",
+            "northeast",
+            "east",
+            "southeast",
+            "south",
+            "southwest",
+            "west",
+            "northwest"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 512x512",
+        "details": {
+          "width": 512,
+          "height": 512
+        }
+      },
+      {
+        "name": "sprite_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Avg sprite size: 350.8KB",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "terrain_grassland",
+    "asset_type": "terrain_sprite",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/terrain/sprites/terrain_grassland_north.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 8/8 angles",
+        "details": {
+          "found": [
+            "north",
+            "northeast",
+            "east",
+            "southeast",
+            "south",
+            "southwest",
+            "west",
+            "northwest"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 512x512",
+        "details": {
+          "width": 512,
+          "height": 512
+        }
+      },
+      {
+        "name": "sprite_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Avg sprite size: 351.7KB",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "terrain_hills",
+    "asset_type": "terrain_sprite",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/terrain/sprites/terrain_hills_north.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 8/8 angles",
+        "details": {
+          "found": [
+            "north",
+            "northeast",
+            "east",
+            "southeast",
+            "south",
+            "southwest",
+            "west",
+            "northwest"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 512x512",
+        "details": {
+          "width": 512,
+          "height": 512
+        }
+      },
+      {
+        "name": "sprite_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Avg sprite size: 327.8KB",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "terrain_jungle",
+    "asset_type": "terrain_sprite",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/terrain/sprites/terrain_jungle_north.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 8/8 angles",
+        "details": {
+          "found": [
+            "north",
+            "northeast",
+            "east",
+            "southeast",
+            "south",
+            "southwest",
+            "west",
+            "northwest"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 512x512",
+        "details": {
+          "width": 512,
+          "height": 512
+        }
+      },
+      {
+        "name": "sprite_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Avg sprite size: 340.1KB",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "terrain_marsh",
+    "asset_type": "terrain_sprite",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/terrain/sprites/terrain_marsh_north.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 8/8 angles",
+        "details": {
+          "found": [
+            "north",
+            "northeast",
+            "east",
+            "southeast",
+            "south",
+            "southwest",
+            "west",
+            "northwest"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 512x512",
+        "details": {
+          "width": 512,
+          "height": 512
+        }
+      },
+      {
+        "name": "sprite_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Avg sprite size: 349.0KB",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "terrain_mountains",
+    "asset_type": "terrain_sprite",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/terrain/sprites/terrain_mountains_north.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 8/8 angles",
+        "details": {
+          "found": [
+            "north",
+            "northeast",
+            "east",
+            "southeast",
+            "south",
+            "southwest",
+            "west",
+            "northwest"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 512x512",
+        "details": {
+          "width": 512,
+          "height": 512
+        }
+      },
+      {
+        "name": "sprite_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Avg sprite size: 315.2KB",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "terrain_ocean",
+    "asset_type": "terrain_sprite",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/terrain/sprites/terrain_ocean_north.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 8/8 angles",
+        "details": {
+          "found": [
+            "north",
+            "northeast",
+            "east",
+            "southeast",
+            "south",
+            "southwest",
+            "west",
+            "northwest"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 512x512",
+        "details": {
+          "width": 512,
+          "height": 512
+        }
+      },
+      {
+        "name": "sprite_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Avg sprite size: 393.9KB",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "terrain_plains",
+    "asset_type": "terrain_sprite",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/terrain/sprites/terrain_plains_north.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 8/8 angles",
+        "details": {
+          "found": [
+            "north",
+            "northeast",
+            "east",
+            "southeast",
+            "south",
+            "southwest",
+            "west",
+            "northwest"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 512x512",
+        "details": {
+          "width": 512,
+          "height": 512
+        }
+      },
+      {
+        "name": "sprite_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Avg sprite size: 322.4KB",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "terrain_tundra",
+    "asset_type": "terrain_sprite",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/terrain/sprites/terrain_tundra_north.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 8/8 angles",
+        "details": {
+          "found": [
+            "north",
+            "northeast",
+            "east",
+            "southeast",
+            "south",
+            "southwest",
+            "west",
+            "northwest"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 512x512",
+        "details": {
+          "width": 512,
+          "height": 512
+        }
+      },
+      {
+        "name": "sprite_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Avg sprite size: 310.1KB",
+        "details": {}
+      }
+    ]
+  }
+]

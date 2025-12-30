@@ -1,0 +1,4015 @@
+[
+  {
+    "asset_id": "mat_bamboo_woven",
+    "asset_type": "material",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/materials/mat_bamboo_woven_basecolor.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 4/4 required maps",
+        "details": {
+          "found": [
+            "basecolor",
+            "normal",
+            "roughness",
+            "height"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 1024x1024",
+        "details": {
+          "width": 1024,
+          "height": 1024,
+          "min_required": 1024
+        }
+      },
+      {
+        "name": "file_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Total size: 5.57MB",
+        "details": {
+          "total_bytes": 5842474
+        }
+      }
+    ]
+  },
+  {
+    "asset_id": "mat_brick_ancient",
+    "asset_type": "material",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/materials/mat_brick_ancient_basecolor.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 4/4 required maps",
+        "details": {
+          "found": [
+            "basecolor",
+            "normal",
+            "roughness",
+            "height"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 1024x1024",
+        "details": {
+          "width": 1024,
+          "height": 1024,
+          "min_required": 1024
+        }
+      },
+      {
+        "name": "file_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Total size: 6.85MB",
+        "details": {
+          "total_bytes": 7185130
+        }
+      }
+    ]
+  },
+  {
+    "asset_id": "mat_brick_red",
+    "asset_type": "material",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/materials/mat_brick_red_basecolor.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 4/4 required maps",
+        "details": {
+          "found": [
+            "basecolor",
+            "normal",
+            "roughness",
+            "height"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 1024x1024",
+        "details": {
+          "width": 1024,
+          "height": 1024,
+          "min_required": 1024
+        }
+      },
+      {
+        "name": "file_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Total size: 5.96MB",
+        "details": {
+          "total_bytes": 6252497
+        }
+      }
+    ]
+  },
+  {
+    "asset_id": "mat_bronze_patina",
+    "asset_type": "material",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/materials/mat_bronze_patina_basecolor.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 4/4 required maps",
+        "details": {
+          "found": [
+            "basecolor",
+            "normal",
+            "roughness",
+            "height"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 1024x1024",
+        "details": {
+          "width": 1024,
+          "height": 1024,
+          "min_required": 1024
+        }
+      },
+      {
+        "name": "file_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Total size: 6.71MB",
+        "details": {
+          "total_bytes": 7035104
+        }
+      }
+    ]
+  },
+  {
+    "asset_id": "mat_bronze_polished",
+    "asset_type": "material",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/materials/mat_bronze_polished_basecolor.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 4/4 required maps",
+        "details": {
+          "found": [
+            "basecolor",
+            "normal",
+            "roughness",
+            "height"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 1024x1024",
+        "details": {
+          "width": 1024,
+          "height": 1024,
+          "min_required": 1024
+        }
+      },
+      {
+        "name": "file_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Total size: 6.71MB",
+        "details": {
+          "total_bytes": 7035424
+        }
+      }
+    ]
+  },
+  {
+    "asset_id": "mat_canvas_military",
+    "asset_type": "material",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/materials/mat_canvas_military_basecolor.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 4/4 required maps",
+        "details": {
+          "found": [
+            "basecolor",
+            "normal",
+            "roughness",
+            "height"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 1024x1024",
+        "details": {
+          "width": 1024,
+          "height": 1024,
+          "min_required": 1024
+        }
+      },
+      {
+        "name": "file_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Total size: 6.82MB",
+        "details": {
+          "total_bytes": 7148873
+        }
+      }
+    ]
+  },
+  {
+    "asset_id": "mat_cobblestone",
+    "asset_type": "material",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/materials/mat_cobblestone_basecolor.png",
+    "overall_passed": true,
+    "overall_score": 0.75,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": false,
+        "score": 0.25,
+        "message": "Found 1/4 required maps",
+        "details": {
+          "found": [
+            "basecolor"
+          ],
+          "missing": [
+            "normal",
+            "roughness",
+            "height"
+          ]
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 1024x1024",
+        "details": {
+          "width": 1024,
+          "height": 1024,
+          "min_required": 1024
+        }
+      },
+      {
+        "name": "file_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Total size: 2.04MB",
+        "details": {
+          "total_bytes": 2140894
+        }
+      }
+    ]
+  },
+  {
+    "asset_id": "mat_dirt_dry",
+    "asset_type": "material",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/materials/mat_dirt_dry_basecolor.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 4/4 required maps",
+        "details": {
+          "found": [
+            "basecolor",
+            "normal",
+            "roughness",
+            "height"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 1024x1024",
+        "details": {
+          "width": 1024,
+          "height": 1024,
+          "min_required": 1024
+        }
+      },
+      {
+        "name": "file_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Total size: 7.34MB",
+        "details": {
+          "total_bytes": 7700551
+        }
+      }
+    ]
+  },
+  {
+    "asset_id": "mat_dirt_forest",
+    "asset_type": "material",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/materials/mat_dirt_forest_basecolor.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 4/4 required maps",
+        "details": {
+          "found": [
+            "basecolor",
+            "normal",
+            "roughness",
+            "height"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 1024x1024",
+        "details": {
+          "width": 1024,
+          "height": 1024,
+          "min_required": 1024
+        }
+      },
+      {
+        "name": "file_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Total size: 7.56MB",
+        "details": {
+          "total_bytes": 7927690
+        }
+      }
+    ]
+  },
+  {
+    "asset_id": "mat_gold_ornate",
+    "asset_type": "material",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/materials/mat_gold_ornate_basecolor.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 4/4 required maps",
+        "details": {
+          "found": [
+            "basecolor",
+            "normal",
+            "roughness",
+            "height"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 1024x1024",
+        "details": {
+          "width": 1024,
+          "height": 1024,
+          "min_required": 1024
+        }
+      },
+      {
+        "name": "file_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Total size: 7.69MB",
+        "details": {
+          "total_bytes": 8063359
+        }
+      }
+    ]
+  },
+  {
+    "asset_id": "mat_grass_dry",
+    "asset_type": "material",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/materials/mat_grass_dry_basecolor.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 4/4 required maps",
+        "details": {
+          "found": [
+            "basecolor",
+            "normal",
+            "roughness",
+            "height"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 1024x1024",
+        "details": {
+          "width": 1024,
+          "height": 1024,
+          "min_required": 1024
+        }
+      },
+      {
+        "name": "file_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Total size: 7.38MB",
+        "details": {
+          "total_bytes": 7742267
+        }
+      }
+    ]
+  },
+  {
+    "asset_id": "mat_grass_lush",
+    "asset_type": "material",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/materials/mat_grass_lush_basecolor.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 4/4 required maps",
+        "details": {
+          "found": [
+            "basecolor",
+            "normal",
+            "roughness",
+            "height"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 1024x1024",
+        "details": {
+          "width": 1024,
+          "height": 1024,
+          "min_required": 1024
+        }
+      },
+      {
+        "name": "file_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Total size: 7.32MB",
+        "details": {
+          "total_bytes": 7676980
+        }
+      }
+    ]
+  },
+  {
+    "asset_id": "mat_grass_meadow",
+    "asset_type": "material",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/materials/mat_grass_meadow_basecolor.png",
+    "overall_passed": true,
+    "overall_score": 0.7451403935750326,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": false,
+        "score": 0.25,
+        "message": "Found 1/4 required maps",
+        "details": {
+          "found": [
+            "basecolor"
+          ],
+          "missing": [
+            "normal",
+            "roughness",
+            "height"
+          ]
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 1024x1024",
+        "details": {
+          "width": 1024,
+          "height": 1024,
+          "min_required": 1024
+        }
+      },
+      {
+        "name": "file_quality",
+        "passed": true,
+        "score": 0.9854211807250977,
+        "message": "Total size: 1.97MB",
+        "details": {
+          "total_bytes": 2066578
+        }
+      }
+    ]
+  },
+  {
+    "asset_id": "mat_grass_wild",
+    "asset_type": "material",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/materials/mat_grass_wild_basecolor.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 4/4 required maps",
+        "details": {
+          "found": [
+            "basecolor",
+            "normal",
+            "roughness",
+            "height"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 1024x1024",
+        "details": {
+          "width": 1024,
+          "height": 1024,
+          "min_required": 1024
+        }
+      },
+      {
+        "name": "file_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Total size: 7.20MB",
+        "details": {
+          "total_bytes": 7549336
+        }
+      }
+    ]
+  },
+  {
+    "asset_id": "mat_gravel_path",
+    "asset_type": "material",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/materials/mat_gravel_path_basecolor.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 4/4 required maps",
+        "details": {
+          "found": [
+            "basecolor",
+            "normal",
+            "roughness",
+            "height"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 1024x1024",
+        "details": {
+          "width": 1024,
+          "height": 1024,
+          "min_required": 1024
+        }
+      },
+      {
+        "name": "file_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Total size: 7.75MB",
+        "details": {
+          "total_bytes": 8123970
+        }
+      }
+    ]
+  },
+  {
+    "asset_id": "mat_iron_forged",
+    "asset_type": "material",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/materials/mat_iron_forged_basecolor.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 4/4 required maps",
+        "details": {
+          "found": [
+            "basecolor",
+            "normal",
+            "roughness",
+            "height"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 1024x1024",
+        "details": {
+          "width": 1024,
+          "height": 1024,
+          "min_required": 1024
+        }
+      },
+      {
+        "name": "file_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Total size: 6.52MB",
+        "details": {
+          "total_bytes": 6831872
+        }
+      }
+    ]
+  },
+  {
+    "asset_id": "mat_iron_rust",
+    "asset_type": "material",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/materials/mat_iron_rust_basecolor.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 4/4 required maps",
+        "details": {
+          "found": [
+            "basecolor",
+            "normal",
+            "roughness",
+            "height"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 1024x1024",
+        "details": {
+          "width": 1024,
+          "height": 1024,
+          "min_required": 1024
+        }
+      },
+      {
+        "name": "file_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Total size: 7.61MB",
+        "details": {
+          "total_bytes": 7977256
+        }
+      }
+    ]
+  },
+  {
+    "asset_id": "mat_leather_brown",
+    "asset_type": "material",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/materials/mat_leather_brown_basecolor.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 4/4 required maps",
+        "details": {
+          "found": [
+            "basecolor",
+            "normal",
+            "roughness",
+            "height"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 1024x1024",
+        "details": {
+          "width": 1024,
+          "height": 1024,
+          "min_required": 1024
+        }
+      },
+      {
+        "name": "file_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Total size: 6.06MB",
+        "details": {
+          "total_bytes": 6355687
+        }
+      }
+    ]
+  },
+  {
+    "asset_id": "mat_linen_natural",
+    "asset_type": "material",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/materials/mat_linen_natural_basecolor.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 4/4 required maps",
+        "details": {
+          "found": [
+            "basecolor",
+            "normal",
+            "roughness",
+            "height"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 1024x1024",
+        "details": {
+          "width": 1024,
+          "height": 1024,
+          "min_required": 1024
+        }
+      },
+      {
+        "name": "file_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Total size: 8.18MB",
+        "details": {
+          "total_bytes": 8579322
+        }
+      }
+    ]
+  },
+  {
+    "asset_id": "mat_marble_green",
+    "asset_type": "material",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/materials/mat_marble_green_basecolor.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 4/4 required maps",
+        "details": {
+          "found": [
+            "basecolor",
+            "normal",
+            "roughness",
+            "height"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 1024x1024",
+        "details": {
+          "width": 1024,
+          "height": 1024,
+          "min_required": 1024
+        }
+      },
+      {
+        "name": "file_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Total size: 6.61MB",
+        "details": {
+          "total_bytes": 6934835
+        }
+      }
+    ]
+  },
+  {
+    "asset_id": "mat_marble_white",
+    "asset_type": "material",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/materials/mat_marble_white_basecolor.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 4/4 required maps",
+        "details": {
+          "found": [
+            "basecolor",
+            "normal",
+            "roughness",
+            "height"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 1024x1024",
+        "details": {
+          "width": 1024,
+          "height": 1024,
+          "min_required": 1024
+        }
+      },
+      {
+        "name": "file_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Total size: 5.27MB",
+        "details": {
+          "total_bytes": 5531217
+        }
+      }
+    ]
+  },
+  {
+    "asset_id": "mat_mud_wet",
+    "asset_type": "material",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/materials/mat_mud_wet_basecolor.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 4/4 required maps",
+        "details": {
+          "found": [
+            "basecolor",
+            "normal",
+            "roughness",
+            "height"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 1024x1024",
+        "details": {
+          "width": 1024,
+          "height": 1024,
+          "min_required": 1024
+        }
+      },
+      {
+        "name": "file_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Total size: 6.59MB",
+        "details": {
+          "total_bytes": 6910563
+        }
+      }
+    ]
+  },
+  {
+    "asset_id": "mat_plaster_white",
+    "asset_type": "material",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/materials/mat_plaster_white_basecolor.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 4/4 required maps",
+        "details": {
+          "found": [
+            "basecolor",
+            "normal",
+            "roughness",
+            "height"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 1024x1024",
+        "details": {
+          "width": 1024,
+          "height": 1024,
+          "min_required": 1024
+        }
+      },
+      {
+        "name": "file_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Total size: 6.03MB",
+        "details": {
+          "total_bytes": 6322896
+        }
+      }
+    ]
+  },
+  {
+    "asset_id": "mat_rock_granite",
+    "asset_type": "material",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/materials/mat_rock_granite_basecolor.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 4/4 required maps",
+        "details": {
+          "found": [
+            "basecolor",
+            "normal",
+            "roughness",
+            "height"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 1024x1024",
+        "details": {
+          "width": 1024,
+          "height": 1024,
+          "min_required": 1024
+        }
+      },
+      {
+        "name": "file_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Total size: 7.46MB",
+        "details": {
+          "total_bytes": 7820851
+        }
+      }
+    ]
+  },
+  {
+    "asset_id": "mat_rock_limestone",
+    "asset_type": "material",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/materials/mat_rock_limestone_basecolor.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 4/4 required maps",
+        "details": {
+          "found": [
+            "basecolor",
+            "normal",
+            "roughness",
+            "height"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 1024x1024",
+        "details": {
+          "width": 1024,
+          "height": 1024,
+          "min_required": 1024
+        }
+      },
+      {
+        "name": "file_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Total size: 6.43MB",
+        "details": {
+          "total_bytes": 6741620
+        }
+      }
+    ]
+  },
+  {
+    "asset_id": "mat_sand_beach",
+    "asset_type": "material",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/materials/mat_sand_beach_basecolor.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 4/4 required maps",
+        "details": {
+          "found": [
+            "basecolor",
+            "normal",
+            "roughness",
+            "height"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 1024x1024",
+        "details": {
+          "width": 1024,
+          "height": 1024,
+          "min_required": 1024
+        }
+      },
+      {
+        "name": "file_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Total size: 6.55MB",
+        "details": {
+          "total_bytes": 6867119
+        }
+      }
+    ]
+  },
+  {
+    "asset_id": "mat_sand_desert",
+    "asset_type": "material",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/materials/mat_sand_desert_basecolor.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 4/4 required maps",
+        "details": {
+          "found": [
+            "basecolor",
+            "normal",
+            "roughness",
+            "height"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 1024x1024",
+        "details": {
+          "width": 1024,
+          "height": 1024,
+          "min_required": 1024
+        }
+      },
+      {
+        "name": "file_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Total size: 5.79MB",
+        "details": {
+          "total_bytes": 6067059
+        }
+      }
+    ]
+  },
+  {
+    "asset_id": "mat_silk_red",
+    "asset_type": "material",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/materials/mat_silk_red_basecolor.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 4/4 required maps",
+        "details": {
+          "found": [
+            "basecolor",
+            "normal",
+            "roughness",
+            "height"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 1024x1024",
+        "details": {
+          "width": 1024,
+          "height": 1024,
+          "min_required": 1024
+        }
+      },
+      {
+        "name": "file_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Total size: 6.26MB",
+        "details": {
+          "total_bytes": 6558850
+        }
+      }
+    ]
+  },
+  {
+    "asset_id": "mat_silver_tarnished",
+    "asset_type": "material",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/materials/mat_silver_tarnished_basecolor.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 4/4 required maps",
+        "details": {
+          "found": [
+            "basecolor",
+            "normal",
+            "roughness",
+            "height"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 1024x1024",
+        "details": {
+          "width": 1024,
+          "height": 1024,
+          "min_required": 1024
+        }
+      },
+      {
+        "name": "file_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Total size: 6.54MB",
+        "details": {
+          "total_bytes": 6859450
+        }
+      }
+    ]
+  },
+  {
+    "asset_id": "mat_snow_fresh",
+    "asset_type": "material",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/materials/mat_snow_fresh_basecolor.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 4/4 required maps",
+        "details": {
+          "found": [
+            "basecolor",
+            "normal",
+            "roughness",
+            "height"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 1024x1024",
+        "details": {
+          "width": 1024,
+          "height": 1024,
+          "min_required": 1024
+        }
+      },
+      {
+        "name": "file_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Total size: 5.53MB",
+        "details": {
+          "total_bytes": 5801802
+        }
+      }
+    ]
+  },
+  {
+    "asset_id": "mat_snow_packed",
+    "asset_type": "material",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/materials/mat_snow_packed_basecolor.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 4/4 required maps",
+        "details": {
+          "found": [
+            "basecolor",
+            "normal",
+            "roughness",
+            "height"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 1024x1024",
+        "details": {
+          "width": 1024,
+          "height": 1024,
+          "min_required": 1024
+        }
+      },
+      {
+        "name": "file_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Total size: 6.34MB",
+        "details": {
+          "total_bytes": 6651334
+        }
+      }
+    ]
+  },
+  {
+    "asset_id": "mat_stone_castle",
+    "asset_type": "material",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/materials/mat_stone_castle_basecolor.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 4/4 required maps",
+        "details": {
+          "found": [
+            "basecolor",
+            "normal",
+            "roughness",
+            "height"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 1024x1024",
+        "details": {
+          "width": 1024,
+          "height": 1024,
+          "min_required": 1024
+        }
+      },
+      {
+        "name": "file_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Total size: 7.03MB",
+        "details": {
+          "total_bytes": 7370570
+        }
+      }
+    ]
+  },
+  {
+    "asset_id": "mat_stone_roman",
+    "asset_type": "material",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/materials/mat_stone_roman_basecolor.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 4/4 required maps",
+        "details": {
+          "found": [
+            "basecolor",
+            "normal",
+            "roughness",
+            "height"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 1024x1024",
+        "details": {
+          "width": 1024,
+          "height": 1024,
+          "min_required": 1024
+        }
+      },
+      {
+        "name": "file_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Total size: 6.78MB",
+        "details": {
+          "total_bytes": 7108144
+        }
+      }
+    ]
+  },
+  {
+    "asset_id": "mat_stucco_terracotta",
+    "asset_type": "material",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/materials/mat_stucco_terracotta_basecolor.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 4/4 required maps",
+        "details": {
+          "found": [
+            "basecolor",
+            "normal",
+            "roughness",
+            "height"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 1024x1024",
+        "details": {
+          "width": 1024,
+          "height": 1024,
+          "min_required": 1024
+        }
+      },
+      {
+        "name": "file_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Total size: 6.22MB",
+        "details": {
+          "total_bytes": 6527087
+        }
+      }
+    ]
+  },
+  {
+    "asset_id": "mat_tiles_slate",
+    "asset_type": "material",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/materials/mat_tiles_slate_basecolor.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 4/4 required maps",
+        "details": {
+          "found": [
+            "basecolor",
+            "normal",
+            "roughness",
+            "height"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 1024x1024",
+        "details": {
+          "width": 1024,
+          "height": 1024,
+          "min_required": 1024
+        }
+      },
+      {
+        "name": "file_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Total size: 5.79MB",
+        "details": {
+          "total_bytes": 6067097
+        }
+      }
+    ]
+  },
+  {
+    "asset_id": "mat_tiles_terracotta",
+    "asset_type": "material",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/materials/mat_tiles_terracotta_basecolor.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 4/4 required maps",
+        "details": {
+          "found": [
+            "basecolor",
+            "normal",
+            "roughness",
+            "height"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 1024x1024",
+        "details": {
+          "width": 1024,
+          "height": 1024,
+          "min_required": 1024
+        }
+      },
+      {
+        "name": "file_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Total size: 5.71MB",
+        "details": {
+          "total_bytes": 5990954
+        }
+      }
+    ]
+  },
+  {
+    "asset_id": "mat_water_deep",
+    "asset_type": "material",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/materials/mat_water_deep_basecolor.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 4/4 required maps",
+        "details": {
+          "found": [
+            "basecolor",
+            "normal",
+            "roughness",
+            "height"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 1024x1024",
+        "details": {
+          "width": 1024,
+          "height": 1024,
+          "min_required": 1024
+        }
+      },
+      {
+        "name": "file_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Total size: 5.41MB",
+        "details": {
+          "total_bytes": 5668569
+        }
+      }
+    ]
+  },
+  {
+    "asset_id": "mat_water_shallow",
+    "asset_type": "material",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/materials/mat_water_shallow_basecolor.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 4/4 required maps",
+        "details": {
+          "found": [
+            "basecolor",
+            "normal",
+            "roughness",
+            "height"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 1024x1024",
+        "details": {
+          "width": 1024,
+          "height": 1024,
+          "min_required": 1024
+        }
+      },
+      {
+        "name": "file_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Total size: 5.53MB",
+        "details": {
+          "total_bytes": 5796458
+        }
+      }
+    ]
+  },
+  {
+    "asset_id": "mat_wood_oak",
+    "asset_type": "material",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/materials/mat_wood_oak_basecolor.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 4/4 required maps",
+        "details": {
+          "found": [
+            "basecolor",
+            "normal",
+            "roughness",
+            "height"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 1024x1024",
+        "details": {
+          "width": 1024,
+          "height": 1024,
+          "min_required": 1024
+        }
+      },
+      {
+        "name": "file_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Total size: 5.83MB",
+        "details": {
+          "total_bytes": 6108480
+        }
+      }
+    ]
+  },
+  {
+    "asset_id": "mat_wood_painted",
+    "asset_type": "material",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/materials/mat_wood_painted_basecolor.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 4/4 required maps",
+        "details": {
+          "found": [
+            "basecolor",
+            "normal",
+            "roughness",
+            "height"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 1024x1024",
+        "details": {
+          "width": 1024,
+          "height": 1024,
+          "min_required": 1024
+        }
+      },
+      {
+        "name": "file_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Total size: 5.84MB",
+        "details": {
+          "total_bytes": 6127194
+        }
+      }
+    ]
+  },
+  {
+    "asset_id": "mat_wood_pine",
+    "asset_type": "material",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/materials/mat_wood_pine_basecolor.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 4/4 required maps",
+        "details": {
+          "found": [
+            "basecolor",
+            "normal",
+            "roughness",
+            "height"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 1024x1024",
+        "details": {
+          "width": 1024,
+          "height": 1024,
+          "min_required": 1024
+        }
+      },
+      {
+        "name": "file_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Total size: 6.28MB",
+        "details": {
+          "total_bytes": 6582525
+        }
+      }
+    ]
+  },
+  {
+    "asset_id": "mat_wood_walnut",
+    "asset_type": "material",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/materials/mat_wood_walnut_basecolor.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 4/4 required maps",
+        "details": {
+          "found": [
+            "basecolor",
+            "normal",
+            "roughness",
+            "height"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 1024x1024",
+        "details": {
+          "width": 1024,
+          "height": 1024,
+          "min_required": 1024
+        }
+      },
+      {
+        "name": "file_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Total size: 5.49MB",
+        "details": {
+          "total_bytes": 5751557
+        }
+      }
+    ]
+  },
+  {
+    "asset_id": "mat_wood_weathered",
+    "asset_type": "material",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/materials/mat_wood_weathered_basecolor.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 4/4 required maps",
+        "details": {
+          "found": [
+            "basecolor",
+            "normal",
+            "roughness",
+            "height"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 1024x1024",
+        "details": {
+          "width": 1024,
+          "height": 1024,
+          "min_required": 1024
+        }
+      },
+      {
+        "name": "file_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Total size: 6.68MB",
+        "details": {
+          "total_bytes": 7006399
+        }
+      }
+    ]
+  },
+  {
+    "asset_id": "mat_wool_rough",
+    "asset_type": "material",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/materials/mat_wool_rough_basecolor.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 4/4 required maps",
+        "details": {
+          "found": [
+            "basecolor",
+            "normal",
+            "roughness",
+            "height"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 1024x1024",
+        "details": {
+          "width": 1024,
+          "height": 1024,
+          "min_required": 1024
+        }
+      },
+      {
+        "name": "file_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Total size: 8.20MB",
+        "details": {
+          "total_bytes": 8601055
+        }
+      }
+    ]
+  },
+  {
+    "asset_id": "building_airport",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/building_airport.glb",
+    "overall_passed": true,
+    "overall_score": 0.9,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 41268 bytes",
+        "details": {
+          "size_bytes": 41268,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": true,
+        "score": 0.7,
+        "message": "Quality tier: medium",
+        "details": {
+          "tier": "medium",
+          "size_bytes": 41268
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "building_aqueduct",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/building_aqueduct.glb",
+    "overall_passed": true,
+    "overall_score": 0.9,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 21832 bytes",
+        "details": {
+          "size_bytes": 21832,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": true,
+        "score": 0.7,
+        "message": "Quality tier: medium",
+        "details": {
+          "tier": "medium",
+          "size_bytes": 21832
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "building_arena",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/building_arena.glb",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 104776 bytes",
+        "details": {
+          "size_bytes": 104776,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Quality tier: high",
+        "details": {
+          "tier": "high",
+          "size_bytes": 104776
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "building_arsenal",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/building_arsenal.glb",
+    "overall_passed": true,
+    "overall_score": 0.8333333333333334,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 5980 bytes",
+        "details": {
+          "size_bytes": 5980,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": false,
+        "score": 0.5,
+        "message": "Quality tier: low",
+        "details": {
+          "tier": "low",
+          "size_bytes": 5980
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "building_bank",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/building_bank.glb",
+    "overall_passed": true,
+    "overall_score": 0.9,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 52780 bytes",
+        "details": {
+          "size_bytes": 52780,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": true,
+        "score": 0.7,
+        "message": "Quality tier: medium",
+        "details": {
+          "tier": "medium",
+          "size_bytes": 52780
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "building_barracks",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/building_barracks.glb",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 350004 bytes",
+        "details": {
+          "size_bytes": 350004,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Quality tier: high",
+        "details": {
+          "tier": "high",
+          "size_bytes": 350004
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "building_castle",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/building_castle.glb",
+    "overall_passed": true,
+    "overall_score": 0.9,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 67184 bytes",
+        "details": {
+          "size_bytes": 67184,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": true,
+        "score": 0.7,
+        "message": "Quality tier: medium",
+        "details": {
+          "tier": "medium",
+          "size_bytes": 67184
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "building_cathedral",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/building_cathedral.glb",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 583716 bytes",
+        "details": {
+          "size_bytes": 583716,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Quality tier: high",
+        "details": {
+          "tier": "high",
+          "size_bytes": 583716
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "building_factory",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/building_factory.glb",
+    "overall_passed": true,
+    "overall_score": 0.9,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 28020 bytes",
+        "details": {
+          "size_bytes": 28020,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": true,
+        "score": 0.7,
+        "message": "Quality tier: medium",
+        "details": {
+          "tier": "medium",
+          "size_bytes": 28020
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "building_granary",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/building_granary.glb",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 107368 bytes",
+        "details": {
+          "size_bytes": 107368,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Quality tier: high",
+        "details": {
+          "tier": "high",
+          "size_bytes": 107368
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "building_hospital",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/building_hospital.glb",
+    "overall_passed": true,
+    "overall_score": 0.9,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 33356 bytes",
+        "details": {
+          "size_bytes": 33356,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": true,
+        "score": 0.7,
+        "message": "Quality tier: medium",
+        "details": {
+          "tier": "medium",
+          "size_bytes": 33356
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "building_library",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/building_library.glb",
+    "overall_passed": true,
+    "overall_score": 0.9,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 22404 bytes",
+        "details": {
+          "size_bytes": 22404,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": true,
+        "score": 0.7,
+        "message": "Quality tier: medium",
+        "details": {
+          "tier": "medium",
+          "size_bytes": 22404
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "building_market",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/building_market.glb",
+    "overall_passed": true,
+    "overall_score": 0.8333333333333334,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 13900 bytes",
+        "details": {
+          "size_bytes": 13900,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": false,
+        "score": 0.5,
+        "message": "Quality tier: low",
+        "details": {
+          "tier": "low",
+          "size_bytes": 13900
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "building_monument",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/building_monument.glb",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 180820 bytes",
+        "details": {
+          "size_bytes": 180820,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Quality tier: high",
+        "details": {
+          "tier": "high",
+          "size_bytes": 180820
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "building_railroad",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/building_railroad.glb",
+    "overall_passed": true,
+    "overall_score": 0.9,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 20392 bytes",
+        "details": {
+          "size_bytes": 20392,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": true,
+        "score": 0.7,
+        "message": "Quality tier: medium",
+        "details": {
+          "tier": "medium",
+          "size_bytes": 20392
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "building_research_lab",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/building_research_lab.glb",
+    "overall_passed": true,
+    "overall_score": 0.9,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 24288 bytes",
+        "details": {
+          "size_bytes": 24288,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": true,
+        "score": 0.7,
+        "message": "Quality tier: medium",
+        "details": {
+          "tier": "medium",
+          "size_bytes": 24288
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "building_shrine",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/building_shrine.glb",
+    "overall_passed": true,
+    "overall_score": 0.9,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 70932 bytes",
+        "details": {
+          "size_bytes": 70932,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": true,
+        "score": 0.7,
+        "message": "Quality tier: medium",
+        "details": {
+          "tier": "medium",
+          "size_bytes": 70932
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "building_stadium",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/building_stadium.glb",
+    "overall_passed": true,
+    "overall_score": 0.8333333333333334,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 5264 bytes",
+        "details": {
+          "size_bytes": 5264,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": false,
+        "score": 0.5,
+        "message": "Quality tier: low",
+        "details": {
+          "tier": "low",
+          "size_bytes": 5264
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "building_temple",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/building_temple.glb",
+    "overall_passed": true,
+    "overall_score": 0.7333333333333334,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 3672 bytes",
+        "details": {
+          "size_bytes": 3672,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": false,
+        "score": 0.2,
+        "message": "Quality tier: minimal",
+        "details": {
+          "tier": "minimal",
+          "size_bytes": 3672
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "building_theater",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/building_theater.glb",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 486220 bytes",
+        "details": {
+          "size_bytes": 486220,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Quality tier: high",
+        "details": {
+          "tier": "high",
+          "size_bytes": 486220
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "building_university",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/building_university.glb",
+    "overall_passed": true,
+    "overall_score": 0.8333333333333334,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 9300 bytes",
+        "details": {
+          "size_bytes": 9300,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": false,
+        "score": 0.5,
+        "message": "Quality tier: low",
+        "details": {
+          "tier": "low",
+          "size_bytes": 9300
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "building_walls",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/building_walls.glb",
+    "overall_passed": true,
+    "overall_score": 0.9,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 45304 bytes",
+        "details": {
+          "size_bytes": 45304,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": true,
+        "score": 0.7,
+        "message": "Quality tier: medium",
+        "details": {
+          "tier": "medium",
+          "size_bytes": 45304
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "building_workshop",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/building_workshop.glb",
+    "overall_passed": true,
+    "overall_score": 0.7333333333333334,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 4260 bytes",
+        "details": {
+          "size_bytes": 4260,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": false,
+        "score": 0.2,
+        "message": "Quality tier: minimal",
+        "details": {
+          "tier": "minimal",
+          "size_bytes": 4260
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "wonder_big_ben",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/wonder_big_ben.glb",
+    "overall_passed": true,
+    "overall_score": 0.7333333333333334,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 4536 bytes",
+        "details": {
+          "size_bytes": 4536,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": false,
+        "score": 0.2,
+        "message": "Quality tier: minimal",
+        "details": {
+          "tier": "minimal",
+          "size_bytes": 4536
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "wonder_colosseum",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/wonder_colosseum.glb",
+    "overall_passed": true,
+    "overall_score": 0.8333333333333334,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 16644 bytes",
+        "details": {
+          "size_bytes": 16644,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": false,
+        "score": 0.5,
+        "message": "Quality tier: low",
+        "details": {
+          "tier": "low",
+          "size_bytes": 16644
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "wonder_forbidden_palace",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/wonder_forbidden_palace.glb",
+    "overall_passed": true,
+    "overall_score": 0.9,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 49636 bytes",
+        "details": {
+          "size_bytes": 49636,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": true,
+        "score": 0.7,
+        "message": "Quality tier: medium",
+        "details": {
+          "tier": "medium",
+          "size_bytes": 49636
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "wonder_great_library",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/wonder_great_library.glb",
+    "overall_passed": true,
+    "overall_score": 0.8333333333333334,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 18092 bytes",
+        "details": {
+          "size_bytes": 18092,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": false,
+        "score": 0.5,
+        "message": "Quality tier: low",
+        "details": {
+          "tier": "low",
+          "size_bytes": 18092
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "wonder_machu_picchu",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/wonder_machu_picchu.glb",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 123504 bytes",
+        "details": {
+          "size_bytes": 123504,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Quality tier: high",
+        "details": {
+          "tier": "high",
+          "size_bytes": 123504
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "wonder_notre_dame",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/wonder_notre_dame.glb",
+    "overall_passed": true,
+    "overall_score": 0.9,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 56544 bytes",
+        "details": {
+          "size_bytes": 56544,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": true,
+        "score": 0.7,
+        "message": "Quality tier: medium",
+        "details": {
+          "tier": "medium",
+          "size_bytes": 56544
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "wonder_oracle",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/wonder_oracle.glb",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 251944 bytes",
+        "details": {
+          "size_bytes": 251944,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Quality tier: high",
+        "details": {
+          "tier": "high",
+          "size_bytes": 251944
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "wonder_petra",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/wonder_petra.glb",
+    "overall_passed": true,
+    "overall_score": 0.9,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 46164 bytes",
+        "details": {
+          "size_bytes": 46164,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": true,
+        "score": 0.7,
+        "message": "Quality tier: medium",
+        "details": {
+          "tier": "medium",
+          "size_bytes": 46164
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "wonder_pyramids",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/wonder_pyramids.glb",
+    "overall_passed": true,
+    "overall_score": 0.9,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 89508 bytes",
+        "details": {
+          "size_bytes": 89508,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": true,
+        "score": 0.7,
+        "message": "Quality tier: medium",
+        "details": {
+          "tier": "medium",
+          "size_bytes": 89508
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "wonder_sistine_chapel",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/wonder_sistine_chapel.glb",
+    "overall_passed": true,
+    "overall_score": 0.8333333333333334,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 16944 bytes",
+        "details": {
+          "size_bytes": 16944,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": false,
+        "score": 0.5,
+        "message": "Quality tier: low",
+        "details": {
+          "tier": "low",
+          "size_bytes": 16944
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "wonder_statue_liberty",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/wonder_statue_liberty.glb",
+    "overall_passed": true,
+    "overall_score": 0.9,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 69792 bytes",
+        "details": {
+          "size_bytes": 69792,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": true,
+        "score": 0.7,
+        "message": "Quality tier: medium",
+        "details": {
+          "tier": "medium",
+          "size_bytes": 69792
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "wonder_stonehenge",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/wonder_stonehenge.glb",
+    "overall_passed": true,
+    "overall_score": 0.9,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 65040 bytes",
+        "details": {
+          "size_bytes": 65040,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": true,
+        "score": 0.7,
+        "message": "Quality tier: medium",
+        "details": {
+          "tier": "medium",
+          "size_bytes": 65040
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "feature_forest_conifer",
+    "asset_type": "terrain_sprite",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/terrain/sprites/feature_forest_conifer_north.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 8/8 angles",
+        "details": {
+          "found": [
+            "north",
+            "northeast",
+            "east",
+            "southeast",
+            "south",
+            "southwest",
+            "west",
+            "northwest"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 512x512",
+        "details": {
+          "width": 512,
+          "height": 512
+        }
+      },
+      {
+        "name": "sprite_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Avg sprite size: 357.0KB",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "feature_forest_deciduous",
+    "asset_type": "terrain_sprite",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/terrain/sprites/feature_forest_deciduous_north.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 8/8 angles",
+        "details": {
+          "found": [
+            "north",
+            "northeast",
+            "east",
+            "southeast",
+            "south",
+            "southwest",
+            "west",
+            "northwest"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 512x512",
+        "details": {
+          "width": 512,
+          "height": 512
+        }
+      },
+      {
+        "name": "sprite_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Avg sprite size: 339.2KB",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "feature_ice",
+    "asset_type": "terrain_sprite",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/terrain/sprites/feature_ice_north.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 8/8 angles",
+        "details": {
+          "found": [
+            "north",
+            "northeast",
+            "east",
+            "southeast",
+            "south",
+            "southwest",
+            "west",
+            "northwest"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 512x512",
+        "details": {
+          "width": 512,
+          "height": 512
+        }
+      },
+      {
+        "name": "sprite_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Avg sprite size: 356.1KB",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "feature_oasis",
+    "asset_type": "terrain_sprite",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/terrain/sprites/feature_oasis_north.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 8/8 angles",
+        "details": {
+          "found": [
+            "north",
+            "northeast",
+            "east",
+            "southeast",
+            "south",
+            "southwest",
+            "west",
+            "northwest"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 512x512",
+        "details": {
+          "width": 512,
+          "height": 512
+        }
+      },
+      {
+        "name": "sprite_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Avg sprite size: 343.5KB",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "feature_river",
+    "asset_type": "terrain_sprite",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/terrain/sprites/feature_river_north.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 8/8 angles",
+        "details": {
+          "found": [
+            "north",
+            "northeast",
+            "east",
+            "southeast",
+            "south",
+            "southwest",
+            "west",
+            "northwest"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 512x512",
+        "details": {
+          "width": 512,
+          "height": 512
+        }
+      },
+      {
+        "name": "sprite_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Avg sprite size: 349.6KB",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "feature_volcanic",
+    "asset_type": "terrain_sprite",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/terrain/sprites/feature_volcanic_north.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 8/8 angles",
+        "details": {
+          "found": [
+            "north",
+            "northeast",
+            "east",
+            "southeast",
+            "south",
+            "southwest",
+            "west",
+            "northwest"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 512x512",
+        "details": {
+          "width": 512,
+          "height": 512
+        }
+      },
+      {
+        "name": "sprite_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Avg sprite size: 331.3KB",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "terrain_coast",
+    "asset_type": "terrain_sprite",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/terrain/sprites/terrain_coast_north.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 8/8 angles",
+        "details": {
+          "found": [
+            "north",
+            "northeast",
+            "east",
+            "southeast",
+            "south",
+            "southwest",
+            "west",
+            "northwest"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 512x512",
+        "details": {
+          "width": 512,
+          "height": 512
+        }
+      },
+      {
+        "name": "sprite_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Avg sprite size: 346.8KB",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "terrain_desert",
+    "asset_type": "terrain_sprite",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/terrain/sprites/terrain_desert_north.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 8/8 angles",
+        "details": {
+          "found": [
+            "north",
+            "northeast",
+            "east",
+            "southeast",
+            "south",
+            "southwest",
+            "west",
+            "northwest"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 512x512",
+        "details": {
+          "width": 512,
+          "height": 512
+        }
+      },
+      {
+        "name": "sprite_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Avg sprite size: 350.8KB",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "terrain_grassland",
+    "asset_type": "terrain_sprite",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/terrain/sprites/terrain_grassland_north.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 8/8 angles",
+        "details": {
+          "found": [
+            "north",
+            "northeast",
+            "east",
+            "southeast",
+            "south",
+            "southwest",
+            "west",
+            "northwest"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 512x512",
+        "details": {
+          "width": 512,
+          "height": 512
+        }
+      },
+      {
+        "name": "sprite_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Avg sprite size: 351.7KB",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "terrain_hills",
+    "asset_type": "terrain_sprite",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/terrain/sprites/terrain_hills_north.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 8/8 angles",
+        "details": {
+          "found": [
+            "north",
+            "northeast",
+            "east",
+            "southeast",
+            "south",
+            "southwest",
+            "west",
+            "northwest"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 512x512",
+        "details": {
+          "width": 512,
+          "height": 512
+        }
+      },
+      {
+        "name": "sprite_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Avg sprite size: 327.8KB",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "terrain_jungle",
+    "asset_type": "terrain_sprite",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/terrain/sprites/terrain_jungle_north.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 8/8 angles",
+        "details": {
+          "found": [
+            "north",
+            "northeast",
+            "east",
+            "southeast",
+            "south",
+            "southwest",
+            "west",
+            "northwest"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 512x512",
+        "details": {
+          "width": 512,
+          "height": 512
+        }
+      },
+      {
+        "name": "sprite_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Avg sprite size: 340.1KB",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "terrain_marsh",
+    "asset_type": "terrain_sprite",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/terrain/sprites/terrain_marsh_north.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 8/8 angles",
+        "details": {
+          "found": [
+            "north",
+            "northeast",
+            "east",
+            "southeast",
+            "south",
+            "southwest",
+            "west",
+            "northwest"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 512x512",
+        "details": {
+          "width": 512,
+          "height": 512
+        }
+      },
+      {
+        "name": "sprite_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Avg sprite size: 349.0KB",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "terrain_mountains",
+    "asset_type": "terrain_sprite",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/terrain/sprites/terrain_mountains_north.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 8/8 angles",
+        "details": {
+          "found": [
+            "north",
+            "northeast",
+            "east",
+            "southeast",
+            "south",
+            "southwest",
+            "west",
+            "northwest"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 512x512",
+        "details": {
+          "width": 512,
+          "height": 512
+        }
+      },
+      {
+        "name": "sprite_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Avg sprite size: 315.2KB",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "terrain_ocean",
+    "asset_type": "terrain_sprite",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/terrain/sprites/terrain_ocean_north.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 8/8 angles",
+        "details": {
+          "found": [
+            "north",
+            "northeast",
+            "east",
+            "southeast",
+            "south",
+            "southwest",
+            "west",
+            "northwest"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 512x512",
+        "details": {
+          "width": 512,
+          "height": 512
+        }
+      },
+      {
+        "name": "sprite_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Avg sprite size: 393.9KB",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "terrain_plains",
+    "asset_type": "terrain_sprite",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/terrain/sprites/terrain_plains_north.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 8/8 angles",
+        "details": {
+          "found": [
+            "north",
+            "northeast",
+            "east",
+            "southeast",
+            "south",
+            "southwest",
+            "west",
+            "northwest"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 512x512",
+        "details": {
+          "width": 512,
+          "height": 512
+        }
+      },
+      {
+        "name": "sprite_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Avg sprite size: 322.4KB",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "terrain_tundra",
+    "asset_type": "terrain_sprite",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/terrain/sprites/terrain_tundra_north.png",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "completeness",
+        "passed": true,
+        "score": 1.0,
+        "message": "Found 8/8 angles",
+        "details": {
+          "found": [
+            "north",
+            "northeast",
+            "east",
+            "southeast",
+            "south",
+            "southwest",
+            "west",
+            "northwest"
+          ],
+          "missing": []
+        }
+      },
+      {
+        "name": "resolution",
+        "passed": true,
+        "score": 1.0,
+        "message": "Resolution: 512x512",
+        "details": {
+          "width": 512,
+          "height": 512
+        }
+      },
+      {
+        "name": "sprite_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Avg sprite size: 310.1KB",
+        "details": {}
+      }
+    ]
+  }
+]

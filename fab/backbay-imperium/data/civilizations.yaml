@@ -1,0 +1,475 @@
+# Backbay Imperium - Civilization Definitions
+# Game data for civilizations, exported alongside assets
+
+schema_version: "1.0"
+
+civilizations:
+  # === ROME ===
+  - id: rome
+    name: "Roman Empire"
+    adjective: "Roman"
+    leader: trajan
+    colors:
+      primary: "#8B0000"    # Dark red
+      secondary: "#FFD700"  # Gold
+
+    unique_ability:
+      id: all_roads_lead_to_rome
+      name: "All Roads Lead to Rome"
+      description: "Trade routes to your capital provide +2 Gold to both cities. Roads cost 50% less to build."
+      effects:
+        - type: trade_route_gold_to_capital
+          value: 2
+        - type: road_cost_reduction
+          value_bp: 5000
+
+    unique_unit:
+      id: legion
+      name: "Legion"
+      replaces: swordsman
+      prompt_modifier: "Roman legionary with rectangular scutum shield, lorica segmentata armor, gladius sword"
+      abilities:
+        - "Can build roads and forts"
+      bonus_attack: 0
+      bonus_defense: 1
+
+    unique_building:
+      id: baths
+      name: "Baths"
+      replaces: aqueduct
+      effects:
+        - type: housing
+          value: 2
+        - type: amenity
+          value: 1
+
+    start_bias:
+      - hills
+      - plains
+
+    flavor:
+      capital_names: ["Rome", "Antium", "Neapolis", "Pompeii", "Ravenna"]
+      city_names: ["Mediolanum", "Florentia", "Genua", "Bononia", "Patavium"]
+
+  # === GREECE ===
+  - id: greece
+    name: "Greek City-States"
+    adjective: "Greek"
+    leader: pericles
+    colors:
+      primary: "#4169E1"    # Royal blue
+      secondary: "#FFFFFF"  # White
+
+    unique_ability:
+      id: glory_of_hellas
+      name: "Glory of Hellas"
+      description: "+5% Culture for each City-State you are Suzerain of. Receive a free Envoy when you complete any Wonder."
+      effects:
+        - type: culture_per_city_state_suzerain
+          value_bp: 500
+        - type: envoy_on_wonder
+
+    unique_unit:
+      id: hoplite
+      name: "Hoplite"
+      replaces: spearman
+      prompt_modifier: "Greek hoplite with bronze hoplon shield, Corinthian helmet, long spear"
+      abilities:
+        - "+50% combat bonus when adjacent to another Hoplite"
+      bonus_defense: 2
+
+    unique_building:
+      id: acropolis
+      name: "Acropolis"
+      replaces: theater
+      effects:
+        - type: culture
+          value: 2
+        - type: culture_per_adjacent_district
+          value: 1
+      placement: "Must be built on Hills"
+
+    start_bias:
+      - coast
+      - hills
+
+    flavor:
+      capital_names: ["Athens", "Sparta", "Corinth", "Thebes", "Argos"]
+      city_names: ["Delphi", "Olympia", "Mycenae", "Miletus", "Ephesus"]
+
+  # === EGYPT ===
+  - id: egypt
+    name: "Egyptian Kingdom"
+    adjective: "Egyptian"
+    leader: cleopatra
+    colors:
+      primary: "#DAA520"    # Goldenrod
+      secondary: "#000080"  # Navy blue
+
+    unique_ability:
+      id: iteru
+      name: "Iteru"
+      description: "+15% Production towards Wonders. Districts and Wonders built on Floodplains do not suffer flood damage."
+      effects:
+        - type: wonder_production
+          value_bp: 1500
+        - type: floodplain_immunity
+
+    unique_unit:
+      id: maryannu_chariot
+      name: "Maryannu Chariot Archer"
+      replaces: chariot
+      prompt_modifier: "Egyptian war chariot with archer, gold decorations, two horses"
+      abilities:
+        - "No movement penalty in Open terrain"
+      bonus_attack: 1
+
+    unique_building:
+      id: sphinx
+      name: "Sphinx"
+      type: improvement
+      effects:
+        - type: faith
+          value: 1
+        - type: culture
+          value: 1
+        - type: appeal
+          value: 2
+      placement: "Cannot be built on Hills"
+
+    start_bias:
+      - desert
+      - floodplains
+
+    flavor:
+      capital_names: ["Alexandria", "Thebes", "Memphis", "Heliopolis", "Giza"]
+      city_names: ["Luxor", "Aswan", "Abydos", "Karnak", "Pi-Ramesses"]
+
+  # === PERSIA ===
+  - id: persia
+    name: "Persian Empire"
+    adjective: "Persian"
+    leader: cyrus
+    colors:
+      primary: "#800080"    # Purple
+      secondary: "#FFD700"  # Gold
+
+    unique_ability:
+      id: satrapies
+      name: "Satrapies"
+      description: "+1 Trade Route capacity. Receive +2 Gold and +1 Culture for each Trade Route to your own cities."
+      effects:
+        - type: trade_route_capacity
+          value: 1
+        - type: internal_trade_gold
+          value: 2
+        - type: internal_trade_culture
+          value: 1
+
+    unique_unit:
+      id: immortal
+      name: "Immortal"
+      replaces: swordsman
+      prompt_modifier: "Persian Immortal with spear, wicker shield, colorful robes, beard"
+      abilities:
+        - "Can use ranged attack"
+      range: 1
+      bonus_defense: 1
+
+    unique_building:
+      id: pairidaeza
+      name: "Pairidaeza"
+      type: improvement
+      effects:
+        - type: gold
+          value: 1
+        - type: culture
+          value: 2
+        - type: appeal
+          value: 2
+      placement: "Cannot be built adjacent to another Pairidaeza"
+
+    start_bias:
+      - hills
+      - plains
+
+    flavor:
+      capital_names: ["Persepolis", "Pasargadae", "Susa", "Ecbatana", "Babylon"]
+      city_names: ["Sardis", "Gordion", "Tarsus", "Damascus", "Bactra"]
+
+  # === CHINA ===
+  - id: china
+    name: "Chinese Empire"
+    adjective: "Chinese"
+    leader: wu_zetian
+    colors:
+      primary: "#FF4500"    # Orange red
+      secondary: "#FFD700"  # Gold
+
+    unique_ability:
+      id: dynastic_cycle
+      name: "Dynastic Cycle"
+      description: "Eurekas and Inspirations provide 60% of civics and technologies instead of 50%."
+      effects:
+        - type: eureka_bonus
+          value_bp: 6000
+        - type: inspiration_bonus
+          value_bp: 6000
+
+    unique_unit:
+      id: crouching_tiger
+      name: "Crouching Tiger"
+      replaces: crossbowman
+      prompt_modifier: "Chinese crossbowman with repeating crossbow, lacquered armor"
+      abilities:
+        - "Higher combat strength but shorter range"
+      bonus_attack: 2
+      range: 1
+
+    unique_building:
+      id: great_wall
+      name: "Great Wall"
+      type: improvement
+      effects:
+        - type: gold
+          value: 1
+        - type: defense
+          value: 2
+        - type: culture_if_adjacent
+          value: 1
+      placement: "Must be built on border"
+
+    start_bias:
+      - plains
+      - grassland
+
+    flavor:
+      capital_names: ["Xi'an", "Beijing", "Luoyang", "Nanjing", "Hangzhou"]
+      city_names: ["Shanghai", "Chengdu", "Guangzhou", "Kaifeng", "Suzhou"]
+
+  # === ENGLAND ===
+  - id: england
+    name: "English Kingdom"
+    adjective: "English"
+    leader: elizabeth
+    colors:
+      primary: "#DC143C"    # Crimson
+      secondary: "#FFFFFF"  # White
+
+    unique_ability:
+      id: british_museum
+      name: "British Museum"
+      description: "Archaeological Museums gain +2 Artifact slots. +4 Archaeology bonuses from natural wonders."
+      effects:
+        - type: museum_slots
+          value: 2
+        - type: natural_wonder_bonus
+          value: 4
+
+    unique_unit:
+      id: sea_dog
+      name: "Sea Dog"
+      replaces: frigate
+      prompt_modifier: "English galleon, Union Jack flag, cannons, privateer ship"
+      abilities:
+        - "Can capture enemy ships"
+      bonus_attack: 1
+
+    unique_building:
+      id: royal_navy_dockyard
+      name: "Royal Navy Dockyard"
+      replaces: harbor
+      effects:
+        - type: gold
+          value: 2
+        - type: movement_to_units
+          value: 1
+        - type: great_admiral_points
+          value: 2
+
+    start_bias:
+      - coast
+
+    flavor:
+      capital_names: ["London", "York", "Canterbury", "Winchester", "Oxford"]
+      city_names: ["Bristol", "Liverpool", "Manchester", "Birmingham", "Edinburgh"]
+
+  # === ARABIA ===
+  - id: arabia
+    name: "Arabian Caliphate"
+    adjective: "Arabian"
+    leader: harun
+    colors:
+      primary: "#228B22"    # Forest green
+      secondary: "#FFFFFF"  # White
+
+    unique_ability:
+      id: the_last_prophet
+      name: "The Last Prophet"
+      description: "Automatically receive the final Great Prophet when the second-to-last Prophet is claimed. +1 Science for each foreign city following your Religion."
+      effects:
+        - type: guaranteed_prophet
+        - type: science_per_foreign_follower
+          value_milli: 100
+
+    unique_unit:
+      id: mamluk
+      name: "Mamluk"
+      replaces: knight
+      prompt_modifier: "Arabian Mamluk cavalry, curved sword, chainmail, turban"
+      abilities:
+        - "Heals at the end of every turn even after moving or attacking"
+      bonus_defense: 1
+
+    unique_building:
+      id: madrasa
+      name: "Madrasa"
+      replaces: university
+      effects:
+        - type: science
+          value: 3
+        - type: faith
+          value: 1
+        - type: science_percent
+          value_bp: 3300
+
+    start_bias:
+      - desert
+
+    flavor:
+      capital_names: ["Baghdad", "Damascus", "Cairo", "Mecca", "Medina"]
+      city_names: ["Basra", "Mosul", "Aleppo", "Jerusalem", "Cordoba"]
+
+  # === AZTEC ===
+  - id: aztec
+    name: "Aztec Empire"
+    adjective: "Aztec"
+    leader: montezuma
+    colors:
+      primary: "#008B8B"    # Dark cyan
+      secondary: "#FF4500"  # Orange red
+
+    unique_ability:
+      id: legend_of_five_suns
+      name: "Legend of the Five Suns"
+      description: "Can spend Builder charges to rush district construction. +1 Combat Strength for each different Luxury resource improved in your empire."
+      effects:
+        - type: builder_rush_district
+        - type: combat_per_luxury
+          value: 1
+
+    unique_unit:
+      id: eagle_warrior
+      name: "Eagle Warrior"
+      replaces: warrior
+      prompt_modifier: "Aztec Eagle Warrior, eagle feather headdress, macuahuitl obsidian sword, jaguar spots"
+      abilities:
+        - "Has a chance to capture defeated enemies as Builders"
+      bonus_attack: 1
+
+    unique_building:
+      id: tlachtli
+      name: "Tlachtli"
+      replaces: arena
+      effects:
+        - type: amenity
+          value: 2
+        - type: faith
+          value: 1
+        - type: great_general_points
+          value: 1
+
+    start_bias:
+      - jungle
+      - coast
+
+    flavor:
+      capital_names: ["Tenochtitlan", "Texcoco", "Tlacopan", "Tlatelolco", "Azcapotzalco"]
+      city_names: ["Cholula", "Coyoacan", "Xochimilco", "Tacuba", "Tepeyac"]
+
+  # === Additional civs for expansion ===
+
+  - id: india
+    name: "Indian Empire"
+    adjective: "Indian"
+    leader: ashoka
+    colors:
+      primary: "#FF8C00"    # Dark orange (saffron)
+      secondary: "#FFFFFF"  # White
+
+    unique_ability:
+      id: dharma
+      name: "Dharma"
+      description: "+2 Spread Religion charges for Missionaries. +100% Faith from Trade Routes to civilizations following your Religion."
+      effects:
+        - type: missionary_charges
+          value: 2
+        - type: faith_from_trade_to_same_religion
+          value_bp: 10000
+
+    start_bias:
+      - grassland
+
+  - id: japan
+    name: "Japanese Shogunate"
+    adjective: "Japanese"
+    leader: tokugawa
+    colors:
+      primary: "#DC143C"    # Crimson
+      secondary: "#000000"  # Black
+
+    unique_ability:
+      id: meiji_restoration
+      name: "Meiji Restoration"
+      description: "Districts receive a +1 adjacency bonus from each other district."
+      effects:
+        - type: district_adjacency_from_districts
+          value: 1
+
+    start_bias:
+      - coast
+
+  - id: russia
+    name: "Russian Empire"
+    adjective: "Russian"
+    leader: catherine
+    colors:
+      primary: "#FFD700"    # Gold
+      secondary: "#1E90FF"  # Dodger blue
+
+    unique_ability:
+      id: mother_russia
+      name: "Mother Russia"
+      description: "Cities receive extra territory when founded. +1 Faith and +1 Production from Tundra tiles."
+      effects:
+        - type: extra_territory_on_founding
+          value: 3
+        - type: tundra_faith
+          value: 1
+        - type: tundra_production
+          value: 1
+
+    start_bias:
+      - tundra
+
+  - id: germany
+    name: "German States"
+    adjective: "German"
+    leader: frederick
+    colors:
+      primary: "#000000"    # Black
+      secondary: "#FFD700"  # Gold
+
+    unique_ability:
+      id: free_imperial_cities
+      name: "Free Imperial Cities"
+      description: "+1 Military Policy slot. +7 Combat Strength when attacking City-States."
+      effects:
+        - type: military_policy_slot
+          value: 1
+        - type: combat_vs_city_states
+          value: 7
+
+    start_bias:
+      - plains
+      - forest

@@ -68,6 +68,50 @@ enum Commands {
 
     /// Initialize a new project
     Init,
+
+    /// Fab asset quality critics (requires --features fab)
+    #[cfg(feature = "fab")]
+    Fab {
+        #[command(subcommand)]
+        command: FabCommands,
+    },
+}
+
+#[cfg(feature = "fab")]
+#[derive(Subcommand)]
+enum FabCommands {
+    /// Evaluate mesh geometry
+    Geometry {
+        /// Path to GLB/glTF file
+        path: PathBuf,
+        /// Minimum triangle count
+        #[arg(long, default_value = "100")]
+        min_triangles: usize,
+        /// Maximum triangle count
+        #[arg(long, default_value = "500000")]
+        max_triangles: usize,
+    },
+    /// Evaluate render realism
+    Realism {
+        /// Directory containing rendered images
+        render_dir: PathBuf,
+        /// Skip CLIP (stats only, faster)
+        #[arg(long)]
+        stats_only: bool,
+    },
+    /// Batch evaluate multiple GLB files
+    Batch {
+        /// Directory containing GLB files
+        input: PathBuf,
+        /// Output JSON file
+        #[arg(short, long)]
+        output: Option<PathBuf>,
+        /// Continue on error
+        #[arg(long)]
+        continue_on_error: bool,
+    },
+    /// Show critic info
+    Info,
 }
 
 #[derive(Subcommand)]

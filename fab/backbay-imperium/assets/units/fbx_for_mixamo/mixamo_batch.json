@@ -1,0 +1,23 @@
+{
+  "units": [],
+  "animations_to_apply": {
+    "idle": "Breathing Idle",
+    "walk": "Walking",
+    "run": "Running",
+    "attack_melee": "Great Sword Slash",
+    "attack_ranged": "Standing Aim Bow Draw",
+    "death": "Falling Back Death",
+    "victory": "Victory",
+    "working": "Digging",
+    "praying": "Praying"
+  },
+  "instructions": [
+    "1. Go to https://www.mixamo.com",
+    "2. Sign in with Adobe account",
+    "3. Click 'Upload Character' for each FBX file",
+    "4. Wait for auto-rigging to complete",
+    "5. Apply animations from the list above",
+    "6. Download as FBX with skin",
+    "7. Place in assets/units/rigged/"
+  ]
+}

@@ -1,0 +1,78 @@
+# Backbay Imperium - Leader Portrait Gate
+gate_config_id: backbay_portrait_v001
+category: portrait
+schema_version: "1.0"
+
+critics:
+  face_quality:
+    enabled: true
+    face_detected: true
+    face_centered: true
+    eyes_visible: true
+    expression_dignified: true
+    quality_score_min: 0.75
+
+  alignment:
+    enabled: true
+    clip_model: "ViT-L/14"
+    margin_min: 0.06
+    check_leader_identity: true
+    check_era_costume: true
+
+  style:
+    enabled: true
+    target_style: "classical oil painting"
+    reference_pack: fab/backbay-imperium/style_reference/portraits
+    min_similarity: 0.60
+    color_temperature: warm
+    lighting: dramatic
+
+  artifacts:
+    enabled: true
+    check_hands: true
+    check_eyes_symmetry: true
+    check_text_watermarks: true
+    artifact_tolerance: 0.1
+
+  historical_accuracy:
+    enabled: true
+    costume_era_match: true
+    distinctive_features: true
+    cultural_elements: true
+
+decision:
+  weights:
+    face_quality: 0.30
+    alignment: 0.25
+    style: 0.25
+    artifacts: 0.10
+    historical_accuracy: 0.10
+  overall_pass_min: 0.65
+
+hard_fail_codes:
+  - NO_FACE_DETECTED
+  - WRONG_LEADER
+  - SEVERE_ARTIFACTS
+  - WATERMARK_DETECTED
+
+repair_playbook:
+  FACE_QUALITY_LOW:
+    priority: 1
+    instructions: |
+      Regenerate with focus on face:
+      - Add "detailed face" to prompt
+      - Increase steps to 40+
+      - Use face restoration model
+  STYLE_MISMATCH:
+    priority: 2
+    instructions: |
+      Adjust style to classical oil painting:
+      - Add "classical oil painting style"
+      - Add "museum quality"
+      - Add "warm lighting"
+  ERA_COSTUME_WRONG:
+    priority: 1
+    instructions: |
+      Fix costume for historical accuracy:
+      - Research correct period dress
+      - Add specific costume elements to prompt

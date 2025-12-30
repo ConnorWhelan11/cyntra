@@ -1,0 +1,1297 @@
+[
+  {
+    "asset_id": "building_airport",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/building_airport.glb",
+    "overall_passed": true,
+    "overall_score": 0.9,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 41268 bytes",
+        "details": {
+          "size_bytes": 41268,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": true,
+        "score": 0.7,
+        "message": "Quality tier: medium",
+        "details": {
+          "tier": "medium",
+          "size_bytes": 41268
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "building_aqueduct",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/building_aqueduct.glb",
+    "overall_passed": true,
+    "overall_score": 0.9,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 21832 bytes",
+        "details": {
+          "size_bytes": 21832,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": true,
+        "score": 0.7,
+        "message": "Quality tier: medium",
+        "details": {
+          "tier": "medium",
+          "size_bytes": 21832
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "building_arena",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/building_arena.glb",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 104776 bytes",
+        "details": {
+          "size_bytes": 104776,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Quality tier: high",
+        "details": {
+          "tier": "high",
+          "size_bytes": 104776
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "building_arsenal",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/building_arsenal.glb",
+    "overall_passed": true,
+    "overall_score": 0.8333333333333334,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 5980 bytes",
+        "details": {
+          "size_bytes": 5980,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": false,
+        "score": 0.5,
+        "message": "Quality tier: low",
+        "details": {
+          "tier": "low",
+          "size_bytes": 5980
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "building_bank",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/building_bank.glb",
+    "overall_passed": true,
+    "overall_score": 0.9,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 52780 bytes",
+        "details": {
+          "size_bytes": 52780,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": true,
+        "score": 0.7,
+        "message": "Quality tier: medium",
+        "details": {
+          "tier": "medium",
+          "size_bytes": 52780
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "building_barracks",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/building_barracks.glb",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 350004 bytes",
+        "details": {
+          "size_bytes": 350004,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Quality tier: high",
+        "details": {
+          "tier": "high",
+          "size_bytes": 350004
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "building_castle",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/building_castle.glb",
+    "overall_passed": true,
+    "overall_score": 0.9,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 67184 bytes",
+        "details": {
+          "size_bytes": 67184,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": true,
+        "score": 0.7,
+        "message": "Quality tier: medium",
+        "details": {
+          "tier": "medium",
+          "size_bytes": 67184
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "building_cathedral",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/building_cathedral.glb",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 583716 bytes",
+        "details": {
+          "size_bytes": 583716,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Quality tier: high",
+        "details": {
+          "tier": "high",
+          "size_bytes": 583716
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "building_factory",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/building_factory.glb",
+    "overall_passed": true,
+    "overall_score": 0.9,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 28020 bytes",
+        "details": {
+          "size_bytes": 28020,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": true,
+        "score": 0.7,
+        "message": "Quality tier: medium",
+        "details": {
+          "tier": "medium",
+          "size_bytes": 28020
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "building_granary",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/building_granary.glb",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 107368 bytes",
+        "details": {
+          "size_bytes": 107368,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Quality tier: high",
+        "details": {
+          "tier": "high",
+          "size_bytes": 107368
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "building_hospital",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/building_hospital.glb",
+    "overall_passed": true,
+    "overall_score": 0.9,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 33356 bytes",
+        "details": {
+          "size_bytes": 33356,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": true,
+        "score": 0.7,
+        "message": "Quality tier: medium",
+        "details": {
+          "tier": "medium",
+          "size_bytes": 33356
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "building_library",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/building_library.glb",
+    "overall_passed": true,
+    "overall_score": 0.9,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 22404 bytes",
+        "details": {
+          "size_bytes": 22404,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": true,
+        "score": 0.7,
+        "message": "Quality tier: medium",
+        "details": {
+          "tier": "medium",
+          "size_bytes": 22404
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "building_market",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/building_market.glb",
+    "overall_passed": true,
+    "overall_score": 0.8333333333333334,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 13900 bytes",
+        "details": {
+          "size_bytes": 13900,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": false,
+        "score": 0.5,
+        "message": "Quality tier: low",
+        "details": {
+          "tier": "low",
+          "size_bytes": 13900
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "building_monument",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/building_monument.glb",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 180820 bytes",
+        "details": {
+          "size_bytes": 180820,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Quality tier: high",
+        "details": {
+          "tier": "high",
+          "size_bytes": 180820
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "building_railroad",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/building_railroad.glb",
+    "overall_passed": true,
+    "overall_score": 0.9,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 20392 bytes",
+        "details": {
+          "size_bytes": 20392,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": true,
+        "score": 0.7,
+        "message": "Quality tier: medium",
+        "details": {
+          "tier": "medium",
+          "size_bytes": 20392
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "building_research_lab",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/building_research_lab.glb",
+    "overall_passed": true,
+    "overall_score": 0.9,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 24288 bytes",
+        "details": {
+          "size_bytes": 24288,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": true,
+        "score": 0.7,
+        "message": "Quality tier: medium",
+        "details": {
+          "tier": "medium",
+          "size_bytes": 24288
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "building_shrine",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/building_shrine.glb",
+    "overall_passed": true,
+    "overall_score": 0.9,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 70932 bytes",
+        "details": {
+          "size_bytes": 70932,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": true,
+        "score": 0.7,
+        "message": "Quality tier: medium",
+        "details": {
+          "tier": "medium",
+          "size_bytes": 70932
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "building_stadium",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/building_stadium.glb",
+    "overall_passed": true,
+    "overall_score": 0.8333333333333334,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 5264 bytes",
+        "details": {
+          "size_bytes": 5264,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": false,
+        "score": 0.5,
+        "message": "Quality tier: low",
+        "details": {
+          "tier": "low",
+          "size_bytes": 5264
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "building_temple",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/building_temple.glb",
+    "overall_passed": true,
+    "overall_score": 0.7333333333333334,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 3672 bytes",
+        "details": {
+          "size_bytes": 3672,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": false,
+        "score": 0.2,
+        "message": "Quality tier: minimal",
+        "details": {
+          "tier": "minimal",
+          "size_bytes": 3672
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "building_theater",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/building_theater.glb",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 486220 bytes",
+        "details": {
+          "size_bytes": 486220,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Quality tier: high",
+        "details": {
+          "tier": "high",
+          "size_bytes": 486220
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "building_university",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/building_university.glb",
+    "overall_passed": true,
+    "overall_score": 0.8333333333333334,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 9300 bytes",
+        "details": {
+          "size_bytes": 9300,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": false,
+        "score": 0.5,
+        "message": "Quality tier: low",
+        "details": {
+          "tier": "low",
+          "size_bytes": 9300
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "building_walls",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/building_walls.glb",
+    "overall_passed": true,
+    "overall_score": 0.9,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 45304 bytes",
+        "details": {
+          "size_bytes": 45304,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": true,
+        "score": 0.7,
+        "message": "Quality tier: medium",
+        "details": {
+          "tier": "medium",
+          "size_bytes": 45304
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "building_workshop",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/building_workshop.glb",
+    "overall_passed": true,
+    "overall_score": 0.7333333333333334,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 4260 bytes",
+        "details": {
+          "size_bytes": 4260,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": false,
+        "score": 0.2,
+        "message": "Quality tier: minimal",
+        "details": {
+          "tier": "minimal",
+          "size_bytes": 4260
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "wonder_big_ben",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/wonder_big_ben.glb",
+    "overall_passed": true,
+    "overall_score": 0.7333333333333334,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 4536 bytes",
+        "details": {
+          "size_bytes": 4536,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": false,
+        "score": 0.2,
+        "message": "Quality tier: minimal",
+        "details": {
+          "tier": "minimal",
+          "size_bytes": 4536
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "wonder_colosseum",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/wonder_colosseum.glb",
+    "overall_passed": true,
+    "overall_score": 0.8333333333333334,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 16644 bytes",
+        "details": {
+          "size_bytes": 16644,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": false,
+        "score": 0.5,
+        "message": "Quality tier: low",
+        "details": {
+          "tier": "low",
+          "size_bytes": 16644
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "wonder_forbidden_palace",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/wonder_forbidden_palace.glb",
+    "overall_passed": true,
+    "overall_score": 0.9,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 49636 bytes",
+        "details": {
+          "size_bytes": 49636,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": true,
+        "score": 0.7,
+        "message": "Quality tier: medium",
+        "details": {
+          "tier": "medium",
+          "size_bytes": 49636
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "wonder_great_library",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/wonder_great_library.glb",
+    "overall_passed": true,
+    "overall_score": 0.8333333333333334,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 18092 bytes",
+        "details": {
+          "size_bytes": 18092,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": false,
+        "score": 0.5,
+        "message": "Quality tier: low",
+        "details": {
+          "tier": "low",
+          "size_bytes": 18092
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "wonder_machu_picchu",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/wonder_machu_picchu.glb",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 123504 bytes",
+        "details": {
+          "size_bytes": 123504,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Quality tier: high",
+        "details": {
+          "tier": "high",
+          "size_bytes": 123504
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "wonder_notre_dame",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/wonder_notre_dame.glb",
+    "overall_passed": true,
+    "overall_score": 0.9,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 56544 bytes",
+        "details": {
+          "size_bytes": 56544,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": true,
+        "score": 0.7,
+        "message": "Quality tier: medium",
+        "details": {
+          "tier": "medium",
+          "size_bytes": 56544
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "wonder_oracle",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/wonder_oracle.glb",
+    "overall_passed": true,
+    "overall_score": 1.0,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 251944 bytes",
+        "details": {
+          "size_bytes": 251944,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": true,
+        "score": 1.0,
+        "message": "Quality tier: high",
+        "details": {
+          "tier": "high",
+          "size_bytes": 251944
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "wonder_petra",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/wonder_petra.glb",
+    "overall_passed": true,
+    "overall_score": 0.9,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 46164 bytes",
+        "details": {
+          "size_bytes": 46164,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": true,
+        "score": 0.7,
+        "message": "Quality tier: medium",
+        "details": {
+          "tier": "medium",
+          "size_bytes": 46164
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "wonder_pyramids",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/wonder_pyramids.glb",
+    "overall_passed": true,
+    "overall_score": 0.9,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 89508 bytes",
+        "details": {
+          "size_bytes": 89508,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": true,
+        "score": 0.7,
+        "message": "Quality tier: medium",
+        "details": {
+          "tier": "medium",
+          "size_bytes": 89508
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "wonder_sistine_chapel",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/wonder_sistine_chapel.glb",
+    "overall_passed": true,
+    "overall_score": 0.8333333333333334,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 16944 bytes",
+        "details": {
+          "size_bytes": 16944,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": false,
+        "score": 0.5,
+        "message": "Quality tier: low",
+        "details": {
+          "tier": "low",
+          "size_bytes": 16944
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "wonder_statue_liberty",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/wonder_statue_liberty.glb",
+    "overall_passed": true,
+    "overall_score": 0.9,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 69792 bytes",
+        "details": {
+          "size_bytes": 69792,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": true,
+        "score": 0.7,
+        "message": "Quality tier: medium",
+        "details": {
+          "tier": "medium",
+          "size_bytes": 69792
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  },
+  {
+    "asset_id": "wonder_stonehenge",
+    "asset_type": "building_mesh",
+    "file_path": "/Users/connor/Medica/glia-fab/fab/backbay-imperium/assets/buildings/meshes/wonder_stonehenge.glb",
+    "overall_passed": true,
+    "overall_score": 0.9,
+    "hard_fails": [],
+    "checks": [
+      {
+        "name": "file_size",
+        "passed": true,
+        "score": 1.0,
+        "message": "File size: 65040 bytes",
+        "details": {
+          "size_bytes": 65040,
+          "min_required": 3000
+        }
+      },
+      {
+        "name": "mesh_quality",
+        "passed": true,
+        "score": 0.7,
+        "message": "Quality tier: medium",
+        "details": {
+          "tier": "medium",
+          "size_bytes": 65040
+        }
+      },
+      {
+        "name": "reference_exists",
+        "passed": true,
+        "score": 1.0,
+        "message": "Reference image: found",
+        "details": {}
+      }
+    ]
+  }
+]

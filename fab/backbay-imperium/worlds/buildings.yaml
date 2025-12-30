@@ -1,0 +1,455 @@
+# Backbay Imperium - City Buildings & Wonders
+# Generates 3D building models for city screen icons and wonder hero images
+
+schema_version: "1.0"
+world_id: backbay_buildings
+world_type: architecture
+version: "1.0.0"
+
+generator:
+  name: "Backbay Imperium - Buildings & Wonders"
+  description: |
+    City improvement buildings and world wonders.
+    Buildings rendered as 3/4 view icons.
+    Wonders rendered as dramatic hero shots.
+
+build:
+  determinism:
+    seed: 42
+    pythonhashseed: 42
+
+  comfyui:
+    host: "${COMFYUI_HOST:-localhost}"
+    port: "${COMFYUI_PORT:-8188}"
+    timeout_seconds: 300
+
+parameters:
+  defaults:
+    target_triangles: 20000
+    guidance_scale: 6.0
+    steps: 50
+
+  style_suffix: ", ancient architecture, classical style, game asset, detailed, warm lighting"
+
+meshes:
+  # === CITY IMPROVEMENTS ===
+
+  # Ancient Era Buildings
+  - id: building_monument
+    name: "Monument"
+    prompt: "stone obelisk monument, ancient Egyptian style, hieroglyphic carvings, granite"
+    category: building
+    era: ancient
+    tags: [building, culture, ancient]
+    tech_required: null
+    effects: [{ type: culture, value: 1 }]
+    cost: 40
+
+  - id: building_granary
+    name: "Granary"
+    prompt: "ancient grain storage building, mud brick construction, large storage jars, wooden roof"
+    category: building
+    era: ancient
+    tags: [building, food, growth, ancient]
+    tech_required: pottery
+    effects: [{ type: food_storage, value: 2 }, { type: housing, value: 1 }]
+    cost: 60
+
+  - id: building_shrine
+    name: "Shrine"
+    prompt: "small religious shrine, stone altar, offering bowls, sacred flame, ancient temple style"
+    category: building
+    era: ancient
+    tags: [building, faith, ancient]
+    tech_required: mysticism
+    effects: [{ type: faith, value: 1 }]
+    cost: 40
+
+  - id: building_walls
+    name: "Walls"
+    prompt: "ancient city walls, stone fortification, crenellated battlements, watchtower, gate"
+    category: building
+    era: ancient
+    tags: [building, defense, ancient]
+    tech_required: masonry
+    effects: [{ type: city_defense, value: 50 }]
+    cost: 80
+
+  - id: building_barracks
+    name: "Barracks"
+    prompt: "military barracks, training grounds, weapon racks, soldier quarters, ancient Roman style"
+    category: building
+    era: ancient
+    tags: [building, military, ancient]
+    tech_required: bronze_working
+    effects: [{ type: unit_experience, value: 15 }]
+    cost: 75
+
+  # Classical Era Buildings
+  - id: building_library
+    name: "Library"
+    prompt: "ancient library, scroll shelves, reading alcoves, columns, Alexandria style, scholars"
+    category: building
+    era: classical
+    tags: [building, science, classical]
+    tech_required: writing
+    effects: [{ type: science_per_pop, value_milli: 500 }]
+    cost: 75
+
+  - id: building_market
+    name: "Market"
+    prompt: "ancient marketplace, covered stalls, merchant goods, columns, busy bazaar"
+    category: building
+    era: classical
+    tags: [building, gold, classical]
+    tech_required: currency
+    effects: [{ type: gold, value: 2 }, { type: gold_percent, value_bp: 2500 }]
+    cost: 100
+
+  - id: building_temple
+    name: "Temple"
+    prompt: "classical Greek temple, Doric columns, triangular pediment, marble, sacred space"
+    category: building
+    era: classical
+    tags: [building, faith, classical]
+    tech_required: philosophy
+    effects: [{ type: faith, value: 2 }, { type: happiness, value: 1 }]
+    cost: 100
+
+  - id: building_colosseum
+    name: "Arena"
+    prompt: "Roman arena colosseum, tiered seating, oval shape, gladiatorial, grand architecture"
+    category: building
+    era: classical
+    tags: [building, happiness, classical]
+    tech_required: construction
+    effects: [{ type: happiness, value: 2 }]
+    cost: 150
+
+  - id: building_aqueduct
+    name: "Aqueduct"
+    prompt: "Roman aqueduct, stone arches, water channel, engineering marvel, hillside"
+    category: building
+    era: classical
+    tags: [building, growth, classical]
+    tech_required: engineering
+    effects: [{ type: housing, value: 2 }, { type: growth_percent, value_bp: 1000 }]
+    cost: 120
+    requires: fresh_water
+
+  # Medieval Era Buildings
+  - id: building_university
+    name: "University"
+    prompt: "medieval university, Gothic architecture, lecture halls, courtyard, Oxford style"
+    category: building
+    era: medieval
+    tags: [building, science, medieval]
+    tech_required: education
+    effects: [{ type: science_per_pop, value_milli: 500 }, { type: science_percent, value_bp: 3300 }]
+    cost: 200
+    requires: library
+
+  - id: building_cathedral
+    name: "Cathedral"
+    prompt: "Gothic cathedral, flying buttresses, rose window, tall spires, medieval grandeur"
+    category: building
+    era: medieval
+    tags: [building, faith, culture, medieval]
+    tech_required: theology
+    effects: [{ type: faith, value: 3 }, { type: culture, value: 2 }]
+    cost: 250
+    requires: temple
+
+  - id: building_castle
+    name: "Castle"
+    prompt: "medieval stone castle, keep, curtain walls, towers, moat, drawbridge"
+    category: building
+    era: medieval
+    tags: [building, defense, medieval]
+    tech_required: castles
+    effects: [{ type: city_defense, value: 100 }, { type: unit_experience, value: 25 }]
+    cost: 200
+    requires: walls
+
+  - id: building_workshop
+    name: "Workshop"
+    prompt: "medieval craftsman workshop, forges, workbenches, tools, guild hall"
+    category: building
+    era: medieval
+    tags: [building, production, medieval]
+    tech_required: machinery
+    effects: [{ type: production, value: 2 }]
+    cost: 150
+
+  # Renaissance Era Buildings
+  - id: building_bank
+    name: "Bank"
+    prompt: "Renaissance bank building, ornate facade, vault, Medici style, grand entrance"
+    category: building
+    era: renaissance
+    tags: [building, gold, renaissance]
+    tech_required: banking
+    effects: [{ type: gold_percent, value_bp: 5000 }]
+    cost: 250
+    requires: market
+
+  - id: building_arsenal
+    name: "Arsenal"
+    prompt: "military arsenal, cannon storage, ammunition depot, shipyard, Venice style"
+    category: building
+    era: renaissance
+    tags: [building, military, naval, renaissance]
+    tech_required: metallurgy
+    effects: [{ type: naval_production, value_bp: 5000 }]
+    cost: 200
+
+  - id: building_theater
+    name: "Theater"
+    prompt: "Renaissance theater, ornate stage, balconies, red curtains, Globe theatre style"
+    category: building
+    era: renaissance
+    tags: [building, culture, happiness, renaissance]
+    tech_required: printing_press
+    effects: [{ type: culture, value: 3 }, { type: happiness, value: 1 }]
+    cost: 200
+
+  # Industrial Era Buildings
+  - id: building_factory
+    name: "Factory"
+    prompt: "industrial revolution factory, smokestacks, brick building, machinery, workers"
+    category: building
+    era: industrial
+    tags: [building, production, industrial]
+    tech_required: industrialization
+    effects: [{ type: production, value: 4 }, { type: production_percent, value_bp: 2500 }]
+    cost: 300
+
+  - id: building_hospital
+    name: "Hospital"
+    prompt: "Victorian hospital, medical ward, red cross, Florence Nightingale era"
+    category: building
+    era: industrial
+    tags: [building, health, growth, industrial]
+    tech_required: biology
+    effects: [{ type: health, value: 2 }, { type: growth_percent, value_bp: 2000 }]
+    cost: 250
+
+  - id: building_railroad_station
+    name: "Railroad Station"
+    prompt: "Victorian train station, platform, steam locomotive, grand hall, clock tower"
+    category: building
+    era: industrial
+    tags: [building, trade, production, industrial]
+    tech_required: railroad
+    effects: [{ type: trade_route_capacity, value: 1 }, { type: production_percent, value_bp: 1000 }]
+    cost: 200
+
+  # Modern Era Buildings
+  - id: building_research_lab
+    name: "Research Lab"
+    prompt: "modern research laboratory, scientific equipment, computers, clean room"
+    category: building
+    era: modern
+    tags: [building, science, modern]
+    tech_required: electronics
+    effects: [{ type: science_percent, value_bp: 5000 }]
+    cost: 400
+    requires: university
+
+  - id: building_stadium
+    name: "Stadium"
+    prompt: "modern sports stadium, seating bowl, field, floodlights, Olympic style"
+    category: building
+    era: modern
+    tags: [building, happiness, modern]
+    tech_required: mass_media
+    effects: [{ type: happiness, value: 3 }]
+    cost: 350
+
+  - id: building_airport
+    name: "Airport"
+    prompt: "modern airport terminal, control tower, runway, aircraft, glass and steel"
+    category: building
+    era: modern
+    tags: [building, trade, modern]
+    tech_required: flight
+    effects: [{ type: trade_range, value: 10 }, { type: tourism, value: 5 }]
+    cost: 400
+
+  # === WORLD WONDERS ===
+
+  - id: wonder_pyramids
+    name: "Pyramids"
+    prompt: "Great Pyramids of Giza, three massive pyramids, desert setting, Sphinx, ancient Egypt"
+    category: wonder
+    era: ancient
+    wonder_class: ancient
+    tags: [wonder, ancient, production]
+    tech_required: masonry
+    effects: [{ type: worker_speed, value_bp: 2500 }]
+    cost: 400
+
+  - id: wonder_stonehenge
+    name: "Stonehenge"
+    prompt: "Stonehenge stone circle, ancient megaliths, Salisbury Plain, mystical, dawn light"
+    category: wonder
+    era: ancient
+    wonder_class: ancient
+    tags: [wonder, ancient, faith]
+    tech_required: mysticism
+    effects: [{ type: faith, value: 5 }]
+    cost: 350
+
+  - id: wonder_great_library
+    name: "Great Library"
+    prompt: "Great Library of Alexandria, massive building, scrolls, scholars, columns, Egyptian-Greek"
+    category: wonder
+    era: classical
+    wonder_class: ancient
+    tags: [wonder, classical, science]
+    tech_required: writing
+    effects: [{ type: free_tech, value: 1 }, { type: science, value: 3 }]
+    cost: 500
+
+  - id: wonder_colosseum
+    name: "Colosseum"
+    prompt: "Roman Colosseum, massive amphitheater, arches, gladiators, ancient Rome, dramatic"
+    category: wonder
+    era: classical
+    wonder_class: ancient
+    tags: [wonder, classical, happiness]
+    tech_required: construction
+    effects: [{ type: happiness_empire, value: 2 }]
+    cost: 450
+
+  - id: wonder_oracle
+    name: "Oracle"
+    prompt: "Oracle of Delphi, Greek temple, mountain setting, sacred grove, priestess, mystical"
+    category: wonder
+    era: classical
+    wonder_class: ancient
+    tags: [wonder, classical, culture]
+    tech_required: mysticism
+    effects: [{ type: culture, value: 5 }, { type: great_person_percent, value_bp: 2500 }]
+    cost: 400
+
+  - id: wonder_petra
+    name: "Petra"
+    prompt: "Petra Treasury, carved rock facade, Nabataean, rose-red city, desert canyon"
+    category: wonder
+    era: classical
+    wonder_class: ancient
+    tags: [wonder, classical, trade]
+    tech_required: currency
+    effects: [{ type: trade_route_gold, value: 3 }]
+    cost: 450
+
+  - id: wonder_notre_dame
+    name: "Notre Dame"
+    prompt: "Notre Dame Cathedral Paris, Gothic architecture, flying buttresses, rose window, dramatic"
+    category: wonder
+    era: medieval
+    wonder_class: medieval
+    tags: [wonder, medieval, faith, happiness]
+    tech_required: theology
+    effects: [{ type: happiness_empire, value: 2 }, { type: faith, value: 4 }]
+    cost: 600
+
+  - id: wonder_forbidden_palace
+    name: "Forbidden Palace"
+    prompt: "Forbidden City Beijing, red walls, golden roofs, imperial Chinese architecture, massive"
+    category: wonder
+    era: medieval
+    wonder_class: medieval
+    tags: [wonder, medieval, government]
+    tech_required: civil_service
+    effects: [{ type: maintenance_reduction, value_bp: 2500 }]
+    cost: 600
+
+  - id: wonder_machu_picchu
+    name: "Machu Picchu"
+    prompt: "Machu Picchu, Incan citadel, mountain terraces, dramatic Andes peaks, ancient ruins"
+    category: wonder
+    era: medieval
+    wonder_class: medieval
+    tags: [wonder, medieval, gold]
+    tech_required: guilds
+    effects: [{ type: gold_from_trade, value_bp: 2500 }]
+    cost: 550
+
+  - id: wonder_sistine_chapel
+    name: "Sistine Chapel"
+    prompt: "Sistine Chapel, Michelangelo ceiling, Vatican, Renaissance art, dramatic frescoes"
+    category: wonder
+    era: renaissance
+    wonder_class: renaissance
+    tags: [wonder, renaissance, culture, faith]
+    tech_required: printing_press
+    effects: [{ type: culture, value: 6 }, { type: faith, value: 3 }]
+    cost: 700
+
+  - id: wonder_big_ben
+    name: "Big Ben"
+    prompt: "Big Ben clock tower, Houses of Parliament, London, Victorian Gothic, Thames river"
+    category: wonder
+    era: industrial
+    wonder_class: industrial
+    tags: [wonder, industrial, government]
+    tech_required: industrialization
+    effects: [{ type: golden_age_points, value: 5 }]
+    cost: 800
+
+  - id: wonder_statue_of_liberty
+    name: "Statue of Liberty"
+    prompt: "Statue of Liberty, copper green, torch raised, New York harbor, freedom symbol"
+    category: wonder
+    era: industrial
+    wonder_class: industrial
+    tags: [wonder, industrial, culture, happiness]
+    tech_required: steam_power
+    effects: [{ type: happiness_per_city_state_ally, value: 1 }]
+    cost: 850
+
+stages:
+  - id: generate_buildings
+    type: comfyui_batch
+    workflow: fab/backbay-imperium/workflows/hunyuan3d_architecture.json
+    settings:
+      batch_size: 2
+      retry_on_failure: 2
+    outputs:
+      - "mesh.glb"
+      - "preview.png"
+
+  - id: validate_buildings
+    type: gate
+    requires: [generate_buildings]
+    gates:
+      - fab/backbay-imperium/gates/building_v001.yaml
+
+  - id: render_icons
+    type: blender
+    requires: [validate_buildings]
+    script: fab/backbay-imperium/scripts/render_building_icons.py
+    settings:
+      resolution: [128, 128]
+      lighting: dramatic
+
+  - id: render_wonder_heroes
+    type: blender
+    requires: [validate_buildings]
+    script: fab/backbay-imperium/scripts/render_wonder_heroes.py
+    filter: category == "wonder"
+    settings:
+      resolution: [1920, 1080]
+      lighting: golden_hour
+
+publish:
+  meshes:
+    path: fab/backbay-imperium/assets/buildings/meshes
+  icons:
+    path: fab/backbay-imperium/assets/buildings/icons
+  wonder_heroes:
+    path: fab/backbay-imperium/assets/wonders/heroes
+  manifest:
+    path: fab/backbay-imperium/assets/buildings/manifest.yaml

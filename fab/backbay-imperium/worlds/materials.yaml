@@ -1,0 +1,330 @@
+# Backbay Imperium - PBR Materials
+# Generates seamless tileable materials using CHORD Turbo
+
+schema_version: "1.0"
+world_id: backbay_materials
+world_type: materials
+version: "1.0.0"
+
+generator:
+  name: "Backbay Imperium - PBR Material Library"
+  description: |
+    Seamless PBR materials for terrain, architecture, and props.
+    All materials 2048x2048 with full PBR maps.
+
+build:
+  determinism:
+    seed: 42
+    pythonhashseed: 42
+
+  comfyui:
+    host: "${COMFYUI_HOST:-localhost}"
+    port: "${COMFYUI_PORT:-8188}"
+    timeout_seconds: 120
+
+parameters:
+  defaults:
+    steps: 9
+    cfg: 3.5
+    resolution: 2048
+
+  style_suffix: ", seamless tileable, top-down view, photorealistic PBR material"
+
+materials:
+  # === TERRAIN MATERIALS ===
+
+  - id: mat_grass_lush
+    prompt: "lush green grass meadow, thick blades, natural color variation, some clovers"
+    category: terrain
+    tags: [grass, nature, outdoor, green]
+    tiling: seamless
+
+  - id: mat_grass_dry
+    prompt: "dry yellow brown grass, autumn prairie, dead patches, hay-like"
+    category: terrain
+    tags: [grass, nature, outdoor, dry, autumn]
+    tiling: seamless
+
+  - id: mat_grass_wild
+    prompt: "wild meadow grass, mixed flowers, dandelions, natural overgrown"
+    category: terrain
+    tags: [grass, nature, outdoor, wild]
+    tiling: seamless
+
+  - id: mat_dirt_forest
+    prompt: "forest floor dirt, scattered leaves and twigs, dark brown humus"
+    category: terrain
+    tags: [dirt, soil, forest, outdoor]
+    tiling: seamless
+
+  - id: mat_dirt_dry
+    prompt: "dry cracked earth, drought soil, parched ground, cracks"
+    category: terrain
+    tags: [dirt, dry, desert, outdoor]
+    tiling: seamless
+
+  - id: mat_sand_beach
+    prompt: "fine beach sand, golden yellow, subtle ripples, wave patterns"
+    category: terrain
+    tags: [sand, beach, outdoor, coast]
+    tiling: seamless
+
+  - id: mat_sand_desert
+    prompt: "desert sand, golden dunes texture, windswept patterns, Sahara"
+    category: terrain
+    tags: [sand, desert, outdoor, arid]
+    tiling: seamless
+
+  - id: mat_gravel_path
+    prompt: "gravel path, mixed pebbles, gray and brown stones, pathway"
+    category: terrain
+    tags: [gravel, stones, path, outdoor]
+    tiling: seamless
+
+  - id: mat_rock_granite
+    prompt: "gray granite rock surface, natural cracks, rough texture"
+    category: terrain
+    tags: [rock, stone, granite, outdoor]
+    tiling: seamless
+
+  - id: mat_rock_limestone
+    prompt: "white limestone rock, sedimentary layers, fossil imprints"
+    category: terrain
+    tags: [rock, stone, limestone, outdoor]
+    tiling: seamless
+
+  - id: mat_snow_fresh
+    prompt: "fresh white snow, powder texture, sparkly, pristine winter"
+    category: terrain
+    tags: [snow, winter, cold, white]
+    tiling: seamless
+
+  - id: mat_snow_packed
+    prompt: "packed snow, compressed, ice crystals visible, footprint texture"
+    category: terrain
+    tags: [snow, winter, cold, packed]
+    tiling: seamless
+
+  - id: mat_mud_wet
+    prompt: "wet mud, dark brown, puddles, waterlogged soil"
+    category: terrain
+    tags: [mud, wet, outdoor, difficult]
+    tiling: seamless
+
+  - id: mat_water_shallow
+    prompt: "shallow water surface, clear, sandy bottom visible, caustics"
+    category: terrain
+    tags: [water, shallow, coast]
+    tiling: seamless
+
+  - id: mat_water_deep
+    prompt: "deep ocean water, dark blue, wave patterns, mysterious depths"
+    category: terrain
+    tags: [water, ocean, deep, blue]
+    tiling: seamless
+
+  # === ARCHITECTURE MATERIALS ===
+
+  - id: mat_brick_red
+    prompt: "classic red brick wall, white mortar lines, slightly weathered"
+    category: architecture
+    tags: [brick, wall, building, urban]
+    tiling: seamless
+
+  - id: mat_brick_ancient
+    prompt: "ancient mud brick, sun-baked clay, crumbling edges, Mesopotamian"
+    category: architecture
+    tags: [brick, ancient, weathered, clay]
+    tiling: seamless
+
+  - id: mat_stone_castle
+    prompt: "medieval castle stone blocks, large cut stones, moss in cracks"
+    category: architecture
+    tags: [stone, castle, medieval, fortress]
+    tiling: seamless
+
+  - id: mat_stone_roman
+    prompt: "Roman travertine stone, warm cream color, ancient architecture"
+    category: architecture
+    tags: [stone, roman, classical, cream]
+    tiling: seamless
+
+  - id: mat_marble_white
+    prompt: "white Carrara marble, elegant veining, polished, classical"
+    category: architecture
+    tags: [marble, white, luxury, classical]
+    tiling: seamless
+
+  - id: mat_marble_green
+    prompt: "verde antico marble, dark green with white veins, Roman"
+    category: architecture
+    tags: [marble, green, luxury, classical]
+    tiling: seamless
+
+  - id: mat_plaster_white
+    prompt: "white painted plaster wall, subtle texture, Mediterranean"
+    category: architecture
+    tags: [plaster, wall, interior, white]
+    tiling: seamless
+
+  - id: mat_stucco_terracotta
+    prompt: "terracotta stucco exterior, warm orange, Italian villa style"
+    category: architecture
+    tags: [stucco, exterior, terracotta, mediterranean]
+    tiling: seamless
+
+  - id: mat_tiles_terracotta
+    prompt: "terracotta roof tiles, overlapping pattern, warm orange red"
+    category: architecture
+    tags: [tiles, roof, terracotta, mediterranean]
+    tiling: seamless
+
+  - id: mat_tiles_slate
+    prompt: "slate roof tiles, dark gray, layered pattern, traditional"
+    category: architecture
+    tags: [tiles, roof, slate, gray]
+    tiling: seamless
+
+  # === WOOD MATERIALS ===
+
+  - id: mat_wood_oak_planks
+    prompt: "oak wood floor planks, warm honey tone, visible grain pattern"
+    category: wood
+    tags: [wood, oak, floor, interior]
+    tiling: seamless
+
+  - id: mat_wood_walnut
+    prompt: "dark walnut wood, rich brown, elegant grain, furniture quality"
+    category: wood
+    tags: [wood, walnut, dark, elegant]
+    tiling: seamless
+
+  - id: mat_wood_pine
+    prompt: "fresh pine wood boards, light blonde color, visible knots"
+    category: wood
+    tags: [wood, pine, light, fresh]
+    tiling: seamless
+
+  - id: mat_wood_weathered
+    prompt: "old weathered wood, gray patina, cracked and worn, driftwood"
+    category: wood
+    tags: [wood, weathered, rustic, aged]
+    tiling: seamless
+
+  - id: mat_wood_painted
+    prompt: "white painted wood boards, slightly chipped, farmhouse style"
+    category: wood
+    tags: [wood, painted, white, rustic]
+    tiling: seamless
+
+  - id: mat_bamboo_woven
+    prompt: "woven bamboo mat texture, natural tan color, tight weave"
+    category: wood
+    tags: [bamboo, woven, natural, asian]
+    tiling: seamless
+
+  # === METAL MATERIALS ===
+
+  - id: mat_bronze_polished
+    prompt: "polished bronze metal, warm golden tone, ancient metalwork"
+    category: metal
+    tags: [bronze, metal, polished, ancient]
+    tiling: seamless
+
+  - id: mat_bronze_patina
+    prompt: "aged bronze with green patina, verdigris oxidation, antique"
+    category: metal
+    tags: [bronze, patina, aged, antique]
+    tiling: seamless
+
+  - id: mat_iron_forged
+    prompt: "forged iron, dark gray, hammer marks, blacksmith work"
+    category: metal
+    tags: [iron, forged, medieval, dark]
+    tiling: seamless
+
+  - id: mat_iron_rust
+    prompt: "rusty corroded iron, orange and brown patina, industrial decay"
+    category: metal
+    tags: [iron, rust, decay, industrial]
+    tiling: seamless
+
+  - id: mat_gold_ornate
+    prompt: "ornate gold surface, engraved patterns, royal luxury, shiny"
+    category: metal
+    tags: [gold, ornate, luxury, royal]
+    tiling: seamless
+
+  - id: mat_silver_tarnished
+    prompt: "tarnished silver, slightly oxidized, antique silverware look"
+    category: metal
+    tags: [silver, tarnished, antique]
+    tiling: seamless
+
+  # === FABRIC MATERIALS ===
+
+  - id: mat_leather_brown
+    prompt: "brown leather texture, subtle grain, worn, saddle leather"
+    category: fabric
+    tags: [leather, brown, worn]
+    tiling: seamless
+
+  - id: mat_linen_natural
+    prompt: "natural linen fabric, cream color, visible weave"
+    category: fabric
+    tags: [linen, fabric, natural, cream]
+    tiling: seamless
+
+  - id: mat_silk_red
+    prompt: "red silk fabric, luxurious sheen, subtle folds, Chinese"
+    category: fabric
+    tags: [silk, red, luxury, asian]
+    tiling: seamless
+
+  - id: mat_wool_rough
+    prompt: "rough wool fabric, natural gray, handwoven texture"
+    category: fabric
+    tags: [wool, rough, natural, medieval]
+    tiling: seamless
+
+  - id: mat_canvas_military
+    prompt: "military canvas, olive drab, heavy duty, tent material"
+    category: fabric
+    tags: [canvas, military, olive, heavy]
+    tiling: seamless
+
+stages:
+  - id: generate_materials
+    type: comfyui_batch
+    workflow: fab/backbay-imperium/workflows/chord_material.json
+    settings:
+      batch_size: 5
+      retry_on_failure: 2
+    outputs_per_material:
+      - "basecolor.png"
+      - "normal.png"
+      - "roughness.png"
+      - "metalness.png"
+      - "height.png"
+
+  - id: validate_materials
+    type: gate
+    requires: [generate_materials]
+    gates:
+      - fab/backbay-imperium/gates/material_v001.yaml
+
+  - id: export_godot
+    type: python
+    requires: [validate_materials]
+    script: fab/backbay-imperium/scripts/export_materials_godot.py
+    settings:
+      format: tres
+      compress: true
+
+publish:
+  materials:
+    path: fab/backbay-imperium/assets/materials
+  godot:
+    path: fab/backbay-imperium/assets/materials/godot
+  manifest:
+    path: fab/backbay-imperium/assets/materials/manifest.yaml
