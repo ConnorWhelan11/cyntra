@@ -1,0 +1,134 @@
+{
+  "basic_captures": 4,
+  "captures": [
+    {
+      "category": "general",
+      "description": "Full map terrain view from default camera",
+      "name": "terrain_overview",
+      "path": "/Users/connor/Library/Application Support/Godot/app_userdata/BackbayImperiumClient/visual_qa/terrain_overview.png",
+      "zoom": 1.0
+    },
+    {
+      "category": "general",
+      "description": "Zoomed terrain detail",
+      "name": "terrain_zoomed",
+      "path": "/Users/connor/Library/Application Support/Godot/app_userdata/BackbayImperiumClient/visual_qa/terrain_zoomed.png",
+      "zoom": 2.0
+    },
+    {
+      "category": "general",
+      "description": "Northwest corner of map",
+      "name": "terrain_corner_nw",
+      "path": "/Users/connor/Library/Application Support/Godot/app_userdata/BackbayImperiumClient/visual_qa/terrain_corner_nw.png",
+      "zoom": 1.5
+    },
+    {
+      "category": "general",
+      "description": "Starting units at spawn location",
+      "name": "units_spawn",
+      "path": "/Users/connor/Library/Application Support/Godot/app_userdata/BackbayImperiumClient/visual_qa/units_spawn.png",
+      "zoom": 2.5
+    },
+    {
+      "category": "water",
+      "description": "Ocean and coast tiles for water rendering quality",
+      "is_terrain_capture": true,
+      "name": "terrain_water_clarity",
+      "path": "/Users/connor/Library/Application Support/Godot/app_userdata/BackbayImperiumClient/visual_qa/terrain_water_clarity.png",
+      "target_terrain": ["ocean", "coast"],
+      "zoom": 2.5
+    },
+    {
+      "category": "water",
+      "description": "Coast-to-land transition for blend quality",
+      "is_terrain_capture": true,
+      "name": "terrain_coastline_blend",
+      "path": "/Users/connor/Library/Application Support/Godot/app_userdata/BackbayImperiumClient/visual_qa/terrain_coastline_blend.png",
+      "target_terrain": ["coast"],
+      "zoom": 3.0
+    },
+    {
+      "category": "vegetation",
+      "description": "Forest tiles for vegetation rendering",
+      "is_terrain_capture": true,
+      "name": "terrain_forest_detail",
+      "path": "/Users/connor/Library/Application Support/Godot/app_userdata/BackbayImperiumClient/visual_qa/terrain_forest_detail.png",
+      "target_terrain": ["forest", "jungle"],
+      "zoom": 2.5
+    },
+    {
+      "category": "elevation",
+      "description": "Mountains and hills for elevation rendering",
+      "is_terrain_capture": true,
+      "name": "terrain_mountain_elevation",
+      "path": "/Users/connor/Library/Application Support/Godot/app_userdata/BackbayImperiumClient/visual_qa/terrain_mountain_elevation.png",
+      "target_terrain": ["mountains", "hills"],
+      "zoom": 2.0
+    },
+    {
+      "category": "arid",
+      "description": "Desert tiles for arid terrain quality",
+      "is_terrain_capture": true,
+      "name": "terrain_desert_arid",
+      "path": "/Users/connor/Library/Application Support/Godot/app_userdata/BackbayImperiumClient/visual_qa/terrain_desert_arid.png",
+      "target_terrain": ["desert"],
+      "zoom": 2.5
+    },
+    {
+      "category": "temperate",
+      "description": "Grassland and plains for temperate terrain",
+      "is_terrain_capture": true,
+      "name": "terrain_grassland_plains",
+      "path": "/Users/connor/Library/Application Support/Godot/app_userdata/BackbayImperiumClient/visual_qa/terrain_grassland_plains.png",
+      "target_terrain": ["grassland", "plains"],
+      "zoom": 2.5
+    },
+    {
+      "category": "cold",
+      "description": "Tundra tiles for cold biome rendering",
+      "is_terrain_capture": true,
+      "name": "terrain_tundra_cold",
+      "path": "/Users/connor/Library/Application Support/Godot/app_userdata/BackbayImperiumClient/visual_qa/terrain_tundra_cold.png",
+      "target_terrain": ["tundra"],
+      "zoom": 2.5
+    },
+    {
+      "category": "transition",
+      "description": "Multi-biome boundary for transition quality",
+      "is_terrain_capture": true,
+      "name": "terrain_biome_boundary",
+      "path": "/Users/connor/Library/Application Support/Godot/app_userdata/BackbayImperiumClient/visual_qa/terrain_biome_boundary.png",
+      "target_terrain": ["grassland", "forest", "plains"],
+      "zoom": 1.8
+    },
+    {
+      "category": "wetland",
+      "description": "Marsh tiles for wetland rendering",
+      "is_terrain_capture": true,
+      "name": "terrain_marsh_wetland",
+      "path": "/Users/connor/Library/Application Support/Godot/app_userdata/BackbayImperiumClient/visual_qa/terrain_marsh_wetland.png",
+      "target_terrain": ["marsh"],
+      "zoom": 2.5
+    }
+  ],
+  "hex_size": 36.0,
+  "map_height": 60,
+  "map_width": 60,
+  "mode": "all",
+  "output_dir": "/Users/connor/Library/Application Support/Godot/app_userdata/BackbayImperiumClient/visual_qa/",
+  "schema_version": "visual_qa.manifest.v2",
+  "seed": 42424242,
+  "tag": "",
+  "terrain_captures": 9,
+  "terrain_distribution": {
+    "jungle": 673,
+    "mountains": 1416,
+    "plains": 1258,
+    "tundra": 253
+  },
+  "timestamp": "2025-12-29T21:50:46",
+  "total_captures": 13,
+  "viewport_size": "(3024.0, 1832.0)",
+  "window_size": "(3024, 1832)",
+  "wrap_horizontal": true
+}

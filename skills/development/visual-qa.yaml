@@ -1,0 +1,126 @@
+name: visual-qa
+version: 1.0.0
+description: |
+  Run visual QA regression tests for Backbay Imperium.
+  Captures screenshots of game rendering and compares against baselines
+  using perceptual hashing to detect visual regressions.
+
+  Use after making changes to:
+  - 3D terrain rendering (Terrain3DLayer, Terrain3DMaterialLoader)
+  - 3D unit rendering (Unit3DLayer, Unit3DManager)
+  - Map generation (mapgen, terrain)
+  - UI compositing (CanvasLayers, SubViewports)
+
+  Supports three modes:
+  - capture: Only capture new screenshots
+  - compare: Compare captures against baselines
+  - update: Update baselines from current captures
+category: development
+priority: high
+phase: 2
+
+inputs:
+  - name: mode
+    type: string
+    description: "Operation mode: capture, compare, or update"
+    required: false
+    default: "compare"
+    enum: [capture, compare, update]
+  - name: threshold
+    type: integer
+    description: "Perceptual hash distance threshold (0=identical, 64=different)"
+    required: false
+    default: 10
+  - name: strict
+    type: boolean
+    description: "Use strict threshold (5) for pixel-perfect comparison"
+    required: false
+    default: false
+  - name: capture_mode
+    type: string
+    description: "Capture mode: basic (regression), terrain (quality), or all"
+    required: false
+    default: "all"
+    enum: [basic, terrain, all]
+  - name: compute_metrics
+    type: boolean
+    description: "Compute terrain quality metrics (edge density, color variance, etc.)"
+    required: false
+    default: false
+
+outputs:
+  - name: passed
+    type: boolean
+    description: Whether all visual comparisons passed
+  - name: total
+    type: integer
+    description: Total number of captures compared
+  - name: failed_count
+    type: integer
+    description: Number of failed comparisons
+  - name: basic_captures
+    type: integer
+    description: Number of basic regression captures
+  - name: terrain_captures
+    type: integer
+    description: Number of terrain quality captures
+  - name: category_summary
+    type: object
+    description: Pass/fail counts by terrain category (water, vegetation, etc.)
+  - name: results
+    type: array
+    description: Per-capture results with name, passed, hash_distance, category, terrain_metrics
+  - name: diff_images
+    type: array
+    description: Paths to generated diff images for failed comparisons
+  - name: report_path
+    type: string
+    description: Path to full JSON report
+
+examples:
+  - description: Run visual QA comparison
+    inputs:
+      mode: compare
+    outputs:
+      passed: true
+      total: 4
+      failed_count: 0
+      results:
+        - name: terrain_overview
+          passed: true
+          hash_distance: 0
+        - name: terrain_zoomed
+          passed: true
+          hash_distance: 2
+      diff_images: []
+      report_path: "client/tests/visual_qa_output/visual_qa_report.json"
+
+  - description: Update baselines after intentional changes
+    inputs:
+      mode: update
+    outputs:
+      passed: true
+      total: 4
+      failed_count: 0
+      results: []
+      diff_images: []
+      report_path: ""
+
+  - description: Strict comparison for critical visual elements
+    inputs:
+      mode: compare
+      strict: true
+    outputs:
+      passed: false
+      total: 4
+      failed_count: 1
+      results:
+        - name: terrain_overview
+          passed: false
+          hash_distance: 8
+      diff_images:
+        - "client/tests/visual_qa_output/diffs/terrain_overview_diff.png"
+
+implementation:
+  type: python
+  path: visual-qa.py

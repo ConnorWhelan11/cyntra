@@ -743,6 +743,20 @@ class Dispatcher:
                 gates.pop("typecheck", None)
                 gates.pop("lint", None)
 
+        # Backbay Imperium (Rust + optional Godot QA) gates.
+        if "gate:backbay" in gate_tags:
+            gates["backbay-test"] = "cd research/backbay-imperium && cargo test"
+
+        if "gate:backbay-qa" in gate_tags:
+            gates["backbay-qa"] = (
+                "cd research/backbay-imperium && ./scripts/build_godot_bridge.sh && cd ../.. && "
+                "scripts/godot-qa-runner.sh --project research/backbay-imperium/client "
+                "--scene res://tests/run_all_tests.tscn && "
+                "scripts/godot-qa-runner.sh --project research/backbay-imperium/client "
+                "--scene res://tests/qa_validate_scripts.tscn && "
+                "python skills/development/visual-qa.py --mode compare --capture-mode all"
+            )
+
         return gates
 
     def _build_world_config(self, issue: Issue, tags: list[str]) -> dict[str, Any]:
