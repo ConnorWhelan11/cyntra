@@ -25,7 +25,7 @@ Cyntra Kernel (Python package)
     archives only files in logs/, not subdirs).
   - kernel/src/cyntra/workcell/cli.py — CLI for inside-workcell helpers (log/
     event/gate check stubs).
-- Beads integration (already usable for Glia Fab)
+- Beads integration (already usable for Cyntra)
   - kernel/src/cyntra/state/manager.py — reads/writes Beads via bd CLI or .beads/
     \*.jsonl fallback.
   - kernel/src/cyntra/state/models.py — Issue, Dep, BeadsGraph with dk\_\* fields

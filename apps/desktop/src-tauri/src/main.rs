@@ -30,7 +30,7 @@ use viewport::{viewport_close, viewport_command, viewport_open, ViewportManager}
 
 type CommandResult<T> = std::result::Result<T, String>;
 
-const GLOBAL_ENV_SERVICE: &str = "glia-fab-desktop";
+const GLOBAL_ENV_SERVICE: &str = "cyntra-desktop";
 const GLOBAL_ENV_ACCOUNT: &str = "global-env";
 
 // ---------------------------------------------
@@ -2247,7 +2247,7 @@ fn find_membrane_path() -> Option<PathBuf> {
 
   // Try from home directory
   let home = homedir();
-  let home_path = home.join("Medica/glia-fab/packages/membrane");
+  let home_path = home.join("Medica/cyntra/packages/membrane");
   if home_path.join("package.json").exists() {
     return Some(home_path);
   }

@@ -1,7 +1,7 @@
-# Glia Fab Desktop (Mission Control)
+# Cyntra Desktop (Mission Control)
 
-A Tauri desktop app that (1) manages multiple repos/projects, (2) launches/monitors many Glia Fab
-“runs” + interactive terminal sessions, and (3) indexes + renders results (reports/renders/`.glb`
+A Tauri desktop app that (1) manages multiple repos/projects, (2) launches/monitors many Cyntra
+"runs" + interactive terminal sessions, and (3) indexes + renders results (reports/renders/`.glb`
 assets/Godot web builds) inside the app, reusing the existing Three.js viewer
 (`fab/assets/viewer/index.html`) as a first-class “Asset Preview/Play” surface.
 

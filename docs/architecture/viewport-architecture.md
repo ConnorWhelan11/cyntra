@@ -25,7 +25,7 @@
 
 ### Use Cases
 
-- 3D asset viewer for Glia Fab pipeline (GLB/GLTF models)
+- 3D asset viewer for Fab pipeline (GLB/GLTF models)
 - Scene inspection with camera controls (orbit, pan, zoom)
 - Debug overlays (wireframe, normals, bounding boxes)
 - Playback controls and timeline scrubbing from web UI
@@ -140,7 +140,7 @@ src-tauri/
 
 #### Persistence
 
-- Window positions and sizes saved to `$CONFIG/glia-fab/window-state.json`
+- Window positions and sizes saved to `$CONFIG/cyntra/window-state.json`
 - Restored on next launch
 - Viewport visibility state **not** persisted (always hidden on launch)
 

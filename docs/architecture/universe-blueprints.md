@@ -217,7 +217,7 @@ You can model “code” in two layers:
 **Layer A — Project worlds (deterministic gates)**
 
 - `kernel` world: gates = `pytest + mypy + ruff` (plus schema validators)
-- `glia-fab-desktop` world: gates = `npm test/build + typecheck + lint`
+- `cyntra-desktop` world: gates = `npm test/build + typecheck + lint`
 
 **Layer B — Task worlds (issue-driven)**
 

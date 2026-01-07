@@ -551,7 +551,7 @@ Unified terminal management for all PTY sessions.
 │  └───────────────────────────────────────────────────────────────────────┘  │
 │                                                                             │
 │  ┌─────────────────────────────────────────────────────────────────────────┐│
-│  │  connor@macbook:~/Medica/glia-fab$ cyntra status                       ││
+│  │  connor@macbook:~/Medica/cyntra$ cyntra status                         ││
 │  │                                                                         ││
 │  │  Cyntra Kernel Status                                                   ││
 │  │  ═══════════════════                                                    ││
@@ -565,7 +565,7 @@ Unified terminal management for all PTY sessions.
 │  │    [workcell-01] #41 - Performance optimization (codex)                 ││
 │  │    [workcell-02] #42 - Fix auth bug (claude)                            ││
 │  │                                                                         ││
-│  │  connor@macbook:~/Medica/glia-fab$ █                                    ││
+│  │  connor@macbook:~/Medica/cyntra$ █                                      ││
 │  │                                                                         ││
 │  └─────────────────────────────────────────────────────────────────────────┘│
 │                                                                             │
@@ -577,7 +577,7 @@ Unified terminal management for all PTY sessions.
 ```
 ┌──────────────────────────────┬──────────────────────────────┐
 │  ● main                      │  ● workcell-01               │
-│  ~/glia-fab$                 │  running pytest...           │
+│  ~/cyntra$                   │  running pytest...           │
 │                              │                              │
 │                              │                              │
 ├──────────────────────────────┼──────────────────────────────┤

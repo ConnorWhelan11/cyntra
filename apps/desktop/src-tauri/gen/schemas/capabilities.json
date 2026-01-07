@@ -1,10 +1,1 @@
-{
-  "main": {
-    "identifier": "main",
-    "description": "Main + viewport windows (dev + prod).",
-    "remote": { "urls": ["http://localhost:1420/*", "http://127.0.0.1:1420/*"] },
-    "local": true,
-    "windows": ["main", "viewport", "viewport_poc"],
-    "permissions": ["core:default"]
-  }
-}
+{"main":{"identifier":"main","description":"Main + viewport windows (dev + prod).","remote":{"urls":["http://localhost:1420/*","http://127.0.0.1:1420/*"]},"local":true,"windows":["main","viewport","viewport_poc"],"permissions":["core:default"]}}

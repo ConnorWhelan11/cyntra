@@ -2,7 +2,7 @@
 
 ## Overview
 
-Prepare the glia-fab pipeline for end-to-end testing by closing gaps in:
+Prepare the Fab pipeline for end-to-end testing by closing gaps in:
 
 1. Navigation mesh generation for NPC pathfinding
 2. Extended marker conventions for game entities
@@ -102,7 +102,7 @@ stages:
 
 - `fab/worlds/outora_library/blender/stages/navmesh.py` (new)
 - `fab/worlds/outora_library/world.yaml` (add stage)
-- `fab/outora-library/blender/sverchok_layout_v2.py` (verify floor outputs)
+- `fab/assets/blender/sverchok_layout_v2.py` (verify floor outputs)
 
 ---
 
@@ -125,7 +125,7 @@ Standardize markers for NPCs, items, audio zones, and other game entities.
 
 ### 2.2 Update Game Contract
 
-**File:** `fab/outora-library/src/outora_library/game_contract.py`
+**File:** `kernel/src/cyntra/fab/outora/game_contract.py`
 
 ```python
 class FabRole(str, Enum):
@@ -162,7 +162,7 @@ Extend to emit NPC spawn points at strategic locations:
 
 ### Files to Modify
 
-- `fab/outora-library/src/outora_library/game_contract.py`
+- `kernel/src/cyntra/fab/outora/game_contract.py`
 - `fab/worlds/outora_library/blender/stages/export.py`
 - `fab/gates/godot_integration_v001.yaml` (add new marker validation)
 
@@ -566,7 +566,7 @@ Document the complete marker contract for agents and developers.
 
 ### 6.1 Marker Contract Documentation
 
-**File:** `docs/fab-godot-marker-contract.md`
+**File:** `docs/specs/fab-godot-marker-contract.md`
 
 ```markdown
 # Fab → Godot Marker Contract v1.1
@@ -644,7 +644,7 @@ Append `_LAYER<n>` to set collision layer:
 
 ### Files to Create
 
-- `docs/fab-godot-marker-contract.md` (new)
+- `docs/specs/fab-godot-marker-contract.md` (new)
 - Update `CLAUDE.md` with reference to marker contract
 
 ---
@@ -723,14 +723,14 @@ cyntra fab-gate --config godot_performance_v001 --asset output/outora_library.gl
 | `fab/vault/godot/templates/fab_game_template/project/scripts/FabPerfTest.gd`       | 4     | Performance test runner    |
 | `fab/gates/godot_performance_v001.yaml`                                            | 4     | Performance gate config    |
 | `kernel/src/cyntra/fab/performance_gate.py`                                        | 4     | Performance gate runner    |
-| `docs/fab-godot-marker-contract.md`                                                | 6     | Marker documentation       |
+| `docs/specs/fab-godot-marker-contract.md`                                          | 6     | Marker documentation       |
 
 ### Modified Files
 
 | File                                                                                     | Phase | Changes                              |
 | ---------------------------------------------------------------------------------------- | ----- | ------------------------------------ |
 | `fab/worlds/outora_library/world.yaml`                                                   | 1     | Add navmesh stage                    |
-| `fab/outora-library/src/outora_library/game_contract.py`                                 | 2     | Add NAV*, NPC_SPAWN*, etc. roles     |
+| `kernel/src/cyntra/fab/outora/game_contract.py`                                          | 2     | Add NAV*, NPC_SPAWN*, etc. roles     |
 | `fab/worlds/outora_library/blender/stages/export.py`                                     | 2     | Emit NPC spawn markers               |
 | `fab/gates/godot_integration_v001.yaml`                                                  | 2     | Validate new marker types            |
 | `fab/vault/godot/templates/fab_game_template/project/scripts/FabLevelLoader.gd`          | 3     | Add use_cogito toggle, nav/NPC setup |

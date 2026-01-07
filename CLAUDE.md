@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Glia Fab is a monorepo combining:
+Cyntra is a monorepo combining:
 
 - **Cyntra Kernel**: Python orchestrator that schedules tasks from Beads (work graph) to isolated Workcells (git worktree sandboxes) running various LLM toolchains
 - **Desktop App**: Tauri + React app ("Mission Control") for terminals, runs, and kernel monitoring

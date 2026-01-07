@@ -1,7 +1,6 @@
-[submodule "logos"]
-	path = logos
-	url = https://github.com/benbrastmckie/ProofChecker
-
 [submodule "train/URM"]
 	path = train/URM
 	url = https://github.com/zitian-gao/URM.git
+[submodule "research/logos"]
+	path = research/logos
+	url = https://github.com/benbrastmckie/ProofChecker

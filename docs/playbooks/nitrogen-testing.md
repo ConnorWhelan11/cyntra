@@ -1,6 +1,6 @@
 # NitroGen Testing Playbook
 
-This playbook documents the testing strategy for NitroGen integration with glia-fab's playability gate.
+This playbook documents the testing strategy for NitroGen integration with Cyntra's playability gate.
 
 ## Overview
 

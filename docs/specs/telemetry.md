@@ -201,7 +201,7 @@ async def execute(self, manifest, workcell_path, timeout):
 
 ### For Desktop App Users
 
-1. Open the Kernel tab in Glia Fab Desktop
+1. Open the Kernel tab in Cyntra Desktop
 2. Find the workcell you want to inspect in the Workcells panel
 3. Click "View Details" button
 4. The Workcell Detail modal will open showing:

@@ -7,7 +7,7 @@
 
 ## Executive Summary
 
-The glia-fab repository has grown organically and now contains significant structural debt. This document analyzes the current state and proposes a cleaner architecture.
+The Cyntra repository has grown organically and now contains significant structural debt. This document analyzes the current state and proposes a cleaner architecture.
 
 ### Key Metrics (Current State)
 

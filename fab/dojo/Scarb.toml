@@ -1,9 +1,9 @@
 [package]
-name = "glia_fab_world"
+name = "cyntra_world"
 version = "0.1.0"
 cairo-version = "2.9.2"
-description = "Glia Fab onchain world - provable game state with asset attestations"
-homepage = "https://github.com/glia-fab/glia-fab"
+description = "Cyntra onchain world - provable game state with asset attestations"
+homepage = "https://github.com/ConnorWhelan11/cyntra"
 
 [dependencies]
 dojo = { git = "https://github.com/dojoengine/dojo", tag = "v1.0.0" }
