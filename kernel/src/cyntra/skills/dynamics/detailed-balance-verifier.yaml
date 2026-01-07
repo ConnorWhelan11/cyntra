@@ -1,0 +1,70 @@
+name: detailed-balance-verifier
+version: 1.0.0
+description: |
+  Verify detailed balance using χ²/ndf statistics.
+  Based on "Detailed balance in LLM-driven agents" (arXiv:2512.10047).
+  Identifies non-equilibrium drives and balance violations.
+category: dynamics
+priority: high
+phase: 4
+
+inputs:
+  - name: db_path
+    type: string
+    description: Path to dynamics SQLite database
+    required: true
+  - name: domain
+    type: string
+    description: Filter by domain (optional)
+    required: false
+  - name: beta
+    type: number
+    description: Inverse temperature parameter
+    required: false
+    default: 1.0
+  - name: chi2_threshold
+    type: number
+    description: χ²/ndf threshold for passing (paper uses 3.0)
+    required: false
+    default: 3.0
+  - name: top_violations
+    type: integer
+    description: Number of top violations to return
+    required: false
+    default: 10
+
+outputs:
+  - name: chi2
+    type: number
+    description: Chi-squared statistic
+  - name: ndf
+    type: integer
+    description: Number of degrees of freedom
+  - name: chi2_per_ndf
+    type: number
+    description: χ²/ndf - should be ~1.0 if detailed balance holds
+  - name: passed
+    type: boolean
+    description: Whether χ²/ndf < threshold
+  - name: equilibrium_score
+    type: number
+    description: Score from 0-1 (1 = perfect balance)
+  - name: violations
+    type: array
+    description: Top balance violations
+  - name: non_equilibrium_drives
+    type: array
+    description: Identified non-equilibrium drives
+
+examples:
+  - name: Verify fab transitions
+    inputs:
+      db_path: ".cyntra/dynamics/fab_transitions.db"
+      chi2_threshold: 3.0
+    expected_outputs:
+      passed: true
+      chi2_per_ndf: 1.2
+
+implementation:
+  type: python
+  path: detailed-balance-verifier.py

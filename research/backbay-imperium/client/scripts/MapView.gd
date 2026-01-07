@@ -232,6 +232,8 @@ func _terrain_color_for_name(name: String) -> Color:
 		return Color(0.12, 0.22, 0.45, 1.0)
 	if name.find("coast") >= 0:
 		return Color(0.25, 0.45, 0.65, 1.0)
+	if name.find("lake") >= 0:
+		return Color(0.08, 0.45, 0.35, 1.0)
 	if name.find("mount") >= 0:
 		return Color(0.45, 0.42, 0.40, 1.0)
 	if name.find("hill") >= 0:

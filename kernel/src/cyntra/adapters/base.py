@@ -172,6 +172,41 @@ class ToolchainAdapter(ABC):
             ]
         )
 
+        # Optional: pre-run strategy directive (compact, no verbose chain-of-thought required).
+        strategy_cfg = manifest.get("strategy")
+        if isinstance(strategy_cfg, dict) and strategy_cfg.get("enabled") is True:
+            directive_cfg = strategy_cfg.get("directive")
+            patterns = directive_cfg.get("patterns") if isinstance(directive_cfg, dict) else None
+            if isinstance(patterns, dict) and patterns:
+                parts.append("## Strategy Directive")
+                source = directive_cfg.get("source") if isinstance(directive_cfg, dict) else None
+                directive_hash = (
+                    directive_cfg.get("directive_hash") if isinstance(directive_cfg, dict) else None
+                )
+                header_bits: list[str] = []
+                if isinstance(source, str) and source.strip():
+                    header_bits.append(f"source={source.strip()}")
+                if isinstance(directive_hash, str) and directive_hash.strip():
+                    header_bits.append(f"id={directive_hash.strip()}")
+                if header_bits:
+                    parts.append(f"[{', '.join(header_bits)}]")
+                parts.append(
+                    "Follow these high-level strategy patterns throughout this task:"
+                )
+
+                try:
+                    from cyntra.strategy.rubric import CYNTRA_V1_RUBRIC
+
+                    for dim in CYNTRA_V1_RUBRIC:
+                        value = patterns.get(dim.id)
+                        if isinstance(value, str) and value.strip():
+                            parts.append(f"- {dim.name} (`{dim.id}`): `{value.strip()}`")
+                except Exception:
+                    for dim_id, value in sorted(patterns.items()):
+                        parts.append(f"- {dim_id}: {value}")
+
+                parts.append("")
+
         # Inject learned context from memory (claude-mem pattern)
         memory_context = manifest.get("memory_context", {})
         if memory_context and memory_context.get("memory_available"):
@@ -262,6 +297,27 @@ class ToolchainAdapter(ABC):
                 "",
             ]
         )
+
+        # Optional: compact strategy telemetry (CoT Encyclopedia-style rubric, no verbose CoT).
+        strategy_cfg = manifest.get("strategy")
+        if isinstance(strategy_cfg, dict) and strategy_cfg.get("enabled") is True:
+            if strategy_cfg.get("self_report", True):
+                prompt_style = str(strategy_cfg.get("prompt_style") or "compact").strip().lower()
+                try:
+                    from cyntra.strategy.profiler import (
+                        get_strategy_prompt_section,
+                        get_strategy_prompt_section_compact,
+                    )
+
+                    parts.append(
+                        get_strategy_prompt_section()
+                        if prompt_style == "full"
+                        else get_strategy_prompt_section_compact()
+                    )
+                    parts.append("")
+                except Exception:
+                    # Strategy telemetry is best-effort; never block prompt construction.
+                    pass
 
         prompt_body = "\n".join(parts)
 

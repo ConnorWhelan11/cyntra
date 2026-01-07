@@ -400,6 +400,7 @@ mod tests {
             resource: None,
             owner: None,
             city: None,
+            river_edges: 0,
         };
 
         let (total, breakdown) = compute_yield_breakdown(&tile, &rules);
@@ -432,6 +433,7 @@ mod tests {
             resource: None,
             owner: None,
             city: None,
+            river_edges: 0,
         };
 
         let (total, breakdown) = compute_yield_breakdown(&tile, &rules);
@@ -465,6 +467,7 @@ mod tests {
             resource: None,
             owner: None,
             city: None,
+            river_edges: 0,
         };
 
         let (total, breakdown) = compute_yield_breakdown(&tile, &rules);

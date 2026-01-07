@@ -8,7 +8,7 @@ signal game_over(winner_id: int)
 signal return_to_lobby()
 
 # Scene references
-@onready var map_view: MapViewMultiplayer = $MapViewMultiplayer
+@onready var map_view: Node2D = $MapViewMultiplayer
 @onready var hud: GameHUD = $GameHUD
 @onready var city_dialog: CityNameDialog = $CityNameDialog
 @onready var network_client: NetworkClient = $NetworkClient
@@ -26,6 +26,7 @@ var pending_found_city_unit_id := -1
 var last_chronicle_size := 0  # Track chronicle to detect new events
 var current_turn_timer_ms := 0
 var _is_game_over := false
+var _latest_promises: Array = []
 
 var _replay_json_cache := ""
 var _pending_replay_jump_turn := -1
@@ -289,6 +290,9 @@ func _refresh_from_current_snapshot(full_resync: bool = false) -> void:
 	# Check for new chronicle events (battles, etc.)
 	if not _is_game_over:
 		_process_chronicle_events(snapshot)
+
+	if not _latest_promises.is_empty():
+		_on_promise_strip_received(_latest_promises)
 
 	# Check for game over
 	var winner = snapshot.get("winner", null)
@@ -1010,6 +1014,7 @@ func _on_rules_catalog_received(catalog: Dictionary) -> void:
 		research_panel.set_catalog(catalog)
 
 func _on_promise_strip_received(promises: Array) -> void:
+	_latest_promises = promises.duplicate(true)
 	# Enrich with city names for HUD rendering.
 	var city_names := _city_name_lookup()
 	var enriched: Array = []

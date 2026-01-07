@@ -97,6 +97,48 @@ class IterationConfig:
 
 
 @dataclass
+class TrapDetectionConfig:
+    """Trap detection settings based on detailed balance paper."""
+
+    enabled: bool = True
+    action_threshold: float = 0.1  # From paper's action_low
+    delta_v_threshold: float = 0.05  # From paper's delta_v_low
+    min_observations: int = 3  # Minimum transitions before detecting
+
+
+@dataclass
+class DynamicsConfig:
+    """
+    Dynamics tracking configuration for detailed balance analysis.
+
+    Based on: "Detailed balance in LLM-driven agents" (arXiv:2512.10047)
+
+    Enables logging of state transitions to understand and control
+    the LLM's implicit potential function during asset generation.
+    """
+
+    enabled: bool = False
+    log_to_db: bool = True
+    db_path: str | None = None  # Default: .cyntra/dynamics/fab_transitions.db
+
+    # State space configuration
+    score_buckets: int = 5  # Granularity of score discretization
+    track_mesh_fingerprint: bool = True  # Include geometry hash in state
+
+    # Temperature control (β in paper)
+    temperature: float = 1.0  # Lower = more exploitation, higher = more exploration
+    min_temperature: float = 0.5  # Floor to prevent collapse
+    temperature_decay: float = 1.0  # Multiplier per iteration (1.0 = no decay)
+
+    # Trap detection
+    trap_detection: TrapDetectionConfig = field(default_factory=TrapDetectionConfig)
+
+    # Detailed balance verification
+    verify_balance: bool = False  # Run verification after each batch
+    balance_chi2_threshold: float = 3.0  # χ²/ndf threshold from paper
+
+
+@dataclass
 class GateConfig:
     """Complete gate configuration."""
 
@@ -118,6 +160,9 @@ class GateConfig:
     hard_fail_codes: list[str] = field(default_factory=list)
     repair_playbook: dict[str, dict[str, Any]] = field(default_factory=dict)
     library_checks: dict[str, Any] = field(default_factory=dict)
+
+    # Dynamics tracking (detailed balance analysis)
+    dynamics: DynamicsConfig = field(default_factory=DynamicsConfig)
 
 
 def load_gate_config(config_path: Path) -> GateConfig:
@@ -206,6 +251,29 @@ def load_gate_config(config_path: Path) -> GateConfig:
         uncertainty_band=iteration_raw.get("uncertainty_band", 0.03),
     )
 
+    # Parse dynamics config
+    dynamics_raw = raw.get("dynamics", {})
+    trap_raw = dynamics_raw.get("trap_detection", {})
+    trap_detection = TrapDetectionConfig(
+        enabled=trap_raw.get("enabled", True),
+        action_threshold=trap_raw.get("action_threshold", 0.1),
+        delta_v_threshold=trap_raw.get("delta_v_threshold", 0.05),
+        min_observations=trap_raw.get("min_observations", 3),
+    )
+    dynamics = DynamicsConfig(
+        enabled=dynamics_raw.get("enabled", False),
+        log_to_db=dynamics_raw.get("log_to_db", True),
+        db_path=dynamics_raw.get("db_path"),
+        score_buckets=dynamics_raw.get("score_buckets", 5),
+        track_mesh_fingerprint=dynamics_raw.get("track_mesh_fingerprint", True),
+        temperature=dynamics_raw.get("temperature", 1.0),
+        min_temperature=dynamics_raw.get("min_temperature", 0.5),
+        temperature_decay=dynamics_raw.get("temperature_decay", 1.0),
+        trap_detection=trap_detection,
+        verify_balance=dynamics_raw.get("verify_balance", False),
+        balance_chi2_threshold=dynamics_raw.get("balance_chi2_threshold", 3.0),
+    )
+
     return GateConfig(
         gate_config_id=raw.get("gate_config_id", config_path.stem),
         category=raw.get("category", "unknown"),
@@ -219,6 +287,7 @@ def load_gate_config(config_path: Path) -> GateConfig:
         hard_fail_codes=raw.get("hard_fail_codes", []),
         repair_playbook=raw.get("repair_playbook", {}),
         library_checks=raw.get("library_checks", {}) or {},
+        dynamics=dynamics,
     )
 
 

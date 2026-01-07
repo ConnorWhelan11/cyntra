@@ -13,8 +13,14 @@ offset_bottom = 40.0
 grow_horizontal = 2
 
 [node name="Background" type="ColorRect" parent="TopBar"]
-layout_mode = 2
-size_flags_horizontal = 3
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 0.0
+offset_bottom = 0.0
+mouse_filter = 2
+z_index = -1
 color = Color(0.1, 0.12, 0.15, 0.9)
 
 [node name="TurnLabel" type="Label" parent="TopBar"]
@@ -58,6 +64,11 @@ text = "Gold: 50"
 custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 
+[node name="ResourcesLabel" type="Label" parent="TopBar"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = ""
+
 [node name="ResearchLabel" type="Label" parent="TopBar"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.4, 0.7, 1, 1)
@@ -96,8 +107,14 @@ grow_horizontal = 2
 grow_vertical = 0
 
 [node name="Background" type="ColorRect" parent="BottomBar"]
-layout_mode = 2
-size_flags_horizontal = 3
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 0.0
+offset_bottom = 0.0
+mouse_filter = 2
+z_index = -1
 color = Color(0.1, 0.12, 0.15, 0.9)
 
 [node name="MenuButton" type="Button" parent="BottomBar"]
@@ -145,6 +162,12 @@ text = "Unit Name
 HP: 100/100
 Moves: 2"
 
+[node name="Status" type="Label" parent="UnitPanel/VBox"]
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.35, 0.35, 1)
+text = ""
+
 [node name="Separator2" type="HSeparator" parent="UnitPanel/VBox"]
 layout_mode = 2
 
@@ -169,18 +192,23 @@ text = "Auto"
 layout_mode = 2
 text = "Info"
 
+[node name="PromoteButton" type="Button" parent="UnitPanel/VBox/Actions"]
+visible = false
+layout_mode = 2
+text = "Promote"
+
 [node name="CityPanel" type="PanelContainer" parent="."]
 visible = false
-anchors_preset = 3
-anchor_left = 1.0
+anchors_preset = 2
+anchor_left = 0.0
 anchor_top = 1.0
-anchor_right = 1.0
+anchor_right = 0.0
 anchor_bottom = 1.0
-offset_left = -320.0
-offset_top = -350.0
-offset_right = -10.0
+offset_left = 10.0
+offset_top = -400.0
+offset_right = 330.0
 offset_bottom = -60.0
-grow_horizontal = 0
+grow_horizontal = 1
 grow_vertical = 0
 
 [node name="VBox" type="VBoxContainer" parent="CityPanel"]
@@ -199,6 +227,14 @@ layout_mode = 2
 layout_mode = 2
 text = "Pop: 1 | Food: 0/10
 Production: 0 | Building: None"
+
+[node name="CityActions" type="HBoxContainer" parent="CityPanel/VBox"]
+layout_mode = 2
+alignment = 1
+
+[node name="WhyUpkeepButton" type="Button" parent="CityPanel/VBox/CityActions"]
+layout_mode = 2
+text = "Why upkeep?"
 
 [node name="Separator2" type="HSeparator" parent="CityPanel/VBox"]
 layout_mode = 2
@@ -369,75 +405,146 @@ layout_mode = 2
 size_flags_vertical = 3
 text = ""
 
-[node name="PromisePanel" type="PanelContainer" parent="."]
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 0.0
-anchor_right = 1.0
-anchor_bottom = 0.0
-offset_left = -300.0
-offset_top = 50.0
-offset_right = -10.0
-offset_bottom = 220.0
-grow_horizontal = 0
-grow_vertical = 0
+[node name="PromotionPanel" type="PanelContainer" parent="."]
+visible = false
+anchor_left = 0.35
+anchor_top = 0.25
+anchor_right = 0.65
+anchor_bottom = 0.75
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
 
-[node name="VBox" type="VBoxContainer" parent="PromisePanel"]
+[node name="VBox" type="VBoxContainer" parent="PromotionPanel"]
 anchors_preset = 15
 offset_right = 0.0
 offset_bottom = 0.0
 
-[node name="Title" type="Label" parent="PromisePanel/VBox"]
-text = "Promises (click)"
+[node name="Header" type="HBoxContainer" parent="PromotionPanel/VBox"]
+layout_mode = 2
 
-[node name="PromiseList" type="ItemList" parent="PromisePanel/VBox"]
-custom_minimum_size = Vector2(0, 140)
+[node name="Title" type="Label" parent="PromotionPanel/VBox/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Choose Promotion"
+
+[node name="CloseButton" type="Button" parent="PromotionPanel/VBox/Header"]
+layout_mode = 2
+text = "X"
+
+[node name="Info" type="Label" parent="PromotionPanel/VBox"]
+layout_mode = 2
+text = ""
+
+[node name="PromotionList" type="ItemList" parent="PromotionPanel/VBox"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
 size_flags_vertical = 3
 allow_reselect = true
 
-[node name="TimelinePanel" type="PanelContainer" parent="."]
+[node name="RightRail" type="VBoxContainer" parent="."]
+anchors_preset = 15
 anchor_left = 1.0
 anchor_top = 0.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -300.0
-offset_top = 230.0
+offset_left = -270.0
+offset_top = 50.0
 offset_right = -10.0
-offset_bottom = -190.0
+offset_bottom = -60.0
 grow_horizontal = 0
 grow_vertical = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 12
 
-[node name="VBox" type="VBoxContainer" parent="TimelinePanel"]
+[node name="MinimapPanel" type="PanelContainer" parent="RightRail"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 240)
+size_flags_horizontal = 3
+
+[node name="VBox" type="VBoxContainer" parent="RightRail/MinimapPanel"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="RightRail/MinimapPanel/VBox"]
+text = "Minimap"
+
+[node name="Minimap" parent="RightRail/MinimapPanel/VBox" instance=ExtResource("2")]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 200)
+size_flags_vertical = 3
+
+[node name="PromisePanel" type="PanelContainer" parent="RightRail"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 170)
+size_flags_horizontal = 3
+
+[node name="Bevel" type="ColorRect" parent="RightRail/PromisePanel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 2.0
+mouse_filter = 2
+color = Color(0.2, 0.7, 0.9, 0.45)
+
+[node name="VBox" type="VBoxContainer" parent="RightRail/PromisePanel"]
 anchors_preset = 15
 offset_right = 0.0
 offset_bottom = 0.0
 
-[node name="Title" type="Label" parent="TimelinePanel/VBox"]
+[node name="Title" type="Label" parent="RightRail/PromisePanel/VBox"]
+text = "Action Queue"
+
+[node name="PromiseScroll" type="ScrollContainer" parent="RightRail/PromisePanel/VBox"]
+custom_minimum_size = Vector2(0, 140)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="PromiseList" type="VBoxContainer" parent="RightRail/PromisePanel/VBox/PromiseScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="TimelinePanel" type="PanelContainer" parent="RightRail"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Bevel" type="ColorRect" parent="RightRail/TimelinePanel"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 2.0
+mouse_filter = 2
+color = Color(0.2, 0.7, 0.9, 0.45)
+
+[node name="VBox" type="VBoxContainer" parent="RightRail/TimelinePanel"]
+anchors_preset = 15
+offset_right = 0.0
+offset_bottom = 0.0
+
+[node name="Title" type="Label" parent="RightRail/TimelinePanel/VBox"]
 text = "Timeline"
 
-[node name="TimelineList" type="ItemList" parent="TimelinePanel/VBox"]
+[node name="TimelineList" type="ItemList" parent="RightRail/TimelinePanel/VBox"]
 custom_minimum_size = Vector2(0, 220)
 size_flags_vertical = 3
 allow_reselect = true
 
-[node name="MessagePanel" type="PanelContainer" parent="."]
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -300.0
-offset_top = -180.0
-offset_right = -10.0
-offset_bottom = -60.0
-grow_horizontal = 0
-grow_vertical = 0
+[node name="MessagePanel" type="PanelContainer" parent="RightRail"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 90)
+size_flags_horizontal = 3
 
-[node name="MessageLabel" type="Label" parent="MessagePanel"]
+[node name="MessageLabel" type="Label" parent="RightRail/MessagePanel"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
 theme_override_font_sizes/font_size = 12
 text = ""
 autowrap_mode = 2
-
-[node name="Minimap" parent="." instance=ExtResource("2")]

@@ -18,9 +18,12 @@ import logging
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from .config import GateConfig
+
+if TYPE_CHECKING:
+    from .state import FabAssetState
 
 logger = logging.getLogger(__name__)
 
@@ -91,6 +94,7 @@ class IterationManager:
         self,
         gate_config: GateConfig,
         state_dir: Path | None = None,
+        workcell_id: str | None = None,
     ):
         """
         Initialize iteration manager.
@@ -98,10 +102,26 @@ class IterationManager:
         Args:
             gate_config: Gate configuration with repair playbook
             state_dir: Directory to persist iteration state
+            workcell_id: Workcell ID for dynamics logging
         """
         self.gate_config = gate_config
         self.state_dir = state_dir
+        self.workcell_id = workcell_id
         self._states: dict[str, IterationState] = {}
+        self._dynamics_logger = None
+        self._last_state: dict[str, "FabAssetState"] = {}  # issue_id -> last state
+
+        # Initialize dynamics logger if enabled
+        if gate_config.dynamics.enabled:
+            try:
+                from .dynamics_logger import FabDynamicsLogger
+
+                self._dynamics_logger = FabDynamicsLogger(
+                    config=gate_config.dynamics,
+                    workcell_id=workcell_id,
+                )
+            except Exception as e:
+                logger.warning(f"Failed to initialize dynamics logger: {e}")
 
     def get_state(self, issue_id: str) -> IterationState:
         """Get or create iteration state for an issue."""
@@ -156,11 +176,23 @@ class IterationManager:
         scores: dict[str, float],
         fail_codes: list[str],
         run_id: str,
+        asset_path: Path | None = None,
+        asset_id: str | None = None,
     ) -> IterationState:
         """
         Record a gate result for an issue.
 
-        Returns updated iteration state.
+        Args:
+            issue_id: Issue being evaluated
+            verdict: Gate verdict (pass/fail/escalate)
+            scores: Scores from critics
+            fail_codes: List of failure codes
+            run_id: Gate run ID
+            asset_path: Path to asset file (for dynamics logging)
+            asset_id: Asset ID (for dynamics logging)
+
+        Returns:
+            Updated iteration state.
         """
         state = self.get_state(issue_id)
 
@@ -179,6 +211,50 @@ class IterationManager:
         state.last_fail_codes = fail_codes
         state.last_scores = scores
 
+        # Log dynamics transition if enabled
+        if self._dynamics_logger and asset_id:
+            try:
+                from .gate import GateResult
+                from .state import FabAssetState
+
+                # Build a minimal GateResult for state construction
+                gate_result = GateResult(
+                    run_id=run_id,
+                    asset_id=asset_id,
+                    gate_config_id=self.gate_config.gate_config_id,
+                    verdict=verdict,
+                    scores=scores,
+                    failures={
+                        "hard": [c for c in fail_codes if c in self.gate_config.hard_fail_codes],
+                        "soft": [c for c in fail_codes if c not in self.gate_config.hard_fail_codes],
+                    },
+                )
+
+                # Get previous state for this issue
+                previous_state = self._last_state.get(issue_id)
+
+                # Log the transition
+                self._dynamics_logger.log_gate_evaluation(
+                    result=gate_result,
+                    asset_path=asset_path,
+                    iteration_index=state.current_iteration,
+                    domain=self.gate_config.category,
+                    previous_state=previous_state,
+                )
+
+                # Build and store current state for next iteration
+                current_state = FabAssetState.from_gate_result(
+                    result=gate_result,
+                    asset_path=asset_path,
+                    iteration_index=state.current_iteration,
+                    domain=self.gate_config.category,
+                    num_buckets=self.gate_config.dynamics.score_buckets,
+                )
+                self._last_state[issue_id] = current_state
+
+            except Exception as e:
+                logger.warning(f"Failed to log dynamics transition: {e}")
+
         if verdict == "pass":
             state.status = "passed"
         elif state.current_iteration >= state.max_iterations - 1:
@@ -188,6 +264,16 @@ class IterationManager:
 
         self.save_state(state)
         return state
+
+    def get_last_state(self, issue_id: str) -> "FabAssetState | None":
+        """Get the last recorded state for an issue."""
+        return self._last_state.get(issue_id)
+
+    def close(self) -> None:
+        """Close dynamics logger connection."""
+        if self._dynamics_logger:
+            self._dynamics_logger.close()
+            self._dynamics_logger = None
 
     def should_retry(self, issue_id: str) -> bool:
         """Check if an issue should be retried."""

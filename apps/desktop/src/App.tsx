@@ -52,7 +52,7 @@ import { RunsView } from "./features/runs";
 import { KernelView } from "./features/kernel";
 import { HomeWorldBuilderView } from "./features/home";
 import { EvolutionLabView } from "./features/evolution";
-import { MemoryAtlasView } from "./features/memory";
+import { MemoryVaultView } from "./features/memory";
 import { GalleryView2 } from "./features/gallery";
 import { StageView } from "./features/stage";
 import { GameplayView } from "./features/gameplay";
@@ -1223,7 +1223,30 @@ export default function App() {
 
         {nav === "evolution" && <EvolutionLabView activeProject={activeProject} />}
 
-        {nav === "memory" && <MemoryAtlasView activeProject={activeProject} />}
+        {nav === "memory" && (
+          <MemoryVaultView
+            activeProject={activeProject}
+            onOpenRun={async (runId) => {
+              if (!activeProject) {
+                setError("Select a project first.");
+                return;
+              }
+              setNav("runs");
+              await refreshRuns(activeProject.root);
+              await selectRun(runId);
+            }}
+            onOpenRunArtifact={async (runId, relPath) => {
+              if (!activeProject) {
+                setError("Select a project first.");
+                return;
+              }
+              setNav("runs");
+              await refreshRuns(activeProject.root);
+              const loaded = await selectRun(runId);
+              await selectArtifact(relPath, loaded);
+            }}
+          />
+        )}
 
         {nav === "search" && (
           <SearchView

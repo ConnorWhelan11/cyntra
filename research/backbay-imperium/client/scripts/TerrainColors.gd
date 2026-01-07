@@ -31,6 +31,22 @@ static var TERRAIN_COLORS: Dictionary = {
 	MARSH: Color(0.35, 0.45, 0.40, 1.0),      # Muddy green
 }
 
+static var TERRAIN_NAME_COLORS: Dictionary = {
+	"ocean": TERRAIN_COLORS[OCEAN],
+	"coast": TERRAIN_COLORS[COAST],
+	"lake": Color(0.08, 0.45, 0.35, 1.0),
+	"grassland": TERRAIN_COLORS[GRASSLAND],
+	"plains": TERRAIN_COLORS[PLAINS],
+	"desert": TERRAIN_COLORS[DESERT],
+	"tundra": TERRAIN_COLORS[TUNDRA],
+	"snow": TERRAIN_COLORS[SNOW],
+	"hills": TERRAIN_COLORS[HILLS],
+	"mountains": TERRAIN_COLORS[MOUNTAINS],
+	"forest": TERRAIN_COLORS[FOREST],
+	"jungle": TERRAIN_COLORS[JUNGLE],
+	"marsh": TERRAIN_COLORS[MARSH],
+}
+
 ## Resource type IDs (matching backbay-core/src/mapgen.rs)
 const RES_WHEAT := 0
 const RES_CATTLE := 1
@@ -74,6 +90,12 @@ static var RESOURCE_SYMBOLS: Dictionary = {
 static func get_terrain_color(terrain_id: int) -> Color:
 	if TERRAIN_COLORS.has(terrain_id):
 		return TERRAIN_COLORS[terrain_id]
+	return Color(0.3, 0.3, 0.3, 1.0)  # Default gray
+
+static func get_terrain_color_by_name(terrain_name: String) -> Color:
+	var key := terrain_name.to_lower().replace(" ", "_")
+	if TERRAIN_NAME_COLORS.has(key):
+		return TERRAIN_NAME_COLORS[key]
 	return Color(0.3, 0.3, 0.3, 1.0)  # Default gray
 
 static func get_resource_color(resource_id: int) -> Color:

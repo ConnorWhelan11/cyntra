@@ -3,6 +3,8 @@
 //! Generates diverse terrain using Perlin-like noise and biome rules.
 
 use backbay_protocol::{Hex, TerrainId, TileSnapshot};
+use std::cmp::Ordering;
+use std::collections::VecDeque;
 
 use crate::rng::GameRng;
 use crate::rules::CompiledRules;
@@ -44,6 +46,7 @@ struct TerrainPalette {
     mountains: TerrainId,
     coast: TerrainId,
     ocean: TerrainId,
+    lake: TerrainId,
 }
 
 impl TerrainPalette {
@@ -56,6 +59,7 @@ impl TerrainPalette {
         let mountains = rules.terrain_id("mountains").unwrap_or(hills);
         let coast = rules.terrain_id("coast").unwrap_or(plains);
         let ocean = rules.terrain_id("ocean").unwrap_or(mountains);
+        let lake = rules.terrain_id("lake").unwrap_or(coast);
 
         Self {
             plains,
@@ -64,11 +68,12 @@ impl TerrainPalette {
             mountains,
             coast,
             ocean,
+            lake,
         }
     }
 
     fn is_water(self, terrain: TerrainId) -> bool {
-        terrain == self.ocean || terrain == self.coast
+        terrain == self.ocean || terrain == self.coast || terrain == self.lake
     }
 }
 
@@ -111,6 +116,9 @@ pub fn generate_map(rules: &CompiledRules, config: &MapGenConfig, seed: u64) -> 
 
     // Determine sea level based on water ratio
     let sea_level = calculate_percentile(&elevation, config.water_ratio);
+    let water_mask: Vec<bool> = elevation.iter().map(|val| *val < sea_level).collect();
+    let ocean_mask =
+        compute_ocean_mask(&water_mask, config.width, config.height, config.wrap_horizontal);
 
     // Generate terrain from noise
     let mut tiles: Vec<TileSnapshot> = Vec::with_capacity(size);
@@ -121,19 +129,28 @@ pub fn generate_map(rules: &CompiledRules, config: &MapGenConfig, seed: u64) -> 
             let moist = moisture[idx];
             let temp = temperature[y as usize];
 
-            let terrain = determine_terrain(
-                palette,
-                elev,
-                moist,
-                temp,
-                sea_level,
-                config.elevation_variance,
-            );
+            let terrain = if water_mask[idx] {
+                if ocean_mask[idx] {
+                    palette.ocean
+                } else {
+                    palette.lake
+                }
+            } else {
+                determine_land_terrain(
+                    palette,
+                    elev,
+                    moist,
+                    temp,
+                    sea_level,
+                    config.elevation_variance,
+                )
+            };
 
             tiles.push(TileSnapshot {
                 terrain,
                 owner: None,
                 city: None,
+                river_edges: 0,
                 improvement: None,
                 resource: None,
             });
@@ -158,6 +175,19 @@ pub fn generate_map(rules: &CompiledRules, config: &MapGenConfig, seed: u64) -> 
         &mut rng,
         config.resource_density,
     );
+
+    // Generate river edges based on elevation + moisture.
+    let river_edges = generate_river_edges(
+        &elevation,
+        &moisture,
+        &water_mask,
+        config.width,
+        config.height,
+        config.wrap_horizontal,
+    );
+    for (tile, edges) in tiles.iter_mut().zip(river_edges.into_iter()) {
+        tile.river_edges = edges;
+    }
 
     // Find starting positions
     let start_positions = find_start_positions(
@@ -286,8 +316,233 @@ fn calculate_percentile(values: &[f32], percentile: f32) -> f32 {
     sorted[idx]
 }
 
+fn neighbor_index(
+    hex: Hex,
+    dir_idx: usize,
+    width: u32,
+    height: u32,
+    wrap: bool,
+) -> Option<(usize, Hex)> {
+    let dir = Hex::DIRECTIONS[dir_idx];
+    let mut nq = hex.q + dir.q;
+    let nr = hex.r + dir.r;
+
+    if nr < 0 || nr >= height as i32 {
+        return None;
+    }
+
+    if wrap {
+        nq = nq.rem_euclid(width as i32);
+    } else if nq < 0 || nq >= width as i32 {
+        return None;
+    }
+
+    let nhex = Hex { q: nq, r: nr };
+    let nidx = (nr as u32 * width + nq as u32) as usize;
+    Some((nidx, nhex))
+}
+
+fn compute_ocean_mask(water: &[bool], width: u32, height: u32, wrap: bool) -> Vec<bool> {
+    let size = (width * height) as usize;
+    let mut ocean = vec![false; size];
+    if size == 0 {
+        return ocean;
+    }
+
+    if wrap {
+        let mut visited = vec![false; size];
+        let mut largest: Vec<usize> = Vec::new();
+
+        for idx in 0..size {
+            if !water[idx] || visited[idx] {
+                continue;
+            }
+
+            let mut component: Vec<usize> = Vec::new();
+            let mut queue: VecDeque<usize> = VecDeque::new();
+            visited[idx] = true;
+            queue.push_back(idx);
+
+            while let Some(cur) = queue.pop_front() {
+                component.push(cur);
+                let q = (cur % width as usize) as i32;
+                let r = (cur / width as usize) as i32;
+                let hex = Hex { q, r };
+
+                for dir_idx in 0..6 {
+                    let Some((nidx, _)) =
+                        neighbor_index(hex, dir_idx, width, height, wrap)
+                    else {
+                        continue;
+                    };
+                    if water[nidx] && !visited[nidx] {
+                        visited[nidx] = true;
+                        queue.push_back(nidx);
+                    }
+                }
+            }
+
+            if component.len() > largest.len() {
+                largest = component;
+            }
+        }
+
+        for idx in largest {
+            ocean[idx] = true;
+        }
+        return ocean;
+    }
+
+    let mut queue: VecDeque<Hex> = VecDeque::new();
+    let mut seed = |hex: Hex| {
+        let idx = (hex.r as u32 * width + hex.q as u32) as usize;
+        if water[idx] && !ocean[idx] {
+            ocean[idx] = true;
+            queue.push_back(hex);
+        }
+    };
+
+    if height > 0 {
+        for x in 0..width as i32 {
+            seed(Hex { q: x, r: 0 });
+            if height > 1 {
+                seed(Hex {
+                    q: x,
+                    r: height as i32 - 1,
+                });
+            }
+        }
+    }
+
+    if width > 0 {
+        for y in 0..height as i32 {
+            seed(Hex { q: 0, r: y });
+            if width > 1 {
+                seed(Hex {
+                    q: width as i32 - 1,
+                    r: y,
+                });
+            }
+        }
+    }
+
+    while let Some(hex) = queue.pop_front() {
+        for dir_idx in 0..6 {
+            let Some((nidx, nhex)) = neighbor_index(hex, dir_idx, width, height, wrap) else {
+                continue;
+            };
+            if water[nidx] && !ocean[nidx] {
+                ocean[nidx] = true;
+                queue.push_back(nhex);
+            }
+        }
+    }
+
+    ocean
+}
+
+fn generate_river_edges(
+    elevation: &[f32],
+    moisture: &[f32],
+    water: &[bool],
+    width: u32,
+    height: u32,
+    wrap: bool,
+) -> Vec<u8> {
+    let size = (width * height) as usize;
+    if elevation.len() != size || moisture.len() != size || water.len() != size {
+        return vec![0; size];
+    }
+
+    let mut downhill: Vec<Option<(usize, usize)>> = vec![None; size];
+
+    for idx in 0..size {
+        if water[idx] {
+            continue;
+        }
+
+        let q = (idx % width as usize) as i32;
+        let r = (idx / width as usize) as i32;
+        let hex = Hex { q, r };
+        let current = elevation[idx];
+
+        let mut best: Option<(usize, usize, f32)> = None;
+        for dir_idx in 0..6 {
+            let Some((nidx, _)) = neighbor_index(hex, dir_idx, width, height, wrap) else {
+                continue;
+            };
+            let elev = elevation[nidx];
+            if elev + 0.0001 >= current {
+                continue;
+            }
+            if best.map_or(true, |(_, _, best_elev)| elev < best_elev) {
+                best = Some((nidx, dir_idx, elev));
+            }
+        }
+
+        if let Some((nidx, dir_idx, _)) = best {
+            downhill[idx] = Some((nidx, dir_idx));
+        }
+    }
+
+    let mut flow = vec![0.0f32; size];
+    for idx in 0..size {
+        if !water[idx] {
+            flow[idx] = moisture[idx].max(0.05);
+        }
+    }
+
+    let mut order: Vec<usize> = (0..size).collect();
+    order.sort_by(|a, b| {
+        elevation[*b]
+            .partial_cmp(&elevation[*a])
+            .unwrap_or(Ordering::Equal)
+    });
+
+    for idx in order {
+        if water[idx] {
+            continue;
+        }
+        if let Some((nidx, _)) = downhill[idx] {
+            if !water[nidx] {
+                flow[nidx] += flow[idx];
+            }
+        }
+    }
+
+    let mut land_flows: Vec<f32> = flow
+        .iter()
+        .enumerate()
+        .filter_map(|(idx, val)| (!water[idx]).then_some(*val))
+        .collect();
+    if land_flows.is_empty() {
+        return vec![0; size];
+    }
+
+    land_flows.sort_by(|a, b| a.partial_cmp(b).unwrap_or(Ordering::Equal));
+    let mut threshold_idx = (land_flows.len() as f32 * 0.9) as usize;
+    if threshold_idx >= land_flows.len() {
+        threshold_idx = land_flows.len() - 1;
+    }
+    let threshold = land_flows[threshold_idx].max(0.8);
+
+    let mut river_edges = vec![0u8; size];
+    for idx in 0..size {
+        if water[idx] || flow[idx] < threshold {
+            continue;
+        }
+        if let Some((_, dir_idx)) = downhill[idx] {
+            if dir_idx < 6 {
+                river_edges[idx] |= 1 << dir_idx;
+            }
+        }
+    }
+
+    river_edges
+}
+
 /// Determine terrain type from elevation, moisture, and temperature.
-fn determine_terrain(
+fn determine_land_terrain(
     palette: TerrainPalette,
     elevation: f32,
     moisture: f32,
@@ -295,11 +550,6 @@ fn determine_terrain(
     sea_level: f32,
     elevation_variance: f32,
 ) -> TerrainId {
-    // Water
-    if elevation < sea_level {
-        return palette.ocean;
-    }
-
     // High elevation = mountains/hills
     let mountain_threshold = sea_level + (1.0 - sea_level) * (0.8 - elevation_variance * 0.3);
     let hills_threshold = sea_level + (1.0 - sea_level) * (0.6 - elevation_variance * 0.2);
@@ -399,7 +649,7 @@ fn place_resources(
             let idx = (y * width + x) as usize;
             let terrain = tiles[idx].terrain;
 
-            // Skip water (except coast for fish)
+            // Skip deep water; allow coast/lakes for fish
             if terrain == palette.ocean {
                 continue;
             }
@@ -410,7 +660,7 @@ fn place_resources(
             }
 
             let resource = match terrain {
-                t if t == palette.coast => Some(resource::FISH),
+                t if t == palette.coast || t == palette.lake => Some(resource::FISH),
                 t if t == palette.grassland => match rng.next_u32() % 3 {
                     0 => Some(resource::WHEAT),
                     1 => Some(resource::CATTLE),
@@ -559,6 +809,7 @@ fn score_start_position(
                 t if t == palette.plains => 2,
                 t if t == palette.hills => 2,
                 t if t == palette.coast => 1,
+                t if t == palette.lake => 1,
                 t if t == palette.ocean => 0,
                 t if t == palette.mountains => 0,
                 _ => 1,
@@ -632,6 +883,7 @@ mod tests {
         for (t1, t2) in map1.tiles.iter().zip(map2.tiles.iter()) {
             assert_eq!(t1.terrain, t2.terrain);
             assert_eq!(t1.resource, t2.resource);
+            assert_eq!(t1.river_edges, t2.river_edges);
         }
 
         assert_eq!(map1.start_positions, map2.start_positions);

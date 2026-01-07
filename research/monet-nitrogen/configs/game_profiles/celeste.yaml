@@ -1,0 +1,42 @@
+# Celeste specific button mapping
+name: celeste
+description: Celeste platformer
+
+button_mapping:
+  JUMP:
+    - SOUTH  # A button
+    - NORTH  # Y button (also jump)
+  DASH:
+    - EAST   # B button
+    - RIGHT_SHOULDER
+  GRAB:
+    - LEFT_TRIGGER
+    - LEFT_SHOULDER
+  INTERACT:
+    - WEST   # X button
+
+joystick_mapping:
+  MOVE_FORWARD:
+    stick: left
+    axis: y
+    direction: -1.0
+  MOVE_BACKWARD:
+    stick: left
+    axis: y
+    direction: 1.0
+  MOVE_LEFT:
+    stick: left
+    axis: x
+    direction: -1.0
+  MOVE_RIGHT:
+    stick: left
+    axis: x
+    direction: 1.0
+
+# Celeste-specific: DPAD also controls movement
+dpad_as_movement: true
+
+always_suppress:
+  - GUIDE
+  - START
+  - BACK

@@ -58,6 +58,16 @@ ocean:
     production: 0
     gold: 0
 
+lake:
+  name: "Lake"
+  defense_bonus: 0
+  move_cost: 1
+  impassable: false
+  yields:
+    food: 1
+    production: 0
+    gold: 0
+
 forest:
   name: "Forest"
   defense_bonus: 25

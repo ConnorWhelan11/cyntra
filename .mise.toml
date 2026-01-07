@@ -28,7 +28,7 @@ run = "cd kernel && python -m cyntra run --once"
 
 [tasks.build-cyntra]
 description = "Build Rust cyntra binary"
-run = "cd crates && cargo build --release"
+run = "cd crates && cargo build --release -p cyntra"
 
 [tasks.test]
 description = "Run all tests"

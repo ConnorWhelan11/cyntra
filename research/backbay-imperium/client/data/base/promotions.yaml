@@ -1,0 +1,14 @@
+shock:
+  name: "Shock"
+  description: "+10% attack strength."
+  attack_bonus_pct: 10
+
+drill:
+  name: "Drill"
+  description: "+10% defense strength."
+  defense_bonus_pct: 10
+
+amphibious:
+  name: "Amphibious"
+  description: "Ignore river crossing penalties."
+  amphibious: true

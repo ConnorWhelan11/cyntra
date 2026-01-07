@@ -4,6 +4,7 @@ members = [
     # AI primitives
     "ai",
     "ai-bt",
+    "ai-bevy",
     "ai-crowd",
     "ai-core",
     "ai-goap",

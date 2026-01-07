@@ -4,6 +4,7 @@ import type { ProjectInfo } from "@/types";
 import { Panel } from "@/components/layout/Panel";
 import { PanelHeader } from "@/components/layout/PanelHeader";
 import { Badge, Button, TextInput } from "@/components/ui";
+import { startJob } from "@/services";
 import { STORAGE_KEYS } from "@/utils";
 
 type SearchMode = "artifacts" | "runs";
@@ -72,6 +73,11 @@ export function SearchView({ activeProject, onOpenRun, onOpenRunArtifact }: Sear
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<SearchResultRow[]>([]);
   const [searchError, setSearchError] = useState<string | null>(null);
+  const [memoryError, setMemoryError] = useState<string | null>(null);
+
+  const shQuote = useCallback((value: string) => {
+    return `'${value.replace(/'/g, `'\\''`)}'`;
+  }, []);
 
   useEffect(() => {
     if (typeof localStorage === "undefined") return;
@@ -132,6 +138,50 @@ export function SearchView({ activeProject, onOpenRun, onOpenRunArtifact }: Sear
       void checkHealth();
     }
   }, [checkHealth, mode, query, serverUrl]);
+
+  const draftMemoryFromResult = useCallback(
+    async (resultIndex: number, defaultTitle: string) => {
+      setMemoryError(null);
+      if (!activeProject) {
+        setMemoryError("Select a project to create memories.");
+        return;
+      }
+
+      const title = window.prompt("Memory title", defaultTitle) ?? "";
+      if (!title.trim()) return;
+      const issueId = window.prompt("Issue ID (optional)", "") ?? "";
+
+      const q = (lastQuery ?? query).trim();
+      if (!q) {
+        setMemoryError("Run a search first.");
+        return;
+      }
+
+      const parts: string[] = [
+        "uv run --project kernel python -m cyntra.cli memory draft-from-search",
+        `--title ${shQuote(title.trim())}`,
+        `--query ${shQuote(q)}`,
+        `--select ${resultIndex}`,
+        "--k 8",
+        `--server-url ${shQuote(serverUrl)}`,
+      ];
+      if (issueId.trim()) {
+        parts.push(`--issue-id ${shQuote(issueId.trim())}`);
+      }
+      const command = parts.join(" ");
+
+      try {
+        await startJob({
+          projectRoot: activeProject.root,
+          command,
+          label: "memory-draft",
+        });
+      } catch (e) {
+        setMemoryError(String(e));
+      }
+    },
+    [activeProject, lastQuery, query, serverUrl, shQuote]
+  );
 
   const subtitle = (
     <div className="text-xs">
@@ -223,6 +273,7 @@ export function SearchView({ activeProject, onOpenRun, onOpenRunArtifact }: Sear
           </div>
 
           {searchError && <div className="text-sm text-red-400">{searchError}</div>}
+          {memoryError && <div className="text-sm text-red-400">{memoryError}</div>}
 
           {results.length === 0 && (
             <div className="text-sm text-muted-foreground">
@@ -276,6 +327,16 @@ export function SearchView({ activeProject, onOpenRun, onOpenRunArtifact }: Sear
                             onClick={() => void onOpenRunArtifact(runRel.runId, runRel.relPath)}
                           >
                             Open
+                          </Button>
+                        )}
+                        {mode === "artifacts" && (
+                          <Button
+                            variant="outline"
+                            onClick={() =>
+                              void draftMemoryFromResult(idx, repoPath ?? lastQuery ?? "Memory")
+                            }
+                          >
+                            Promote
                           </Button>
                         )}
                       </div>

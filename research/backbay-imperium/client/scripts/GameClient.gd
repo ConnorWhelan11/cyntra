@@ -34,7 +34,7 @@ func _ready() -> void:
 	add_child(bridge)
 
 
-func new_game(map_size: int, num_players: int) -> void:
+func new_game(map_size: int, num_players: int, map_seed: int = 0) -> void:
 	if bridge == null:
 		push_error("GameBridge is not initialized")
 		return
@@ -49,7 +49,11 @@ func new_game(map_size: int, num_players: int) -> void:
 	var policies = FileAccess.get_file_as_bytes("res://data/base/policies.yaml")
 	var governments = FileAccess.get_file_as_bytes("res://data/base/governments.yaml")
 
-	var snapshot_bytes = bridge.new_game(map_size, num_players, terrain, resources, units_data, buildings, techs, promotions, improvements, policies, governments)
+	var snapshot_bytes: PackedByteArray
+	if map_seed != 0 and bridge.has_method("new_game_with_seed"):
+		snapshot_bytes = bridge.new_game_with_seed(map_size, num_players, terrain, resources, units_data, buildings, techs, promotions, improvements, policies, governments, map_seed)
+	else:
+		snapshot_bytes = bridge.new_game(map_size, num_players, terrain, resources, units_data, buildings, techs, promotions, improvements, policies, governments)
 	var snapshot_json := String(bridge.decode_snapshot_json(snapshot_bytes))
 	var parsed = JSON.parse_string(snapshot_json)
 	if typeof(parsed) != TYPE_DICTIONARY:

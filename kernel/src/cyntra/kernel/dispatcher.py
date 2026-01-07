@@ -12,6 +12,7 @@ Responsibilities:
 from __future__ import annotations
 
 import asyncio
+import hashlib
 import json
 import subprocess
 from dataclasses import dataclass, field
@@ -565,6 +566,10 @@ class Dispatcher:
             "speculate_tag": speculate_tag,
         }
 
+        strategy_cfg = self._build_strategy_config(issue=issue, toolchain=toolchain)
+        if strategy_cfg:
+            manifest["strategy"] = strategy_cfg
+
         try:
             from cyntra.prompts.runtime import detect_domain, load_prompt_genome
             from cyntra.prompts.selector import select_prompt_genome_id
@@ -758,6 +763,109 @@ class Dispatcher:
             )
 
         return gates
+
+    def _build_strategy_config(self, *, issue: Issue, toolchain: str) -> dict[str, Any] | None:
+        """
+        Build strategy telemetry + routing configuration for this manifest.
+
+        This is intentionally compact and deterministic:
+        - Always file-first (manifest captures decisions for replay)
+        - No verbose chain-of-thought storage required
+        """
+        strategy = getattr(self.config, "strategy", None)
+        if not strategy or not bool(getattr(strategy, "enabled", False)):
+            return None
+
+        prompt_style = str(getattr(strategy, "prompt_style", "compact") or "compact").strip()
+        prompt_style = prompt_style.lower()
+        if prompt_style not in {"compact", "full"}:
+            prompt_style = "compact"
+
+        cfg: dict[str, Any] = {
+            "enabled": True,
+            "prompt_style": prompt_style,
+            "self_report": bool(getattr(strategy, "self_report", True)),
+        }
+
+        routing = getattr(strategy, "routing", None)
+        if not routing or not bool(getattr(routing, "enabled", False)):
+            return cfg
+
+        mode = str(getattr(routing, "mode", "dataset_optimal") or "dataset_optimal").strip().lower()
+        if mode not in {"dataset_optimal"}:
+            return cfg
+
+        # Deterministic A/B bucketing (based only on issue_id).
+        ab_enabled = bool(getattr(routing, "ab_test_enabled", False))
+        ab_ratio_raw = getattr(routing, "ab_test_ratio", 0.5)
+        ab_ratio = float(ab_ratio_raw) if isinstance(ab_ratio_raw, (int, float)) else 0.5
+        ab_ratio = max(0.0, min(1.0, ab_ratio))
+        ab_salt = str(getattr(routing, "ab_test_salt", "") or "").strip() or "cyntra.strategy.ab.v1"
+
+        bucket_value = int(
+            hashlib.sha256(f"{ab_salt}:{issue.id}".encode("utf-8")).hexdigest(), 16
+        ) % 10_000
+        treatment_cutoff = int(ab_ratio * 10_000)
+        is_treatment = (bucket_value < treatment_cutoff) if ab_enabled else True
+
+        cfg["routing"] = {
+            "mode": "dataset_optimal",
+            "ab_test_enabled": ab_enabled,
+            "ab_test_ratio": ab_ratio,
+            "ab_bucket_value": bucket_value,
+            "ab_bucket": "treatment" if is_treatment else "control",
+        }
+
+        if not is_treatment:
+            return cfg
+
+        # Fetch dataset-wide optimal patterns from the local dynamics DB.
+        patterns = self._get_dataset_optimal_patterns(toolchain=toolchain, routing=routing)
+        if not patterns:
+            return cfg
+
+        digest = hashlib.sha256(
+            json.dumps(patterns, sort_keys=True, separators=(",", ":"), ensure_ascii=True).encode(
+                "utf-8"
+            )
+        ).hexdigest()
+
+        cfg["directive"] = {
+            "source": "dataset_optimal",
+            "toolchain_scope": toolchain if bool(getattr(routing, "per_toolchain", True)) else None,
+            "outcome": str(getattr(routing, "outcome", "passed") or "passed"),
+            "min_confidence": float(getattr(routing, "min_confidence", 0.5) or 0.5),
+            "patterns": patterns,
+            "directive_hash": f"stg_{digest[:12]}",
+        }
+
+        return cfg
+
+    def _get_dataset_optimal_patterns(
+        self, *, toolchain: str, routing: Any
+    ) -> dict[str, str]:
+        """Query dataset-wide optimal patterns (most common on successful runs)."""
+        db_path = self.config.repo_root / ".cyntra" / "dynamics" / "cyntra.db"
+        if not db_path.exists():
+            return {}
+
+        try:
+            from cyntra.dynamics.transition_db import TransitionDB
+
+            outcome = str(getattr(routing, "outcome", "passed") or "passed")
+            min_conf = float(getattr(routing, "min_confidence", 0.5) or 0.5)
+            per_toolchain = bool(getattr(routing, "per_toolchain", True))
+            db = TransitionDB(db_path)
+            try:
+                return db.get_optimal_strategy_for(
+                    toolchain=toolchain if per_toolchain else None,
+                    outcome=outcome,
+                    min_confidence=min_conf,
+                )
+            finally:
+                db.close()
+        except Exception:
+            return {}
 
     def _build_world_config(self, issue: Issue, tags: list[str]) -> dict[str, Any]:
         """

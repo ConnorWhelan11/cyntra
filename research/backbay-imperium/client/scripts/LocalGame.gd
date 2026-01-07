@@ -6,9 +6,12 @@ class_name LocalGame
 @onready var terrain_3d_layer: Terrain3DLayer = $Terrain3DCanvas/Terrain3DLayer
 @onready var unit_3d_layer: Unit3DLayer = $Unit3DCanvas/Unit3DLayer
 @onready var hud: GameHUD = $GameHUD
-@onready var research_panel: ResearchPanel = $ResearchPanel
-@onready var city_dialog: CityNameDialog = $CityNameDialog
-@onready var game_end_screen: GameEndScreen = $GameEndScreen
+@onready var research_panel: ResearchPanel = $ModalCanvas/ResearchPanel
+@onready var diplomacy_panel: DiplomacyPanel = $ModalCanvas/DiplomacyPanel
+@onready var city_dialog: CityNameDialog = $ModalCanvas/CityNameDialog
+@onready var game_end_screen: GameEndScreen = $ModalCanvas/GameEndScreen
+
+@export var map_seed: int = 0
 
 var _use_3d_terrain := true  # Enable 3D terrain rendering
 
@@ -16,12 +19,21 @@ var _pending_found_city_unit_id := -1
 var _terrain_rules_by_id: Dictionary = {}  # terrain_id -> RulesCatalogTerrain dict
 var _unit_rules_by_id: Dictionary = {}     # unit_type_id -> RulesCatalogUnitType dict
 var _building_rules_by_id: Dictionary = {} # building_id -> RulesCatalogBuilding dict
+var _improvement_rules_by_id: Dictionary = {} # improvement_id -> RulesCatalogImprovement dict
+var _resource_rules_by_id: Dictionary = {} # resource_id -> RulesCatalogResource dict
 var _latest_promises: Array = []
 var _last_tile_tooltip_hex: Vector2i = Vector2i(-999, -999)
 var _tile_tooltip_text: String = ""
 var _last_path_preview_unit_id := -1
 var _last_path_preview_dest := Vector2i(-999, -999)
 var _last_path_preview: Dictionary = {}
+
+
+func _play_sound(sound_id: String, delay: float = 0.0) -> void:
+	"""Safely play a sound via AudioManager (handles headless mode)."""
+	var audio = get_node_or_null("/root/AudioManager")
+	if audio and audio.has_method("play"):
+		audio.play(sound_id, delay)
 
 
 func _ready() -> void:
@@ -53,11 +65,16 @@ func _ready() -> void:
 	hud.city_panel_close_requested.connect(_on_city_panel_closed)
 	hud.promise_selected.connect(_on_promise_selected)
 	hud.share_replay_pressed.connect(_on_share_replay_pressed)
+	hud.diplomacy_button_pressed.connect(_on_diplomacy_button_pressed)
 	hud.fortify_requested.connect(_on_fortify_requested)
 	hud.promotion_selected.connect(_on_promotion_selected)
+	hud.city_maintenance_why_requested.connect(_on_city_maintenance_why_requested)
 
 	research_panel.research_selected.connect(_on_research_selected)
 	research_panel.panel_closed.connect(_on_research_panel_closed)
+	diplomacy_panel.declare_war.connect(_on_declare_war)
+	diplomacy_panel.propose_peace.connect(_on_propose_peace)
+	diplomacy_panel.panel_closed.connect(_on_diplomacy_panel_closed)
 
 	city_dialog.city_name_confirmed.connect(_on_city_name_confirmed)
 	city_dialog.cancelled.connect(_on_city_dialog_cancelled)
@@ -71,7 +88,7 @@ func _ready() -> void:
 	hud.minimap_clicked.connect(_on_minimap_clicked)
 
 	# Create a medium-sized map (60x60) with 6 civilizations (1 human + 5 AI)
-	client.new_game(60, 6)
+	client.new_game(60, 6, map_seed)
 
 
 func _process(_delta: float) -> void:
@@ -120,6 +137,8 @@ func _rebuild_rules_indexes() -> void:
 	_terrain_rules_by_id.clear()
 	_unit_rules_by_id.clear()
 	_building_rules_by_id.clear()
+	_improvement_rules_by_id.clear()
+	_resource_rules_by_id.clear()
 
 	var catalog: Dictionary = client.rules_catalog
 	if catalog.is_empty():
@@ -155,6 +174,25 @@ func _rebuild_rules_indexes() -> void:
 			if id >= 0:
 				_building_rules_by_id[id] = bd
 
+	var improvements = catalog.get("improvements", [])
+	if typeof(improvements) == TYPE_ARRAY:
+		for i in improvements:
+			if typeof(i) != TYPE_DICTIONARY:
+				continue
+			var id = _parse_runtime_id(i.get("id", -1))
+			if id >= 0:
+				_improvement_rules_by_id[id] = i
+
+	var resources = catalog.get("resources", [])
+	if typeof(resources) == TYPE_ARRAY:
+		for r in resources:
+			if typeof(r) != TYPE_DICTIONARY:
+				continue
+			var rd: Dictionary = r
+			var id = _parse_runtime_id(rd.get("id", -1))
+			if id >= 0:
+				_resource_rules_by_id[id] = rd
+
 
 func _on_events_received(_events: Array) -> void:
 	map_view.set_my_player_id(client.current_player)
@@ -162,7 +200,7 @@ func _on_events_received(_events: Array) -> void:
 	map_view.apply_state_deltas(_events)
 	if _events_contains_turn_started(_events):
 		map_view.set_authoritative_visible_tiles(client.get_visible_tiles(client.current_player))
-		AudioManager.play("turn_start")
+		_play_sound("turn_start")
 
 	# Play sounds for game events
 	_play_event_sounds(_events)
@@ -202,8 +240,15 @@ func _handle_completion_and_attention(events: Array) -> void:
 				if player_id != client.current_player:
 					continue
 				var tech_id := _parse_runtime_id(e.get("tech", -1))
-				hud.add_message("Tech researched: %s" % client.tech_name(tech_id))
-				AudioManager.play("tech_complete")
+				var tech_name := client.tech_name(tech_id)
+				var reveals := _revealed_resource_names_for_tech(tech_id)
+				if not reveals.is_empty():
+					hud.add_message("Tech researched: %s (reveals %s)" % [tech_name, ", ".join(reveals)])
+				else:
+					hud.add_message("Tech researched: %s" % tech_name)
+				_play_sound("tech_complete")
+				if map_view and map_view.has_method("ping_revealed_resources"):
+					map_view.ping_revealed_resources(tech_id)
 				focus_tech = true
 			"CityProduced":
 				var city_id := _extract_entity_id(e.get("city", -1))
@@ -215,7 +260,7 @@ func _handle_completion_and_attention(events: Array) -> void:
 				var item_name := _format_production_item(e.get("item", null))
 				var city_name := String(c.get("name", "City"))
 				hud.add_message("%s produced: %s" % [city_name, item_name])
-				AudioManager.play("production_complete")
+				_play_sound("production_complete")
 				if focus_city_id < 0:
 					focus_city_id = city_id
 			"CityGrew":
@@ -240,6 +285,28 @@ func _handle_completion_and_attention(events: Array) -> void:
 		map_view.select_city(focus_city_id)
 
 
+func _revealed_resource_names_for_tech(tech_id: int) -> Array[String]:
+	var out: Array[String] = []
+	var catalog: Dictionary = client.rules_catalog
+	var resources = catalog.get("resources", [])
+	if typeof(resources) != TYPE_ARRAY:
+		return out
+	for r in resources:
+		if typeof(r) != TYPE_DICTIONARY:
+			continue
+		var rd: Dictionary = r
+		var revealed_by = rd.get("revealed_by_tech", null)
+		if revealed_by == null:
+			continue
+		if _parse_runtime_id(revealed_by) != tech_id:
+			continue
+		var name := String(rd.get("name", "Resource"))
+		if name.is_empty():
+			name = "Resource"
+		out.append(name)
+	return out
+
+
 func _play_event_sounds(events: Array) -> void:
 	if typeof(events) != TYPE_ARRAY or events.is_empty():
 		return
@@ -253,20 +320,20 @@ func _play_event_sounds(events: Array) -> void:
 		match t:
 			"Battle":
 				# Play attack sound with slight pitch variation
-				AudioManager.play("attack_melee", 0.1)
+				_play_sound("attack_melee", 0.1)
 
 				# Check for deaths
 				var attacker_died: bool = e.get("attacker_died", false)
 				var defender_died: bool = e.get("defender_died", false)
 				if attacker_died or defender_died:
 					# Slight delay would be nice but we'll just play immediately
-					AudioManager.play("unit_death", 0.15)
+					_play_sound("unit_death", 0.15)
 			"UnitKilled", "UnitDied":
-				AudioManager.play("unit_death", 0.15)
+				_play_sound("unit_death", 0.15)
 			"CityFounded":
-				AudioManager.play("city_founded")
+				_play_sound("city_founded")
 			"CityCaptured":
-				AudioManager.play("city_captured")
+				_play_sound("city_captured")
 			"UnitMoved":
 				# Only play for player's units
 				var unit_data = e.get("unit", {})
@@ -278,7 +345,7 @@ func _play_event_sounds(events: Array) -> void:
 					else:
 						owner_id = int(owner)
 				if owner_id == client.current_player:
-					AudioManager.play("unit_move", 0.1)
+					_play_sound("unit_move", 0.1)
 			_:
 				pass
 
@@ -460,6 +527,18 @@ func _player_name(player_id: int) -> String:
 		return "Player %d" % player_id
 	return String(p.get("name", "Player %d" % player_id))
 
+func _resource_name(resource_id: int) -> String:
+	var rules = _resource_rules_by_id.get(resource_id, {})
+	if typeof(rules) == TYPE_DICTIONARY and not rules.is_empty():
+		return String(rules.get("name", "Resource %d" % resource_id))
+	return "Resource %d" % resource_id
+
+func _improvement_name(improvement_id: int) -> String:
+	var rules = _improvement_rules_by_id.get(improvement_id, {})
+	if typeof(rules) == TYPE_DICTIONARY and not rules.is_empty():
+		return String(rules.get("name", "Improvement %d" % improvement_id))
+	return "Improvement %d" % improvement_id
+
 
 func _format_tile_ui_tooltip(tile_ui: Dictionary) -> String:
 	if tile_ui.is_empty():
@@ -497,6 +576,22 @@ func _format_tile_ui_tooltip(tile_ui: Dictionary) -> String:
 		if not parts.is_empty():
 			lines.append(" ".join(parts))
 
+	var allow_resource_details := map_view != null and map_view.show_resources
+	var resource_id := _parse_runtime_id(tile_ui.get("resource", -1))
+	var resource_name := ""
+	if resource_id >= 0:
+		resource_name = _resource_name(resource_id)
+		if allow_resource_details:
+			var resource_line := "⛏ Resource: %s" % resource_name
+			var res_rules = _resource_rules_by_id.get(resource_id, {})
+			if typeof(res_rules) == TYPE_DICTIONARY and not res_rules.is_empty():
+				var req = res_rules.get("requires_improvement", null)
+				if req != null:
+					var req_id := _parse_runtime_id(req)
+					if req_id >= 0:
+						resource_line += " (requires %s)" % _improvement_name(req_id)
+			lines.append(resource_line)
+
 	var improvement = tile_ui.get("improvement", null)
 	if typeof(improvement) == TYPE_DICTIONARY:
 		var impr: Dictionary = improvement
@@ -521,6 +616,8 @@ func _format_tile_ui_tooltip(tile_ui: Dictionary) -> String:
 				continue
 			var bd: Dictionary = raw
 			var src: String = String(bd.get("source", ""))
+			if not allow_resource_details and not resource_name.is_empty() and src.begins_with(resource_name):
+				continue
 			var bfood := int(bd.get("food", 0))
 			var bprod := int(bd.get("production", 0))
 			var bgold := int(bd.get("gold", 0))
@@ -533,6 +630,8 @@ func _format_tile_ui_tooltip(tile_ui: Dictionary) -> String:
 				bparts.append("💰%s%d" % ["+" if bgold > 0 else "", bgold])
 			if not bparts.is_empty():
 				lines.append("  %s: %s" % [src, " ".join(bparts)])
+			elif not src.is_empty():
+				lines.append("  %s" % src)
 
 	return "\n".join(lines)
 
@@ -552,7 +651,7 @@ func _player_snapshot(player_id: int) -> Dictionary:
 
 
 func _on_unit_selected(unit_id: int) -> void:
-	AudioManager.play("unit_select")
+	_play_sound("unit_select")
 	_refresh_unit_panel(unit_id)
 	_sync_unit_overlays(unit_id)
 
@@ -771,6 +870,11 @@ func _refresh_city_panel(city_id: int) -> void:
 				var rid := _parse_runtime_id(r)
 				if rid >= 0:
 					missing_resources.append(rid)
+		var missing_requirements: Array = []
+		var raw_missing_requirements = o.get("missing_requirements", [])
+		if typeof(raw_missing_requirements) == TYPE_ARRAY:
+			for req in raw_missing_requirements:
+				missing_requirements.append(String(req))
 		var item = o.get("item", null)
 		if typeof(item) != TYPE_DICTIONARY:
 			continue
@@ -805,6 +909,7 @@ func _refresh_city_panel(city_id: int) -> void:
 			"cost": cost,
 			"enabled": enabled,
 			"missing_resources": missing_resources,
+			"missing_requirements": missing_requirements,
 		})
 
 	hud.show_city_panel(city_ui, options)
@@ -813,7 +918,7 @@ func _refresh_city_panel(city_id: int) -> void:
 func _on_end_turn_pressed() -> void:
 	if _gate_end_turn_if_action_required():
 		return
-	AudioManager.play("turn_end")
+	_play_sound("turn_end")
 	client.end_turn()
 
 func _on_share_replay_pressed() -> void:
@@ -960,6 +1065,27 @@ func _on_research_selected(tech_id: int) -> void:
 func _on_research_panel_closed() -> void:
 	pass
 
+
+func _on_diplomacy_button_pressed() -> void:
+	if diplomacy_panel == null:
+		return
+	diplomacy_panel.update_from_snapshot(client.snapshot, client.current_player)
+	diplomacy_panel.open()
+
+
+func _on_declare_war(target_player: int) -> void:
+	hud.add_message("Declared war on Player %d!" % (target_player + 1))
+	_play_sound("ui_click")
+
+
+func _on_propose_peace(target_player: int) -> void:
+	hud.add_message("Proposed peace to Player %d" % (target_player + 1))
+	_play_sound("ui_click")
+
+
+func _on_diplomacy_panel_closed() -> void:
+	pass
+
 func _refresh_promises() -> void:
 	if not hud.has_method("set_promises"):
 		return
@@ -1022,22 +1148,41 @@ func _extract_entity_id(data: Variant) -> int:
 	if typeof(data) == TYPE_DICTIONARY:
 		var d: Dictionary = data
 		if d.has("raw"):
-			return int(d.get("raw", 0))
-	return int(data)
+			return _safe_int(d.get("raw", 0), -1)
+	return _safe_int(data, -1)
+
+func _extract_hex_pos(data: Variant) -> Vector2i:
+	if typeof(data) == TYPE_DICTIONARY:
+		var d: Dictionary = data
+		return Vector2i(_safe_int(d.get("q", 0), 0), _safe_int(d.get("r", 0), 0))
+	return Vector2i.ZERO
 
 func _parse_runtime_id(value: Variant) -> int:
 	if typeof(value) == TYPE_DICTIONARY:
 		var d: Dictionary = value
 		if d.has("raw"):
-			return int(d.get("raw", -1))
-	return int(value)
+			return _safe_int(d.get("raw", -1), -1)
+	return _safe_int(value, -1)
 
 func _parse_player_id(value: Variant) -> int:
 	if typeof(value) == TYPE_DICTIONARY:
 		var d: Dictionary = value
 		if d.has("0"):
-			return int(d.get("0", -1))
-	return int(value)
+			return _safe_int(d.get("0", -1), -1)
+	return _safe_int(value, -1)
+
+func _safe_int(value: Variant, fallback: int = -1) -> int:
+	if value == null:
+		return fallback
+	var value_type := typeof(value)
+	if value_type == TYPE_INT:
+		return value
+	if value_type == TYPE_FLOAT:
+		return int(value)
+	if value_type == TYPE_STRING or value_type == TYPE_STRING_NAME:
+		var s := String(value)
+		return s.to_int() if s.is_valid_int() else fallback
+	return fallback
 
 func _format_production_item(item: Variant) -> String:
 	if typeof(item) != TYPE_DICTIONARY:
@@ -1067,8 +1212,40 @@ func _on_promise_selected(promise: Dictionary) -> void:
 			var city_id = _extract_entity_id(promise.get("city", -1))
 			if city_id >= 0:
 				map_view.select_city(city_id)
+		"ConnectResource":
+			var unit_id := int(promise.get("unit", -1))
+			if unit_id < 0:
+				return
+			var at_data = promise.get("at", {})
+			if typeof(at_data) != TYPE_DICTIONARY:
+				return
+			var at := _extract_hex_pos(at_data)
+			var kind = promise.get("kind", null)
+			if typeof(kind) != TYPE_DICTIONARY:
+				return
+			var kd: Dictionary = kind
+			var kt := String(kd.get("type", ""))
+			match kt:
+				"Build":
+					var impr_id := int(kd.get("improvement", -1))
+					if impr_id < 0:
+						return
+					client.set_worker_mission_build_improvement(unit_id, impr_id, at)
+					hud.add_message("Worker: connect resource queued")
+				"Repair":
+					client.set_worker_mission_repair_improvement(unit_id, at)
+					hud.add_message("Worker: repair queued")
+				_:
+					pass
 		_:
 			pass
+
+func _on_city_maintenance_why_requested(city_id: int) -> void:
+	if city_id < 0:
+		return
+	var panel := client.get_city_maintenance_why(city_id)
+	if typeof(panel) == TYPE_DICTIONARY:
+		hud.show_why_panel(panel)
 
 func _gate_end_turn_if_action_required() -> bool:
 	# Gate end turn if the sim says the player has required choices.
@@ -1116,7 +1293,7 @@ func _on_end_screen_play_again() -> void:
 	# Reset and start a new game
 	game_end_screen.hide_screen()
 	map_view.set_process_unhandled_input(true)
-	client.new_game(60, 6)
+	client.new_game(60, 6, map_seed)
 
 
 func _on_minimap_clicked(hex: Vector2i) -> void:

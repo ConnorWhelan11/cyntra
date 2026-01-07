@@ -22,6 +22,9 @@ const COLOR_PATH_LINE_REMAINDER := Color(1.0, 0.9, 0.3, 0.25)
 const COLOR_PATH_STOP_MARKER := Color(1.0, 1.0, 1.0, 0.9)
 const COLOR_ZOC_OUTLINE := Color(1.0, 0.25, 0.25, 0.9)
 const _COLOR_ORDERS_LINE := Color(0.55, 0.8, 1.0, 0.85)
+const COLOR_RIVER_LINE := Color(0.25, 0.65, 1.0, 0.75)
+const COLOR_REVEAL_PING := Color(1.0, 0.85, 0.3, 0.9)
+const DEBUG_3D_LOGS := true
 
 # Unit colors
 const COLOR_UNIT_FRIEND := Color(0.25, 0.9, 0.35, 1.0)
@@ -34,11 +37,6 @@ const COLOR_CITY_FRIEND := Color(0.3, 0.7, 1.0, 1.0)
 const COLOR_CITY_ENEMY := Color(1.0, 0.4, 0.3, 1.0)
 const COLOR_CITY_BORDER := Color(0.0, 0.0, 0.0, 0.8)
 
-# Improvement colors
-const COLOR_IMPROVEMENT_FARM := Color(0.25, 0.85, 0.35, 0.9)
-const COLOR_IMPROVEMENT_MINE := Color(0.65, 0.65, 0.7, 0.9)
-const COLOR_IMPROVEMENT_TRADE := Color(0.95, 0.75, 0.25, 0.9)
-const COLOR_IMPROVEMENT_UNKNOWN := Color(0.9, 0.9, 0.9, 0.9)
 const COLOR_IMPROVEMENT_PILLAGED := Color(0.95, 0.35, 0.35, 0.95)
 
 # Map state
@@ -77,6 +75,13 @@ var _unit_type_names: Array = []
 var _improvement_names: Array = []
 var _palette: RulesPalette = RulesPalette.new()
 var _tex_loader: TextureLoader = TextureLoader.new()
+var _terrain_yields_by_id: Dictionary = {} # terrain_id -> UiYields dict
+var _improvement_tier_yields_by_id: Dictionary = {} # improvement_id -> Array[UiYields dict]
+var _resource_yields_by_id: Dictionary = {} # resource_id -> UiYields dict (optional)
+var _resource_requires_improvement_by_id: Dictionary = {} # resource_id -> improvement_id
+var _resource_revealed_by_tech_by_id: Dictionary = {} # resource_id -> tech_id
+var _my_known_techs: Dictionary = {} # tech_id -> true (set)
+var _last_3d_sync_count: int = -1
 
 # Rendering mode: "sprites" uses terrain textures, "colors" uses polygon fills
 var render_mode := "sprites"
@@ -100,6 +105,11 @@ var show_grid := true
 var show_resources := true
 var show_yields := false
 var show_zoc_overlay := true
+var use_3d_units := false  # Default to reliable 2D units; press U to toggle 3D.
+var use_3d_terrain := false
+var reveal_ping_enabled := true
+var _reveal_pings: Dictionary = {} # Vector2i -> seconds remaining
+const REVEAL_PING_DURATION := 2.5
 
 # Camera control
 var camera_offset := Vector2.ZERO
@@ -107,30 +117,68 @@ var zoom_level := 1.0
 const MIN_ZOOM := 0.5
 const MAX_ZOOM := 2.0
 
+# 3D unit layer reference (set by LocalGame)
+var unit_3d_layer: Unit3DLayer = null
+
+# 3D terrain layer reference (set by LocalGame)
+var terrain_3d_layer: Terrain3DLayer = null
+
 
 func _ready() -> void:
 	_recenter()
 
+func _update_reveal_pings(delta: float) -> bool:
+	if _reveal_pings.is_empty():
+		return false
+	var to_remove: Array = []
+	for hex in _reveal_pings.keys():
+		var remaining := float(_reveal_pings.get(hex, 0.0)) - delta
+		if remaining <= 0.0:
+			to_remove.append(hex)
+		else:
+			_reveal_pings[hex] = remaining
+	for hex in to_remove:
+		_reveal_pings.erase(hex)
+	return not to_remove.is_empty() or not _reveal_pings.is_empty()
 
-func _process(_delta: float) -> void:
+
+func _process(delta: float) -> void:
+	if _ui_wants_keyboard_input():
+		return
+
 	# Camera panning with arrow keys
-	var pan_speed := 400.0 * _delta / zoom_level
+	var pan_speed := 400.0 * delta / zoom_level
+	var panned := false
 	if Input.is_action_pressed("ui_left"):
 		camera_offset.x += pan_speed
-		queue_redraw()
+		panned = true
 	if Input.is_action_pressed("ui_right"):
 		camera_offset.x -= pan_speed
-		queue_redraw()
+		panned = true
 	if Input.is_action_pressed("ui_up"):
 		camera_offset.y += pan_speed
-		queue_redraw()
+		panned = true
 	if Input.is_action_pressed("ui_down"):
 		camera_offset.y -= pan_speed
+		panned = true
+	var ping_changed := _update_reveal_pings(delta)
+	if panned or ping_changed:
+		_sync_3d_camera()
 		queue_redraw()
 
 
 func _unhandled_input(event: InputEvent) -> void:
 	if map_width <= 0 or map_height <= 0:
+		return
+
+	if (event is InputEventMouseButton \
+		or event is InputEventMouseMotion \
+		or event is InputEventMagnifyGesture \
+		or event is InputEventPanGesture) \
+		and _ui_wants_pointer_input():
+		return
+
+	if event is InputEventKey and _ui_wants_keyboard_input():
 		return
 
 	# Mouse motion - update hover
@@ -146,14 +194,35 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_WHEEL_UP and event.pressed:
 			zoom_level = min(zoom_level * 1.1, MAX_ZOOM)
+			_sync_3d_camera()
 			queue_redraw()
 			get_viewport().set_input_as_handled()
 			return
 		if event.button_index == MOUSE_BUTTON_WHEEL_DOWN and event.pressed:
 			zoom_level = max(zoom_level / 1.1, MIN_ZOOM)
+			_sync_3d_camera()
 			queue_redraw()
 			get_viewport().set_input_as_handled()
 			return
+
+	# Touchpad pinch zoom (macOS/trackpad gesture)
+	if event is InputEventMagnifyGesture:
+		var magnify: InputEventMagnifyGesture = event
+		var new_zoom := zoom_level * magnify.factor
+		zoom_level = clamp(new_zoom, MIN_ZOOM, MAX_ZOOM)
+		_sync_3d_camera()
+		queue_redraw()
+		get_viewport().set_input_as_handled()
+		return
+
+	# Touchpad pan gesture
+	if event is InputEventPanGesture:
+		var pan: InputEventPanGesture = event
+		camera_offset -= pan.delta * 10.0 / zoom_level
+		_sync_3d_camera()
+		queue_redraw()
+		get_viewport().set_input_as_handled()
+		return
 
 	# Mouse click
 	if event is InputEventMouseButton and event.pressed:
@@ -218,11 +287,23 @@ func _unhandled_input(event: InputEvent) -> void:
 				get_viewport().set_input_as_handled()
 			KEY_V:
 				fog_enabled = not fog_enabled
+				_sync_units_to_3d()  # Refresh 3D units for fog change
 				queue_redraw()
 				get_viewport().set_input_as_handled()
 			KEY_T:
 				# Toggle texture/color rendering
 				render_mode = "colors" if render_mode == "sprites" else "sprites"
+				queue_redraw()
+				get_viewport().set_input_as_handled()
+			KEY_U:
+				# Toggle 3D unit rendering
+				use_3d_units = not use_3d_units
+				if unit_3d_layer:
+					unit_3d_layer.visible = use_3d_units
+				if use_3d_units:
+					_sync_units_to_3d()
+				elif unit_3d_layer:
+					unit_3d_layer.clear_all_units()
 				queue_redraw()
 				get_viewport().set_input_as_handled()
 			KEY_HOME:
@@ -231,6 +312,14 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _handle_left_click(hex: Vector2i, shift: bool) -> void:
+	# 3D pick: prioritize clicking visible unit models.
+	if use_3d_units and unit_3d_layer:
+		var picked_unit := unit_3d_layer.pick_unit(get_viewport().get_mouse_position())
+		if picked_unit >= 0:
+			var picked_hex := _unit_pos(picked_unit)
+			if _hex_in_map(picked_hex):
+				hex = picked_hex
+
 	# Check for city at hex
 	var city_id := _city_at_hex(hex)
 	if city_id >= 0:
@@ -349,6 +438,7 @@ func _center_on_selection() -> void:
 	var vp := get_viewport_rect().size
 	var target_center := HexMath.axial_to_pixel(hex, Vector2.ZERO, HEX_SIZE * zoom_level)
 	camera_offset = vp * 0.5 - target_center
+	_sync_3d_camera()
 	queue_redraw()
 
 
@@ -408,8 +498,31 @@ func load_snapshot(snapshot: Dictionary, full_resync: bool = false) -> void:
 				city_id = int(cid)
 			cities[city_id] = city_data
 
+	# Track my known techs for rules-driven reveal gating (single-player uses full snapshots).
+	_my_known_techs.clear()
+	var players_data = snapshot.get("players", [])
+	if typeof(players_data) == TYPE_ARRAY:
+		for p in players_data:
+			if typeof(p) != TYPE_DICTIONARY:
+				continue
+			var pd: Dictionary = p
+			if _parse_entity_id(pd.get("id", -1)) != my_player_id:
+				continue
+			var raw_known = pd.get("known_techs", [])
+			if typeof(raw_known) == TYPE_ARRAY:
+				for t in raw_known:
+					var tid := _parse_runtime_id(t)
+					if tid >= 0:
+						_my_known_techs[tid] = true
+			break
+
 	if map_changed:
 		_recenter()
+		if unit_3d_layer:
+			unit_3d_layer.set_map_dimensions(map_width, map_height)
+		_reveal_pings.clear()
+	elif full_resync:
+		_reveal_pings.clear()
 
 	# Seed explored tiles from the authoritative snapshot (unexplored tiles use a sentinel terrain id).
 	if use_authoritative_visibility and (map_changed or full_resync):
@@ -458,6 +571,8 @@ func load_snapshot(snapshot: Dictionary, full_resync: bool = false) -> void:
 	_validate_selection()
 	_update_overlays()
 	_update_fog_of_war()
+	_sync_3d_camera()
+	_sync_units_to_3d()
 	queue_redraw()
 
 
@@ -472,9 +587,148 @@ func set_improvement_names(names: Array) -> void:
 	_improvement_names = names
 
 
+func set_camera_offset(offset: Vector2) -> void:
+	camera_offset = offset
+	_sync_3d_camera()
+	queue_redraw()
+
+
+func get_camera_offset() -> Vector2:
+	return camera_offset
+
+
+func set_zoom_level(value: float) -> void:
+	zoom_level = clampf(value, MIN_ZOOM, MAX_ZOOM)
+	_sync_3d_camera()
+	queue_redraw()
+
+
+func get_zoom_level() -> float:
+	return zoom_level
+
+
+func set_unit_3d_layer(layer: Unit3DLayer) -> void:
+	"""Set reference to 3D unit rendering layer."""
+	unit_3d_layer = layer
+	if unit_3d_layer:
+		unit_3d_layer.visible = use_3d_units
+		unit_3d_layer.set_map_dimensions(map_width, map_height)
+		_sync_3d_camera()
+
+
+func set_terrain_3d_layer(layer: Terrain3DLayer) -> void:
+	"""Set reference to 3D terrain rendering layer."""
+	terrain_3d_layer = layer
+	use_3d_terrain = terrain_3d_layer != null
+	if terrain_3d_layer:
+		terrain_3d_layer.visible = use_3d_terrain
+		terrain_3d_layer.set_map_dimensions(map_width, map_height)
+		_sync_3d_camera()
+
+
 func set_rules_catalog(catalog: Dictionary) -> void:
 	_palette.apply_rules_catalog(catalog)
 	_tex_loader.apply_rules_catalog(catalog)
+	# Also pass unit type info to 3D layer
+	if unit_3d_layer:
+		var unit_types = catalog.get("unit_types", [])
+		unit_3d_layer.apply_unit_types(unit_types)
+
+	_terrain_yields_by_id.clear()
+	_improvement_tier_yields_by_id.clear()
+	_resource_yields_by_id.clear()
+	_resource_requires_improvement_by_id.clear()
+	_resource_revealed_by_tech_by_id.clear()
+
+	var terrains = catalog.get("terrains", [])
+	if typeof(terrains) == TYPE_ARRAY:
+		for t in terrains:
+			if typeof(t) != TYPE_DICTIONARY:
+				continue
+			var td: Dictionary = t
+			var tid := _parse_runtime_id(td.get("id", -1))
+			if tid < 0:
+				continue
+			var y = td.get("yields", {})
+			if typeof(y) == TYPE_DICTIONARY:
+				_terrain_yields_by_id[tid] = y
+
+	var improvements = catalog.get("improvements", [])
+	if typeof(improvements) == TYPE_ARRAY:
+		for i in improvements:
+			if typeof(i) != TYPE_DICTIONARY:
+				continue
+			var idict: Dictionary = i
+			var iid := _parse_runtime_id(idict.get("id", -1))
+			if iid < 0:
+				continue
+			var tiers = idict.get("tiers", [])
+			if typeof(tiers) != TYPE_ARRAY:
+				continue
+			var tier_yields: Array = []
+			for tier in tiers:
+				if typeof(tier) != TYPE_DICTIONARY:
+					continue
+				var yd = (tier as Dictionary).get("yields", {})
+				if typeof(yd) == TYPE_DICTIONARY:
+					tier_yields.append(yd)
+			_improvement_tier_yields_by_id[iid] = tier_yields
+
+	var resources = catalog.get("resources", [])
+	if typeof(resources) == TYPE_ARRAY:
+		for r in resources:
+			if typeof(r) != TYPE_DICTIONARY:
+				continue
+			var rd: Dictionary = r
+			var rid := _parse_runtime_id(rd.get("id", -1))
+			if rid < 0:
+				continue
+			var y = rd.get("yields", null)
+			if typeof(y) == TYPE_DICTIONARY:
+				_resource_yields_by_id[rid] = y
+			var req = rd.get("requires_improvement", null)
+			if req != null:
+				var req_id := _parse_runtime_id(req)
+				if req_id >= 0:
+					_resource_requires_improvement_by_id[rid] = req_id
+			var reveal = rd.get("revealed_by_tech", null)
+			if reveal != null:
+				var reveal_id := _parse_runtime_id(reveal)
+				if reveal_id >= 0:
+					_resource_revealed_by_tech_by_id[rid] = reveal_id
+
+	queue_redraw()
+
+func ping_revealed_resources(tech_id: int) -> void:
+	if not reveal_ping_enabled:
+		return
+	if map_width <= 0 or map_height <= 0:
+		return
+	if tiles.is_empty():
+		return
+
+	for idx in range(tiles.size()):
+		var tile_data: Dictionary = {}
+		if typeof(tiles[idx]) == TYPE_DICTIONARY:
+			tile_data = tiles[idx]
+
+		var res_data = tile_data.get("resource", null)
+		if res_data == null:
+			continue
+		var res_id := _parse_runtime_id(res_data)
+		if res_id < 0:
+			continue
+		var reveal_id := int(_resource_revealed_by_tech_by_id.get(res_id, -1))
+		if reveal_id != tech_id:
+			continue
+
+		var q := idx % map_width
+		var r := int(idx / map_width)
+		var hex := _normalize_hex(Vector2i(q, r))
+		if not explored_tiles.has(hex):
+			continue
+		_reveal_pings[hex] = REVEAL_PING_DURATION
+
 	queue_redraw()
 
 func set_use_authoritative_visibility(enabled: bool) -> void:
@@ -572,6 +826,7 @@ func _draw() -> void:
 		return
 
 	var effective_origin := origin + camera_offset
+	var draw_3d_terrain := use_3d_terrain and terrain_3d_layer != null
 
 	# Draw tiles
 	for r in range(map_height):
@@ -601,24 +856,55 @@ func _draw() -> void:
 			var is_explored := explored_tiles.has(hex) or not fog_enabled
 
 			if not is_explored:
-				# Unexplored - draw dark
-				fill_color = Color(0.08, 0.08, 0.12, 1.0)
+				# Unexplored - draw with subtle variation for visual interest
+				var base_dark := Color(0.06, 0.07, 0.10, 1.0)
+				# Add subtle per-tile variation based on position
+				var noise_val := sin(float(hex.x) * 0.7) * cos(float(hex.y) * 0.9) * 0.03
+				fill_color = Color(
+					base_dark.r + noise_val,
+					base_dark.g + noise_val * 0.8,
+					base_dark.b + noise_val * 0.5,
+					1.0
+				)
 				draw_colored_polygon(corners, fill_color)
+			elif draw_3d_terrain:
+				if not is_visible:
+					_draw_fog_overlay(corners, 0.45)
 			elif render_mode == "sprites":
 				# Try to draw terrain sprite
 				var terrain_tex := _tex_loader.terrain_texture(terrain_id)
 				if terrain_tex:
 					_draw_hex_texture(center, terrain_tex, is_visible)
+					# Draw fog overlay for explored but not visible
+					if not is_visible:
+						_draw_fog_overlay(corners, 0.45)
 				else:
 					# Fallback to colored polygon
 					if not is_visible:
-						fill_color = fill_color.darkened(0.5)
+						fill_color = fill_color.darkened(0.35)
 					draw_colored_polygon(corners, fill_color)
 			else:
 				# Colors mode - use colored polygon
 				if not is_visible:
-					fill_color = fill_color.darkened(0.5)
+					fill_color = fill_color.darkened(0.35)
 				draw_colored_polygon(corners, fill_color)
+
+			# Rivers (draw on explored tiles; dim if not visible)
+			if is_explored:
+				var river_mask := int(tile_data.get("river_edges", 0))
+				if river_mask != 0:
+					var river_color := COLOR_RIVER_LINE
+					if not is_visible:
+						river_color = river_color.darkened(0.4)
+						river_color.a *= 0.6
+					var w := 2.0 * zoom_level
+					# Draw all edges; masks are not guaranteed to be mirrored.
+					for dir in range(6):
+						if (river_mask & (1 << dir)) == 0:
+							continue
+						var a := corners[dir]
+						var b := corners[(dir + 1) % 6]
+						draw_line(a, b, river_color, w)
 
 			# Only show overlays on visible/explored tiles
 			if not is_explored:
@@ -652,31 +938,38 @@ func _draw() -> void:
 					elif typeof(resource_data) == TYPE_INT or typeof(resource_data) == TYPE_FLOAT:
 						res_id = int(resource_data)
 
-					var res_offset := Vector2(HEX_SIZE * 0.35 * zoom_level, -HEX_SIZE * 0.25 * zoom_level)
-					var res_tex := _tex_loader.resource_texture(res_id)
-					if res_tex and render_mode == "sprites":
-						var icon_size := HEX_SIZE * 0.5 * zoom_level
-						var icon_pos := center + res_offset - Vector2(icon_size, icon_size) * 0.5
-						draw_texture_rect(res_tex, Rect2(icon_pos, Vector2(icon_size, icon_size)), false)
-					else:
+					if _is_resource_revealed(res_id):
 						var res_color := _palette.resource_color(res_id)
-						var res_size := HEX_SIZE * 0.18 * zoom_level
-						draw_circle(center + res_offset, res_size, res_color)
-						var glyph := _resource_glyph(res_id)
-						if not glyph.is_empty():
-							var font := ThemeDB.fallback_font
-							var font_size := int(8 * zoom_level)
-							var text_size := font.get_string_size(glyph, HORIZONTAL_ALIGNMENT_CENTER, -1, font_size)
-							var text_color := _contrast_text_color(res_color, 0.95)
-							draw_string(
-								font,
-								center + res_offset + Vector2(-text_size.x / 2, font_size / 3),
-								glyph,
-								HORIZONTAL_ALIGNMENT_CENTER,
-								-1,
-								font_size,
-								text_color
-							)
+						var lens_color := res_color
+						lens_color.a = 0.18
+						if not is_visible:
+							lens_color.a = 0.08
+						draw_colored_polygon(corners, lens_color)
+
+						var res_offset := Vector2(HEX_SIZE * 0.35 * zoom_level, -HEX_SIZE * 0.25 * zoom_level)
+						var res_tex := _tex_loader.resource_texture(res_id)
+						if res_tex and render_mode == "sprites":
+							var icon_size := HEX_SIZE * 0.5 * zoom_level
+							var icon_pos := center + res_offset - Vector2(icon_size, icon_size) * 0.5
+							draw_texture_rect(res_tex, Rect2(icon_pos, Vector2(icon_size, icon_size)), false)
+						else:
+							var res_size := HEX_SIZE * 0.18 * zoom_level
+							draw_circle(center + res_offset, res_size, res_color)
+							var glyph := _resource_glyph(res_id)
+							if not glyph.is_empty():
+								var font := ThemeDB.fallback_font
+								var font_size := int(8 * zoom_level)
+								var text_size := font.get_string_size(glyph, HORIZONTAL_ALIGNMENT_CENTER, -1, font_size)
+								var text_color := _contrast_text_color(res_color, 0.95)
+								draw_string(
+									font,
+									center + res_offset + Vector2(-text_size.x / 2, font_size / 3),
+									glyph,
+									HORIZONTAL_ALIGNMENT_CENTER,
+									-1,
+									font_size,
+									text_color
+								)
 
 			# Improvement marker (tier + pillaged)
 			if is_visible:
@@ -690,27 +983,74 @@ func _draw() -> void:
 					else:
 						impr_id = int(impr_id_data)
 
-					var tier = int(impr.get("tier", 1))
-					var pillaged = bool(impr.get("pillaged", false))
+					var tier: int = int(impr.get("tier", 1))
+					var pillaged: bool = bool(impr.get("pillaged", false))
 
 					if impr_id >= 0:
 						var color := _palette.improvement_color(impr_id)
 						var tier_scale: float = float(clampi(tier - 1, 0, 4))
-						var radius: float = HEX_SIZE * zoom_level * (0.08 + 0.03 * tier_scale)
-						draw_circle(center, radius, color)
+						var base_size: float = HEX_SIZE * zoom_level * (0.2 + 0.05 * tier_scale)
 
-						var glyph := _improvement_glyph(impr_id)
-						if not glyph.is_empty():
-							var font := ThemeDB.fallback_font
-							var font_size := int(9 * zoom_level)
-							var text_size := font.get_string_size(glyph, HORIZONTAL_ALIGNMENT_CENTER, -1, font_size)
-							var text_color := _contrast_text_color(color, 0.95)
-							draw_string(font, center + Vector2(-text_size.x / 2, font_size / 3), glyph, HORIZONTAL_ALIGNMENT_CENTER, -1, font_size, text_color)
+						# Try to draw improvement sprite
+						var impr_tex := _tex_loader.improvement_texture(impr_id)
+						if impr_tex and render_mode == "sprites":
+							var sprite_rect := Rect2(center - Vector2(base_size, base_size), Vector2(base_size * 2, base_size * 2))
+							var modulate := Color.WHITE
+							if pillaged:
+								modulate = Color(0.5, 0.5, 0.5, 0.8)
+							draw_texture_rect(impr_tex, sprite_rect, false, modulate)
+						else:
+							# Fallback: colored circle with glyph
+							var radius: float = HEX_SIZE * zoom_level * (0.08 + 0.03 * tier_scale)
+							draw_circle(center, radius, color)
+
+							var glyph := _improvement_glyph(impr_id)
+							if not glyph.is_empty():
+								var font := ThemeDB.fallback_font
+								var font_size := int(9 * zoom_level)
+								var text_size := font.get_string_size(glyph, HORIZONTAL_ALIGNMENT_CENTER, -1, font_size)
+								var text_color := _contrast_text_color(color, 0.95)
+								draw_string(font, center + Vector2(-text_size.x / 2, font_size / 3), glyph, HORIZONTAL_ALIGNMENT_CENTER, -1, font_size, text_color)
 
 						if pillaged:
 							var s := HEX_SIZE * zoom_level * 0.16
 							draw_line(center + Vector2(-s, -s), center + Vector2(s, s), COLOR_IMPROVEMENT_PILLAGED, 3.0)
 							draw_line(center + Vector2(-s, s), center + Vector2(s, -s), COLOR_IMPROVEMENT_PILLAGED, 3.0)
+
+						var badge_text := "T%d" % tier
+						var badge_text_color := Color(1, 1, 1, 0.95)
+						if pillaged:
+							badge_text = "P%d" % tier
+							badge_text_color = Color(1.0, 0.4, 0.4, 0.95)
+						var badge_pos := center + Vector2(HEX_SIZE * 0.3 * zoom_level, -HEX_SIZE * 0.35 * zoom_level)
+						var badge_radius := 7.0 * zoom_level
+						draw_circle(badge_pos, badge_radius, Color(0, 0, 0, 0.55))
+						var font := ThemeDB.fallback_font
+						var font_size := int(8 * zoom_level)
+						var text_size := font.get_string_size(badge_text, HORIZONTAL_ALIGNMENT_CENTER, -1, font_size)
+						draw_string(
+							font,
+							badge_pos + Vector2(-text_size.x / 2, font_size / 3),
+							badge_text,
+							HORIZONTAL_ALIGNMENT_CENTER,
+							-1,
+							font_size,
+							badge_text_color
+						)
+
+			# Yield overlay (lens).
+			if show_yields and is_visible:
+				var yields := _compute_tile_yields(tile_data, terrain_id)
+				_draw_yield_label(center, yields)
+
+			# Reveal ping (tech-revealed resources on explored tiles).
+			if _reveal_pings.has(hex):
+				var remaining := float(_reveal_pings.get(hex, 0.0))
+				var t := clampf(remaining / REVEAL_PING_DURATION, 0.0, 1.0)
+				var radius := HEX_SIZE * zoom_level * (0.35 + 0.25 * (1.0 - t))
+				var ping_color := COLOR_REVEAL_PING
+				ping_color.a = 0.15 + 0.45 * t
+				draw_arc(center, radius, 0.0, PI * 2.0, 32, ping_color, 2.0 * zoom_level)
 
 			# Tile owner border (if owned)
 			var owner = tile_data.get("owner", null)
@@ -726,6 +1066,10 @@ func _draw() -> void:
 					border_color.a = 0.4
 					var outline := _closed_polyline(corners)
 					draw_polyline(outline, border_color, 2.0 * zoom_level)
+
+	# Fog edge glow pass - draw soft edges at visibility boundaries
+	if fog_enabled:
+		_draw_fog_edges(effective_origin)
 
 	# Hover highlight
 	if _hex_in_map(hovered_hex):
@@ -870,19 +1214,45 @@ func _draw_single_city(center: Vector2, city: Dictionary, city_id: int, owner: i
 	color.a *= alpha
 	var size := HEX_SIZE * 0.45 * zoom_level
 
-	# City background (square)
-	var rect := Rect2(center - Vector2(size, size), Vector2(size * 2, size * 2))
-	draw_rect(rect, color)
-	var border_color := COLOR_CITY_BORDER
-	border_color.a *= alpha
-	draw_rect(rect, border_color, false, 2.0 * zoom_level)
-
-	# Selection highlight
+	# Selection highlight (drawn first, behind city)
 	if city_id == selected_city_id and city_id >= 0:
 		var sel_rect := Rect2(center - Vector2(size * 1.2, size * 1.2), Vector2(size * 2.4, size * 2.4))
 		draw_rect(sel_rect, Color.WHITE, false, 2.0 * zoom_level)
 
-	# City name
+	# Try to draw city sprite (use monument as city representation)
+	var city_tex := _load_city_sprite()
+	if city_tex and render_mode == "sprites":
+		var sprite_size := HEX_SIZE * 0.7 * zoom_level
+		var sprite_rect := Rect2(center - Vector2(sprite_size, sprite_size) * 0.5, Vector2(sprite_size, sprite_size))
+
+		var modulate := Color.WHITE
+		modulate.a = alpha
+		if owner != my_player_id:
+			modulate = Color(1.0, 0.7, 0.7, alpha)  # Slight red tint for enemy cities
+
+		draw_texture_rect(city_tex, sprite_rect, false, modulate)
+
+		# Owner color border
+		var border_rect := Rect2(center - Vector2(sprite_size * 0.55, sprite_size * 0.55), Vector2(sprite_size * 1.1, sprite_size * 1.1))
+		draw_rect(border_rect, color, false, 2.0 * zoom_level)
+	else:
+		# Fallback: City background (square)
+		var rect := Rect2(center - Vector2(size, size), Vector2(size * 2, size * 2))
+		draw_rect(rect, color)
+		var border_color := COLOR_CITY_BORDER
+		border_color.a *= alpha
+		draw_rect(rect, border_color, false, 2.0 * zoom_level)
+
+		# Population number in center
+		var population: int = city.get("population", 1)
+		var pop_str := str(population)
+		var font := ThemeDB.fallback_font
+		var font_size := int(12 * zoom_level)
+		var pop_size := font.get_string_size(pop_str, HORIZONTAL_ALIGNMENT_CENTER, -1, font_size)
+		var text_color := Color(1.0, 1.0, 1.0, alpha)
+		draw_string(font, center + Vector2(-pop_size.x / 2, font_size / 3), pop_str, HORIZONTAL_ALIGNMENT_CENTER, -1, font_size, text_color)
+
+	# City name (always shown below city)
 	var city_name: String = city.get("name", "City")
 	var font := ThemeDB.fallback_font
 	var font_size := int(12 * zoom_level)
@@ -890,14 +1260,37 @@ func _draw_single_city(center: Vector2, city: Dictionary, city_id: int, owner: i
 	var text_color := Color(1.0, 1.0, 1.0, alpha)
 	draw_string(font, center + Vector2(-text_size.x / 2, size + font_size + 2), city_name, HORIZONTAL_ALIGNMENT_CENTER, -1, font_size, text_color)
 
-	# Population
-	var population: int = city.get("population", 1)
-	var pop_str := str(population)
-	var pop_size := font.get_string_size(pop_str, HORIZONTAL_ALIGNMENT_CENTER, -1, font_size)
-	draw_string(font, center + Vector2(-pop_size.x / 2, font_size / 3), pop_str, HORIZONTAL_ALIGNMENT_CENTER, -1, font_size, text_color)
+	# Population badge (shown as small circle with number in sprite mode)
+	if render_mode == "sprites":
+		var population: int = city.get("population", 1)
+		var pop_str := str(population)
+		var badge_radius := 8.0 * zoom_level
+		var badge_pos := center + Vector2(size * 0.6, -size * 0.6)
+		draw_circle(badge_pos, badge_radius, Color(0.1, 0.1, 0.15, 0.9))
+		draw_circle(badge_pos, badge_radius, color, false, 1.5)
+		var small_font_size := int(9 * zoom_level)
+		var pop_size := font.get_string_size(pop_str, HORIZONTAL_ALIGNMENT_CENTER, -1, small_font_size)
+		draw_string(font, badge_pos + Vector2(-pop_size.x / 2, small_font_size / 3), pop_str, HORIZONTAL_ALIGNMENT_CENTER, -1, small_font_size, text_color)
+
+
+func _load_city_sprite() -> Texture2D:
+	# Try to load a city/monument sprite for city representation
+	var paths := [
+		"res://assets/buildings/monument.png",
+		"res://assets/buildings/castle.png",
+		"res://assets/buildings/walls.png"
+	]
+	for path in paths:
+		if ResourceLoader.exists(path):
+			return load(path)
+	return null
 
 
 func _draw_units(effective_origin: Vector2) -> void:
+	var marker_alpha := 1.0
+	var marker_scale := 1.0
+	var hide_2d_units := use_3d_units and unit_3d_layer != null
+
 	# Draw actual units
 	for unit_id in units.keys():
 		var u: Dictionary = units[unit_id]
@@ -923,7 +1316,15 @@ func _draw_units(effective_origin: Vector2) -> void:
 		if _unit_anim_offsets.has(unit_id):
 			center += _unit_anim_offsets[unit_id] * zoom_level
 
-		_draw_single_unit(center, u, int(unit_id), owner, 1.0)
+		_draw_single_unit(
+			center,
+			u,
+			int(unit_id),
+			owner,
+			marker_alpha,
+			marker_scale,
+			not hide_2d_units
+		)
 
 	# Draw remembered enemy units in explored but not visible tiles
 	if fog_enabled:
@@ -945,10 +1346,26 @@ func _draw_units(effective_origin: Vector2) -> void:
 				continue  # Don't show remembered friendly units
 
 			var center := HexMath.axial_to_pixel(pos, effective_origin, HEX_SIZE * zoom_level)
-			_draw_single_unit(center, u, -1, owner, 0.5)  # Draw dimmed
+			_draw_single_unit(
+				center,
+				u,
+				-1,
+				owner,
+				0.5 * marker_alpha,
+				marker_scale,
+				true
+			)  # Draw dimmed
 
 
-func _draw_single_unit(center: Vector2, u: Dictionary, unit_id: int, owner: int, alpha: float) -> void:
+func _draw_single_unit(
+	center: Vector2,
+	u: Dictionary,
+	unit_id: int,
+	owner: int,
+	alpha: float,
+	size_scale: float = 1.0,
+	draw_sprite: bool = true
+) -> void:
 	var color := COLOR_UNIT_NEUTRAL
 	if owner == my_player_id:
 		color = COLOR_UNIT_FRIEND
@@ -956,16 +1373,9 @@ func _draw_single_unit(center: Vector2, u: Dictionary, unit_id: int, owner: int,
 		color = COLOR_UNIT_ENEMY
 
 	color.a *= alpha
-	var radius := HEX_SIZE * 0.28 * zoom_level
+	var radius := HEX_SIZE * 0.28 * zoom_level * size_scale
 
-	# Selection highlight
-	if unit_id == selected_unit_id and unit_id >= 0:
-		draw_circle(center, radius * 1.4, COLOR_UNIT_SELECTED)
-
-	# Unit circle
-	draw_circle(center, radius, color)
-
-	# Unit type indicator
+	# Get unit type ID for texture lookup
 	var type_id := 0
 	var type_data = u.get("type_id", {})
 	if typeof(type_data) == TYPE_DICTIONARY:
@@ -973,12 +1383,38 @@ func _draw_single_unit(center: Vector2, u: Dictionary, unit_id: int, owner: int,
 	else:
 		type_id = int(type_data)
 
-	var symbol := _unit_symbol(type_id)
-	var font := ThemeDB.fallback_font
-	var font_size := int(10 * zoom_level)
-	var text_size := font.get_string_size(symbol, HORIZONTAL_ALIGNMENT_CENTER, -1, font_size)
-	var text_color := Color(1.0, 1.0, 1.0, alpha)
-	draw_string(font, center + Vector2(-text_size.x / 2, font_size / 3), symbol, HORIZONTAL_ALIGNMENT_CENTER, -1, font_size, text_color)
+	# Selection highlight
+	if unit_id == selected_unit_id and unit_id >= 0:
+		draw_circle(center, radius * 1.4, COLOR_UNIT_SELECTED)
+
+	if draw_sprite:
+		# Try to draw unit sprite
+		var unit_tex := _tex_loader.unit_texture(type_id)
+		if unit_tex and render_mode == "sprites":
+			# Draw unit sprite
+			var sprite_size := HEX_SIZE * 0.6 * zoom_level * size_scale
+			var sprite_rect := Rect2(center - Vector2(sprite_size, sprite_size) * 0.5, Vector2(sprite_size, sprite_size))
+
+			# Tint based on owner
+			var modulate := Color.WHITE
+			modulate.a = alpha
+			if owner != my_player_id and owner >= 0:
+				modulate = Color(1.0, 0.7, 0.7, alpha)  # Slight red tint for enemies
+
+			draw_texture_rect(unit_tex, sprite_rect, false, modulate)
+
+			# Owner indicator ring
+			draw_arc(center, radius * 1.1, 0, TAU, 32, color, 2.0 * zoom_level)
+		else:
+			# Fallback: Unit circle with symbol
+			draw_circle(center, radius, color)
+
+		var symbol := _unit_symbol(type_id)
+		var font := ThemeDB.fallback_font
+		var font_size := int(10 * zoom_level)
+		var text_size := font.get_string_size(symbol, HORIZONTAL_ALIGNMENT_CENTER, -1, font_size)
+		var text_color := Color(1.0, 1.0, 1.0, alpha)
+		draw_string(font, center + Vector2(-text_size.x / 2, font_size / 3), symbol, HORIZONTAL_ALIGNMENT_CENTER, -1, font_size, text_color)
 
 	# HP bar (only for visible units, not remembered)
 	if alpha >= 1.0:
@@ -1013,6 +1449,65 @@ func _recenter() -> void:
 	var vp := get_viewport_rect().size
 	origin = vp * 0.5
 	camera_offset = Vector2.ZERO
+	_sync_3d_camera()
+
+
+func _sync_3d_camera() -> void:
+	"""Synchronize 3D layers camera with 2D map view."""
+	if unit_3d_layer:
+		unit_3d_layer.set_camera_offset(camera_offset)
+		unit_3d_layer.set_zoom_level(zoom_level)
+	if terrain_3d_layer:
+		terrain_3d_layer.set_camera_offset(camera_offset)
+		terrain_3d_layer.set_zoom_level(zoom_level)
+
+
+func _sync_units_to_3d() -> void:
+	"""Sync all units to 3D layer for rendering."""
+	if not unit_3d_layer or not use_3d_units:
+		return
+
+	var unit_data: Array = []
+	for unit_id in units.keys():
+		var u: Dictionary = units[unit_id]
+		var pos := _unit_pos(int(unit_id))
+		if not _hex_in_map(pos):
+			continue
+
+		# Get owner
+		var owner := -1
+		var owner_data = u.get("owner", {})
+		if typeof(owner_data) == TYPE_DICTIONARY:
+			owner = int(owner_data.get("0", -1))
+		else:
+			owner = int(owner_data)
+
+		# Only sync visible units (apply fog of war)
+		var is_visible := visible_tiles.has(pos) or not fog_enabled
+		if owner != my_player_id and not is_visible:
+			continue
+
+		# Get unit type ID
+		var type_id := 0
+		var type_data = u.get("type_id", {})
+		if typeof(type_data) == TYPE_DICTIONARY:
+			type_id = int(type_data.get("raw", 0))
+		else:
+			type_id = int(type_data)
+
+		unit_data.append({
+			"id": int(unit_id),
+			"type_id": type_id,
+			"owner": owner,
+			"position": pos
+		})
+
+	unit_3d_layer.sync_units(unit_data)
+	if DEBUG_3D_LOGS:
+		var count := unit_data.size()
+		if count != _last_3d_sync_count:
+			_last_3d_sync_count = count
+			print("[MapView] Syncing %d units to 3D" % count)
 
 
 func _validate_selection() -> void:
@@ -1125,8 +1620,9 @@ func _animate_unit_movements(old_positions: Dictionary) -> void:
 		_unit_prev_positions[uid] = new_pos
 
 		# Play movement sound
-		if AudioManager and AudioManager.has_method("play"):
-			AudioManager.play("unit_move", 0.1)
+		var audio = get_node_or_null("/root/AudioManager")
+		if audio and audio.has_method("play"):
+			audio.play("unit_move", 0.1)
 
 
 func _update_fog_of_war() -> void:
@@ -1223,6 +1719,34 @@ func _mouse_hex() -> Vector2i:
 	var hex := HexMath.pixel_to_axial(pos, effective_origin, HEX_SIZE * zoom_level)
 	return _normalize_hex(hex)
 
+func _ui_wants_pointer_input() -> bool:
+	var viewport := get_viewport()
+	if viewport == null:
+		return false
+	var hovered := viewport.gui_get_hovered_control()
+	if hovered == null:
+		return false
+	var control := hovered as Control
+	if control == null:
+		return false
+	if not control.is_visible_in_tree():
+		return false
+	return control.mouse_filter != Control.MOUSE_FILTER_IGNORE
+
+func _ui_wants_keyboard_input() -> bool:
+	var viewport := get_viewport()
+	if viewport == null:
+		return false
+	var focus := viewport.gui_get_focus_owner()
+	if focus == null:
+		return false
+	var control := focus as Control
+	if control == null:
+		return false
+	if not control.is_visible_in_tree():
+		return false
+	return control is LineEdit or control is TextEdit
+
 
 func _normalize_hex(hex: Vector2i) -> Vector2i:
 	if hex.y < 0 or hex.y >= map_height:
@@ -1285,6 +1809,97 @@ func _city_pos(city_id: int) -> Vector2i:
 		return Vector2i(int(pos_data.get("q", -999)), int(pos_data.get("r", -999)))
 	return Vector2i(-999, -999)
 
+func _compute_tile_yields(tile_data: Dictionary, terrain_id: int) -> Dictionary:
+	var base_y: Dictionary = _terrain_yields_by_id.get(terrain_id, {})
+	var food := int(base_y.get("food", 0))
+	var prod := int(base_y.get("production", 0))
+	var gold := int(base_y.get("gold", 0))
+	var science := int(base_y.get("science", 0))
+	var culture := int(base_y.get("culture", 0))
+
+	var pillaged := false
+	var tier := 1
+	var impr_id := -1
+	var improvement_data = tile_data.get("improvement", null)
+	if typeof(improvement_data) == TYPE_DICTIONARY:
+		var impr: Dictionary = improvement_data
+		tier = int(impr.get("tier", 1))
+		pillaged = bool(impr.get("pillaged", false))
+		impr_id = _parse_runtime_id(impr.get("id", -1))
+
+	if not pillaged and impr_id >= 0 and _improvement_tier_yields_by_id.has(impr_id):
+		var tiers: Array = _improvement_tier_yields_by_id.get(impr_id, [])
+		var idx := clampi(tier - 1, 0, tiers.size() - 1)
+		if idx >= 0 and idx < tiers.size() and typeof(tiers[idx]) == TYPE_DICTIONARY:
+			var improvement_yields: Dictionary = tiers[idx]
+			food += int(improvement_yields.get("food", 0))
+			prod += int(improvement_yields.get("production", 0))
+			gold += int(improvement_yields.get("gold", 0))
+			science += int(improvement_yields.get("science", 0))
+			culture += int(improvement_yields.get("culture", 0))
+
+	var res_yield_data = tile_data.get("resource", null)
+	if res_yield_data != null:
+		var res_id := _parse_runtime_id(res_yield_data)
+		if _is_resource_revealed(res_id) and _resource_yields_by_id.has(res_id):
+			var req_impr := int(_resource_requires_improvement_by_id.get(res_id, -1))
+			var resource_active := req_impr < 0 or (impr_id == req_impr and not pillaged)
+			if resource_active:
+				var ry: Dictionary = _resource_yields_by_id.get(res_id, {})
+				food += int(ry.get("food", 0))
+				prod += int(ry.get("production", 0))
+				gold += int(ry.get("gold", 0))
+				science += int(ry.get("science", 0))
+				culture += int(ry.get("culture", 0))
+
+	return {
+		"food": food,
+		"production": prod,
+		"gold": gold,
+		"science": science,
+		"culture": culture,
+	}
+
+func _draw_yield_label(center: Vector2, yields: Dictionary) -> void:
+	if typeof(yields) != TYPE_DICTIONARY:
+		return
+	var parts: Array[String] = []
+	var food := int(yields.get("food", 0))
+	var prod := int(yields.get("production", 0))
+	var gold := int(yields.get("gold", 0))
+	var science := int(yields.get("science", 0))
+	var culture := int(yields.get("culture", 0))
+	if food != 0:
+		parts.append("%dF" % food)
+	if prod != 0:
+		parts.append("%dP" % prod)
+	if gold != 0:
+		parts.append("%dG" % gold)
+	if science != 0:
+		parts.append("%dS" % science)
+	if culture != 0:
+		parts.append("%dC" % culture)
+
+	if parts.is_empty():
+		return
+
+	var text := " ".join(parts)
+	var font := ThemeDB.fallback_font
+	var font_size := int(10 * zoom_level)
+	var text_size := font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size)
+	var pos := center + Vector2(-text_size.x / 2, HEX_SIZE * 0.55 * zoom_level)
+	var pad := Vector2(3, 2) * zoom_level
+	draw_rect(Rect2(pos - pad, text_size + pad * 2), Color(0, 0, 0, 0.35), true)
+	draw_string(
+		font,
+		pos + Vector2(0, font_size),
+		text,
+		HORIZONTAL_ALIGNMENT_LEFT,
+		-1,
+		font_size,
+		Color(1, 1, 1, 0.9)
+	)
+
 
 func _player_color(player_id: int) -> Color:
 	var colors := [
@@ -1311,16 +1926,6 @@ func _improvement_name(impr_id: int) -> String:
 	if typeof(_improvement_names) == TYPE_ARRAY and impr_id >= 0 and impr_id < _improvement_names.size():
 		return String(_improvement_names[impr_id])
 	return "Improvement %d" % impr_id
-
-func _improvement_color(impr_id: int) -> Color:
-	var name := _improvement_name(impr_id).to_lower()
-	if name.find("farm") >= 0:
-		return COLOR_IMPROVEMENT_FARM
-	if name.find("mine") >= 0:
-		return COLOR_IMPROVEMENT_MINE
-	if name.find("trade") >= 0:
-		return COLOR_IMPROVEMENT_TRADE
-	return COLOR_IMPROVEMENT_UNKNOWN
 
 func _improvement_glyph(impr_id: int) -> String:
 	var icon := _palette.improvement_icon(impr_id)
@@ -1366,6 +1971,32 @@ func _contrast_text_color(bg: Color, alpha: float = 1.0) -> Color:
 		return Color(0.0, 0.0, 0.0, alpha)
 	return Color(1.0, 1.0, 1.0, alpha)
 
+func _parse_runtime_id(value: Variant) -> int:
+	if typeof(value) == TYPE_DICTIONARY:
+		var d: Dictionary = value
+		if d.has("raw"):
+			return int(d.get("raw", -1))
+	return int(value)
+
+func _parse_entity_id(value: Variant) -> int:
+	if typeof(value) == TYPE_DICTIONARY:
+		var d: Dictionary = value
+		if d.has("raw"):
+			return int(d.get("raw", -1))
+		if d.has("index") and d.has("generation"):
+			return int(d.get("index", 0)) + int(d.get("generation", 0)) * 10000
+		if d.has("0"):
+			return int(d.get("0", -1))
+	return int(value)
+
+func _is_resource_revealed(resource_id: int) -> bool:
+	if not _resource_revealed_by_tech_by_id.has(resource_id):
+		return true
+	var tech_id := int(_resource_revealed_by_tech_by_id.get(resource_id, -1))
+	if tech_id < 0:
+		return true
+	return _my_known_techs.has(tech_id)
+
 func _is_neighbor(a: Vector2i, b: Vector2i) -> bool:
 	var dirs := [
 		Vector2i(1, 0),
@@ -1405,26 +2036,83 @@ func _is_attackable_enemy_hex(hex: Vector2i) -> bool:
 	return _is_neighbor(attacker_pos, hex)
 
 
+func _draw_fog_overlay(corners: PackedVector2Array, intensity: float) -> void:
+	# Draw a semi-transparent dark overlay with gradient from center
+	var fog_color := Color(0.05, 0.06, 0.10, intensity)
+	draw_colored_polygon(corners, fog_color)
+
+
+func _draw_fog_edges(effective_origin: Vector2) -> void:
+	# Draw soft glow at boundaries between visible and non-visible tiles
+	var edge_color := Color(0.15, 0.18, 0.25, 0.6)
+	var edge_width := 3.0 * zoom_level
+
+	# Hex neighbor offsets for axial coordinates
+	var neighbor_offsets := [
+		Vector2i(1, 0), Vector2i(1, -1), Vector2i(0, -1),
+		Vector2i(-1, 0), Vector2i(-1, 1), Vector2i(0, 1)
+	]
+
+	for r in range(map_height):
+		for q in range(map_width):
+			var hex := Vector2i(q, r)
+			var is_visible := visible_tiles.has(hex)
+			if not is_visible:
+				continue
+
+			# Check each neighbor - draw edge if neighbor is not visible
+			var center := HexMath.axial_to_pixel(hex, effective_origin, HEX_SIZE * zoom_level)
+			var corners := HexMath.hex_corners(center, HEX_SIZE * zoom_level)
+
+			for dir in range(6):
+				var neighbor: Vector2i = hex + neighbor_offsets[dir]
+				# Handle wrap
+				if wrap_horizontal and map_width > 0:
+					neighbor.x = posmod(neighbor.x, map_width)
+				if not _hex_in_map(neighbor):
+					continue
+
+				var neighbor_explored: bool = explored_tiles.has(neighbor)
+
+				# Draw edge glow if transitioning from visible to unexplored
+				if not neighbor_explored:
+					var a: Vector2 = corners[dir]
+					var b: Vector2 = corners[(dir + 1) % 6]
+					draw_line(a, b, edge_color, edge_width)
+
+
 func _draw_hex_texture(center: Vector2, tex: Texture2D, is_visible: bool) -> void:
-	# Calculate texture size to fill the hex
-	# Hex width = 2 * size, hex height = sqrt(3) * size
-	var hex_width := HEX_SIZE * 2.0 * zoom_level
-	var hex_height := HEX_SIZE * sqrt(3.0) * zoom_level
+	# Draw texture clipped to hex shape using draw_polygon with UVs
+	var size := HEX_SIZE * zoom_level
+	var corners := HexMath.hex_corners(center, size)
 
-	# Scale texture to fit hex (maintain aspect ratio, cover hex)
-	var tex_size := tex.get_size()
-	var scale_x := hex_width / tex_size.x
-	var scale_y := hex_height / tex_size.y
-	var scale: float = maxf(scale_x, scale_y)
+	# Compute UV coordinates - map hex corners to texture space
+	# Hex bounding box: width = size * sqrt(3), height = size * 2
+	var hex_half_width := size * sqrt(3.0) * 0.5
+	var hex_half_height := size
 
-	var draw_size: Vector2 = Vector2(tex_size) * scale
-	var draw_pos: Vector2 = center - draw_size * 0.5
+	var uvs := PackedVector2Array()
+	uvs.resize(6)
+	for i in range(6):
+		var offset := corners[i] - center
+		# Map from pixel offset to UV (0-1 range)
+		uvs[i] = Vector2(
+			0.5 + offset.x / (hex_half_width * 2.0),
+			0.5 + offset.y / (hex_half_height * 2.0)
+		)
 
-	var modulate := Color.WHITE
+	# Create color array for modulation
+	# Reduce brightness for a more natural, less saturated look
+	var modulate := Color(0.75, 0.75, 0.75, 1.0)
 	if not is_visible:
-		modulate = Color(0.5, 0.5, 0.5, 1.0)
+		modulate = Color(0.35, 0.35, 0.38, 1.0)  # Darker blue-tinted for fog of war
 
-	draw_texture_rect(tex, Rect2(draw_pos, draw_size), false, modulate)
+	var colors := PackedColorArray()
+	colors.resize(6)
+	for i in range(6):
+		colors[i] = modulate
+
+	draw_polygon(corners, colors, uvs, tex)
 
 
 func _closed_polyline(points: PackedVector2Array) -> PackedVector2Array:
@@ -1489,6 +2177,8 @@ func center_on_hex(hex: Vector2i) -> void:
 		return
 
 	var vp := get_viewport_rect().size
-	var target_center := HexMath.axial_to_pixel(hex, Vector2.ZERO, HEX_SIZE * zoom_level)
+	# Calculate where the hex would be with current origin, then offset to center it
+	var target_center := HexMath.axial_to_pixel(hex, origin, HEX_SIZE * zoom_level)
 	camera_offset = vp * 0.5 - target_center
+	_sync_3d_camera()
 	queue_redraw()

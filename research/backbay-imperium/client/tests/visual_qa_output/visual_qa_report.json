@@ -1,59 +1,59 @@
 {
   "schema_version": "visual_qa.report.v2",
   "summary": {
-    "passed": 13,
-    "failed": 0,
+    "passed": 0,
+    "failed": 13,
     "total": 13,
     "basic_captures": 4,
     "terrain_captures": 9
   },
   "category_summary": {
     "transition": {
-      "passed": 1,
-      "failed": 0,
+      "passed": 0,
+      "failed": 1,
       "total": 1
     },
     "water": {
-      "passed": 2,
-      "failed": 0,
+      "passed": 0,
+      "failed": 2,
       "total": 2
     },
     "arid": {
-      "passed": 1,
-      "failed": 0,
+      "passed": 0,
+      "failed": 1,
       "total": 1
     },
     "vegetation": {
-      "passed": 1,
-      "failed": 0,
+      "passed": 0,
+      "failed": 1,
       "total": 1
     },
     "temperate": {
-      "passed": 1,
-      "failed": 0,
+      "passed": 0,
+      "failed": 1,
       "total": 1
     },
     "wetland": {
-      "passed": 1,
-      "failed": 0,
+      "passed": 0,
+      "failed": 1,
       "total": 1
     },
     "elevation": {
-      "passed": 1,
-      "failed": 0,
+      "passed": 0,
+      "failed": 1,
       "total": 1
     },
     "cold": {
-      "passed": 1,
-      "failed": 0,
+      "passed": 0,
+      "failed": 1,
       "total": 1
     }
   },
   "results": [
     {
       "name": "terrain_biome_boundary",
-      "passed": true,
-      "hash_distance": 0,
+      "passed": false,
+      "hash_distance": 116,
       "threshold": 10,
       "baseline_path": "/Users/connor/Medica/glia-fab/research/backbay-imperium/client/tests/visual_qa_baselines/terrain_biome_boundary.png",
       "capture_path": "/Users/connor/Medica/glia-fab/research/backbay-imperium/client/tests/visual_qa_captures/terrain_biome_boundary.png",
@@ -65,8 +65,8 @@
     },
     {
       "name": "terrain_coastline_blend",
-      "passed": true,
-      "hash_distance": 0,
+      "passed": false,
+      "hash_distance": 104,
       "threshold": 10,
       "baseline_path": "/Users/connor/Medica/glia-fab/research/backbay-imperium/client/tests/visual_qa_baselines/terrain_coastline_blend.png",
       "capture_path": "/Users/connor/Medica/glia-fab/research/backbay-imperium/client/tests/visual_qa_captures/terrain_coastline_blend.png",
@@ -78,8 +78,8 @@
     },
     {
       "name": "terrain_corner_nw",
-      "passed": true,
-      "hash_distance": 0,
+      "passed": false,
+      "hash_distance": 120,
       "threshold": 10,
       "baseline_path": "/Users/connor/Medica/glia-fab/research/backbay-imperium/client/tests/visual_qa_baselines/terrain_corner_nw.png",
       "capture_path": "/Users/connor/Medica/glia-fab/research/backbay-imperium/client/tests/visual_qa_captures/terrain_corner_nw.png",
@@ -91,8 +91,8 @@
     },
     {
       "name": "terrain_desert_arid",
-      "passed": true,
-      "hash_distance": 0,
+      "passed": false,
+      "hash_distance": 104,
       "threshold": 10,
       "baseline_path": "/Users/connor/Medica/glia-fab/research/backbay-imperium/client/tests/visual_qa_baselines/terrain_desert_arid.png",
       "capture_path": "/Users/connor/Medica/glia-fab/research/backbay-imperium/client/tests/visual_qa_captures/terrain_desert_arid.png",
@@ -104,8 +104,8 @@
     },
     {
       "name": "terrain_forest_detail",
-      "passed": true,
-      "hash_distance": 0,
+      "passed": false,
+      "hash_distance": 106,
       "threshold": 10,
       "baseline_path": "/Users/connor/Medica/glia-fab/research/backbay-imperium/client/tests/visual_qa_baselines/terrain_forest_detail.png",
       "capture_path": "/Users/connor/Medica/glia-fab/research/backbay-imperium/client/tests/visual_qa_captures/terrain_forest_detail.png",
@@ -117,8 +117,8 @@
     },
     {
       "name": "terrain_grassland_plains",
-      "passed": true,
-      "hash_distance": 0,
+      "passed": false,
+      "hash_distance": 116,
       "threshold": 10,
       "baseline_path": "/Users/connor/Medica/glia-fab/research/backbay-imperium/client/tests/visual_qa_baselines/terrain_grassland_plains.png",
       "capture_path": "/Users/connor/Medica/glia-fab/research/backbay-imperium/client/tests/visual_qa_captures/terrain_grassland_plains.png",
@@ -130,8 +130,8 @@
     },
     {
       "name": "terrain_marsh_wetland",
-      "passed": true,
-      "hash_distance": 0,
+      "passed": false,
+      "hash_distance": 118,
       "threshold": 10,
       "baseline_path": "/Users/connor/Medica/glia-fab/research/backbay-imperium/client/tests/visual_qa_baselines/terrain_marsh_wetland.png",
       "capture_path": "/Users/connor/Medica/glia-fab/research/backbay-imperium/client/tests/visual_qa_captures/terrain_marsh_wetland.png",
@@ -143,8 +143,8 @@
     },
     {
       "name": "terrain_mountain_elevation",
-      "passed": true,
-      "hash_distance": 0,
+      "passed": false,
+      "hash_distance": 130,
       "threshold": 10,
       "baseline_path": "/Users/connor/Medica/glia-fab/research/backbay-imperium/client/tests/visual_qa_baselines/terrain_mountain_elevation.png",
       "capture_path": "/Users/connor/Medica/glia-fab/research/backbay-imperium/client/tests/visual_qa_captures/terrain_mountain_elevation.png",
@@ -156,8 +156,8 @@
     },
     {
       "name": "terrain_overview",
-      "passed": true,
-      "hash_distance": 0,
+      "passed": false,
+      "hash_distance": 110,
       "threshold": 10,
       "baseline_path": "/Users/connor/Medica/glia-fab/research/backbay-imperium/client/tests/visual_qa_baselines/terrain_overview.png",
       "capture_path": "/Users/connor/Medica/glia-fab/research/backbay-imperium/client/tests/visual_qa_captures/terrain_overview.png",
@@ -169,8 +169,8 @@
     },
     {
       "name": "terrain_tundra_cold",
-      "passed": true,
-      "hash_distance": 0,
+      "passed": false,
+      "hash_distance": 106,
       "threshold": 10,
       "baseline_path": "/Users/connor/Medica/glia-fab/research/backbay-imperium/client/tests/visual_qa_baselines/terrain_tundra_cold.png",
       "capture_path": "/Users/connor/Medica/glia-fab/research/backbay-imperium/client/tests/visual_qa_captures/terrain_tundra_cold.png",
@@ -182,8 +182,8 @@
     },
     {
       "name": "terrain_water_clarity",
-      "passed": true,
-      "hash_distance": 0,
+      "passed": false,
+      "hash_distance": 106,
       "threshold": 10,
       "baseline_path": "/Users/connor/Medica/glia-fab/research/backbay-imperium/client/tests/visual_qa_baselines/terrain_water_clarity.png",
       "capture_path": "/Users/connor/Medica/glia-fab/research/backbay-imperium/client/tests/visual_qa_captures/terrain_water_clarity.png",
@@ -195,8 +195,8 @@
     },
     {
       "name": "terrain_zoomed",
-      "passed": true,
-      "hash_distance": 0,
+      "passed": false,
+      "hash_distance": 106,
       "threshold": 10,
       "baseline_path": "/Users/connor/Medica/glia-fab/research/backbay-imperium/client/tests/visual_qa_baselines/terrain_zoomed.png",
       "capture_path": "/Users/connor/Medica/glia-fab/research/backbay-imperium/client/tests/visual_qa_captures/terrain_zoomed.png",
@@ -208,8 +208,8 @@
     },
     {
       "name": "units_spawn",
-      "passed": true,
-      "hash_distance": 0,
+      "passed": false,
+      "hash_distance": 106,
       "threshold": 10,
       "baseline_path": "/Users/connor/Medica/glia-fab/research/backbay-imperium/client/tests/visual_qa_baselines/units_spawn.png",
       "capture_path": "/Users/connor/Medica/glia-fab/research/backbay-imperium/client/tests/visual_qa_captures/units_spawn.png",

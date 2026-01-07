@@ -122,7 +122,7 @@ fishing_boats:
   ui_category: "commerce"
   build_time: 3
   repair_time: 2
-  allowed_terrain: ["coast"]
+  allowed_terrain: ["coast", "lake"]
   tiers:
     - yields: { food: 1, production: 0, gold: 1 }
       worked_turns_to_next: 6

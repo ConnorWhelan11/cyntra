@@ -13,6 +13,7 @@ Coordinates the full cycle:
 from __future__ import annotations
 
 import asyncio
+import json
 import time
 from datetime import UTC, datetime
 from pathlib import Path
@@ -31,6 +32,7 @@ from cyntra.kernel.dispatcher import Dispatcher, DispatchResult
 from cyntra.kernel.memory_integration import KernelMemoryBridge
 from cyntra.kernel.planner_integration import KernelPlannerIntegration
 from cyntra.kernel.scheduler import Scheduler, ScheduleResult
+from cyntra.kernel.strategy_integration import StrategyIntegration
 from cyntra.kernel.verifier import Verifier
 from cyntra.sleeptime import SleeptimeConfig, SleeptimeOrchestrator
 from cyntra.state.manager import StateManager
@@ -139,6 +141,7 @@ class KernelRunner:
         # Dynamics transition DB for routing improvement
         dynamics_db_path = self.config.repo_root / ".cyntra" / "dynamics" / "cyntra.db"
         self.transition_db = TransitionDB(dynamics_db_path)
+        self.strategy_integration = StrategyIntegration(self.transition_db)
 
         # Track from_state for each workcell
         self._workcell_from_states: dict[str, dict] = {}
@@ -399,6 +402,26 @@ class KernelRunner:
 
             # Memory: start session and get context for injection
             manifest_base = self.dispatcher._build_manifest(issue, workcell_id, toolchain, None)
+            strategy_event: dict[str, Any] = {}
+            strategy_cfg = manifest_base.get("strategy")
+            if isinstance(strategy_cfg, dict) and strategy_cfg.get("enabled") is True:
+                strategy_event["strategy_enabled"] = True
+                routing_cfg = strategy_cfg.get("routing")
+                if isinstance(routing_cfg, dict):
+                    strategy_event["strategy_bucket"] = routing_cfg.get("ab_bucket")
+                    strategy_event["strategy_bucket_value"] = routing_cfg.get("ab_bucket_value")
+                directive_cfg = strategy_cfg.get("directive")
+                if isinstance(directive_cfg, dict):
+                    strategy_event["strategy_directive_id"] = directive_cfg.get("directive_hash")
+                    strategy_event["strategy_directive_source"] = directive_cfg.get("source")
+
+                # Re-log key lifecycle markers with strategy metadata for dashboards.
+                self.state_manager.add_event(
+                    issue.id,
+                    "strategy.routing",
+                    strategy_event,
+                    workcell_id=workcell_id,
+                )
             memory_context = self.memory_bridge.on_workcell_start(
                 workcell_id=workcell_id,
                 issue=issue,
@@ -424,6 +447,16 @@ class KernelRunner:
             if result.success and result.proof:
                 # Verify
                 verified = self.verifier.verify(result.proof, workcell_path)
+
+                # Strategy telemetry: extract + store profile after verification.
+                self._maybe_store_strategy_profile(
+                    workcell_id=workcell_id,
+                    workcell_path=workcell_path,
+                    issue=issue,
+                    proof=result.proof,
+                    toolchain=result.toolchain,
+                    verified=verified,
+                )
 
                 # Memory: record gate results
                 if result.proof and isinstance(result.proof.verification, dict):
@@ -455,6 +488,16 @@ class KernelRunner:
                     if consolidation_result and consolidation_result.success:
                         self.controller._report = self.controller._load_report()
             else:
+                # Strategy telemetry: if we have a proof (even failed/timeout), store as failed.
+                if result.proof is not None:
+                    self._maybe_store_strategy_profile(
+                        workcell_id=workcell_id,
+                        workcell_path=workcell_path,
+                        issue=issue,
+                        proof=result.proof,
+                        toolchain=result.toolchain,
+                        verified=False,
+                    )
                 await self._handle_failure(issue, result, workcell_path)
                 # Memory: end session as failed
                 if workcell_id:
@@ -634,7 +677,15 @@ class KernelRunner:
                 if r.proof:
                     path = workcell_by_id.get(r.workcell_id)
                     if path:
-                        self.verifier.verify(r.proof, path)
+                        candidate_verified = self.verifier.verify(r.proof, path)
+                        self._maybe_store_strategy_profile(
+                            workcell_id=r.workcell_id,
+                            workcell_path=path,
+                            issue=issue,
+                            proof=r.proof,
+                            toolchain=r.toolchain,
+                            verified=candidate_verified,
+                        )
 
             proofs = [r.proof for r in results if r.proof]
             self.state_manager.add_event(
@@ -792,6 +843,44 @@ class KernelRunner:
 
         # Cleanup workcell
         self.workcell_manager.cleanup(workcell_path, keep_logs=True)
+
+    def _maybe_store_strategy_profile(
+        self,
+        *,
+        workcell_id: str,
+        workcell_path: Path,
+        issue: Issue,
+        proof: Any,
+        toolchain: str,
+        verified: bool,
+    ) -> None:
+        """
+        Best-effort strategy profile extraction + storage.
+
+        Guarded by manifest flag: `strategy.enabled: true`.
+        """
+        manifest_path = workcell_path / "manifest.json"
+        if not manifest_path.exists():
+            return
+
+        try:
+            manifest = json.loads(manifest_path.read_text())
+        except Exception:
+            return
+
+        strategy_cfg = manifest.get("strategy")
+        if not (isinstance(strategy_cfg, dict) and strategy_cfg.get("enabled") is True):
+            return
+
+        outcome = "passed" if verified else "failed"
+        self.strategy_integration.extract_and_store(
+            workcell_id=workcell_id,
+            workcell_path=workcell_path,
+            issue=issue,
+            proof=proof,
+            toolchain=toolchain,
+            outcome=outcome,
+        )
 
     def _handle_workcell_create_failure(self, issue: Issue, error: Exception) -> None:
         """Handle failures that occur before a workcell is created."""

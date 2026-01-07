@@ -1,0 +1,31 @@
+# Timing configuration
+planner:
+  frequency_hz: 2.0
+  timeout_ms: 1500
+  plan_ttl_ms: 2000
+  min_confidence: 0.3
+  retry_attempts: 3
+
+executor:
+  frequency_hz: 60.0
+  timeout_ms: 50
+  action_repeat: 1  # How many frames to repeat each action
+
+gating:
+  button_press_threshold: 0.5
+  constraint_max_count: 5
+  stuck_detection_frames: 60
+  stuck_variance_threshold: 0.01
+
+# Fallback behavior
+fallback:
+  confidence: 0.3
+  mode: defensive
+  suppress_shoot: true
+  suppress_menu: true
+
+# Logging
+logging:
+  enabled: true
+  buffer_size: 1000
+  flush_interval_s: 30

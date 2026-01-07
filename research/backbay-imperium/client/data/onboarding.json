@@ -1,0 +1,145 @@
+{
+  "beats": [
+    {
+      "id": "found_city",
+      "title": "Found Your Capital",
+      "turn_min": 1,
+      "turn_max": 4,
+      "prompt": {
+        "text": "Found your capital.",
+        "action": "found_city"
+      },
+      "steps": [
+        "Select your settler",
+        "Choose a tile with solid yields",
+        "Name your city"
+      ]
+    },
+    {
+      "id": "pick_research",
+      "title": "Choose Your First Technology",
+      "turn_min": 1,
+      "turn_max": 6,
+      "prereqs": ["found_city"],
+      "prompt": {
+        "text": "Pick your first technology.",
+        "action": "open_research"
+      },
+      "steps": [
+        "Open the Tech panel",
+        "Review prereqs and unlocks",
+        "Start researching"
+      ]
+    },
+    {
+      "id": "pick_production",
+      "title": "Start Production",
+      "turn_min": 1,
+      "turn_max": 6,
+      "prereqs": ["found_city"],
+      "prompt": {
+        "text": "Pick production for your capital.",
+        "action": "open_production"
+      },
+      "steps": [
+        "Open production",
+        "Choose your first build",
+        "Queue it"
+      ]
+    },
+    {
+      "id": "explore",
+      "title": "Explore the World",
+      "turn_min": 2,
+      "turn_max": 10,
+      "prompt": {
+        "text": "Move a unit to reveal the fog.",
+        "action": "focus_explore"
+      },
+      "steps": [
+        "Select a scout or warrior",
+        "Move toward the unknown",
+        "Reveal new tiles"
+      ]
+    },
+    {
+      "id": "first_improvement",
+      "title": "Build Your First Improvement",
+      "turn_min": 5,
+      "turn_max": 12,
+      "prereqs": ["pick_production"],
+      "prompt": {
+        "text": "Improve a tile to boost yields.",
+        "action": "focus_worker"
+      },
+      "steps": [
+        "Select a worker",
+        "Choose a farm or mine",
+        "Finish the improvement"
+      ]
+    },
+    {
+      "id": "first_tech_reveal",
+      "title": "First Tech Reveal",
+      "turn_min": 6,
+      "turn_max": 14,
+      "prereqs": ["pick_research"],
+      "prompt": {
+        "text": "A tech revealed a resource. Connect it.",
+        "action": "focus_resource"
+      },
+      "steps": [
+        "Check revealed resources",
+        "Find the nearest one",
+        "Connect it with a worker"
+      ]
+    },
+    {
+      "id": "first_combat",
+      "title": "First Combat",
+      "turn_min": 8,
+      "turn_max": 16,
+      "prereqs": ["explore"],
+      "prompt": {
+        "text": "A threat is nearby. Use the combat preview.",
+        "action": "combat_why"
+      },
+      "steps": [
+        "Hover an enemy",
+        "Review the combat preview",
+        "Attack or reposition"
+      ]
+    },
+    {
+      "id": "second_city",
+      "title": "Found Your Second City",
+      "turn_min": 12,
+      "turn_max": 20,
+      "prereqs": ["found_city"],
+      "prompt": {
+        "text": "Expand your core with a second city.",
+        "action": "found_city"
+      },
+      "steps": [
+        "Build or move a settler",
+        "Pick a defensible site",
+        "Found the city"
+      ]
+    },
+    {
+      "id": "meet_rival",
+      "title": "Meet a Rival",
+      "turn_min": 12,
+      "turn_max": 20,
+      "prompt": {
+        "text": "You have a neighbor. Check diplomacy.",
+        "action": "open_diplomacy"
+      },
+      "steps": [
+        "Open diplomacy",
+        "Review relations",
+        "Decide your stance"
+      ]
+    }
+  ]
+}

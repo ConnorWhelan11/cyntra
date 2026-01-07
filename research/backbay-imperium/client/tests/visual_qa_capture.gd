@@ -215,7 +215,9 @@ func _ready() -> void:
 
 func _parse_args() -> void:
 	## Parse command line arguments for capture mode selection
-	var args := OS.get_cmdline_args()
+	var args := OS.get_cmdline_user_args()
+	if args.is_empty():
+		args = OS.get_cmdline_args()
 	for arg in args:
 		if arg.begins_with("--mode="):
 			var mode := arg.substr(7)

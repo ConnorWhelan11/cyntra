@@ -5,28 +5,28 @@
 			"category": "general",
 			"description": "Full map terrain view from default camera",
 			"name": "terrain_overview",
-			"path": "/Users/connor/Library/Application Support/Godot/app_userdata/BackbayImperiumClient/visual_qa/terrain_overview.png",
+			"path": "/Users/connor/Medica/glia-fab/research/backbay-imperium/client/tests/visual_qa_captures/terrain_overview.png",
 			"zoom": 1.0
 		},
 		{
 			"category": "general",
 			"description": "Zoomed terrain detail",
 			"name": "terrain_zoomed",
-			"path": "/Users/connor/Library/Application Support/Godot/app_userdata/BackbayImperiumClient/visual_qa/terrain_zoomed.png",
+			"path": "/Users/connor/Medica/glia-fab/research/backbay-imperium/client/tests/visual_qa_captures/terrain_zoomed.png",
 			"zoom": 2.0
 		},
 		{
 			"category": "general",
 			"description": "Northwest corner of map",
 			"name": "terrain_corner_nw",
-			"path": "/Users/connor/Library/Application Support/Godot/app_userdata/BackbayImperiumClient/visual_qa/terrain_corner_nw.png",
+			"path": "/Users/connor/Medica/glia-fab/research/backbay-imperium/client/tests/visual_qa_captures/terrain_corner_nw.png",
 			"zoom": 1.5
 		},
 		{
 			"category": "general",
 			"description": "Starting units at spawn location",
 			"name": "units_spawn",
-			"path": "/Users/connor/Library/Application Support/Godot/app_userdata/BackbayImperiumClient/visual_qa/units_spawn.png",
+			"path": "/Users/connor/Medica/glia-fab/research/backbay-imperium/client/tests/visual_qa_captures/units_spawn.png",
 			"zoom": 2.5
 		},
 		{
@@ -34,7 +34,7 @@
 			"description": "Ocean and coast tiles for water rendering quality",
 			"is_terrain_capture": true,
 			"name": "terrain_water_clarity",
-			"path": "/Users/connor/Library/Application Support/Godot/app_userdata/BackbayImperiumClient/visual_qa/terrain_water_clarity.png",
+			"path": "/Users/connor/Medica/glia-fab/research/backbay-imperium/client/tests/visual_qa_captures/terrain_water_clarity.png",
 			"target_terrain": [
 				"ocean",
 				"coast"
@@ -46,7 +46,7 @@
 			"description": "Coast-to-land transition for blend quality",
 			"is_terrain_capture": true,
 			"name": "terrain_coastline_blend",
-			"path": "/Users/connor/Library/Application Support/Godot/app_userdata/BackbayImperiumClient/visual_qa/terrain_coastline_blend.png",
+			"path": "/Users/connor/Medica/glia-fab/research/backbay-imperium/client/tests/visual_qa_captures/terrain_coastline_blend.png",
 			"target_terrain": [
 				"coast"
 			],
@@ -57,7 +57,7 @@
 			"description": "Forest tiles for vegetation rendering",
 			"is_terrain_capture": true,
 			"name": "terrain_forest_detail",
-			"path": "/Users/connor/Library/Application Support/Godot/app_userdata/BackbayImperiumClient/visual_qa/terrain_forest_detail.png",
+			"path": "/Users/connor/Medica/glia-fab/research/backbay-imperium/client/tests/visual_qa_captures/terrain_forest_detail.png",
 			"target_terrain": [
 				"forest",
 				"jungle"
@@ -69,7 +69,7 @@
 			"description": "Mountains and hills for elevation rendering",
 			"is_terrain_capture": true,
 			"name": "terrain_mountain_elevation",
-			"path": "/Users/connor/Library/Application Support/Godot/app_userdata/BackbayImperiumClient/visual_qa/terrain_mountain_elevation.png",
+			"path": "/Users/connor/Medica/glia-fab/research/backbay-imperium/client/tests/visual_qa_captures/terrain_mountain_elevation.png",
 			"target_terrain": [
 				"mountains",
 				"hills"
@@ -81,7 +81,7 @@
 			"description": "Desert tiles for arid terrain quality",
 			"is_terrain_capture": true,
 			"name": "terrain_desert_arid",
-			"path": "/Users/connor/Library/Application Support/Godot/app_userdata/BackbayImperiumClient/visual_qa/terrain_desert_arid.png",
+			"path": "/Users/connor/Medica/glia-fab/research/backbay-imperium/client/tests/visual_qa_captures/terrain_desert_arid.png",
 			"target_terrain": [
 				"desert"
 			],
@@ -92,7 +92,7 @@
 			"description": "Grassland and plains for temperate terrain",
 			"is_terrain_capture": true,
 			"name": "terrain_grassland_plains",
-			"path": "/Users/connor/Library/Application Support/Godot/app_userdata/BackbayImperiumClient/visual_qa/terrain_grassland_plains.png",
+			"path": "/Users/connor/Medica/glia-fab/research/backbay-imperium/client/tests/visual_qa_captures/terrain_grassland_plains.png",
 			"target_terrain": [
 				"grassland",
 				"plains"
@@ -104,7 +104,7 @@
 			"description": "Tundra tiles for cold biome rendering",
 			"is_terrain_capture": true,
 			"name": "terrain_tundra_cold",
-			"path": "/Users/connor/Library/Application Support/Godot/app_userdata/BackbayImperiumClient/visual_qa/terrain_tundra_cold.png",
+			"path": "/Users/connor/Medica/glia-fab/research/backbay-imperium/client/tests/visual_qa_captures/terrain_tundra_cold.png",
 			"target_terrain": [
 				"tundra"
 			],
@@ -115,7 +115,7 @@
 			"description": "Multi-biome boundary for transition quality",
 			"is_terrain_capture": true,
 			"name": "terrain_biome_boundary",
-			"path": "/Users/connor/Library/Application Support/Godot/app_userdata/BackbayImperiumClient/visual_qa/terrain_biome_boundary.png",
+			"path": "/Users/connor/Medica/glia-fab/research/backbay-imperium/client/tests/visual_qa_captures/terrain_biome_boundary.png",
 			"target_terrain": [
 				"grassland",
 				"forest",
@@ -128,7 +128,7 @@
 			"description": "Marsh tiles for wetland rendering",
 			"is_terrain_capture": true,
 			"name": "terrain_marsh_wetland",
-			"path": "/Users/connor/Library/Application Support/Godot/app_userdata/BackbayImperiumClient/visual_qa/terrain_marsh_wetland.png",
+			"path": "/Users/connor/Medica/glia-fab/research/backbay-imperium/client/tests/visual_qa_captures/terrain_marsh_wetland.png",
 			"target_terrain": [
 				"marsh"
 			],
@@ -139,18 +139,18 @@
 	"map_height": 60,
 	"map_width": 60,
 	"mode": "all",
-	"output_dir": "/Users/connor/Library/Application Support/Godot/app_userdata/BackbayImperiumClient/visual_qa/",
+	"output_dir": "/Users/connor/Medica/glia-fab/research/backbay-imperium/client/tests/visual_qa_captures/",
 	"schema_version": "visual_qa.manifest.v2",
 	"seed": 42424242,
 	"tag": "",
 	"terrain_captures": 9,
 	"terrain_distribution": {
-		"jungle": 673,
+		"jungle": 253,
+		"marsh": 673,
 		"mountains": 1416,
-		"plains": 1258,
-		"tundra": 253
+		"plains": 1258
 	},
-	"timestamp": "2025-12-29T21:51:25",
+	"timestamp": "2026-01-07T11:38:51",
 	"total_captures": 13,
 	"viewport_size": "(3024.0, 1832.0)",
 	"window_size": "(3024, 1832)",

@@ -15,11 +15,20 @@ pub async fn execute(issue: &Issue, workcell_path: &Path) -> Result<String> {
         "Executing Codex adapter"
     );
 
+    let retrieval_path = workcell_path.join("context/retrieval.md");
+    let retrieval = std::fs::read_to_string(&retrieval_path).ok();
+
     // Build prompt
-    let prompt = format!(
-        "# Task: {}\n\n{}\n\nPlease implement this task.",
-        issue.title, issue.body
-    );
+    let prompt = match retrieval {
+        Some(ctx) if !ctx.trim().is_empty() => format!(
+            "# Task: {}\n\n## Context Pack\n\n{}\n\n## Task Details\n\n{}\n\nPlease implement this task.",
+            issue.title, ctx, issue.body
+        ),
+        _ => format!(
+            "# Task: {}\n\n{}\n\nPlease implement this task.",
+            issue.title, issue.body
+        ),
+    };
 
     // Write prompt to file
     let prompt_path = workcell_path.join("prompt.md");

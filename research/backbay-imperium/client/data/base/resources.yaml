@@ -1,0 +1,104 @@
+wheat:
+  name: "Wheat"
+  ui_color: { r: 242, g: 217, b: 89 }
+  ui_icon: "wheat"
+  ui_category: "bonus"
+  yields: { food: 1, production: 0, gold: 0 }
+  requires_improvement: "farm"
+
+cattle:
+  name: "Cattle"
+  ui_color: { r: 166, g: 115, b: 77 }
+  ui_icon: "cattle"
+  ui_category: "bonus"
+  yields: { food: 1, production: 0, gold: 0 }
+  requires_improvement: "pasture"
+
+horses:
+  name: "Horses"
+  ui_color: { r: 128, g: 89, b: 64 }
+  ui_icon: "horses"
+  ui_category: "strategic"
+  revealed_by_tech: "animal_husbandry"
+  yields: { food: 0, production: 1, gold: 0 }
+  requires_improvement: "pasture"
+
+iron:
+  name: "Iron"
+  ui_color: { r: 128, g: 128, b: 140 }
+  ui_icon: "iron"
+  ui_category: "strategic"
+  revealed_by_tech: "iron_working"
+  yields: { food: 0, production: 1, gold: 0 }
+  requires_improvement: "mine"
+
+coal:
+  name: "Coal"
+  ui_color: { r: 51, g: 51, b: 56 }
+  ui_icon: "coal"
+  ui_category: "strategic"
+  revealed_by_tech: "construction"
+  yields: { food: 0, production: 2, gold: 0 }
+  requires_improvement: "mine"
+
+oil:
+  name: "Oil"
+  ui_color: { r: 38, g: 38, b: 46 }
+  ui_icon: "oil"
+  ui_category: "strategic"
+  revealed_by_tech: "construction"
+  yields: { food: 0, production: 2, gold: 1 }
+
+gold:
+  name: "Gold"
+  ui_color: { r: 255, g: 217, b: 0 }
+  ui_icon: "gold"
+  ui_category: "luxury"
+  yields: { food: 0, production: 0, gold: 2 }
+  requires_improvement: "mine"
+
+gems:
+  name: "Gems"
+  ui_color: { r: 140, g: 51, b: 179 }
+  ui_icon: "gems"
+  ui_category: "luxury"
+  yields: { food: 0, production: 0, gold: 2 }
+  requires_improvement: "mine"
+
+fish:
+  name: "Fish"
+  ui_color: { r: 102, g: 166, b: 217 }
+  ui_icon: "fish"
+  ui_category: "bonus"
+  yields: { food: 1, production: 0, gold: 0 }
+  requires_improvement: "fishing_boats"
+
+stone:
+  name: "Stone"
+  ui_color: { r: 153, g: 148, b: 140 }
+  ui_icon: "stone"
+  ui_category: "bonus"
+  yields: { food: 0, production: 1, gold: 0 }
+  requires_improvement: "quarry"
+
+# Freshwater resources (lakes, rivers, floodplains)
+freshwater_fish:
+  name: "Freshwater Fish"
+  ui_color: { r: 77, g: 153, b: 166 }
+  ui_icon: "freshwater_fish"
+  ui_category: "bonus"
+  yields: { food: 2, production: 0, gold: 0 }
+
+reeds:
+  name: "Reeds"
+  ui_color: { r: 140, g: 166, b: 102 }
+  ui_icon: "reeds"
+  ui_category: "bonus"
+  yields: { food: 1, production: 1, gold: 0 }
+
+papyrus:
+  name: "Papyrus"
+  ui_color: { r: 191, g: 179, b: 128 }
+  ui_icon: "papyrus"
+  ui_category: "luxury"
+  yields: { food: 0, production: 1, gold: 1 }

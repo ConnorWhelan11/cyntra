@@ -1,0 +1,117 @@
+[
+  {
+    "timestamp_ms": 1234567890,
+    "intent": "Attack enemy soldier ahead",
+    "target": {
+      "type": "enemy",
+      "ref": "soldier_front",
+      "screen_xy": [0.6, 0.4]
+    },
+    "constraints": [
+      {
+        "type": "DO",
+        "action": "AIM_AT_TARGET",
+        "priority": 0.9,
+        "reason": "enemy in sight"
+      }
+    ],
+    "skill": {
+      "mode": "aggressive",
+      "aggression": 0.8,
+      "stealth": 0.1
+    },
+    "confidence": 0.85
+  },
+  {
+    "timestamp_ms": 1234567891,
+    "intent": "Navigate around friendly, avoid friendly fire",
+    "target": {
+      "type": "none",
+      "ref": "",
+      "screen_xy": [0.5, 0.5]
+    },
+    "constraints": [
+      {
+        "type": "DO_NOT",
+        "action": "SHOOT",
+        "until_s": 3.0,
+        "priority": 1.0,
+        "reason": "friendly NPC in line of fire"
+      }
+    ],
+    "skill": {
+      "mode": "defensive",
+      "aggression": 0.2,
+      "stealth": 0.0
+    },
+    "confidence": 0.9
+  },
+  {
+    "timestamp_ms": 1234567892,
+    "intent": "Explore area, look for items",
+    "target": {
+      "type": "objective",
+      "ref": "door_ahead",
+      "screen_xy": [0.5, 0.3]
+    },
+    "constraints": [],
+    "skill": {
+      "mode": "balanced",
+      "aggression": 0.5,
+      "stealth": 0.3
+    },
+    "confidence": 0.7
+  },
+  {
+    "timestamp_ms": 1234567893,
+    "intent": "Dodge incoming attack",
+    "target": {
+      "type": "enemy",
+      "ref": "projectile",
+      "screen_xy": [0.3, 0.5]
+    },
+    "constraints": [
+      {
+        "type": "DO",
+        "action": "DODGE",
+        "priority": 1.0,
+        "reason": "incoming projectile"
+      },
+      {
+        "type": "DO_NOT",
+        "action": "MOVE_FORWARD",
+        "until_s": 0.5,
+        "priority": 0.8,
+        "reason": "would move into danger"
+      }
+    ],
+    "skill": {
+      "mode": "defensive",
+      "aggression": 0.1,
+      "stealth": 0.0
+    },
+    "confidence": 0.95
+  },
+  {
+    "timestamp_ms": 1234567894,
+    "intent": "Pick up health item",
+    "target": {
+      "type": "item",
+      "ref": "health_pack",
+      "screen_xy": [0.8, 0.6]
+    },
+    "constraints": [
+      {
+        "type": "PRIORITIZE_OBJECTIVE",
+        "priority": 0.9,
+        "reason": "low health"
+      }
+    ],
+    "skill": {
+      "mode": "balanced",
+      "aggression": 0.3,
+      "stealth": 0.0
+    },
+    "confidence": 0.8
+  }
+]

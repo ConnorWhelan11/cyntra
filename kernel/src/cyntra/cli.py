@@ -6,10 +6,16 @@ For now this mirrors the kernel CLI (run/status/workcells/etc) and defaults to `
 
 from __future__ import annotations
 
+import hashlib
 import json
+import os
+import re
 import shutil
 import subprocess
 import sys
+import urllib.parse
+import urllib.request
+import uuid
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
@@ -141,6 +147,162 @@ def stats(ctx: click.Context, cost: bool, success_rate: bool, timing: bool) -> N
         show_timing=timing,
     )
 
+
+@main.group()
+def strategy() -> None:
+    """Strategy telemetry (profiles, distributions, optimal patterns)."""
+    pass
+
+
+@strategy.command(name="ls")
+@click.option("--json", "as_json", is_flag=True, help="JSON output")
+def strategy_ls(as_json: bool) -> None:
+    """List available strategy dimensions for the default rubric."""
+    from cyntra.strategy.rubric import CYNTRA_V1_RUBRIC
+
+    dims = [
+        {
+            "id": d.id,
+            "name": d.name,
+            "pattern_a": d.pattern_a,
+            "pattern_b": d.pattern_b,
+            "source": d.source,
+        }
+        for d in CYNTRA_V1_RUBRIC
+    ]
+
+    if as_json:
+        console.print(json.dumps({"rubric": CYNTRA_V1_RUBRIC.version, "dimensions": dims}, indent=2))
+        return
+
+    table = Table(title=f"Strategy Dimensions ({CYNTRA_V1_RUBRIC.version})")
+    table.add_column("id", style="cyan")
+    table.add_column("name")
+    table.add_column("patterns", style="dim")
+    table.add_column("source", style="dim")
+
+    for d in dims:
+        table.add_row(
+            d["id"],
+            d["name"],
+            f'{d["pattern_a"]} / {d["pattern_b"]}',
+            d["source"],
+        )
+
+    console.print(table)
+
+
+@strategy.command(name="optimal")
+@click.option("--toolchain", type=str, default=None, help="Filter by toolchain")
+@click.option("--outcome", type=str, default="passed", show_default=True, help="Outcome filter")
+@click.option(
+    "--min-confidence",
+    type=float,
+    default=0.5,
+    show_default=True,
+    help="Minimum dimension confidence",
+)
+@click.option("--json", "as_json", is_flag=True, help="JSON output")
+@click.pass_context
+def strategy_optimal(
+    ctx: click.Context,
+    toolchain: str | None,
+    outcome: str,
+    min_confidence: float,
+    as_json: bool,
+) -> None:
+    """Show dataset-wide optimal patterns (most common among successful runs)."""
+    from cyntra.dynamics.transition_db import TransitionDB
+    from cyntra.strategy.rubric import CYNTRA_V1_RUBRIC
+
+    from cyntra.kernel.config import KernelConfig
+
+    config = KernelConfig.load(ctx.obj["config_path"])
+    db_path = config.repo_root / ".cyntra" / "dynamics" / "cyntra.db"
+    if not db_path.exists():
+        console.print("[dim]No dynamics DB found; run the kernel to collect profiles.[/dim]")
+        return
+
+    db = TransitionDB(db_path)
+    try:
+        optimal = db.get_optimal_strategy_for(
+            toolchain=toolchain,
+            outcome=outcome,
+            min_confidence=min_confidence,
+        )
+        payload = {
+            "rubric_version": CYNTRA_V1_RUBRIC.version,
+            "toolchain": toolchain,
+            "outcome": outcome,
+            "min_confidence": min_confidence,
+            "optimal_patterns": optimal,
+        }
+
+        if as_json:
+            console.print(json.dumps(payload, indent=2, sort_keys=True))
+            return
+
+        table = Table(title="Optimal Strategy Patterns")
+        table.add_column("dimension_id", style="cyan")
+        table.add_column("pattern", style="green")
+        table.add_column("name")
+        for dim in CYNTRA_V1_RUBRIC:
+            pattern = optimal.get(dim.id) or "-"
+            table.add_row(dim.id, pattern, dim.name)
+        console.print(table)
+    finally:
+        db.close()
+
+
+@strategy.command(name="dist")
+@click.argument("dimension_id", type=str)
+@click.option("--toolchain", type=str, default=None, help="Filter by toolchain")
+@click.option("--outcome", type=str, default=None, help="Outcome filter")
+@click.option("--json", "as_json", is_flag=True, help="JSON output")
+@click.pass_context
+def strategy_dist(
+    ctx: click.Context,
+    dimension_id: str,
+    toolchain: str | None,
+    outcome: str | None,
+    as_json: bool,
+) -> None:
+    """Show distribution of pattern values for a given dimension."""
+    from cyntra.dynamics.transition_db import TransitionDB
+    from cyntra.kernel.config import KernelConfig
+
+    config = KernelConfig.load(ctx.obj["config_path"])
+    db_path = config.repo_root / ".cyntra" / "dynamics" / "cyntra.db"
+    if not db_path.exists():
+        console.print("[dim]No dynamics DB found; run the kernel to collect profiles.[/dim]")
+        return
+
+    db = TransitionDB(db_path)
+    try:
+        dist = db.get_dimension_distribution(
+            dimension_id=dimension_id,
+            toolchain=toolchain,
+            outcome=outcome,
+        )
+        payload = {
+            "dimension_id": dimension_id,
+            "toolchain": toolchain,
+            "outcome": outcome,
+            "distribution": dist,
+        }
+
+        if as_json:
+            console.print(json.dumps(payload, indent=2, sort_keys=True))
+            return
+
+        table = Table(title=f"Strategy Distribution: {dimension_id}")
+        table.add_column("pattern", style="cyan")
+        table.add_column("count", justify="right")
+        for pattern, count in sorted(dist.items(), key=lambda kv: (-kv[1], kv[0])):
+            table.add_row(pattern, str(count))
+        console.print(table)
+    finally:
+        db.close()
 
 @main.group()
 def universe() -> None:
@@ -490,6 +652,227 @@ def universe_frontiers_rebuild(
 def world() -> None:
     """World tooling (build pipelines + evaluation)."""
     pass
+
+
+# =============================================================================
+# Strategy Analytics
+# =============================================================================
+
+
+@main.group()
+def strategy() -> None:
+    """Strategy telemetry analytics."""
+    pass
+
+
+@strategy.command(name="stats")
+@click.option("--toolchain", type=str, help="Filter by toolchain")
+@click.option("--json", "as_json", is_flag=True, help="JSON output")
+@click.pass_context
+def strategy_stats(ctx: click.Context, toolchain: str | None, as_json: bool) -> None:
+    """Show strategy profile statistics."""
+    from cyntra.dynamics.transition_db import TransitionDB
+    from cyntra.kernel.config import KernelConfig
+    from cyntra.strategy import CYNTRA_V1_RUBRIC
+
+    config = KernelConfig.load(ctx.obj["config_path"])
+    db_path = config.repo_root / ".cyntra" / "dynamics" / "cyntra.db"
+
+    if not db_path.exists():
+        console.print("[yellow]No dynamics database found[/yellow]")
+        return
+
+    db = TransitionDB(db_path)
+    total = db.profile_count()
+    success_profiles = db.get_profiles(toolchain=toolchain, outcome="success", limit=1000)
+    failed_profiles = db.get_profiles(toolchain=toolchain, outcome="failed", limit=1000)
+
+    if as_json:
+        result = {
+            "total_profiles": total,
+            "success_count": len(success_profiles),
+            "failed_count": len(failed_profiles),
+            "dimensions": {},
+        }
+        for dim in CYNTRA_V1_RUBRIC:
+            dist = db.get_dimension_distribution(dim.id, toolchain=toolchain)
+            if dist:
+                result["dimensions"][dim.id] = dist
+        console.print(json.dumps(result, indent=2))
+        db.conn.close()
+        return
+
+    console.print(f"\n[bold]Strategy Profile Statistics[/bold]")
+    console.print(f"Total Profiles: {total}")
+    console.print(f"Successful: {len(success_profiles)}")
+    console.print(f"Failed: {len(failed_profiles)}")
+    if toolchain:
+        console.print(f"Filtered by: {toolchain}")
+    console.print()
+
+    table = Table(title="Dimension Distributions (Success)")
+    table.add_column("Dimension", style="cyan")
+    table.add_column("Pattern A", style="green")
+    table.add_column("Count A")
+    table.add_column("Pattern B", style="yellow")
+    table.add_column("Count B")
+
+    for dim in CYNTRA_V1_RUBRIC:
+        dist = db.get_dimension_distribution(dim.id, toolchain=toolchain, outcome="success")
+        if dist:
+            count_a = dist.get(dim.pattern_a, 0)
+            count_b = dist.get(dim.pattern_b, 0)
+            table.add_row(dim.name, dim.pattern_a, str(count_a), dim.pattern_b, str(count_b))
+
+    console.print(table)
+    db.conn.close()
+
+
+@strategy.command(name="list")
+@click.option("--toolchain", type=str, help="Filter by toolchain")
+@click.option("--outcome", type=click.Choice(["success", "failed"]), help="Filter by outcome")
+@click.option("--limit", type=int, default=20, help="Max profiles to show")
+@click.option("--json", "as_json", is_flag=True, help="JSON output")
+@click.pass_context
+def strategy_list(
+    ctx: click.Context,
+    toolchain: str | None,
+    outcome: str | None,
+    limit: int,
+    as_json: bool,
+) -> None:
+    """List recent strategy profiles."""
+    from cyntra.dynamics.transition_db import TransitionDB
+    from cyntra.kernel.config import KernelConfig
+
+    config = KernelConfig.load(ctx.obj["config_path"])
+    db_path = config.repo_root / ".cyntra" / "dynamics" / "cyntra.db"
+
+    if not db_path.exists():
+        console.print("[yellow]No dynamics database found[/yellow]")
+        return
+
+    db = TransitionDB(db_path)
+    profiles = db.get_profiles(toolchain=toolchain, outcome=outcome, limit=limit)
+
+    if as_json:
+        console.print(json.dumps(profiles, indent=2, default=str))
+        db.conn.close()
+        return
+
+    if not profiles:
+        console.print("[dim]No profiles found[/dim]")
+        db.conn.close()
+        return
+
+    table = Table(title=f"Strategy Profiles (last {len(profiles)})")
+    table.add_column("ID", style="dim", max_width=12)
+    table.add_column("Workcell", style="cyan", max_width=20)
+    table.add_column("Toolchain")
+    table.add_column("Outcome", style="green")
+    table.add_column("Method")
+    table.add_column("Dims")
+    table.add_column("Time", style="dim")
+
+    for p in profiles:
+        profile_id = str(p.get("profile_id", ""))[:12]
+        workcell_id = str(p.get("workcell_id", ""))[:20]
+        tc = p.get("toolchain", "")
+        out = p.get("outcome", "")
+        method = p.get("extraction_method", "")
+        dim_count = len(p.get("dimensions", {})) if isinstance(p.get("dimensions"), dict) else 0
+        timestamp = str(p.get("created_at", ""))[:19]
+        outcome_style = "[green]" if out == "success" else "[red]"
+        table.add_row(profile_id, workcell_id, tc, f"{outcome_style}{out}[/]", method, str(dim_count), timestamp)
+
+    console.print(table)
+    db.conn.close()
+
+
+@strategy.command(name="optimal")
+@click.option("--toolchain", type=str, help="Filter by toolchain")
+@click.option("--min-confidence", type=float, default=0.5, help="Minimum confidence threshold")
+@click.option("--json", "as_json", is_flag=True, help="JSON output")
+@click.pass_context
+def strategy_optimal(
+    ctx: click.Context,
+    toolchain: str | None,
+    min_confidence: float,
+    as_json: bool,
+) -> None:
+    """Show optimal strategy patterns based on successful executions."""
+    from cyntra.dynamics.transition_db import TransitionDB
+    from cyntra.kernel.config import KernelConfig
+    from cyntra.strategy import CYNTRA_V1_RUBRIC
+
+    config = KernelConfig.load(ctx.obj["config_path"])
+    db_path = config.repo_root / ".cyntra" / "dynamics" / "cyntra.db"
+
+    if not db_path.exists():
+        console.print("[yellow]No dynamics database found[/yellow]")
+        return
+
+    db = TransitionDB(db_path)
+    optimal = db.get_optimal_strategy_for(toolchain=toolchain, outcome="success", min_confidence=min_confidence)
+
+    if as_json:
+        console.print(json.dumps(optimal, indent=2))
+        db.conn.close()
+        return
+
+    if not optimal:
+        console.print("[dim]No optimal patterns found (need more data)[/dim]")
+        db.conn.close()
+        return
+
+    console.print(f"\n[bold]Optimal Strategy Patterns[/bold]")
+    if toolchain:
+        console.print(f"Toolchain: {toolchain}")
+    console.print(f"Min Confidence: {min_confidence}")
+    console.print()
+
+    table = Table(title="Recommended Patterns")
+    table.add_column("Dimension", style="cyan")
+    table.add_column("Optimal Pattern", style="green")
+    table.add_column("Description")
+
+    for dim in CYNTRA_V1_RUBRIC:
+        if dim.id in optimal:
+            pattern = optimal[dim.id]
+            desc = dim.description_a if pattern == dim.pattern_a else dim.description_b
+            table.add_row(dim.name, pattern, desc[:50] + "..." if len(desc) > 50 else desc)
+
+    console.print(table)
+    patterns = [optimal.get(d.id, "?") for d in CYNTRA_V1_RUBRIC]
+    console.print(f"\n[dim]Compact: {', '.join(patterns)}[/dim]")
+    db.conn.close()
+
+
+@strategy.command(name="rubric")
+@click.option("--json", "as_json", is_flag=True, help="JSON output")
+def strategy_rubric(as_json: bool) -> None:
+    """Show the strategy rubric dimensions."""
+    from cyntra.strategy import CYNTRA_V1_RUBRIC
+
+    if as_json:
+        console.print(json.dumps(CYNTRA_V1_RUBRIC.to_dict(), indent=2))
+        return
+
+    console.print(f"\n[bold]Cyntra Strategy Rubric v1[/bold]")
+    console.print(f"Dimensions: {len(CYNTRA_V1_RUBRIC.dimensions)}\n")
+
+    table = Table(title="Strategy Dimensions")
+    table.add_column("#", style="dim")
+    table.add_column("ID", style="cyan")
+    table.add_column("Name")
+    table.add_column("Pattern A", style="green")
+    table.add_column("Pattern B", style="yellow")
+    table.add_column("Source", style="dim")
+
+    for i, dim in enumerate(CYNTRA_V1_RUBRIC, 1):
+        table.add_row(str(i), dim.id, dim.name, dim.pattern_a, dim.pattern_b, dim.source)
+
+    console.print(table)
 
 
 def _parse_param_overrides(raw: tuple[str, ...]) -> dict[str, object]:
@@ -2602,6 +2985,266 @@ def planner_best_of_k(
     )
     console.print(f"[green]✓[/green] Wrote best-of-K bench to {bench_dir}")
     console.print_json(data=report)
+
+
+def _normalize_cocoindex_row(row: object) -> dict[str, Any] | None:
+    if isinstance(row, dict):
+        return row
+    if isinstance(row, list):
+        out: dict[str, Any] = {}
+        for item in row:
+            if not isinstance(item, list | tuple) or len(item) != 2:
+                return None
+            key, value = item
+            if not isinstance(key, str):
+                return None
+            out[key] = value
+        return out
+    return None
+
+
+def _encode_cyntra_query(query: str, args: dict[str, object]) -> str:
+    if not args:
+        return query
+    lines: list[str] = []
+    for key in sorted(args.keys()):
+        value = args[key]
+        if value is None:
+            continue
+        lines.append(f"{key}={value}")
+    if not lines:
+        return query
+    return "\n".join([query.rstrip(), "[CYNTRA_ARGS]", *lines, "[/CYNTRA_ARGS]"]).strip()
+
+
+def _cocoindex_server_url(server_url: str | None) -> str:
+    raw = server_url or os.environ.get("CYNTRA_COCOINDEX_SERVER_URL") or "http://127.0.0.1:8020"
+    return raw.rstrip("/")
+
+
+def _cocoindex_query_handler(
+    *,
+    server_url: str,
+    handler: str,
+    query: str,
+) -> dict[str, Any]:
+    url = (
+        f"{server_url}/cocoindex/api/flows/CyntraIndex/queryHandlers/{handler}"
+        f"?query={urllib.parse.quote(query, safe='')}"
+    )
+    with urllib.request.urlopen(url) as resp:  # noqa: S310
+        payload = json.loads(resp.read().decode("utf-8"))
+    if not isinstance(payload, dict):
+        raise click.ClickException("Invalid CocoIndex response (expected object)")
+    return payload
+
+
+def _slugify(value: str) -> str:
+    slug = re.sub(r"[^a-zA-Z0-9]+", "_", value).strip("_").lower()
+    return slug or "memory"
+
+
+def _split_markdown_frontmatter(text: str) -> tuple[dict[str, Any], str]:
+    raw = text.lstrip("\ufeff")
+    if not raw.startswith("---"):
+        return {}, text
+    parts = raw.split("---", 2)
+    if len(parts) < 3:
+        return {}, text
+    import yaml  # type: ignore[import-untyped]
+
+    fm_raw = parts[1].strip("\n")
+    body = parts[2].lstrip("\n")
+    try:
+        data = yaml.safe_load(fm_raw)
+    except yaml.YAMLError:
+        return {}, body
+    return (data if isinstance(data, dict) else {}), body
+
+
+def _render_markdown_frontmatter(frontmatter: dict[str, Any], body: str) -> str:
+    import yaml  # type: ignore[import-untyped]
+
+    fm_text = yaml.safe_dump(frontmatter, sort_keys=False).strip()
+    return "\n".join(["---", fm_text, "---", "", body.lstrip("\n")]).rstrip() + "\n"
+
+
+@main.group()
+def memory() -> None:
+    """Draft + promote Markdown memories (shared canon + private drafts)."""
+
+
+@memory.command(name="draft-from-search")
+@click.option("--title", required=True, help="Memory title")
+@click.option("--query", "search_query", required=True, help="Search query to pull evidence from")
+@click.option("--issue-id", type=str, help="Attach to a Beads issue_id (optional but recommended)")
+@click.option("--k", type=int, default=8, show_default=True, help="Top-K evidence hits to fetch")
+@click.option(
+    "--select",
+    "select_index",
+    type=int,
+    default=0,
+    show_default=True,
+    help="Which hit index to cite (0-based)",
+)
+@click.option("--server-url", type=str, help="CocoIndex server URL (default: CYNTRA_COCOINDEX_SERVER_URL)")
+@click.pass_context
+def memory_draft_from_search(
+    ctx: click.Context,
+    title: str,
+    search_query: str,
+    issue_id: str | None,
+    k: int,
+    select_index: int,
+    server_url: str | None,
+) -> None:
+    """Create a private draft memory in `.cyntra/memories/` from a CocoIndex search hit."""
+    from cyntra.kernel.config import KernelConfig
+
+    config = KernelConfig.load(ctx.obj["config_path"])
+    repo_root = config.repo_root
+    draft_dir = repo_root / ".cyntra" / "memories"
+    draft_dir.mkdir(parents=True, exist_ok=True)
+
+    server = _cocoindex_server_url(server_url)
+    query = _encode_cyntra_query(search_query, {"k": k})
+    payload = _cocoindex_query_handler(server_url=server, handler="search_artifacts", query=query)
+    raw_results = payload.get("results")
+    if not isinstance(raw_results, list) or not raw_results:
+        raise click.ClickException("No search results returned")
+
+    results: list[dict[str, Any]] = []
+    for row in raw_results:
+        norm = _normalize_cocoindex_row(row)
+        if norm:
+            results.append(norm)
+
+    if select_index < 0 or select_index >= len(results):
+        raise click.ClickException(f"--select out of range (got {select_index}, results={len(results)})")
+
+    hit = results[select_index]
+    repo_path = str(hit.get("repo_path") or "")
+    run_id = hit.get("run_id")
+    artifact_id = hit.get("artifact_id")
+    start = hit.get("start")
+    end = hit.get("end")
+    score = hit.get("score")
+    snippet = str(hit.get("snippet") or "")
+
+    now = datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
+    memory_id = f"mem_{_slugify(title)[:48]}_{uuid.uuid4().hex[:8]}"
+    out_path = draft_dir / f"{memory_id}.md"
+
+    excerpt_hash = hashlib.sha256(snippet.encode("utf-8")).hexdigest() if snippet else None
+    citations: list[dict[str, Any]] = [
+        {
+            "kind": "cocoindex_chunk",
+            "repo_path": repo_path or None,
+            "run_id": run_id,
+            "issue_id": issue_id,
+            "artifact_id": artifact_id,
+            "start": start,
+            "end": end,
+            "score": score,
+            "excerpt_hash": excerpt_hash,
+            "source_query": search_query,
+        }
+    ]
+
+    frontmatter: dict[str, Any] = {
+        "memory_id": memory_id,
+        "title": title,
+        "status": "draft",
+        "agent": "human",
+        "type": "context",
+        "scope": "individual",
+        "tags": [],
+        "related_issue_ids": [issue_id] if issue_id else [],
+        "created_at": now,
+        "updated_at": now,
+        "citations": citations,
+    }
+
+    body_lines: list[str] = []
+    body_lines.append(f"# {title}")
+    body_lines.append("")
+    body_lines.append("## Memory")
+    body_lines.append("")
+    body_lines.append("_Write the distilled memory here._")
+    body_lines.append("")
+    body_lines.append("## Evidence")
+    body_lines.append("")
+    body_lines.append(f"- repo_path: `{repo_path}`")
+    if run_id:
+        body_lines.append(f"- run_id: `{run_id}`")
+    if artifact_id:
+        body_lines.append(f"- artifact_id: `{artifact_id}`")
+    if start is not None and end is not None:
+        body_lines.append(f"- span: {start}..{end}")
+    if score is not None:
+        body_lines.append(f"- score: {score}")
+    if snippet:
+        body_lines.append("")
+        body_lines.append("```text")
+        body_lines.append(snippet[:2000])
+        body_lines.append("```")
+    body = "\n".join(body_lines).rstrip() + "\n"
+
+    out_path.write_text(_render_markdown_frontmatter(frontmatter, body), encoding="utf-8")
+    console.print(f"[green]✓[/green] Wrote draft memory: {out_path}")
+
+
+@memory.command(name="promote")
+@click.argument("draft_path", type=Path)
+@click.option(
+    "--status",
+    type=click.Choice(["reviewed", "canonical"], case_sensitive=False),
+    default="reviewed",
+    show_default=True,
+)
+@click.option("--keep-draft", is_flag=True, help="Keep the original draft file")
+@click.pass_context
+def memory_promote(
+    ctx: click.Context,
+    draft_path: Path,
+    status: str,
+    keep_draft: bool,
+) -> None:
+    """Promote a private draft memory into `knowledge/memories/` (shared canon)."""
+    from cyntra.kernel.config import KernelConfig
+
+    config = KernelConfig.load(ctx.obj["config_path"])
+    repo_root = config.repo_root
+    draft_path = draft_path if draft_path.is_absolute() else (repo_root / draft_path).resolve()
+    if not draft_path.is_file():
+        raise click.ClickException(f"Draft file not found: {draft_path}")
+
+    target_dir = repo_root / "knowledge" / "memories"
+    target_dir.mkdir(parents=True, exist_ok=True)
+
+    text = draft_path.read_text(encoding="utf-8")
+    frontmatter, body = _split_markdown_frontmatter(text)
+    memory_id = str(frontmatter.get("memory_id") or frontmatter.get("id") or "").strip()
+    if not memory_id:
+        digest = hashlib.sha256(str(draft_path).encode("utf-8")).hexdigest()[:12]
+        memory_id = f"mem_{digest}"
+        frontmatter["memory_id"] = memory_id
+
+    now = datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
+    frontmatter["status"] = status.lower()
+    frontmatter["scope"] = frontmatter.get("scope") or "collective"
+    frontmatter["updated_at"] = now
+    frontmatter["visibility"] = "shared"
+
+    out_path = target_dir / f"{memory_id}.md"
+    out_path.write_text(_render_markdown_frontmatter(frontmatter, body), encoding="utf-8")
+    console.print(f"[green]✓[/green] Promoted memory: {out_path}")
+
+    if not keep_draft:
+        try:
+            draft_path.unlink()
+        except OSError as exc:
+            raise click.ClickException(f"Failed to remove draft: {exc}") from exc
 
 
 @main.group()

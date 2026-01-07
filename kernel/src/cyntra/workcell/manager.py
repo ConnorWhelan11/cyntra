@@ -298,6 +298,7 @@ class WorkcellManager:
             "manifest.json",
             "telemetry.jsonl",
             "rollout.json",
+            "strategy_profile.json",
             "prompt.md",
             ".workcell",
         ]:

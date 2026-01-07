@@ -135,6 +135,36 @@ class PlannerConfig:
 
 
 @dataclass
+class StrategyRoutingConfig:
+    """Configuration for pre-run strategy directive routing."""
+
+    enabled: bool = False
+
+    # Only supported mode for now (matches paper's dataset-wide optimal patterns).
+    mode: str = "dataset_optimal"  # dataset_optimal | off
+
+    # Deterministic A/B routing: only apply directives to treatment bucket.
+    ab_test_enabled: bool = False
+    ab_test_ratio: float = 0.5  # 0.0-1.0
+    ab_test_salt: str = "cyntra.strategy.ab.v1"
+
+    # Query parameters for dataset-wide optimal patterns.
+    outcome: str = "passed"
+    min_confidence: float = 0.5
+    per_toolchain: bool = True
+
+
+@dataclass
+class StrategyConfig:
+    """Configuration for strategy telemetry + (optional) directive routing."""
+
+    enabled: bool = False
+    prompt_style: str = "compact"  # compact | full
+    self_report: bool = True
+    routing: StrategyRoutingConfig = field(default_factory=StrategyRoutingConfig)
+
+
+@dataclass
 class RoutingRule:
     """A single routing rule (evaluated in order)."""
 
@@ -184,6 +214,7 @@ class KernelConfig:
     control: ControlConfig = field(default_factory=ControlConfig)
     post_execution_hooks: PostExecutionHooksConfig = field(default_factory=PostExecutionHooksConfig)
     planner: PlannerConfig = field(default_factory=PlannerConfig)
+    strategy: StrategyConfig = field(default_factory=StrategyConfig)
 
     # Runtime overrides
     force_speculate: bool = False
@@ -220,6 +251,7 @@ class KernelConfig:
         speculation_data = data.get("speculation") or {}
         control_data = data.get("control") or {}
         planner_data = data.get("planner") or {}
+        strategy_data = data.get("strategy") or {}
 
         # Back-compat: allow flat keys at top-level (tests + older configs).
         max_concurrent_workcells = scheduling_data.get(
@@ -401,6 +433,29 @@ class KernelConfig:
             {"mode", "bundle_dir", "confidence_threshold", "enabled"},
         )
 
+        strategy_kwargs = _filter_keys(
+            dict(strategy_data) if isinstance(strategy_data, dict) else {},
+            {"enabled", "prompt_style", "self_report"},
+        )
+        strategy_routing_kwargs = {}
+        strategy_routing_data = (
+            strategy_data.get("routing") if isinstance(strategy_data, dict) else None
+        )
+        if isinstance(strategy_routing_data, dict):
+            strategy_routing_kwargs = _filter_keys(
+                dict(strategy_routing_data),
+                {
+                    "enabled",
+                    "mode",
+                    "ab_test_enabled",
+                    "ab_test_ratio",
+                    "ab_test_salt",
+                    "outcome",
+                    "min_confidence",
+                    "per_toolchain",
+                },
+            )
+
         # Back-compat: allow boolean `planner.enabled`.
         if "enabled" in planner_kwargs and "mode" not in planner_kwargs:
             planner_kwargs["mode"] = "enforce" if bool(planner_kwargs.get("enabled")) else "off"
@@ -429,6 +484,16 @@ class KernelConfig:
             routing=RoutingConfig(rules=routing_rules, fallbacks=fallbacks),
             control=ControlConfig(**control_kwargs) if control_kwargs else ControlConfig(),
             planner=PlannerConfig(**planner_kwargs) if planner_kwargs else PlannerConfig(),
+            strategy=StrategyConfig(
+                **{
+                    **strategy_kwargs,
+                    "routing": StrategyRoutingConfig(**strategy_routing_kwargs)
+                    if strategy_routing_kwargs
+                    else StrategyRoutingConfig(),
+                }
+            )
+            if strategy_kwargs or strategy_routing_kwargs
+            else StrategyConfig(),
         )
 
         if config_path:

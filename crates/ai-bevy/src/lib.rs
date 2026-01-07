@@ -824,3 +824,69 @@ pub use dialogue::{
     AiDialoguePlugin, AiDialogueState, AiDialogueTrees, AdvanceLine, DialogueChanged,
     DialogueEffectEvent, EndDialogue, SelectResponse, StartDialogue,
 };
+
+// Physics integration module (Rapier3D).
+#[cfg(feature = "physics")]
+#[cfg_attr(docsrs, doc(cfg(feature = "physics")))]
+pub mod physics;
+
+#[cfg(feature = "physics")]
+#[cfg_attr(docsrs, doc(cfg(feature = "physics")))]
+pub use physics::{AiPhysicsPlugin, AiPhysicsSet};
+
+// GOAP planning integration module.
+#[cfg(feature = "goap")]
+#[cfg_attr(docsrs, doc(cfg(feature = "goap")))]
+pub mod goap;
+
+#[cfg(feature = "goap")]
+#[cfg_attr(docsrs, doc(cfg(feature = "goap")))]
+pub use goap::{
+    GoapActionCompleted, GoapActionStarted, GoapAgentBundle, GoapDebugConfig, GoapGoal,
+    GoapPlanEvent, GoapPlanKey, GoapPlanStatus, GoapStatus, GoapWorldState,
+};
+
+// Behavior Tree integration module.
+#[cfg(feature = "bt")]
+#[cfg_attr(docsrs, doc(cfg(feature = "bt")))]
+pub mod bt;
+
+#[cfg(feature = "bt")]
+#[cfg_attr(docsrs, doc(cfg(feature = "bt")))]
+pub use bt::{
+    BtAgentBundle, BtDebugConfig, BtExecutionStatus, BtNodeCompleted, BtNodeEntered, BtNodeInfo,
+    BtNodePath, BtNodeType, BtStatus, BtStatusChanged, BtStatusComponent,
+};
+
+// Utility AI integration module.
+#[cfg(feature = "utility")]
+#[cfg_attr(docsrs, doc(cfg(feature = "utility")))]
+pub mod utility;
+
+#[cfg(feature = "utility")]
+#[cfg_attr(docsrs, doc(cfg(feature = "utility")))]
+pub use utility::{
+    UtilityAgentBundle, UtilityDebugConfig, UtilityHistory, UtilityOptionScore, UtilityScores,
+    UtilitySelection, UtilitySelectionChanged, UtilityScoresUpdated,
+};
+
+// HTN planning integration module.
+#[cfg(feature = "htn")]
+#[cfg_attr(docsrs, doc(cfg(feature = "htn")))]
+pub mod htn;
+
+#[cfg(feature = "htn")]
+#[cfg_attr(docsrs, doc(cfg(feature = "htn")))]
+pub use htn::{
+    CompoundTask, HtnAgentBundle, HtnDebugConfig, HtnDecomposition, HtnOperatorCompleted,
+    HtnOperatorStarted, HtnPlanStatus, HtnStatus, HtnStatusChanged, HtnTaskDecomposed,
+    HtnTaskInfo, HtnTaskStack, HtnTaskType, OperatorId, Task,
+};
+
+// Steering behaviors module (always available).
+pub mod steering;
+
+pub use steering::{
+    SteeringAgent, SteeringAgentBundle, SteeringBehaviors, SteeringDebugConfig, SteeringForces,
+    SteeringOutput, SteeringWeights,
+};

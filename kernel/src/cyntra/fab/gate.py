@@ -25,9 +25,12 @@ import sys
 from dataclasses import asdict, dataclass, field
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from .config import GateConfig, find_gate_config, load_gate_config
+
+if TYPE_CHECKING:
+    from .state import FabAssetState
 
 logger = logging.getLogger(__name__)
 
@@ -611,6 +614,9 @@ def run_gate(
     prompt: str = "",
     render_dir: Path | None = None,
     iteration_index: int = 0,
+    workcell_id: str | None = None,
+    issue_id: str | None = None,
+    previous_state: "FabAssetState | None" = None,
 ) -> GateResult:
     """
     Run the fab realism gate on an asset.
@@ -623,6 +629,9 @@ def run_gate(
         prompt: Asset prompt/description for alignment critic
         render_dir: Pre-existing render directory (skip rendering if provided)
         iteration_index: Current iteration number
+        workcell_id: Workcell ID for dynamics logging
+        issue_id: Issue ID for dynamics logging
+        previous_state: Previous FabAssetState for dynamics transition logging
 
     Returns:
         GateResult with verdict and artifacts
@@ -857,7 +866,8 @@ def run_gate(
         json.dump(manifest, f, indent=2, default=_json_default)
     logger.info(f"Wrote manifest: {manifest_path}")
 
-    return GateResult(
+    # Build result object
+    result = GateResult(
         run_id=run_id,
         asset_id=asset_id,
         gate_config_id=config.gate_config_id,
@@ -877,6 +887,26 @@ def run_gate(
             "duration_ms": duration_ms,
         },
     )
+
+    # Log dynamics transition if enabled
+    if config.dynamics.enabled:
+        try:
+            from .dynamics_logger import log_fab_transition
+
+            log_fab_transition(
+                gate_config=config,
+                result=result,
+                asset_path=asset_path,
+                iteration_index=iteration_index,
+                domain=config.category,
+                workcell_id=workcell_id,
+                issue_id=issue_id,
+                previous_state=previous_state,
+            )
+        except Exception as e:
+            logger.warning(f"Failed to log dynamics transition: {e}")
+
+    return result
 
 
 def _verdict_reason(

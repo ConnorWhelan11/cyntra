@@ -18,6 +18,8 @@ pub struct Tile {
     pub resource: Option<ResourceId>,
     pub owner: Option<PlayerId>,
     pub city: Option<CityId>,
+    #[serde(default)]
+    pub river_edges: u8,
 }
 
 #[derive(Clone, Debug)]
@@ -37,6 +39,7 @@ impl GameMap {
                 resource: None,
                 owner: None,
                 city: None,
+                river_edges: 0,
             };
             (width as usize) * (height as usize)
         ];
@@ -68,6 +71,7 @@ impl GameMap {
                 resource: snap.resource,
                 owner: snap.owner,
                 city: snap.city,
+                river_edges: snap.river_edges,
             })
             .collect();
         Self {

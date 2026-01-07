@@ -36,6 +36,8 @@ pub struct TileSnapshot {
     pub owner: Option<PlayerId>,
     pub city: Option<CityId>,
     #[serde(default)]
+    pub river_edges: u8,
+    #[serde(default)]
     pub improvement: Option<TileImprovementSnapshot>,
     #[serde(default)]
     pub resource: Option<ResourceId>,

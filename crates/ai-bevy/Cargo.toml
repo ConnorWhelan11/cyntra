@@ -12,11 +12,22 @@ trace = ["dep:ai-tools"]
 trace-inspector = ["trace"]
 trace-egui = ["trace-inspector", "dep:bevy_egui"]
 transform-sync = ["dep:bevy_transform"]
-perception = ["dep:ai-perception"]
+# perception = ["dep:ai-perception"]  # TODO: Create ai-perception crate
 crowd = ["dep:ai-crowd"]
-crowd-orca = ["crowd", "ai-crowd/orca"]
-dialogue = ["dep:ai-dialogue"]
-bevy-demo = []
+# crowd-orca = ["crowd", "ai-crowd/orca"]  # TODO: Add orca feature to ai-crowd
+# dialogue = ["dep:ai-dialogue"]  # TODO: Create ai-dialogue crate
+bevy-demo = ["dep:bevy_gizmos", "dep:bevy_color", "dep:bevy_math"]
+# Physics integration with Rapier
+physics = ["dep:bevy_rapier3d", "dep:bevy_time", "dep:bevy_transform"]
+physics-debug = ["physics"]
+# GOAP planning integration
+goap = ["dep:ai-goap"]
+# Behavior tree integration
+bt = ["dep:ai-bt"]
+# Utility AI integration
+utility = ["dep:ai-utility"]
+# HTN planning integration
+htn = ["dep:ai-htn"]
 
 [dependencies]
 ai-core = { path = "../ai-core" }
@@ -28,28 +39,67 @@ bevy_ecs = "0.16.1"
 bevy_time = { version = "0.16.1", optional = true }
 bevy_egui = { version = "0.36.0", optional = true }
 bevy_transform = { version = "0.16.1", optional = true }
+bevy_gizmos = { version = "0.16.1", optional = true }
+bevy_color = { version = "0.16.1", optional = true }
+bevy_math = { version = "0.16.1", optional = true }
 
-ai-perception = { path = "../ai-perception", optional = true }
 ai-crowd = { path = "../ai-crowd", optional = true }
-ai-dialogue = { path = "../ai-dialogue", optional = true }
+ai-goap = { path = "../ai-goap", optional = true }
+ai-bt = { path = "../ai-bt", optional = true }
+ai-utility = { path = "../ai-utility", optional = true }
+ai-htn = { path = "../ai-htn", optional = true }
+# ai-perception = { path = "../ai-perception", optional = true }  # TODO: Create this crate
+# ai-dialogue = { path = "../ai-dialogue", optional = true }  # TODO: Create this crate
+
+# Physics (optional)
+bevy_rapier3d = { version = "0.30", optional = true }
+
+# Logging (always included)
+tracing = "0.1"
 
 [dev-dependencies]
-ai-debug = { path = "../ai-debug", features = ["bevy-ai-egui"] }
-ai-perception = { path = "../ai-perception", features = ["serde", "trace"] }
+# ai-debug = { path = "../ai-debug", features = ["bevy-ai-egui"] }  # TODO: Add features
+# ai-perception = { path = "../ai-perception", features = ["serde", "trace"] }  # TODO: Create crate
 bevy = "0.16.1"
 serde_json = "1"
+tracing = "0.1"
 
-[[example]]
-name = "bevy_debug_demo"
-path = "examples/bevy_debug_demo.rs"
-required-features = ["trace-egui", "bevy-demo"]
+# [[example]]
+# name = "bevy_debug_demo"
+# path = "examples/bevy_debug_demo.rs"
+# required-features = ["trace-egui", "bevy-demo"]
 
 [[example]]
 name = "crowd_demo"
 path = "examples/crowd_demo.rs"
 required-features = ["crowd", "bevy-demo"]
 
+# [[example]]
+# name = "perception_demo"
+# path = "examples/perception_demo.rs"
+# required-features = ["perception", "bevy-demo"]
+
 [[example]]
-name = "perception_demo"
-path = "examples/perception_demo.rs"
-required-features = ["perception", "bevy-demo"]
+name = "physics_demo"
+path = "examples/physics_demo.rs"
+required-features = ["physics", "bevy-demo"]
+
+[[example]]
+name = "ai_integration_demo"
+path = "examples/ai_integration_demo.rs"
+required-features = ["physics", "bevy-demo"]
+
+[[example]]
+name = "nav_physics_demo"
+path = "examples/nav_physics_demo.rs"
+required-features = ["physics", "bevy-demo"]
+
+[[example]]
+name = "ai_decision_demo"
+path = "examples/ai_decision_demo.rs"
+required-features = ["goap", "bt", "utility"]
+
+[[example]]
+name = "game_ai_demo"
+path = "examples/game_ai_demo.rs"
+required-features = ["goap", "bt", "utility", "htn"]

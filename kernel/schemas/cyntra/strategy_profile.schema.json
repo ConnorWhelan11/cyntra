@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://cyntra/schemas/cyntra/strategy_profile.schema.json",
+  "title": "Cyntra Strategy Profile",
+  "description": "Compact, versioned reasoning strategy telemetry derived from a workcell execution.",
+  "type": "object",
+  "required": ["schema_version", "rubric_version", "extraction_method", "extracted_at", "profile"],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "cyntra.strategy_profile.v1"
+    },
+    "rubric_version": { "type": "string" },
+    "workcell_id": { "type": ["string", "null"] },
+    "issue_id": { "type": ["string", "null"] },
+    "model": { "type": ["string", "null"] },
+    "toolchain": { "type": ["string", "null"] },
+    "extraction_method": {
+      "type": "string",
+      "enum": ["self_report", "llm_analysis", "classifier", "heuristic", "unknown"]
+    },
+    "extracted_at": { "type": "string", "format": "date-time" },
+    "average_confidence": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
+    "notes": { "type": ["string", "null"] },
+    "profile": {
+      "type": "object",
+      "description": "Mapping of dimension_id -> dimension value object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["value", "confidence"],
+        "properties": {
+          "value": { "type": "string" },
+          "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+          "evidence": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}
